@@ -1,0 +1,19 @@
+"""
+Constants for use across all of BBGun.
+"""
+
+# Installation constants:
+
+name = "bbgun"
+version = "0.0.1"
+description = "Black box optimization made simple."
+github_url = "https://github.com/evhub/bbgun"
+author = "Evan Hubinger"
+author_email = "evanjhub@gmail.com"
+requirements = []
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: Apache Software License",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Operating System :: OS Independent",
+]

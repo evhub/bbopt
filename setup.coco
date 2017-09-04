@@ -1,0 +1,28 @@
+import setuptools
+
+import sys
+import os.path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+from bbgun.constants import (
+    name,
+    version,
+    description,
+    github_url,
+    author,
+    author_email,
+    requirements,
+    classifiers,
+)
+
+setuptools.setup(
+    name=name,
+    version=version,
+    description=description,
+    url=github_url,
+    author=author,
+    author_email=author_email,
+    install_requires=requirements,
+    classifiers=classifiers,
+    packages=setuptools.find_packages(),
+)

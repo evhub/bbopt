@@ -1,0 +1,4 @@
+"""
+The random backend. Used for testing purposes.
+Does not use existing data, simply spits out random valid values.
+"""
