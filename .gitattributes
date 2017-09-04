@@ -1,0 +1,6 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Treat Coconut and Python template files as Python
+*.coco          diff=python
+*.py_template   diff=python
