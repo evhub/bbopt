@@ -1,0 +1,3 @@
+"""
+BBGun is a black box optimization library that serves as a universal frontend to many different backends.
+"""

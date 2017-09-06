@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x139d9ef0
+# __coconut_hash__ = 0x466f2b0a
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
+
+"""
+The interface into BBGun for a file with black-box parameters.
+"""
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -15,3 +19,8 @@ from __coconut__ import *
 _coconut_sys.path.remove(_coconut_file_path)
 
 # Compiled Coconut: -----------------------------------------------------------
+
+
+
+def parameter(type=None, start=None, stop=None):
+    pass

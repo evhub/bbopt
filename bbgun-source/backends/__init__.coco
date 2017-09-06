@@ -1,0 +1,9 @@
+class Backends:
+    def __getitem__(self, name):
+        if name == "random":
+            from bbgun.backends.random import RandomBackend
+            return RandomBackend
+        else:
+            raise ValueError("unknown backend %r" % name)
+
+backends = Backends()

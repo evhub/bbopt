@@ -1,12 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xce671bee
+# __coconut_hash__ = 0x2718ded
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
-
-"""
-BBGun is a black box optimization library that serves as a universal frontend to many different backends.
-"""
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -19,3 +15,14 @@ from __coconut__ import *
 _coconut_sys.path.remove(_coconut_file_path)
 
 # Compiled Coconut: -----------------------------------------------------------
+
+# Imports:
+
+import argparse
+
+from bbgun.constants import name
+from bbgun.constants import github_url
+
+# Arguments:
+
+arguments = argparse.ArgumentParser(prog=name, description=github_url)

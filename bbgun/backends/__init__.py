@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x139d9ef0
+# __coconut_hash__ = 0x6302a03a
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -15,3 +15,13 @@ from __coconut__ import *
 _coconut_sys.path.remove(_coconut_file_path)
 
 # Compiled Coconut: -----------------------------------------------------------
+
+class Backends(_coconut.object):
+    def __getitem__(self, name):
+        if name == "random":
+            from bbgun.backends.random import RandomBackend
+            return RandomBackend
+        else:
+            raise ValueError("unknown backend %r" % name)
+
+backends = Backends()

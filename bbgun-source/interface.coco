@@ -1,0 +1,6 @@
+"""
+The interface into BBGun for a file with black-box parameters.
+"""
+
+def parameter(type=None, start=None, stop=None):
+    pass
