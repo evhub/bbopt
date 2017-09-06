@@ -1,13 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x51f3bff4
+# __coconut_hash__ = 0x4fb74892
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
-
-"""
-The random backend. Used for testing purposes.
-Does not use existing data, simply spits out random valid values.
-"""
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -20,3 +15,40 @@ from __coconut__ import *
 _coconut_sys.path.remove(_coconut_file_path)
 
 # Compiled Coconut: -----------------------------------------------------------
+
+# Imports:
+
+import unittest
+
+from bbgun import constants
+
+# Utilities:
+
+def is_hashable(obj):
+    """Determine if obj is hashable."""
+    try:
+        hash(obj)
+    except Exception:
+        return False
+    else:
+        return True
+
+
+def assert_hashable_or_dict(name, obj):
+    """Assert obj is hashable, or for dicts apply recursively to values."""
+    if isinstance(obj, dict):
+        for val in obj.values():
+            assert_hashable_or_dict(name, val)
+    else:
+        assert is_hashable(obj), "Constant " + name + " contains unhashable values"
+
+# Tests:
+
+class TestConstants(unittest.TestCase):
+
+    def test_immutable(self):
+        for name, value in vars(constants).items():
+            if not name.startswith("__"):
+                assert not isinstance(value, list), "Constant " + name + " should be tuple, not list"
+                assert not isinstance(value, set), "Constant " + name + " should be frozenset, not set"
+                assert_hashable_or_dict(name, value)

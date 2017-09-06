@@ -6,6 +6,7 @@ install: build
 build:
 	coconut setup.coco --strict
 	coconut bbgun-source bbgun --strict --jobs sys
+	coconut tests-source tests --strict --jobs sys
 
 .PHONY: upload
 upload: clean install
@@ -20,7 +21,7 @@ setup:
 
 .PHONY: test
 test: install
-	python bbgun/tests.py
+	pytest --strict -s tests
 
 .PHONY: clean
 clean:

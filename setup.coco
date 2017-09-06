@@ -22,7 +22,7 @@ setuptools.setup(
     url=github_url,
     author=author,
     author_email=author_email,
-    install_requires=requirements,
-    classifiers=classifiers,
+    install_requires=requirements |> list,
+    classifiers=classifiers |> list,
     packages=setuptools.find_packages(),
 )

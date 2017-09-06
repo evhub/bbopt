@@ -10,10 +10,10 @@ description = "Black box optimization made simple."
 github_url = "https://github.com/evhub/bbgun"
 author = "Evan Hubinger"
 author_email = "evanjhub@gmail.com"
-requirements = []
-classifiers = [
+requirements = ()
+classifiers = (
     "Development Status :: 3 - Alpha",
     "License :: OSI Approved :: Apache Software License",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Operating System :: OS Independent",
-]
+)

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa3e7fe09
+# __coconut_hash__ = 0xfcc31165
 
-# Compiled with Coconut version 1.3.0-post_dev1 [Dead Parrot]
+# Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
 """
 Constants for use across all of BBGun.
@@ -30,5 +30,5 @@ description = "Black box optimization made simple."
 github_url = "https://github.com/evhub/bbgun"
 author = "Evan Hubinger"
 author_email = "evanjhub@gmail.com"
-requirements = []
-classifiers = ["Development Status :: 3 - Alpha", "License :: OSI Approved :: Apache Software License", "Topic :: Software Development :: Libraries :: Python Modules", "Operating System :: OS Independent",]
+requirements = ()
+classifiers = ("Development Status :: 3 - Alpha", "License :: OSI Approved :: Apache Software License", "Topic :: Software Development :: Libraries :: Python Modules", "Operating System :: OS Independent",)

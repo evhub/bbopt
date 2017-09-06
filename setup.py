@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc390940f
+# __coconut_hash__ = 0x164a3bb0
 
-# Compiled with Coconut version 1.3.0-post_dev1 [Dead Parrot]
+# Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -642,4 +642,4 @@ from bbgun.constants import author_email
 from bbgun.constants import requirements
 from bbgun.constants import classifiers
 
-setuptools.setup(name=name, version=version, description=description, url=github_url, author=author, author_email=author_email, install_requires=requirements, classifiers=classifiers, packages=setuptools.find_packages())
+setuptools.setup(name=name, version=version, description=description, url=github_url, author=author, author_email=author_email, install_requires=(list)(requirements), classifiers=(list)(classifiers), packages=setuptools.find_packages())

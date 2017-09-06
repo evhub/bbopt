@@ -1,0 +1,13 @@
+language: python
+notifications:
+  email:
+    on_failure: change
+sudo: false
+cache: pip
+python:
+- '2.7'
+- '3.6'
+install:
+- make setup
+script:
+- make test
