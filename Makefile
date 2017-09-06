@@ -16,7 +16,7 @@ upload: clean install
 
 .PHONY: setup
 setup:
-	pip install --upgrade setuptools pip
+	pip install --upgrade setuptools pip pytest
 	pip install --upgrade "coconut-develop[watch,cPyparsing]"
 
 .PHONY: test
