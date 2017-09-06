@@ -4,9 +4,9 @@ install: build
 
 .PHONY: build
 build:
-	coconut setup.coco --strict
-	coconut bbgun-source bbgun --strict --jobs sys
-	coconut tests-source tests --strict --jobs sys
+	coconut setup.coco --no-tco --strict
+	coconut bbgun-source bbgun --no-tco --strict --jobs sys
+	coconut tests-source tests --no-tco --strict --jobs sys
 
 .PHONY: upload
 upload: clean install
@@ -17,7 +17,7 @@ upload: clean install
 .PHONY: setup
 setup:
 	pip install --upgrade setuptools pip
-	pip install --upgrade "coconut-develop[watch]"
+	pip install --upgrade "coconut-develop[watch,cPyparsing]"
 
 .PHONY: test
 test: install
@@ -36,4 +36,4 @@ wipe: clean
 
 .PHONY: watch
 watch: install
-	coconut bbgun-source bbgun --watch --strict
+	coconut bbgun-source bbgun --watch --no-tco --strict

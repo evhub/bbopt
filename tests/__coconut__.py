@@ -141,26 +141,6 @@ def _coconut_NamedTuple(name, fields):
 class MatchError(Exception):
     """Pattern-matching error. Has attributes .pattern and .value."""
     __slots__ = ("pattern", "value")
-class _coconut_tail_call(object):
-    __slots__ = ("func", "args", "kwargs")
-    def __init__(self, func, *args, **kwargs):
-        self.func, self.args, self.kwargs = func, args, kwargs
-_coconut_tco_func_dict = {}
-def _coconut_tco(func):
-    @_coconut.functools.wraps(func)
-    def tail_call_optimized_func(*args, **kwargs):
-        call_func = func
-        while True:
-            wkref = _coconut_tco_func_dict.get(_coconut.id(call_func))
-            if wkref is not None and wkref() is call_func:
-                call_func = call_func._coconut_tco_func
-            result = call_func(*args, **kwargs)  # pass --no-tco to clean up your traceback
-            if not isinstance(result, _coconut_tail_call):
-                return result
-            call_func, args, kwargs = result.func, result.args, result.kwargs
-    tail_call_optimized_func._coconut_tco_func = func
-    _coconut_tco_func_dict[_coconut.id(tail_call_optimized_func)] = _coconut.weakref.ref(tail_call_optimized_func)
-    return tail_call_optimized_func
 def _coconut_igetitem(iterable, index):
     if isinstance(iterable, (_coconut_reversed, _coconut_map, _coconut.filter, _coconut.zip, _coconut_enumerate, _coconut_count, _coconut.abc.Sequence)):
         return iterable[index]
@@ -531,13 +511,12 @@ def addpattern(base_func):
     """Decorator to add a new case to a pattern-matching function,
     where the new case is checked last."""
     def pattern_adder(func):
-        @_coconut_tco
         @_coconut.functools.wraps(func)
         def add_pattern_func(*args, **kwargs):
             try:
                 return base_func(*args, **kwargs)
             except _coconut_MatchError:
-                return _coconut_tail_call(func, *args, **kwargs)
+                return func(*args, **kwargs)
         return add_pattern_func
     return pattern_adder
 class _coconut_partial(object):
