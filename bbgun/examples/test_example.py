@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x139d9ef0
+# __coconut_hash__ = 0xc03e074
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -15,3 +15,12 @@ from __coconut__ import *
 _coconut_sys.path.remove(_coconut_file_path)
 
 # Compiled Coconut: -----------------------------------------------------------
+
+import bbgun as bb
+
+x = bb.param(name="x", choose=range(10))
+
+bb.maximize(value=x)
+
+if __name__ == "__main__":
+    bb.run(path=__file__, backend="random")

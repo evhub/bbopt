@@ -1,0 +1,8 @@
+import bbgun as bb
+
+x = bb.param(name="x", choose=range(10))
+
+bb.maximize(value=x)
+
+if __name__ == "__main__":
+    bb.run(path=__file__, backend="random")

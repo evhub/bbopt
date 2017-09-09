@@ -2,5 +2,12 @@
 The interface into BBGun for a file with black-box parameters.
 """
 
-def parameter(type=None, start=None, stop=None):
+def param(*, name=None, choose=None):
+    pass
+
+def maximize(*, value=None):
+    if callable(value):
+        value = value()
+
+def run(*, path=None, backend=None):
     pass

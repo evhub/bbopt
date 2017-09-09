@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x466f2b0a
+# __coconut_hash__ = 0x31bc657c
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -22,5 +22,12 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 
 
-def parameter(type=None, start=None, stop=None):
+def param(*, name=None, choose=None):
+    pass
+
+def maximize(*, value=None):
+    if callable(value):
+        value = value()
+
+def run(*, path=None, backend=None):
     pass

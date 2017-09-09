@@ -5,14 +5,13 @@ install: build
 .PHONY: build
 build:
 	coconut setup.coco --no-tco --strict
-	coconut bbgun-source bbgun --no-tco --strict --jobs sys
-	coconut tests-source tests --no-tco --strict --jobs sys
+	coconut "bbgun-source" bbgun --no-tco --strict --jobs sys
 
 .PHONY: upload
 upload: clean install
 	python3 setup.py sdist bdist_wheel
 	pip3 install --upgrade twine
-	twine upload dist/*
+	twine upload ./dist/*
 
 .PHONY: setup
 setup:
@@ -21,7 +20,7 @@ setup:
 
 .PHONY: test
 test: install
-	pytest --strict -s tests
+	pytest --strict -s ./bbgun/tests
 
 .PHONY: clean
 clean:
@@ -36,4 +35,4 @@ wipe: clean
 
 .PHONY: watch
 watch: install
-	coconut bbgun-source bbgun --watch --no-tco --strict
+	coconut "bbgun-source" bbgun --watch --no-tco --strict
