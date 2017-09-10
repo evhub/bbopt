@@ -1,0 +1,17 @@
+# Imports:
+
+import os.path
+
+# Functions:
+
+def is_str(obj) = isinstance(obj, str)
+
+def is_num(obj) = isinstance(obj, (int, float))
+
+def norm_path(path) = (
+    path
+    |> os.path.expanduser
+    |> os.path.abspath
+    |> os.path.realpath
+    |> os.path.normcase
+)

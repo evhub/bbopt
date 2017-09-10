@@ -1,8 +1,12 @@
-import bbgun as bb
+# BBGun boilerplate:
+
+from bbgun import BB
+bb = BB(file=__file__)
+if __name__ == "__main__":
+    bb.run(backend="random")
+
+# Main program:
 
 x = bb.param(name="x", choose=range(10))
 
 bb.maximize(value=x)
-
-if __name__ == "__main__":
-    bb.run(path=__file__, backend="random")

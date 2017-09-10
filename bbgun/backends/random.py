@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x895996dd
+# __coconut_hash__ = 0x29eff720
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -20,3 +20,9 @@ from __coconut__ import *
 _coconut_sys.path.remove(_coconut_file_path)
 
 # Compiled Coconut: -----------------------------------------------------------
+
+
+
+class RandomBackend(_coconut.object):
+    def __init__(self, params, examples):
+        pass

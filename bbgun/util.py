@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x12e55626
+# __coconut_hash__ = 0x18f64977
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -16,15 +16,17 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 # Compiled Coconut: -----------------------------------------------------------
 
-# BBGun boilerplate:
+# Imports:
 
-from bbgun import BB
-bb = BB(file=__file__)
-if __name__ == "__main__":
-    bb.run(backend="random")
+import os.path
 
-# Main program:
+# Functions:
 
-x = bb.param(name="x", choose=range(10))
+def is_str(obj):
+    return isinstance(obj, str)
 
-bb.maximize(value=x)
+def is_num(obj):
+    return isinstance(obj, (int, float))
+
+def norm_path(path):
+    return ((os.path.normcase)((os.path.realpath)((os.path.abspath)((os.path.expanduser)(path)))))
