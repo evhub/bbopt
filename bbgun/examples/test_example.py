@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x12e55626
+# __coconut_hash__ = 0x6b87cb99
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -17,14 +17,17 @@ _coconut_sys.path.remove(_coconut_file_path)
 # Compiled Coconut: -----------------------------------------------------------
 
 # BBGun boilerplate:
-
 from bbgun import BB
 bb = BB(file=__file__)
 if __name__ == "__main__":
     bb.run(backend="random")
 
-# Main program:
+# Let's use some parameters!
+x = bb.param(name="x", choose_from=range(10))
 
-x = bb.param(name="x", choose=range(10))
+# And let's set our goal!
+bb.maximize(x)
 
-bb.maximize(value=x)
+# Finally, we'll print out the value we used for debugging purposes.
+if __name__ == "__main__":
+    print(x)

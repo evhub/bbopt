@@ -1,13 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb563af77
+# __coconut_hash__ = 0x139d9ef0
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
-
-"""
-The random backend. Used for testing purposes.
-Does not use existing data, simply spits out random valid values.
-"""
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -20,20 +15,3 @@ from __coconut__ import *
 _coconut_sys.path.remove(_coconut_file_path)
 
 # Compiled Coconut: -----------------------------------------------------------
-
-
-
-# Imports:
-
-import random
-
-# Backend:
-
-class RandomBackend(_coconut.object):
-    """RandomBackend chooses random valid values."""
-
-    def __init__(self, examples):
-        pass  # we're choosing randomly, so we ignore the given example data!
-
-    def param(self, name, choose_from):
-        return random.choice(choose_from)

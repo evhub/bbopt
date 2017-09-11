@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x131ab6c4
+# __coconut_hash__ = 0xb80a97ab
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -22,53 +22,91 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 
 
-from bbgun.util import is_str
-from bbgun.util import is_num
-from bbgun.util import norm_path
+# Imports:
 
-global bbs_by_file
-bbs_by_file = {}
+import json
+import os.path
+
+from bbgun.backends import init_backend
+from bbgun.util import norm_path
+from bbgun.constants import default_backend
+from bbgun.constants import data_file_ext
+
+# Interface:
 
 class BB(_coconut.object):
-    def __init__(self, *, file=None):
-        if not is_str(file):
+    _bbs_by_file = {}  # all BB instances by file
+
+    def __init__(self, file):
+        if not isinstance(file, str):
             raise TypeError("file must be a string")
         self._file = norm_path(file)
-        if self._file in bbs_by_file:
+        if self._file in self._bbs_by_file:
             raise ValueError("BB instance for file %r already exists" % self.file)
-        bbs_by_file[self.file] = self
-        self._params = {}
-        self._examples = []
-        self._current_example = {}
-        self._backend = None
-        self._load_examples()
+        self._bbs_by_file[self._file] = self
+        self.reset()
 
-    def param(self, *, name=None, choose=None):
-        if not is_str(name):
+    def reset(self):
+        """Reset to allow another run."""
+        self._load_examples()
+        self._backend = init_backend(default_backend, self.examples)
+        self._params = {}
+        self._current_example = {"params": {}}
+
+    def param(self, name, *args, **kwargs):
+        """Create a black box parameter and return its value."""
+        if self._current_example is None:
+            raise ValueError("param calls must come before maximize/minimize")
+        if not isinstance(name, str):
             raise TypeError("name must be a string")
         if name in self._params:
             raise ValueError("parameter of name %r already exists" % name)
-        if choose is None:
-            raise TypeError("choose must be an iterable")
-        self._params[name] = {"choose": choose}
-        value = self._select_value(name)
-        self._current_example[name] = value
+        value = self._backend.param(name, *args, **kwargs)
+        self._current_example["params"][name] = value
         return value
 
-    def maximize(self, *, value=None):
+    def maximize(self, value):
+        """Set the gain of the current run."""
+        if self._current_example is None:
+            raise ValueError("only one of maximize/minimize may be used")
         if callable(value):
             value = value()
-        if not is_num(value):
-            raise TypeError("value must be a number")
         self._current_example["gain"] = value
+        self._save_examples()
 
-    def minimize(self, *, value=None):
+    def minimize(self, value):
+        """Set the loss of the current run."""
+        if self._current_example is None:
+            raise ValueError("only one of maximize/minimize may be used")
         if callable(value):
             value = value()
-        if not is_num(value):
-            raise TypeError("value must be a number")
         self._current_example["loss"] = value
+        self._save_examples()
 
-    def run(self, *, backend=None):
-        from bbgun.backends import get_backend
-        self._backend = get_backend(backend)
+    def run(self, backend):
+        """Optimize parameters using the given backend."""
+        self._backend = init_backend(backend, self.examples)
+
+    @property
+    def _data_file(self):
+        return os.path.splitext(self._file)[0] + data_file_ext
+
+    def _load_examples(self):
+        """Load example data."""
+        if os.path.exists(self._data_file):
+            with open(self._data_file, "r") as df:
+                contents = df.read()
+                if contents:
+                    self.examples = json.loads(contents)
+                else:
+                    self.examples = []
+        else:
+            self.examples = []
+
+    def _save_examples(self):
+        """Save example data."""
+        if self._current_example not in self.examples:
+            self.examples.append(self._current_example)
+        self._current_example = None
+        with open(self._data_file, "w+") as df:
+            json.dump(self.examples, df)

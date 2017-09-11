@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xe01079d9
+# __coconut_hash__ = 0x4b24acd1
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -32,3 +32,8 @@ author = "Evan Hubinger"
 author_email = "evanjhub@gmail.com"
 requirements = ()
 classifiers = ("Development Status :: 3 - Alpha", "License :: OSI Approved :: Apache Software License", "Topic :: Software Development :: Libraries :: Python Modules", "Operating System :: OS Independent",)
+
+# Interface constants:
+
+default_backend = "serving"
+data_file_ext = ".bbdata.json"

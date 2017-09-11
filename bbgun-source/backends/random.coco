@@ -3,6 +3,17 @@ The random backend. Used for testing purposes.
 Does not use existing data, simply spits out random valid values.
 """
 
+# Imports:
+
+import random
+
+# Backend:
+
 class RandomBackend:
-    def __init__(self, params, examples):
-        pass
+    """RandomBackend chooses random valid values."""
+
+    def __init__(self, examples):
+        pass  # we're choosing randomly, so we ignore the given example data!
+
+    def param(self, name, choose_from):
+        return random.choice(choose_from)

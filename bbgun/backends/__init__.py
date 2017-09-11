@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb018a205
+# __coconut_hash__ = 0xf8b73b22
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
+
+"""
+Backends contains all of BBGun's different backends.
+"""
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -16,9 +20,22 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 # Compiled Coconut: -----------------------------------------------------------
 
-def get_backend(name):
-    if name == "random":
-        from bbgun.backends.random import RandomBackend
-        return RandomBackend
+
+
+registered_backends = {}
+
+def init_backend(name, examples):
+    """Create a backend object of the given name with the given example data."""
+    if name in registered_backends:
+        return registered_backends[name]
+    elif name == "random":
+        from bbgun.backends.random import RandomBackend as Backend
+    elif name == "serving":
+        from bbgun.backends.serving import ServingBackend as Backend
     else:
         raise ValueError("unknown backend %r" % name)
+    return Backend(examples)
+
+def register_backend(name, backend):
+    """Register a new backend under the given name."""
+    registered_backends[name] = backend
