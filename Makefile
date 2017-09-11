@@ -2,6 +2,10 @@
 install: build
 	pip install --upgrade -e .
 
+.PHONY: install-2
+install-2: build
+	python2 -m pip install --upgrade -e .
+
 .PHONY: build
 build:
 	coconut setup.coco --no-tco --strict
@@ -21,6 +25,10 @@ setup:
 .PHONY: test
 test: install
 	pytest --strict -s ./bbgun/tests
+
+.PHONY: test-2
+test-2: install-2
+	python2 -m pytest --strict -s ./bbgun/tests
 
 .PHONY: clean
 clean:

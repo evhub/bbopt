@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb80a97ab
+# __coconut_hash__ = 0x7bf762a6
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -29,6 +29,7 @@ import os.path
 
 from bbgun.backends import init_backend
 from bbgun.util import norm_path
+from bbgun.util import is_str
 from bbgun.constants import default_backend
 from bbgun.constants import data_file_ext
 
@@ -38,7 +39,7 @@ class BB(_coconut.object):
     _bbs_by_file = {}  # all BB instances by file
 
     def __init__(self, file):
-        if not isinstance(file, str):
+        if not is_str(file):
             raise TypeError("file must be a string")
         self._file = norm_path(file)
         if self._file in self._bbs_by_file:
@@ -57,7 +58,7 @@ class BB(_coconut.object):
         """Create a black box parameter and return its value."""
         if self._current_example is None:
             raise ValueError("param calls must come before maximize/minimize")
-        if not isinstance(name, str):
+        if not is_str(name):
             raise TypeError("name must be a string")
         if name in self._params:
             raise ValueError("parameter of name %r already exists" % name)
@@ -109,4 +110,4 @@ class BB(_coconut.object):
             self.examples.append(self._current_example)
         self._current_example = None
         with open(self._data_file, "w+") as df:
-            json.dump(self.examples, df)
+            (df.write)((str)((json.dumps)(self.examples)))

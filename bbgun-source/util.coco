@@ -8,6 +8,8 @@ import os.path
 
 # Functions:
 
+def is_str(obj) = isinstance(obj, (str, py_str))
+
 def norm_path(path) = (
     path
     |> os.path.expanduser

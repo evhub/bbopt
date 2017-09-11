@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x91bcd709
+# __coconut_hash__ = 0xcabb01a8
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -36,7 +36,7 @@ class TestExamples(unittest.TestCase):
         for _ in range(10):
             stdout, stderr, retcode = call_output(["python", example_file])
             stdout, stderr = "".join(stdout), "".join(stderr)
-            assert not retcode and not stderr
+            assert not retcode and not stderr, stderr
             want_x = max(int(stdout.strip()), want_x)
         from bbgun.examples.test_example import x as got_x
         assert got_x == want_x
