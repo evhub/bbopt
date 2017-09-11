@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4b24acd1
+# __coconut_hash__ = 0x7f8200f8
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -25,7 +25,7 @@ _coconut_sys.path.remove(_coconut_file_path)
 # Installation constants:
 
 name = "bbgun"
-version = "0.0.1"
+version = "0.1.0"
 description = "Black box optimization made simple."
 github_url = "https://github.com/evhub/bbgun"
 author = "Evan Hubinger"
