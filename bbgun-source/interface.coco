@@ -6,14 +6,12 @@ The interface into BBGun for a file with black-box parameters.
 
 import json
 import os.path
-import pickle
 
 from bbgun.backends import init_backend
 from bbgun.util import (
     norm_path,
     is_str,
-    encode_bytes,
-    decode_bytes,
+    json_serialize,
 )
 from bbgun.constants import (
     default_backend,
@@ -53,7 +51,8 @@ class BB:
             raise TypeError("name must be a string")
         if name in self._new_params:
             raise ValueError("parameter of name %r already exists" % name)
-        value = self._backend.param(name, **kwargs)
+        kwargs = kwargs |> json_serialize
+        value = self._backend.param(name, **kwargs) |> json_serialize
         self._new_params[name] = kwargs
         self._current_example["values"][name] = value
         return value
@@ -88,12 +87,12 @@ class BB:
                 contents = df.read()
                 if contents:
                     {"params": params, "examples": examples} = json.loads(contents)
-                    self._old_params = pickle.loads(params |> decode_bytes)
+                    self._old_params = params
                     self._examples = examples
 
     @property
     def _json_data(self) = {
-        "params": pickle.dumps(self._new_params, -1) |> encode_bytes,
+        "params": self._new_params,
         "examples": self._examples,
     }
 

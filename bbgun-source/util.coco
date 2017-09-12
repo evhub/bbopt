@@ -5,6 +5,7 @@ Utilities for use across all of BBGun.
 # Imports:
 
 import os.path
+from collections.abc import Mapping, Iterable
 
 # Functions:
 
@@ -18,10 +19,23 @@ def norm_path(path) = (
     |> os.path.normcase
 )
 
-def encode_bytes(bytestring) =
-    """Encode bytes for JSON."""
-    ":".join(hex(x)[2:] for x in bytestring |> bytearray)
-
-def decode_bytes(encoded) =
-    """Decode bytes for JSON."""
-    bytearray(int(x, 16) for x in encoded.split(":")) |> bytes
+def json_serialize(obj):
+    if isinstance(obj, (int, float, str)):
+        return obj
+    elif isinstance(obj, bytes):
+        return str(obj, encoding="utf-8")
+    elif isinstance(obj, Mapping):
+        serialized_dict = {}
+        for k, v in obj.items():
+            serialized_k = json_serialize(k)
+            if not isinstance(serialized_k, str):
+                raise TypeError("dict keys must be strings, not %r" % k)
+            serialized_dict[k] = json_serialize(v)
+        return serialized_dict
+    elif isinstance(obj, Iterable):
+        serialized_list = []
+        for x in obj:
+            serialized_list.append(json_serialize(x))
+        return serialized_list
+    else:
+        raise TypeError("invalid JSON object %r" % obj)

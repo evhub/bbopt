@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xe236b22
+# __coconut_hash__ = 0xc2868670
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -26,16 +26,11 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 import json
 import os.path
-if _coconut_sys.version_info < (3,):
-    import cPickle as pickle
-else:
-    import pickle
 
 from bbgun.backends import init_backend
 from bbgun.util import norm_path
 from bbgun.util import is_str
-from bbgun.util import encode_bytes
-from bbgun.util import decode_bytes
+from bbgun.util import json_serialize
 from bbgun.constants import default_backend
 from bbgun.constants import data_file_ext
 
@@ -72,7 +67,8 @@ class BB(_coconut.object):
             raise TypeError("name must be a string")
         if name in self._new_params:
             raise ValueError("parameter of name %r already exists" % name)
-        value = self._backend.param(name, **kwargs)
+        kwargs = (json_serialize)(kwargs)
+        value = (json_serialize)(self._backend.param(name, **kwargs))
         self._new_params[name] = kwargs
         self._current_example["values"][name] = value
         return value
@@ -123,12 +119,12 @@ class BB(_coconut.object):
                         _coconut_match_err.value = _coconut_match_to
                         raise _coconut_match_err
 
-                    self._old_params = pickle.loads((decode_bytes)(params))
+                    self._old_params = params
                     self._examples = examples
 
     @property
     def _json_data(self):
-        return {"params": (encode_bytes)(pickle.dumps(self._new_params, -1)), "examples": self._examples}
+        return {"params": self._new_params, "examples": self._examples}
 
     def _save_examples(self):
         """Save example data."""
