@@ -5,13 +5,14 @@ Does not use existing data, simply spits out random valid values.
 
 # Imports:
 
+import sys
 import random
 from collections.abc import Iterable
 
 # Backend:
 
 class RandomBackend:
-    """RandomBackend chooses random valid values."""
+    """The random backend chooses parameter values randomly."""
 
     def __init__(self, examples):
         pass  # we're choosing randomly, so we ignore the given example data!
@@ -22,7 +23,6 @@ class RandomBackend:
         "randrange": (random.randrange, False),
         "randint": (random.randint, False),
         "choice": (random.choice, True),
-        "choices": (random.choices, False),
         "sample": (random.sample, False),
         "random": (random.random, False),
         "uniform": (random.uniform, False),
@@ -36,6 +36,9 @@ class RandomBackend:
         "paretovariate": (random.paretovariate, False),
         "weibullvariate": (random.weibullvariate, False),
     }
+    if sys.version_info > (3,):
+        random_functions["choices"] = (random.choices, False)
+
     def param(self, name, **kwargs):
         if len(kwargs) != 1:
             raise TypeError("the random backend requires exactly one parameter,"

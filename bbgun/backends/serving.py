@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xdded46a8
+# __coconut_hash__ = 0x72ae78ce
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -25,7 +25,7 @@ _coconut_sys.path.remove(_coconut_file_path)
 # Backend:
 
 class ServingBackend(_coconut.object):
-    """ServingBackend always uses the parameters from the best example."""
+    """The serving backend uses the parameter values from the best example."""
 
     def __init__(self, examples):
         self.serving_params = {}

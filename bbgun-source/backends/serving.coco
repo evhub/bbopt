@@ -5,7 +5,7 @@ The serving backend. Selects the best existing data point.
 # Backend:
 
 class ServingBackend:
-    """ServingBackend always uses the parameters from the best example."""
+    """The serving backend uses the parameter values from the best example."""
 
     def __init__(self, examples):
         self.serving_params = {}

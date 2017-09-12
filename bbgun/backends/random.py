@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x85b60218
+# __coconut_hash__ = 0xe4a9ccc6
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -25,6 +25,7 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 # Imports:
 
+sys = _coconut_sys
 import random
 if _coconut_sys.version_info < (3, 3):
     from collections import Iterable
@@ -34,12 +35,15 @@ else:
 # Backend:
 
 class RandomBackend(_coconut.object):
-    """RandomBackend chooses random valid values."""
+    """The random backend chooses parameter values randomly."""
 
     def __init__(self, examples):
         pass  # we're choosing randomly, so we ignore the given example data!
 
-    random_functions = {"getrandbits": (random.getrandbits, False), "randrange": (random.randrange, False), "randint": (random.randint, False), "choice": (random.choice, True), "choices": (random.choices, False), "sample": (random.sample, False), "random": (random.random, False), "uniform": (random.uniform, False), "triangular": (random.triangular, False), "betavariate": (random.betavariate, False), "expovariate": (random.expovariate, False), "gammavariate": (random.gammavariate, False), "gauss": (random.gauss, False), "lognormvariate": (random.lognormvariate, False), "vonmisesvariate": (random.vonmisesvariate, False), "paretovariate": (random.paretovariate, False), "weibullvariate": (random.weibullvariate, False)}
+    random_functions = {"getrandbits": (random.getrandbits, False), "randrange": (random.randrange, False), "randint": (random.randint, False), "choice": (random.choice, True), "sample": (random.sample, False), "random": (random.random, False), "uniform": (random.uniform, False), "triangular": (random.triangular, False), "betavariate": (random.betavariate, False), "expovariate": (random.expovariate, False), "gammavariate": (random.gammavariate, False), "gauss": (random.gauss, False), "lognormvariate": (random.lognormvariate, False), "vonmisesvariate": (random.vonmisesvariate, False), "paretovariate": (random.paretovariate, False), "weibullvariate": (random.weibullvariate, False)}
+    if sys.version_info > (3,):
+        random_functions["choices"] = (random.choices, False)
+
     def param(self, name, **kwargs):
         if len(kwargs) != 1:
             raise TypeError("the random backend requires exactly one parameter," " <name of the random function to call>=<argument(s) to that function>")
