@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x6b87cb99
+# __coconut_hash__ = 0xc15b678b
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     bb.run(backend="random")
 
 # Let's use some parameters!
-x = bb.param(name="x", choose_from=range(10))
+x = bb.param(name="x", choice=range(10))
 
 # And let's set our goal!
 bb.maximize(x)

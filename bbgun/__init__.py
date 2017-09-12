@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3e286c9
+# __coconut_hash__ = 0x443d2782
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -17,7 +17,7 @@ To use BBGun, just add
 
 to the top of your file, then call
 
-    x = bb.param(name="x", choose_from=range(1, 10))
+    x = bb.param(name="x", <your parameters here>)
 
 for each of the tunable parameters in your model, and finally add
 

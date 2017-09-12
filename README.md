@@ -12,7 +12,7 @@ To use BBGun, just add
 
 to the top of your file, then call
 
-    x = bb.param(name="x", choose_from=range(1, 10))
+    x = bb.param(name="x", <your parameters here>)
 
 for each of the tunable parameters in your model, and finally add
 

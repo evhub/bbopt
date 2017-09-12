@@ -38,7 +38,7 @@ class BB:
         self._params = {}
         self._current_example = {"params": {}}
 
-    def param(self, name, *args, **kwargs):
+    def param(self, name, **kwargs):
         """Create a black box parameter and return its value."""
         if self._current_example is None:
             raise ValueError("param calls must come before maximize/minimize")
@@ -46,7 +46,7 @@ class BB:
             raise TypeError("name must be a string")
         if name in self._params:
             raise ValueError("parameter of name %r already exists" % name)
-        value = self._backend.param(name, *args, **kwargs)
+        value = self._backend.param(name, **kwargs)
         self._current_example["params"][name] = value
         return value
 
@@ -68,9 +68,9 @@ class BB:
         self._current_example["loss"] = value
         self._save_examples()
 
-    def run(self, backend):
+    def run(self, backend, **kwargs):
         """Optimize parameters using the given backend."""
-        self._backend = init_backend(backend, self.examples)
+        self._backend = init_backend(backend, self.examples, **kwargs)
 
     @property
     def _data_file(self) = os.path.splitext(self._file)[0] + data_file_ext

@@ -4,7 +4,7 @@ Backends contains all of BBGun's different backends.
 
 registered_backends = {}
 
-def init_backend(name, examples):
+def init_backend(name, examples, **kwargs):
     """Create a backend object of the given name with the given example data."""
     if name in registered_backends:
         return registered_backends[name]
@@ -14,7 +14,7 @@ def init_backend(name, examples):
         from bbgun.backends.serving import ServingBackend as Backend
     else:
         raise ValueError("unknown backend %r" % name)
-    return Backend(examples)
+    return Backend(examples, **kwargs)
 
 def register_backend(name, backend):
     """Register a new backend under the given name."""

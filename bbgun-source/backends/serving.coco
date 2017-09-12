@@ -27,7 +27,7 @@ class ServingBackend:
             else:
                 raise ValueError("invalid example %r" % example)
 
-    def param(self, name, *args, **kwargs):
+    def param(self, name, **kwargs):
         if name not in self.serving_params:
             raise ValueError("missing data for parameter %r" % name)
         return self.serving_params[name]

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb563af77
+# __coconut_hash__ = 0x85b60218
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -26,6 +26,10 @@ _coconut_sys.path.remove(_coconut_file_path)
 # Imports:
 
 import random
+if _coconut_sys.version_info < (3, 3):
+    from collections import Iterable
+else:
+    from collections.abc import Iterable
 
 # Backend:
 
@@ -35,5 +39,15 @@ class RandomBackend(_coconut.object):
     def __init__(self, examples):
         pass  # we're choosing randomly, so we ignore the given example data!
 
-    def param(self, name, choose_from):
-        return random.choice(choose_from)
+    random_functions = {"getrandbits": (random.getrandbits, False), "randrange": (random.randrange, False), "randint": (random.randint, False), "choice": (random.choice, True), "choices": (random.choices, False), "sample": (random.sample, False), "random": (random.random, False), "uniform": (random.uniform, False), "triangular": (random.triangular, False), "betavariate": (random.betavariate, False), "expovariate": (random.expovariate, False), "gammavariate": (random.gammavariate, False), "gauss": (random.gauss, False), "lognormvariate": (random.lognormvariate, False), "vonmisesvariate": (random.vonmisesvariate, False), "paretovariate": (random.paretovariate, False), "weibullvariate": (random.weibullvariate, False)}
+    def param(self, name, **kwargs):
+        if len(kwargs) != 1:
+            raise TypeError("the random backend requires exactly one parameter," " <name of the random function to call>=<argument(s) to that function>")
+        cmd, args = _coconut_igetitem(kwargs.items(), 0)
+        if cmd not in self.random_functions:
+            raise ValueError("unknown random function %r" % cmd)
+        func, takes_iterable = self.random_functions[cmd]
+        if takes_iterable or not isinstance(args, Iterable):
+            return func(args)
+        else:
+            return func(*args)

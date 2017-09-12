@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf8b73b22
+# __coconut_hash__ = 0xa2f883d3
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -24,7 +24,7 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 registered_backends = {}
 
-def init_backend(name, examples):
+def init_backend(name, examples, **kwargs):
     """Create a backend object of the given name with the given example data."""
     if name in registered_backends:
         return registered_backends[name]
@@ -34,7 +34,7 @@ def init_backend(name, examples):
         from bbgun.backends.serving import ServingBackend as Backend
     else:
         raise ValueError("unknown backend %r" % name)
-    return Backend(examples)
+    return Backend(examples, **kwargs)
 
 def register_backend(name, backend):
     """Register a new backend under the given name."""

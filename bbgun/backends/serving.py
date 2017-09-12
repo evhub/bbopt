@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x18f4c41a
+# __coconut_hash__ = 0xdded46a8
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -65,7 +65,7 @@ class ServingBackend(_coconut.object):
             if not _coconut_match_check:
                 raise ValueError("invalid example %r" % example)
 
-    def param(self, name, *args, **kwargs):
+    def param(self, name, **kwargs):
         if name not in self.serving_params:
             raise ValueError("missing data for parameter %r" % name)
         return self.serving_params[name]

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7bf762a6
+# __coconut_hash__ = 0x140d7b97
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -54,7 +54,7 @@ class BB(_coconut.object):
         self._params = {}
         self._current_example = {"params": {}}
 
-    def param(self, name, *args, **kwargs):
+    def param(self, name, **kwargs):
         """Create a black box parameter and return its value."""
         if self._current_example is None:
             raise ValueError("param calls must come before maximize/minimize")
@@ -62,7 +62,7 @@ class BB(_coconut.object):
             raise TypeError("name must be a string")
         if name in self._params:
             raise ValueError("parameter of name %r already exists" % name)
-        value = self._backend.param(name, *args, **kwargs)
+        value = self._backend.param(name, **kwargs)
         self._current_example["params"][name] = value
         return value
 
@@ -84,9 +84,9 @@ class BB(_coconut.object):
         self._current_example["loss"] = value
         self._save_examples()
 
-    def run(self, backend):
+    def run(self, backend, **kwargs):
         """Optimize parameters using the given backend."""
-        self._backend = init_backend(backend, self.examples)
+        self._backend = init_backend(backend, self.examples, **kwargs)
 
     @property
     def _data_file(self):
