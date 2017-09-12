@@ -32,7 +32,7 @@ test-2: install-2
 
 .PHONY: clean
 clean:
-	rm -rf ./dist ./build
+	rm -rf ./bbgun ./dist ./build
 	find . -name '*.pyc' -delete
 	find . -name '__pycache__' -delete
 
