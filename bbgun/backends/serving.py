@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x8a612d53
+# __coconut_hash__ = 0xff795b92
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -66,6 +66,7 @@ class ServingBackend(_coconut.object):
                 raise ValueError("invalid example %r" % example)
 
     def param(self, name, **kwargs):  # ignore kwargs since we're serving
-        if name not in self.serving_values:
+        try:
+            return self.serving_values[name]
+        except KeyError:
             raise ValueError("missing data for parameter %r" % name)
-        return self.serving_values[name]

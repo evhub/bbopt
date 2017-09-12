@@ -6,13 +6,63 @@ The scikit-optimize backend. Does black box optimization.
 
 from skopt import Optimizer
 
+from bbgun.util import (
+    values_sorted_by_keys,
+    split_examples,
+    replace_values,
+)
+
+# Utilities:
+
+def create_dimension(
+    initial_value=None,  # ignored; used in actual param call
+    bounds=None,
+    prior=None,
+    categories=None,
+):
+    if (bounds, categories) |> map$((is)$(None)) |> sum != 1:
+        raise TypeError("the skopt backend requires exactly one of"
+            " int_in, float_in, or choose_from")
+    if prior is not None and bounds is None:
+        raise TypeError("prior requires bounds")
+    if bounds is not None:
+        if not isinstance(bounds, list):
+            raise ValueError("bounds must be a list")
+        if prior is not None:
+            if not isinstance(prior, str):
+                raise ValueError("prior must be a string")
+            bounds += [prior]
+        return tuple(bounds)
+    if categories is not None:
+        if not isinstance(categories, list):
+            raise ValueError("categories must be a list")
+        return categories
+
 # Backend:
 
 class SkoptBackend:
     """The scikit-optimize backend uses scikit-optimize for black box optimization."""
 
-    def __init__(self, examples, params):
-        pass
+    def __init__(self, examples, params, **kwargs):
+        dimensions = [
+            create_dimension(**param_kwargs)
+            for param_kwargs in values_sorted_by_keys(params)
+        ]
+        data_points, objectives, maximizing = split_examples(examples)
+        if maximizing is None:
+            self.current_values = {}
+        elif not maximizing:
+            optimizer = Optimizer(dimensions, **kwargs)
+            optimizer.tell(data_points, objectives)
+            current_point = optimizer.ask()
+            self.current_values = replace_values(params, current_point)
+        else:
+            raise ValueError("scikit-optimize only supports minimizing, not maximizing")
 
     def param(self, name, **kwargs):
-        pass
+        if name in self.current_values:
+            return self.current_values[name]
+        elif "initial_value" in kwargs:
+            return kwargs["initial_value"]
+        else:
+            raise ValueError("missing data for parameter %r and no initial_value given" % name)

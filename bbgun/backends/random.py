@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xdea9f415
+# __coconut_hash__ = 0x518defbf
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -27,10 +27,6 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 sys = _coconut_sys
 import random
-if _coconut_sys.version_info < (3, 3):
-    from collections import Iterable
-else:
-    from collections.abc import Iterable
 
 # Backend:
 
@@ -51,7 +47,7 @@ class RandomBackend(_coconut.object):
         if cmd not in self.random_functions:
             raise ValueError("unknown random function %r" % cmd)
         func, takes_iterable = self.random_functions[cmd]
-        if takes_iterable or not isinstance(args, Iterable):
+        if takes_iterable or not isinstance(args, list):
             return func(args)
         else:
             return func(*args)

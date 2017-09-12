@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb5458c01
+# __coconut_hash__ = 0x9cbae9ba
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -43,6 +43,7 @@ def norm_path(path):
     return ((os.path.normcase)((os.path.realpath)((os.path.abspath)((os.path.expanduser)(path)))))
 
 def json_serialize(obj):
+    """Serialize obj for encoding in JSON."""
     if isinstance(obj, (int, float, str)):
         return obj
     elif isinstance(obj, bytes):
@@ -62,3 +63,54 @@ def json_serialize(obj):
         return serialized_list
     else:
         raise TypeError("invalid JSON object %r" % obj)
+
+def values_sorted_by_keys(params):
+    """Return an iterator of the dict's values sorted by its keys."""
+    for _, v in sorted(params.items()):
+        yield v
+
+def split_examples(examples):
+    """Split examples into a list of data points, a list of objectives, and whether maximizing (True), minimizing (False), or no data (None)."""
+    data_points, objectives, maximizing = [], [], None
+    for example in examples:
+        _coconut_match_to = example
+        _coconut_match_check = False
+        _coconut_sentinel = _coconut.object()
+        if (_coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping)) and (_coconut.len(_coconut_match_to) == 2):
+            _coconut_match_temp_0 = _coconut_match_to.get("values", _coconut_sentinel)
+            _coconut_match_temp_1 = _coconut_match_to.get("gain", _coconut_sentinel)
+            if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut_match_temp_1 is not _coconut_sentinel):
+                values = _coconut_match_temp_0
+                gain = _coconut_match_temp_1
+                _coconut_match_check = True
+        if _coconut_match_check:
+            if maximizing is False:
+                raise ValueError("cannot have examples with maximize and examples with minimize")
+            maximizing = True
+            data_points.append((values_sorted_by_keys)(values))
+            objectives.append(gain)
+        if not _coconut_match_check:
+            _coconut_sentinel = _coconut.object()
+            if (_coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping)) and (_coconut.len(_coconut_match_to) == 2):
+                _coconut_match_temp_0 = _coconut_match_to.get("values", _coconut_sentinel)
+                _coconut_match_temp_1 = _coconut_match_to.get("loss", _coconut_sentinel)
+                if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut_match_temp_1 is not _coconut_sentinel):
+                    values = _coconut_match_temp_0
+                    loss = _coconut_match_temp_1
+                    _coconut_match_check = True
+            if _coconut_match_check:
+                if maximizing is True:
+                    raise ValueError("cannot have examples with maximize and examples with minimize")
+                maximizing = False
+                data_points.append((values_sorted_by_keys)(values))
+                objectives.append(loss)
+        if not _coconut_match_check:
+            raise ValueError("invalid example %r" % example)
+    return data_points, objectives, maximizing
+
+def replace_values(params, point):
+    """Return a dictionary with the values replaced."""
+    values = {}
+    for i, (k, _) in enumerate(sorted(params.items())):
+        values[k] = point[i]
+    return values

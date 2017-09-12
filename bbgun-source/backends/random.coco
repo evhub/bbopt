@@ -7,7 +7,6 @@ Does not use existing data, simply spits out random valid values.
 
 import sys
 import random
-from collections.abc import Iterable
 
 # Backend:
 
@@ -47,7 +46,7 @@ class RandomBackend:
         if cmd not in self.random_functions:
             raise ValueError("unknown random function %r" % cmd)
         func, takes_iterable = self.random_functions[cmd]
-        if takes_iterable or not isinstance(args, Iterable):
+        if takes_iterable or not isinstance(args, list):
             return func(args)
         else:
             return func(*args)
