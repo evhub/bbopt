@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x140d7b97
+# __coconut_hash__ = 0xe236b22
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -26,10 +26,16 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 import json
 import os.path
+if _coconut_sys.version_info < (3,):
+    import cPickle as pickle
+else:
+    import pickle
 
 from bbgun.backends import init_backend
 from bbgun.util import norm_path
 from bbgun.util import is_str
+from bbgun.util import encode_bytes
+from bbgun.util import decode_bytes
 from bbgun.constants import default_backend
 from bbgun.constants import data_file_ext
 
@@ -50,9 +56,13 @@ class BB(_coconut.object):
     def reset(self):
         """Reset to allow another run."""
         self._load_examples()
-        self._backend = init_backend(default_backend, self.examples)
-        self._params = {}
-        self._current_example = {"params": {}}
+        self.run(default_backend)
+        self._new_params = {}
+        self._current_example = {"values": {}}
+
+    def run(self, backend, **kwargs):
+        """Optimize parameters using the given backend."""
+        self._backend = init_backend(backend, self._examples, self._old_params, **kwargs)
 
     def param(self, name, **kwargs):
         """Create a black box parameter and return its value."""
@@ -60,10 +70,11 @@ class BB(_coconut.object):
             raise ValueError("param calls must come before maximize/minimize")
         if not is_str(name):
             raise TypeError("name must be a string")
-        if name in self._params:
+        if name in self._new_params:
             raise ValueError("parameter of name %r already exists" % name)
         value = self._backend.param(name, **kwargs)
-        self._current_example["params"][name] = value
+        self._new_params[name] = kwargs
+        self._current_example["values"][name] = value
         return value
 
     def maximize(self, value):
@@ -84,30 +95,45 @@ class BB(_coconut.object):
         self._current_example["loss"] = value
         self._save_examples()
 
-    def run(self, backend, **kwargs):
-        """Optimize parameters using the given backend."""
-        self._backend = init_backend(backend, self.examples, **kwargs)
-
     @property
     def _data_file(self):
         return os.path.splitext(self._file)[0] + data_file_ext
 
     def _load_examples(self):
         """Load example data."""
+        self._old_params = None
+        self._examples = []
         if os.path.exists(self._data_file):
             with open(self._data_file, "r") as df:
                 contents = df.read()
                 if contents:
-                    self.examples = json.loads(contents)
-                else:
-                    self.examples = []
-        else:
-            self.examples = []
+                    _coconut_match_check = False
+                    _coconut_match_to = json.loads(contents)
+                    _coconut_sentinel = _coconut.object()
+                    if (_coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping)) and (_coconut.len(_coconut_match_to) == 2):
+                        _coconut_match_temp_0 = _coconut_match_to.get("params", _coconut_sentinel)
+                        _coconut_match_temp_1 = _coconut_match_to.get("examples", _coconut_sentinel)
+                        if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut_match_temp_1 is not _coconut_sentinel):
+                            params = _coconut_match_temp_0
+                            examples = _coconut_match_temp_1
+                            _coconut_match_check = True
+                    if not _coconut_match_check:
+                        _coconut_match_err = _coconut_MatchError("pattern-matching failed for " '\'{"params": params, "examples": examples} = json.loads(contents)\'' " in " + _coconut.repr(_coconut.repr(_coconut_match_to)))
+                        _coconut_match_err.pattern = '{"params": params, "examples": examples} = json.loads(contents)'
+                        _coconut_match_err.value = _coconut_match_to
+                        raise _coconut_match_err
+
+                    self._old_params = pickle.loads((decode_bytes)(params))
+                    self._examples = examples
+
+    @property
+    def _json_data(self):
+        return {"params": (encode_bytes)(pickle.dumps(self._new_params, -1)), "examples": self._examples}
 
     def _save_examples(self):
         """Save example data."""
-        if self._current_example not in self.examples:
-            self.examples.append(self._current_example)
+        if self._current_example not in self._examples:
+            self._examples.append(self._current_example)
         self._current_example = None
         with open(self._data_file, "w+") as df:
-            (df.write)((str)((json.dumps)(self.examples)))
+            (df.write)((str)((json.dumps)(self._json_data)))

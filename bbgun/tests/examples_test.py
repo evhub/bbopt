@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xcabb01a8
+# __coconut_hash__ = 0xdcd7307a
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -19,26 +19,47 @@ _coconut_sys.path.remove(_coconut_file_path)
 # Imports:
 
 import os
+import shutil
+import traceback
 import unittest
+from contextlib import contextmanager
 
 from coconut.command.util import call_output
 
-# Tests:
+# Utilities:
+
+@contextmanager
+def remove_when_done(path):
+    """Removes a path when done."""
+    try:
+        yield
+    finally:
+        try:
+            if os.path.isdir(path):
+                shutil.rmtree(path)
+            elif os.path.isfile(path):
+                os.remove(path)
+        except OSError:
+            traceback.print_exc()
+
+# Constants:
 
 example_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "examples")
 example_file = os.path.join(example_dir, "test_example.py")
 example_data = os.path.join(example_dir, "test_example.bbdata.json")
 
+# Tests:
+
 class TestExamples(unittest.TestCase):
 
     def test_example(self):
-        want_x = -1
-        for _ in range(10):
-            stdout, stderr, retcode = call_output(["python", example_file])
-            stdout, stderr = "".join(stdout), "".join(stderr)
-            assert not retcode and not stderr, stderr
-            want_x = max(int(stdout.strip()), want_x)
-        from bbgun.examples.test_example import x as got_x
-        assert got_x == want_x
-        assert os.path.exists(example_data)
-        os.remove(example_data)
+        with remove_when_done(example_data):
+            want_x = -1
+            for _ in range(10):
+                stdout, stderr, retcode = call_output(["python", example_file])
+                stdout, stderr = "".join(stdout), "".join(stderr)
+                assert not retcode and not stderr, stderr
+                want_x = max(int(stdout.strip()), want_x)
+            from bbgun.examples.test_example import x as got_x
+            assert got_x == want_x
+            assert os.path.exists(example_data)

@@ -7,27 +7,27 @@ The serving backend. Selects the best existing data point.
 class ServingBackend:
     """The serving backend uses the parameter values from the best example."""
 
-    def __init__(self, examples):
-        self.serving_params = {}
+    def __init__(self, examples, params):  # ignore params since we're serving
+        self.serving_values = {}
         max_gain, min_loss = None, None
         for example in examples:
             case example:
-                match {"params": params, "gain": gain}:
+                match {"values": values, "gain": gain}:
                     if min_loss is not None:
                         raise ValueError("cannot have examples with maximize and examples with minimize")
                     if max_gain is None or gain >= max_gain:
-                        self.serving_params = params
+                        self.serving_values = values
                         max_gain = gain
-                match {"params": params, "loss": loss}:
+                match {"values": values, "loss": loss}:
                     if max_gain is not None:
                         raise ValueError("cannot have examples with maximize and examples with minimize")
                     if min_loss is None or loss <= min_loss:
-                        self.serving_params = params
+                        self.serving_values = values
                         min_loss = loss
             else:
                 raise ValueError("invalid example %r" % example)
 
-    def param(self, name, **kwargs):
-        if name not in self.serving_params:
+    def param(self, name, **kwargs):  # ignore kwargs since we're serving
+        if name not in self.serving_values:
             raise ValueError("missing data for parameter %r" % name)
-        return self.serving_params[name]
+        return self.serving_values[name]

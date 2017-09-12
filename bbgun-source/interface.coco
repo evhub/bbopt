@@ -6,11 +6,14 @@ The interface into BBGun for a file with black-box parameters.
 
 import json
 import os.path
+import pickle
 
 from bbgun.backends import init_backend
 from bbgun.util import (
     norm_path,
     is_str,
+    encode_bytes,
+    decode_bytes,
 )
 from bbgun.constants import (
     default_backend,
@@ -34,9 +37,13 @@ class BB:
     def reset(self):
         """Reset to allow another run."""
         self._load_examples()
-        self._backend = init_backend(default_backend, self.examples)
-        self._params = {}
-        self._current_example = {"params": {}}
+        self.run(default_backend)
+        self._new_params = {}
+        self._current_example = {"values": {}}
+
+    def run(self, backend, **kwargs):
+        """Optimize parameters using the given backend."""
+        self._backend = init_backend(backend, self._examples, self._old_params, **kwargs)
 
     def param(self, name, **kwargs):
         """Create a black box parameter and return its value."""
@@ -44,10 +51,11 @@ class BB:
             raise ValueError("param calls must come before maximize/minimize")
         if not is_str(name):
             raise TypeError("name must be a string")
-        if name in self._params:
+        if name in self._new_params:
             raise ValueError("parameter of name %r already exists" % name)
         value = self._backend.param(name, **kwargs)
-        self._current_example["params"][name] = value
+        self._new_params[name] = kwargs
+        self._current_example["values"][name] = value
         return value
 
     def maximize(self, value):
@@ -68,29 +76,31 @@ class BB:
         self._current_example["loss"] = value
         self._save_examples()
 
-    def run(self, backend, **kwargs):
-        """Optimize parameters using the given backend."""
-        self._backend = init_backend(backend, self.examples, **kwargs)
-
     @property
     def _data_file(self) = os.path.splitext(self._file)[0] + data_file_ext
 
     def _load_examples(self):
         """Load example data."""
+        self._old_params = None
+        self._examples = []
         if os.path.exists(self._data_file):
             with open(self._data_file, "r") as df:
                 contents = df.read()
                 if contents:
-                    self.examples = json.loads(contents)
-                else:
-                    self.examples = []
-        else:
-            self.examples = []
+                    {"params": params, "examples": examples} = json.loads(contents)
+                    self._old_params = pickle.loads(params |> decode_bytes)
+                    self._examples = examples
+
+    @property
+    def _json_data(self) = {
+        "params": pickle.dumps(self._new_params, -1) |> encode_bytes,
+        "examples": self._examples,
+    }
 
     def _save_examples(self):
         """Save example data."""
-        if self._current_example not in self.examples:
-            self.examples.append(self._current_example)
+        if self._current_example not in self._examples:
+            self._examples.append(self._current_example)
         self._current_example = None
         with open(self._data_file, "w+") as df:
-            self.examples |> json.dumps |> str |> df.write
+            self._json_data |> json.dumps |> str |> df.write

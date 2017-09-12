@@ -1,0 +1,18 @@
+"""
+The scikit-optimize backend. Does black box optimization.
+"""
+
+# Imports:
+
+from skopt import Optimizer
+
+# Backend:
+
+class SkoptBackend:
+    """The scikit-optimize backend uses scikit-optimize for black box optimization."""
+
+    def __init__(self, examples, params):
+        pass
+
+    def param(self, name, **kwargs):
+        pass

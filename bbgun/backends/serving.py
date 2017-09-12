@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x72ae78ce
+# __coconut_hash__ = 0x8a612d53
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -27,45 +27,45 @@ _coconut_sys.path.remove(_coconut_file_path)
 class ServingBackend(_coconut.object):
     """The serving backend uses the parameter values from the best example."""
 
-    def __init__(self, examples):
-        self.serving_params = {}
+    def __init__(self, examples, params):  # ignore params since we're serving
+        self.serving_values = {}
         max_gain, min_loss = None, None
         for example in examples:
             _coconut_match_to = example
             _coconut_match_check = False
             _coconut_sentinel = _coconut.object()
             if (_coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping)) and (_coconut.len(_coconut_match_to) == 2):
-                _coconut_match_temp_0 = _coconut_match_to.get("params", _coconut_sentinel)
+                _coconut_match_temp_0 = _coconut_match_to.get("values", _coconut_sentinel)
                 _coconut_match_temp_1 = _coconut_match_to.get("gain", _coconut_sentinel)
                 if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut_match_temp_1 is not _coconut_sentinel):
-                    params = _coconut_match_temp_0
+                    values = _coconut_match_temp_0
                     gain = _coconut_match_temp_1
                     _coconut_match_check = True
             if _coconut_match_check:
                 if min_loss is not None:
                     raise ValueError("cannot have examples with maximize and examples with minimize")
                 if max_gain is None or gain >= max_gain:
-                    self.serving_params = params
+                    self.serving_values = values
                     max_gain = gain
             if not _coconut_match_check:
                 _coconut_sentinel = _coconut.object()
                 if (_coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping)) and (_coconut.len(_coconut_match_to) == 2):
-                    _coconut_match_temp_0 = _coconut_match_to.get("params", _coconut_sentinel)
+                    _coconut_match_temp_0 = _coconut_match_to.get("values", _coconut_sentinel)
                     _coconut_match_temp_1 = _coconut_match_to.get("loss", _coconut_sentinel)
                     if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut_match_temp_1 is not _coconut_sentinel):
-                        params = _coconut_match_temp_0
+                        values = _coconut_match_temp_0
                         loss = _coconut_match_temp_1
                         _coconut_match_check = True
                 if _coconut_match_check:
                     if max_gain is not None:
                         raise ValueError("cannot have examples with maximize and examples with minimize")
                     if min_loss is None or loss <= min_loss:
-                        self.serving_params = params
+                        self.serving_values = values
                         min_loss = loss
             if not _coconut_match_check:
                 raise ValueError("invalid example %r" % example)
 
-    def param(self, name, **kwargs):
-        if name not in self.serving_params:
+    def param(self, name, **kwargs):  # ignore kwargs since we're serving
+        if name not in self.serving_values:
             raise ValueError("missing data for parameter %r" % name)
-        return self.serving_params[name]
+        return self.serving_values[name]

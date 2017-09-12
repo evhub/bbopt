@@ -14,8 +14,8 @@ from collections.abc import Iterable
 class RandomBackend:
     """The random backend chooses parameter values randomly."""
 
-    def __init__(self, examples):
-        pass  # we're choosing randomly, so we ignore the given example data!
+    def __init__(self, examples, params):
+        pass  # we're choosing randomly, so we ignore everything
 
     random_functions = {
         # name: (func, takes_iterable)

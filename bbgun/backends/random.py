@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xe4a9ccc6
+# __coconut_hash__ = 0xdea9f415
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -37,8 +37,8 @@ else:
 class RandomBackend(_coconut.object):
     """The random backend chooses parameter values randomly."""
 
-    def __init__(self, examples):
-        pass  # we're choosing randomly, so we ignore the given example data!
+    def __init__(self, examples, params):
+        pass  # we're choosing randomly, so we ignore everything
 
     random_functions = {"getrandbits": (random.getrandbits, False), "randrange": (random.randrange, False), "randint": (random.randint, False), "choice": (random.choice, True), "sample": (random.sample, False), "random": (random.random, False), "uniform": (random.uniform, False), "triangular": (random.triangular, False), "betavariate": (random.betavariate, False), "expovariate": (random.expovariate, False), "gammavariate": (random.gammavariate, False), "gauss": (random.gauss, False), "lognormvariate": (random.lognormvariate, False), "vonmisesvariate": (random.vonmisesvariate, False), "paretovariate": (random.paretovariate, False), "weibullvariate": (random.weibullvariate, False)}
     if sys.version_info > (3,):

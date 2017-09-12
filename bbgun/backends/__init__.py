@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa2f883d3
+# __coconut_hash__ = 0xa0acca2b
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -24,17 +24,19 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 registered_backends = {}
 
-def init_backend(name, examples, **kwargs):
+def init_backend(name, examples, params, **kwargs):
     """Create a backend object of the given name with the given example data."""
     if name in registered_backends:
         return registered_backends[name]
-    elif name == "random":
-        from bbgun.backends.random import RandomBackend as Backend
     elif name == "serving":
         from bbgun.backends.serving import ServingBackend as Backend
+    elif name == "random":
+        from bbgun.backends.random import RandomBackend as Backend
+    elif name == "scikit-optimize":
+        from bbgun.backends.skopt import SkoptBackend as Backend
     else:
         raise ValueError("unknown backend %r" % name)
-    return Backend(examples, **kwargs)
+    return Backend(examples, params, **kwargs)
 
 def register_backend(name, backend):
     """Register a new backend under the given name."""

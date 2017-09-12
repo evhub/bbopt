@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x23a4b462
+# __coconut_hash__ = 0x72f9b829
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
 """
-Utilities for use across all of BBGun.
+The scikit-optimize backend. Does black box optimization.
 """
 
 # Coconut Header: -------------------------------------------------------------
@@ -24,20 +24,15 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 # Imports:
 
-import os.path
+from skopt import Optimizer
 
-# Functions:
+# Backend:
 
-def is_str(obj):
-    return isinstance(obj, (str, py_str))
+class SkoptBackend(_coconut.object):
+    """The scikit-optimize backend uses scikit-optimize for black box optimization."""
 
-def norm_path(path):
-    return ((os.path.normcase)((os.path.realpath)((os.path.abspath)((os.path.expanduser)(path)))))
+    def __init__(self, examples, params):
+        pass
 
-def encode_bytes(bytestring):
-    """Encode bytes for JSON."""
-    return ":".join((hex(x)[2:] for x in (bytearray)(bytestring)))
-
-def decode_bytes(encoded):
-    """Decode bytes for JSON."""
-    return (bytes)(bytearray((int(x, 16) for x in encoded.split(":"))))
+    def param(self, name, **kwargs):
+        pass

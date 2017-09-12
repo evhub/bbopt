@@ -17,3 +17,11 @@ def norm_path(path) = (
     |> os.path.realpath
     |> os.path.normcase
 )
+
+def encode_bytes(bytestring) =
+    """Encode bytes for JSON."""
+    ":".join(hex(x)[2:] for x in bytestring |> bytearray)
+
+def decode_bytes(encoded) =
+    """Decode bytes for JSON."""
+    bytearray(int(x, 16) for x in encoded.split(":")) |> bytes
