@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x460673f
+# __coconut_hash__ = 0xdd1a2b28
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -25,46 +25,47 @@ _coconut_sys.path.remove(_coconut_file_path)
 # Imports:
 
 from skopt import Optimizer
+from skopt.learning import GaussianProcessRegressor
 
+from bbgun.backends.random import RandomBackend
 from bbgun.util import values_sorted_by_keys
 from bbgun.util import split_examples
 from bbgun.util import replace_values
 
 # Utilities:
 
-def create_dimension(initial_value=None, bounds=None, prior=None, categories=None,):
-    if (sum)(map(_coconut.functools.partial(_coconut.operator.is_, None), (bounds, categories))) != 1:
-        raise TypeError("the skopt backend requires exactly one of" " int_in, float_in, or choose_from")
-    if prior is not None and bounds is None:
-        raise TypeError("prior requires bounds")
-    if bounds is not None:
-        if not isinstance(bounds, list):
-            raise ValueError("bounds must be a list")
-        if prior is not None:
-            if not isinstance(prior, str):
-                raise ValueError("prior must be a string")
-            bounds += [prior]
+def create_dimension(initial_value=None, randint=None, uniform=None, choice=None,):
+    if (sum)(map(_coconut_forward_compose(_coconut.functools.partial(_coconut.operator.is_, None), _coconut.operator.not_), (randint, uniform, choice))) != 1:
+        raise TypeError("the skopt backend requires exactly one of" " randint, uniform, or choice")
+    if choice is not None:
+        if not isinstance(choice, list):
+            raise ValueError("choice must be a list")
+        return choice
+    if randint is not None:
+        if not isinstance(randint, list) or len(randint) != 2:
+            raise ValueError("randint must be a list of length 2")
+        return (tuple)(map(int, randint))
+    if uniform is not None:
+        if not isinstance(uniform, list) or len(uniform) != 2:
+            raise ValueError("uniform must be a list of length 2")
+        bounds = (list)(map(float, uniform))
         return tuple(bounds)
-    if categories is not None:
-        if not isinstance(categories, list):
-            raise ValueError("categories must be a list")
-        return categories
 
 # Backend:
 
 class SkoptBackend(_coconut.object):
     """The scikit-optimize backend uses scikit-optimize for black box optimization."""
 
-    def __init__(self, examples, params, **kwargs):
+    def __init__(self, examples, params, base_estimator=GaussianProcessRegressor, **kwargs):
         dimensions = [create_dimension(**param_kwargs) for param_kwargs in values_sorted_by_keys(params)]
-        data_points, objectives, maximizing = split_examples(examples)
-        if maximizing is None:
-            self.current_values = {}
-        elif not maximizing:
-            optimizer = Optimizer(dimensions, **kwargs)
+        data_points, objectives, minimizing = split_examples(examples)
+        if minimizing:
+            optimizer = Optimizer(dimensions, base_estimator, **kwargs)
             optimizer.tell(data_points, objectives)
             current_point = optimizer.ask()
             self.current_values = replace_values(params, current_point)
+        elif minimizing is None:
+            self.current_values = {}
         else:
             raise ValueError("scikit-optimize only supports minimizing, not maximizing")
 
@@ -74,4 +75,4 @@ class SkoptBackend(_coconut.object):
         elif "initial_value" in kwargs:
             return kwargs["initial_value"]
         else:
-            raise ValueError("missing data for parameter %r and no initial_value given" % name)
+            return RandomBackend().param(**kwargs)

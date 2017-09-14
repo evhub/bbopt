@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc2868670
+# __coconut_hash__ = 0xe6da6e5e
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -97,7 +97,7 @@ class BB(_coconut.object):
 
     def _load_examples(self):
         """Load example data."""
-        self._old_params = None
+        self._old_params = {}
         self._examples = []
         if os.path.exists(self._data_file):
             with open(self._data_file, "r") as df:

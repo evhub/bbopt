@@ -1,12 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xabf49bb6
+# __coconut_hash__ = 0x1b491129
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
-
-"""
-Constants for use across all of BBGun.
-"""
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -20,21 +16,20 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 # Compiled Coconut: -----------------------------------------------------------
 
+# BBGun boilerplate:
+from bbgun import BB
+bb = BB(file=__file__)
+if __name__ == "__main__":
+    bb.run(backend="scikit-optimize")
 
+# Let's use some parameters!
+x0 = bb.param(name="x0", randint=(1, 10), initial_value=5)
+x1 = bb.param(name="x1", uniform=(0, 1))
 
-# Installation constants:
+# And let's set our goal!
+y = x0 + x1
+bb.minimize(y)
 
-name = "bbgun"
-version = "0.1.0"
-description = "Black box optimization made simple."
-github_url = "https://github.com/evhub/bbgun"
-author = "Evan Hubinger"
-author_email = "evanjhub@gmail.com"
-classifiers = ("Development Status :: 3 - Alpha", "License :: OSI Approved :: Apache Software License", "Topic :: Software Development :: Libraries :: Python Modules", "Operating System :: OS Independent",)
-requirements = ()
-extra_requirements = {"scikit-optimize": ("scikit-optimize",)}
-
-# Interface constants:
-
-default_backend = "serving"
-data_file_ext = ".bbdata.json"
+# Finally, we'll print out the value we used for debugging purposes.
+if __name__ == "__main__":
+    print(repr(y))

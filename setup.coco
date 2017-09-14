@@ -13,6 +13,7 @@ from bbgun.constants import (
     author_email,
     requirements,
     classifiers,
+    extra_requirements,
 )
 
 setuptools.setup(
@@ -22,7 +23,8 @@ setuptools.setup(
     url=github_url,
     author=author,
     author_email=author_email,
-    install_requires=requirements |> list,
     classifiers=classifiers |> list,
     packages=setuptools.find_packages(),
+    install_requires=requirements |> list,
+    extras_require=extra_requirements |> fmap$((k, v) -> (k, list(v))),
 )

@@ -80,7 +80,7 @@ class BB:
 
     def _load_examples(self):
         """Load example data."""
-        self._old_params = None
+        self._old_params = {}
         self._examples = []
         if os.path.exists(self._data_file):
             with open(self._data_file, "r") as df:

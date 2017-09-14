@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x9cbae9ba
+# __coconut_hash__ = 0x73f9f692
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -44,11 +44,11 @@ def norm_path(path):
 
 def json_serialize(obj):
     """Serialize obj for encoding in JSON."""
-    if isinstance(obj, (int, float, str)):
+    if obj is None or isinstance(obj, (bool, int, float, str)):
         return obj
-    elif isinstance(obj, bytes):
+    if isinstance(obj, bytes):
         return str(obj, encoding="utf-8")
-    elif isinstance(obj, Mapping):
+    if isinstance(obj, Mapping):
         serialized_dict = {}
         for k, v in obj.items():
             serialized_k = json_serialize(k)
@@ -56,13 +56,20 @@ def json_serialize(obj):
                 raise TypeError("dict keys must be strings, not %r" % k)
             serialized_dict[k] = json_serialize(v)
         return serialized_dict
-    elif isinstance(obj, Iterable):
+    if isinstance(obj, Iterable):
         serialized_list = []
         for x in obj:
             serialized_list.append(json_serialize(x))
         return serialized_list
-    else:
-        raise TypeError("invalid JSON object %r" % obj)
+    if type(obj).__module__ == "numpy":
+        import numpy as np
+        if np.issubdtype(obj, int):
+            return int(obj)
+        if np.issubdtype(obj, float):
+            return float(obj)
+        if np.issubdtype(obj, bool):
+            return bool(obj)
+    raise TypeError("invalid JSON object %r" % obj)
 
 def values_sorted_by_keys(params):
     """Return an iterator of the dict's values sorted by its keys."""
@@ -70,8 +77,8 @@ def values_sorted_by_keys(params):
         yield v
 
 def split_examples(examples):
-    """Split examples into a list of data points, a list of objectives, and whether maximizing (True), minimizing (False), or no data (None)."""
-    data_points, objectives, maximizing = [], [], None
+    """Split examples into a list of data points, a list of objectives, and whether minimizing (True), maximizing (False), or no data (None)."""
+    data_points, objectives, minimizing = [], [], None
     for example in examples:
         _coconut_match_to = example
         _coconut_match_check = False
@@ -84,9 +91,9 @@ def split_examples(examples):
                 gain = _coconut_match_temp_1
                 _coconut_match_check = True
         if _coconut_match_check:
-            if maximizing is False:
+            if minimizing is True:
                 raise ValueError("cannot have examples with maximize and examples with minimize")
-            maximizing = True
+            minimizing = False
             data_points.append((values_sorted_by_keys)(values))
             objectives.append(gain)
         if not _coconut_match_check:
@@ -99,14 +106,14 @@ def split_examples(examples):
                     loss = _coconut_match_temp_1
                     _coconut_match_check = True
             if _coconut_match_check:
-                if maximizing is True:
+                if minimizing is False:
                     raise ValueError("cannot have examples with maximize and examples with minimize")
-                maximizing = False
+                minimizing = True
                 data_points.append((values_sorted_by_keys)(values))
                 objectives.append(loss)
         if not _coconut_match_check:
             raise ValueError("invalid example %r" % example)
-    return data_points, objectives, maximizing
+    return data_points, objectives, minimizing
 
 def replace_values(params, point):
     """Return a dictionary with the values replaced."""

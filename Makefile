@@ -1,10 +1,10 @@
 .PHONY: install
 install: build
-	pip install --upgrade -e .
+	pip install --upgrade -e .[scikit-optimize]
 
 .PHONY: install-2
 install-2: build
-	python2 -m pip install --upgrade -e .
+	python2 -m pip install --upgrade -e .[scikit-optimize]
 
 .PHONY: build
 build:

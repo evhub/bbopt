@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x2232ef96
+# __coconut_hash__ = 0xcf2adde5
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -486,7 +486,7 @@ def recursive_iterator(func):
             hash(key)
         except _coconut.Exception:
             try:
-                key = _coconut.pickle.dumps(key, _coconut.pickle.HIGHEST_PROTOCOL)
+                key = _coconut.pickle.dumps(key, -1)
             except _coconut.Exception:
                 use_backup = True
         if use_backup:
@@ -620,5 +620,6 @@ from bbgun.constants import author
 from bbgun.constants import author_email
 from bbgun.constants import requirements
 from bbgun.constants import classifiers
+from bbgun.constants import extra_requirements
 
-setuptools.setup(name=name, version=version, description=description, url=github_url, author=author, author_email=author_email, install_requires=(list)(requirements), classifiers=(list)(classifiers), packages=setuptools.find_packages())
+setuptools.setup(name=name, version=version, description=description, url=github_url, author=author, author_email=author_email, classifiers=(list)(classifiers), packages=setuptools.find_packages(), install_requires=(list)(requirements), extras_require=fmap(lambda k, v: (k, list(v)), extra_requirements))

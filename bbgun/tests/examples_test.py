@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xdc77a10
+# __coconut_hash__ = 0x75b2684d
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -42,25 +42,46 @@ def remove_when_done(path):
         except OSError:
             traceback.print_exc()
 
+def call_test(args):
+    """Call args on the command line for a test."""
+    stdout, stderr, retcode = call_output(args)
+    stdout, stderr = "".join(stdout), "".join(stderr)
+    (print)((stdout + stderr).strip())
+    assert not retcode and not stderr, stderr
+    return stdout
+
 # Constants:
 
 example_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "examples")
 
-random_file = os.path.join(example_dir, "test_random.py")
-random_data = os.path.join(example_dir, "test_random.bbdata.json")
+random_file = os.path.join(example_dir, "random_example.py")
+random_data = os.path.join(example_dir, "random_example.bbdata.json")
+
+skopt_file = os.path.join(example_dir, "skopt_example.py")
+skopt_data = os.path.join(example_dir, "skopt_example.bbdata.json")
 
 # Tests:
 
 class TestExamples(unittest.TestCase):
 
     def test_random(self):
+        print("\ntest_random:")
         with remove_when_done(random_data):
             want_x = -1
             for _ in range(10):
-                stdout, stderr, retcode = call_output(["python", random_file])
-                stdout, stderr = "".join(stdout), "".join(stderr)
-                assert not retcode and not stderr, stderr
+                stdout = call_test(["python", random_file])
                 want_x = max(int(stdout.strip()), want_x)
-            from bbgun.examples.test_random import x as got_x
-            assert got_x == want_x
             assert os.path.exists(random_data)
+            from bbgun.examples.random_example import x as got_x
+            assert got_x == want_x
+
+    def test_skopt(self):
+        print("\ntest_skopt:")
+        with remove_when_done(skopt_data):
+            want_y = float("inf")
+            for _ in range(10):
+                stdout = call_test(["python", skopt_file])
+                want_y = min(float(stdout.strip()), want_y)
+            assert os.path.exists(skopt_data)
+            from bbgun.examples.skopt_example import y as got_y
+            assert got_y == want_y
