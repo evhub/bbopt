@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x73f9f692
+# __coconut_hash__ = 0x6074e027
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -94,7 +94,7 @@ def split_examples(examples):
             if minimizing is True:
                 raise ValueError("cannot have examples with maximize and examples with minimize")
             minimizing = False
-            data_points.append((values_sorted_by_keys)(values))
+            data_points.append((list)((values_sorted_by_keys)(values)))
             objectives.append(gain)
         if not _coconut_match_check:
             _coconut_sentinel = _coconut.object()
@@ -109,7 +109,7 @@ def split_examples(examples):
                 if minimizing is False:
                     raise ValueError("cannot have examples with maximize and examples with minimize")
                 minimizing = True
-                data_points.append((values_sorted_by_keys)(values))
+                data_points.append((list)((values_sorted_by_keys)(values)))
                 objectives.append(loss)
         if not _coconut_match_check:
             raise ValueError("invalid example %r" % example)

@@ -63,13 +63,13 @@ def split_examples(examples):
                 if minimizing is True:
                     raise ValueError("cannot have examples with maximize and examples with minimize")
                 minimizing = False
-                data_points.append(values |> values_sorted_by_keys)
+                data_points.append(values |> values_sorted_by_keys |> list)
                 objectives.append(gain)
             match {"values": values, "loss": loss}:
                 if minimizing is False:
                     raise ValueError("cannot have examples with maximize and examples with minimize")
                 minimizing = True
-                data_points.append(values |> values_sorted_by_keys)
+                data_points.append(values |> values_sorted_by_keys |> list)
                 objectives.append(loss)
         else:
             raise ValueError("invalid example %r" % example)
