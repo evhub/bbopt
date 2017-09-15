@@ -17,7 +17,7 @@ from bbgun.util import (
 # Utilities:
 
 def create_dimension(
-    initial_value=None,  # ignored; used in actual param call
+    guess=None,  # ignored; used in actual param call
     randint=None,
     uniform=None,
     choice=None,
@@ -36,8 +36,7 @@ def create_dimension(
     if uniform is not None:
         if not isinstance(uniform, list) or len(uniform) != 2:
             raise ValueError("uniform must be a list of length 2")
-        bounds = uniform |> map$(float) |> list
-        return tuple(bounds)
+        return uniform |> map$(float) |> tuple
 
 # Backend:
 
@@ -63,7 +62,7 @@ class SkoptBackend:
     def param(self, name, **kwargs):
         if name in self.current_values:
             return self.current_values[name]
-        elif "initial_value" in kwargs:
-            return kwargs["initial_value"]
+        elif "guess" in kwargs:
+            return kwargs["guess"]
         else:
             return RandomBackend().param(**kwargs)

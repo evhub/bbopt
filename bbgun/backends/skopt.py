@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xdd1a2b28
+# __coconut_hash__ = 0xf3582d91
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -34,7 +34,7 @@ from bbgun.util import replace_values
 
 # Utilities:
 
-def create_dimension(initial_value=None, randint=None, uniform=None, choice=None,):
+def create_dimension(guess=None, randint=None, uniform=None, choice=None,):
     if (sum)(map(_coconut_forward_compose(_coconut.functools.partial(_coconut.operator.is_, None), _coconut.operator.not_), (randint, uniform, choice))) != 1:
         raise TypeError("the skopt backend requires exactly one of" " randint, uniform, or choice")
     if choice is not None:
@@ -48,8 +48,7 @@ def create_dimension(initial_value=None, randint=None, uniform=None, choice=None
     if uniform is not None:
         if not isinstance(uniform, list) or len(uniform) != 2:
             raise ValueError("uniform must be a list of length 2")
-        bounds = (list)(map(float, uniform))
-        return tuple(bounds)
+        return (tuple)(map(float, uniform))
 
 # Backend:
 
@@ -72,7 +71,7 @@ class SkoptBackend(_coconut.object):
     def param(self, name, **kwargs):
         if name in self.current_values:
             return self.current_values[name]
-        elif "initial_value" in kwargs:
-            return kwargs["initial_value"]
+        elif "guess" in kwargs:
+            return kwargs["guess"]
         else:
             return RandomBackend().param(**kwargs)
