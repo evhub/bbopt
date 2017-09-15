@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x75b2684d
+# __coconut_hash__ = 0xa19060f0
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -72,7 +72,7 @@ class TestExamples(unittest.TestCase):
                 stdout = call_test(["python", random_file])
                 want_x = max(int(stdout.strip()), want_x)
             assert os.path.exists(random_data)
-            from bbgun.examples.random_example import x as got_x
+            from roe.examples.random_example import x as got_x
             assert got_x == want_x
 
     def test_skopt(self):
@@ -83,5 +83,5 @@ class TestExamples(unittest.TestCase):
                 stdout = call_test(["python", skopt_file])
                 want_y = min(float(stdout.strip()), want_y)
             assert os.path.exists(skopt_data)
-            from bbgun.examples.skopt_example import y as got_y
+            from roe.examples.skopt_example import y as got_y
             assert got_y == want_y

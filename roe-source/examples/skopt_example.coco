@@ -1,6 +1,6 @@
-# BBGun boilerplate:
-from bbgun import BB
-bb = BB(file=__file__)
+# Roe boilerplate:
+from roe import BlackBox
+bb = BlackBox(file=__file__)
 if __name__ == "__main__":
     bb.run(backend="scikit-optimize")
 

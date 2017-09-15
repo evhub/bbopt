@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf3582d91
+# __coconut_hash__ = 0x4cf3d887
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -27,10 +27,10 @@ _coconut_sys.path.remove(_coconut_file_path)
 from skopt import Optimizer
 from skopt.learning import GaussianProcessRegressor
 
-from bbgun.backends.random import RandomBackend
-from bbgun.util import values_sorted_by_keys
-from bbgun.util import split_examples
-from bbgun.util import replace_values
+from roe.backends.random import RandomBackend
+from roe.util import values_sorted_by_keys
+from roe.util import split_examples
+from roe.util import replace_values
 
 # Utilities:
 

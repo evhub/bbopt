@@ -2,7 +2,7 @@
 
 import unittest
 
-from bbgun import constants
+from roe import constants
 
 # Utilities:
 

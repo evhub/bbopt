@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xe6da6e5e
+# __coconut_hash__ = 0xa84c1b12
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
 """
-The interface into BBGun for a file with black-box parameters.
+The interface into roe for a file with black-box parameters.
 """
 
 # Coconut Header: -------------------------------------------------------------
@@ -27,24 +27,24 @@ _coconut_sys.path.remove(_coconut_file_path)
 import json
 import os.path
 
-from bbgun.backends import init_backend
-from bbgun.util import norm_path
-from bbgun.util import is_str
-from bbgun.util import json_serialize
-from bbgun.constants import default_backend
-from bbgun.constants import data_file_ext
+from roe.backends import init_backend
+from roe.util import norm_path
+from roe.util import is_str
+from roe.util import json_serialize
+from roe.constants import default_backend
+from roe.constants import data_file_ext
 
 # Interface:
 
-class BB(_coconut.object):
-    _bbs_by_file = {}  # all BB instances by file
+class BlackBox(_coconut.object):
+    _bbs_by_file = {}  # all BlackBox instances by file
 
     def __init__(self, file):
         if not is_str(file):
             raise TypeError("file must be a string")
         self._file = norm_path(file)
         if self._file in self._bbs_by_file:
-            raise ValueError("BB instance for file %r already exists" % self.file)
+            raise ValueError("BlackBox instance for file %r already exists" % self.file)
         self._bbs_by_file[self._file] = self
         self.reset()
 

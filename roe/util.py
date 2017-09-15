@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x6074e027
+# __coconut_hash__ = 0x87f0c2e5
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
 """
-Utilities for use across all of BBGun.
+Utilities for use across all of roe.
 """
 
 # Coconut Header: -------------------------------------------------------------

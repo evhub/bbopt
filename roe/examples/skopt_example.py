@@ -1,12 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa0acca2b
+# __coconut_hash__ = 0xb394b34d
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
-
-"""
-Backends contains all of BBGun's different backends.
-"""
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -20,24 +16,20 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 # Compiled Coconut: -----------------------------------------------------------
 
+# Roe boilerplate:
+from roe import BlackBox
+bb = BlackBox(file=__file__)
+if __name__ == "__main__":
+    bb.run(backend="scikit-optimize")
 
+# Let's use some parameters!
+x0 = bb.param(name="x0", randint=(1, 10), guess=5)
+x1 = bb.param(name="x1", uniform=(0, 1))
 
-registered_backends = {}
+# And let's set our goal!
+y = x0 + x1
+bb.minimize(y)
 
-def init_backend(name, examples, params, **kwargs):
-    """Create a backend object of the given name with the given example data."""
-    if name in registered_backends:
-        return registered_backends[name]
-    elif name == "serving":
-        from bbgun.backends.serving import ServingBackend as Backend
-    elif name == "random":
-        from bbgun.backends.random import RandomBackend as Backend
-    elif name == "scikit-optimize":
-        from bbgun.backends.skopt import SkoptBackend as Backend
-    else:
-        raise ValueError("unknown backend %r" % name)
-    return Backend(examples, params, **kwargs)
-
-def register_backend(name, backend):
-    """Register a new backend under the given name."""
-    registered_backends[name] = backend
+# Finally, we'll print out the value we used for debugging purposes.
+if __name__ == "__main__":
+    print(repr(y))

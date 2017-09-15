@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xac0deb93
+# __coconut_hash__ = 0xfd3d042f
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
+
+"""
+Constants for use across all of roe.
+"""
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -16,39 +20,21 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 # Compiled Coconut: -----------------------------------------------------------
 
-# Imports:
-
-import unittest
-
-from bbgun import constants
-
-# Utilities:
-
-def is_hashable(obj):
-    """Determine if obj is hashable."""
-    try:
-        hash(obj)
-    except Exception:
-        return False
-    else:
-        return True
 
 
-def assert_hashable_or_dict(name, obj):
-    """Assert obj is hashable, or for dicts apply recursively to values."""
-    if isinstance(obj, dict):
-        for val in obj.values():
-            assert_hashable_or_dict(name, val)
-    else:
-        assert is_hashable(obj), "Constant " + name + " contains unhashable values"
+# Installation constants:
 
-# Tests:
+name = "roe"
+version = "0.1.0"
+description = "Black box optimization made simple."
+github_url = "https://github.com/evhub/roe"
+author = "Evan Hubinger"
+author_email = "evanjhub@gmail.com"
+classifiers = ("Development Status :: 3 - Alpha", "License :: OSI Approved :: Apache Software License", "Topic :: Software Development :: Libraries :: Python Modules", "Operating System :: OS Independent",)
+requirements = ()
+extra_requirements = {"scikit-optimize": ("scikit-optimize",)}
 
-class TestConstants(unittest.TestCase):
+# Interface constants:
 
-    def test_immutable(self):
-        for name, value in vars(constants).items():
-            if not name.startswith("__"):
-                assert not isinstance(value, list), "Constant " + name + " should be tuple, not list"
-                assert not isinstance(value, set), "Constant " + name + " should be frozenset, not set"
-                assert_hashable_or_dict(name, value)
+default_backend = "serving"
+data_file_ext = ".bbdata.json"

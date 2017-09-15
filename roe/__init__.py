@@ -1,11 +1,37 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xabf49bb6
+# __coconut_hash__ = 0x2e7454f9
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
 """
-Constants for use across all of BBGun.
+Roe is a random optimization engine for Python.
+
+To use roe, just add
+
+    # Roe boilerplate:
+    from roe import BlackBox
+    bb = BlackBox(file=__file__)
+    if __name__ == "__main__":
+        bb.run(backend=<your backend here>)
+
+to the top of your file, then call
+
+    x = bb.param(name="x", <your parameters here>)
+
+for each of the tunable parameters in your model, and finally add
+
+    bb.maximize(x)      or      bb.minimize(x)
+
+to set the value being optimized. Then, run
+
+    python <your file here>
+
+to train your model, and just
+
+    import <your module here>
+
+to serve it.
 """
 
 # Coconut Header: -------------------------------------------------------------
@@ -22,19 +48,4 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 
 
-# Installation constants:
-
-name = "bbgun"
-version = "0.1.0"
-description = "Black box optimization made simple."
-github_url = "https://github.com/evhub/bbgun"
-author = "Evan Hubinger"
-author_email = "evanjhub@gmail.com"
-classifiers = ("Development Status :: 3 - Alpha", "License :: OSI Approved :: Apache Software License", "Topic :: Software Development :: Libraries :: Python Modules", "Operating System :: OS Independent",)
-requirements = ()
-extra_requirements = {"scikit-optimize": ("scikit-optimize",)}
-
-# Interface constants:
-
-default_backend = "serving"
-data_file_ext = ".bbdata.json"
+from roe.interface import BlackBox

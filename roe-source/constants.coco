@@ -1,13 +1,13 @@
 """
-Constants for use across all of BBGun.
+Constants for use across all of roe.
 """
 
 # Installation constants:
 
-name = "bbgun"
+name = "roe"
 version = "0.1.0"
 description = "Black box optimization made simple."
-github_url = "https://github.com/evhub/bbgun"
+github_url = "https://github.com/evhub/roe"
 author = "Evan Hubinger"
 author_email = "evanjhub@gmail.com"
 classifiers = (

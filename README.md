@@ -1,12 +1,12 @@
-# BBGun
+# ROE
 
-BBGun is a universal black box optimization library.
+Roe is a random optimization engine for Python.
 
-To use BBGun, just add
+To use roe, just add
 
-    # BBGun boilerplate:
-    from bbgun import BB
-    bb = BB(file=__file__)
+    # Roe boilerplate:
+    from roe import BlackBox
+    bb = BlackBox(file=__file__)
     if __name__ == "__main__":
         bb.run(backend=<your backend here>)
 

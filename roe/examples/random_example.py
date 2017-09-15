@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x96224aea
+# __coconut_hash__ = 0x9421264d
 
 # Compiled with Coconut version 1.3.0-post_dev2 [Dead Parrot]
 
@@ -16,20 +16,18 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 # Compiled Coconut: -----------------------------------------------------------
 
-# BBGun boilerplate:
-from bbgun import BB
-bb = BB(file=__file__)
+# Roe boilerplate:
+from roe import BlackBox
+bb = BlackBox(file=__file__)
 if __name__ == "__main__":
-    bb.run(backend="scikit-optimize")
+    bb.run(backend="random")
 
 # Let's use some parameters!
-x0 = bb.param(name="x0", randint=(1, 10), guess=5)
-x1 = bb.param(name="x1", uniform=(0, 1))
+x = bb.param(name="x", randint=(1, 10))
 
 # And let's set our goal!
-y = x0 + x1
-bb.minimize(y)
+bb.maximize(x)
 
 # Finally, we'll print out the value we used for debugging purposes.
 if __name__ == "__main__":
-    print(repr(y))
+    print(x)

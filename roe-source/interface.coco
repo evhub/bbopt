@@ -1,5 +1,5 @@
 """
-The interface into BBGun for a file with black-box parameters.
+The interface into roe for a file with black-box parameters.
 """
 
 # Imports:
@@ -7,28 +7,28 @@ The interface into BBGun for a file with black-box parameters.
 import json
 import os.path
 
-from bbgun.backends import init_backend
-from bbgun.util import (
+from roe.backends import init_backend
+from roe.util import (
     norm_path,
     is_str,
     json_serialize,
 )
-from bbgun.constants import (
+from roe.constants import (
     default_backend,
     data_file_ext,
 )
 
 # Interface:
 
-class BB:
-    _bbs_by_file = {}  # all BB instances by file
+class BlackBox:
+    _bbs_by_file = {}  # all BlackBox instances by file
 
     def __init__(self, file):
         if not is_str(file):
             raise TypeError("file must be a string")
         self._file = norm_path(file)
         if self._file in self._bbs_by_file:
-            raise ValueError("BB instance for file %r already exists" % self.file)
+            raise ValueError("BlackBox instance for file %r already exists" % self.file)
         self._bbs_by_file[self._file] = self
         self.reset()
 
