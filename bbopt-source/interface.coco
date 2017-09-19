@@ -34,6 +34,8 @@ class BlackBoxOptimizer:
 
     def reset(self):
         """Reset to allow another run."""
+        self._old_params = {}
+        self._examples = []
         self._load_examples()
         self.run(default_backend)
         self._new_params = {}
@@ -80,8 +82,6 @@ class BlackBoxOptimizer:
 
     def _load_examples(self):
         """Load example data."""
-        self._old_params = {}
-        self._examples = []
         if os.path.exists(self._data_file):
             with open(self._data_file, "r") as df:
                 contents = df.read()

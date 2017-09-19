@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4dbb4ca3
+# __coconut_hash__ = 0x120892a5
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -50,6 +50,8 @@ class BlackBoxOptimizer(_coconut.object):
 
     def reset(self):
         """Reset to allow another run."""
+        self._old_params = {}
+        self._examples = []
         self._load_examples()
         self.run(default_backend)
         self._new_params = {}
@@ -97,8 +99,6 @@ class BlackBoxOptimizer(_coconut.object):
 
     def _load_examples(self):
         """Load example data."""
-        self._old_params = {}
-        self._examples = []
         if os.path.exists(self._data_file):
             with open(self._data_file, "r") as df:
                 contents = df.read()
