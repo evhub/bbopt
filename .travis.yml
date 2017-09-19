@@ -11,3 +11,11 @@ install:
 - make setup
 script:
 - make test
+deploy:
+  provider: pypi
+  user: evhub-develop
+  password:
+    secure: n7AHWgpnWjKQJxbBUG+fC1gBaUrQC10TDACKIIa1kmpYNMWfQrdAunoCjVkTHOC6eItJcTAVJevlOMEpV15NEhiRaS5yhImXIfubeUe/lEP/iG+vMAAQG6GaQIVSg0bEbJWzl4o/O7r8vSGfyVVcse3WiND4ZV6hVAOBkl1bS/2+S6b3yTjSWOH/77txmTLTlealqquSuY/4vuEkgYZTrsybjyNgkdds1GDZthoBPqHixFfIgNbC5lDAMQAW2kAi9yBIFPOcyIDdwEzp13n5SQzbtgVz5T7t3LoNMF/WLV5IYJTdJJhqJmBzXZSOMeugIgQA4Y7OuGl35/hvFOgE09c0vIHnMmsKBUEDXD5QCE+/3NONZgN+GeYAaTeCaD4PRFRLJHJuXM0QIIn+AFywG2/6lr3dlTqQZy5kpg5ms+hPnICK0hWHXcGSzH7cH6nUTjs6V/s9JLvirxuezdP8NcBfef/ZHP9iC0uTRTDXaRRqWp8f84tXNp754kE6I2h/mrDnCfl4ZnwX5nkkg+octl8BiFj5bpn90f6q3/lxO3K5JPP3ihwfHKSWvRlVrw8dnrDLYyaTyEdjXyghvXzr1wUAiYya6r69MaC17yTysAVXXo1+PyPiace6IQfY6oS60TBKkfc5vIBzuKejicmazPdLtqiu8304JbHRiO3Vju0=
+  on:
+    distributions: sdist bdist_wheel
+    repo: evhub/bbopt
