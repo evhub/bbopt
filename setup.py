@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x71ea0ee4
+# __coconut_hash__ = 0x2b61f65d
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -612,14 +612,14 @@ sys = _coconut_sys
 import os.path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from blackboard.constants import name
-from blackboard.constants import version
-from blackboard.constants import description
-from blackboard.constants import github_url
-from blackboard.constants import author
-from blackboard.constants import author_email
-from blackboard.constants import requirements
-from blackboard.constants import classifiers
-from blackboard.constants import extra_requirements
+from bbopt.constants import name
+from bbopt.constants import version
+from bbopt.constants import description
+from bbopt.constants import github_url
+from bbopt.constants import author
+from bbopt.constants import author_email
+from bbopt.constants import requirements
+from bbopt.constants import classifiers
+from bbopt.constants import extra_requirements
 
 setuptools.setup(name=name, version=version, description=description, url=github_url, author=author, author_email=author_email, classifiers=(list)(classifiers), packages=setuptools.find_packages(), install_requires=(list)(requirements), extras_require=fmap(lambda k, v: (k, list(v)), extra_requirements))

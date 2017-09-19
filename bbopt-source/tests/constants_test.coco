@@ -2,7 +2,7 @@
 
 import unittest
 
-from blackboard import constants
+from bbopt import constants
 
 # Utilities:
 

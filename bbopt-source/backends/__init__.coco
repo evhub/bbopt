@@ -1,5 +1,5 @@
 """
-Backends contains all of blackboard's different backends.
+Backends contains all of bbopt's different backends.
 """
 
 registered_backends = {}
@@ -9,11 +9,11 @@ def init_backend(name, examples, params, **kwargs):
     if name in registered_backends:
         return registered_backends[name]
     elif name == "serving":
-        from blackboard.backends.serving import ServingBackend as Backend
+        from bbopt.backends.serving import ServingBackend as Backend
     elif name == "random":
-        from blackboard.backends.random import RandomBackend as Backend
+        from bbopt.backends.random import RandomBackend as Backend
     elif name == "scikit-optimize":
-        from blackboard.backends.skopt import SkoptBackend as Backend
+        from bbopt.backends.skopt import SkoptBackend as Backend
     else:
         raise ValueError("unknown backend %r" % name)
     return Backend(examples, params, **kwargs)

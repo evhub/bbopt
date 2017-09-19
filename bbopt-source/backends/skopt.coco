@@ -7,8 +7,8 @@ The scikit-optimize backend. Does black box optimization.
 from skopt import Optimizer
 from skopt.learning import GaussianProcessRegressor
 
-from blackboard.backends.random import RandomBackend
-from blackboard.util import (
+from bbopt.backends.random import RandomBackend
+from bbopt.util import (
     values_sorted_by_keys,
     split_examples,
     replace_values,

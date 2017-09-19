@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x95dd5727
+# __coconut_hash__ = 0x95f5fa4f
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -16,8 +16,8 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 # Compiled Coconut: -----------------------------------------------------------
 
-# Blackboard boilerplate:
-from blackboard import BlackBoxOptimizer
+# BBopt boilerplate:
+from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)
 if __name__ == "__main__":
     bb.run(backend="scikit-optimize")

@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x757c9bce
+# __coconut_hash__ = 0x297dfd95
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
 """
-The interface into blackboard for a file with black-box parameters.
+The interface into bbopt for a file with black-box parameters.
 """
 
 # Coconut Header: -------------------------------------------------------------
@@ -27,12 +27,12 @@ _coconut_sys.path.remove(_coconut_file_path)
 import json
 import os.path
 
-from blackboard.backends import init_backend
-from blackboard.util import norm_path
-from blackboard.util import is_str
-from blackboard.util import json_serialize
-from blackboard.constants import default_backend
-from blackboard.constants import data_file_ext
+from bbopt.backends import init_backend
+from bbopt.util import norm_path
+from bbopt.util import is_str
+from bbopt.util import json_serialize
+from bbopt.constants import default_backend
+from bbopt.constants import data_file_ext
 
 # Interface:
 

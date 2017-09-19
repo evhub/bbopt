@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4a861dd8
+# __coconut_hash__ = 0xa3b8501b
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
 """
-Utilities for use across all of blackboard.
+Utilities for use across all of bbopt.
 """
 
 # Coconut Header: -------------------------------------------------------------

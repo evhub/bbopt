@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x70eb6f7e
+# __coconut_hash__ = 0x49b6da1e
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -20,7 +20,7 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 import unittest
 
-from blackboard import constants
+from bbopt import constants
 
 # Utilities:
 

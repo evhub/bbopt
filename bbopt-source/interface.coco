@@ -1,5 +1,5 @@
 """
-The interface into blackboard for a file with black-box parameters.
+The interface into bbopt for a file with black-box parameters.
 """
 
 # Imports:
@@ -7,13 +7,13 @@ The interface into blackboard for a file with black-box parameters.
 import json
 import os.path
 
-from blackboard.backends import init_backend
-from blackboard.util import (
+from bbopt.backends import init_backend
+from bbopt.util import (
     norm_path,
     is_str,
     json_serialize,
 )
-from blackboard.constants import (
+from bbopt.constants import (
     default_backend,
     data_file_ext,
 )

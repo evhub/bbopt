@@ -1,11 +1,24 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xe9f1f161
+# __coconut_hash__ = 0x6f895b6b
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
 """
-Constants for use across all of blackboard.
+BBopt black box optimization frontend
+Copyright (c) 2015-2017 Evan Hubinger
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use these files except in compliance with the License.
+You may obtain a copy of the License at:
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 """
 
 # Coconut Header: -------------------------------------------------------------
@@ -22,19 +35,4 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 
 
-# Installation constants:
-
-name = "blackboard"
-version = "0.1.0"
-description = "Black box optimization made simple."
-github_url = "https://github.com/evhub/blackboard"
-author = "Evan Hubinger"
-author_email = "evanjhub@gmail.com"
-classifiers = ("Development Status :: 3 - Alpha", "License :: OSI Approved :: Apache Software License", "Topic :: Software Development :: Libraries :: Python Modules", "Operating System :: OS Independent",)
-requirements = ()
-extra_requirements = {"scikit-optimize": ("scikit-optimize",)}
-
-# Interface constants:
-
-default_backend = "serving"
-data_file_ext = ".blackboard.json"
+from bbopt.interface import BlackBoxOptimizer

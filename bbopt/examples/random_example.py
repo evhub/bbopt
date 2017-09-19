@@ -1,12 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xfdec0e22
+# __coconut_hash__ = 0xd344cc53
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
-
-"""
-Backends contains all of blackboard's different backends.
-"""
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -20,24 +16,18 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 # Compiled Coconut: -----------------------------------------------------------
 
+# BBopt boilerplate:
+from bbopt import BlackBoxOptimizer
+bb = BlackBoxOptimizer(file=__file__)
+if __name__ == "__main__":
+    bb.run(backend="random")
 
+# Let's use some parameters!
+x = bb.param(name="x", randint=(1, 10))
 
-registered_backends = {}
+# And let's set our goal!
+bb.maximize(x)
 
-def init_backend(name, examples, params, **kwargs):
-    """Create a backend object of the given name with the given example data."""
-    if name in registered_backends:
-        return registered_backends[name]
-    elif name == "serving":
-        from blackboard.backends.serving import ServingBackend as Backend
-    elif name == "random":
-        from blackboard.backends.random import RandomBackend as Backend
-    elif name == "scikit-optimize":
-        from blackboard.backends.skopt import SkoptBackend as Backend
-    else:
-        raise ValueError("unknown backend %r" % name)
-    return Backend(examples, params, **kwargs)
-
-def register_backend(name, backend):
-    """Register a new backend under the given name."""
-    registered_backends[name] = backend
+# Finally, we'll print out the value we used for debugging purposes.
+if __name__ == "__main__":
+    print(x)

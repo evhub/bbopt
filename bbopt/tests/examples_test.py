@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc9bd3ec0
+# __coconut_hash__ = 0x4009dcfe
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -55,10 +55,10 @@ def call_test(args):
 example_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "examples")
 
 random_file = os.path.join(example_dir, "random_example.py")
-random_data = os.path.join(example_dir, "random_example.blackboard.json")
+random_data = os.path.join(example_dir, "random_example.bbopt.json")
 
 skopt_file = os.path.join(example_dir, "skopt_example.py")
-skopt_data = os.path.join(example_dir, "skopt_example.blackboard.json")
+skopt_data = os.path.join(example_dir, "skopt_example.bbopt.json")
 
 # Tests:
 
@@ -72,7 +72,7 @@ class TestExamples(unittest.TestCase):
                 stdout = call_test(["python", random_file])
                 want_x = max(int(stdout.strip()), want_x)
             assert os.path.exists(random_data)
-            from blackboard.examples.random_example import x as got_x
+            from bbopt.examples.random_example import x as got_x
             assert got_x == want_x
 
     def test_skopt(self):
@@ -83,5 +83,5 @@ class TestExamples(unittest.TestCase):
                 stdout = call_test(["python", skopt_file])
                 want_y = min(float(stdout.strip()), want_y)
             assert os.path.exists(skopt_data)
-            from blackboard.examples.skopt_example import y as got_y
+            from bbopt.examples.skopt_example import y as got_y
             assert got_y == want_y

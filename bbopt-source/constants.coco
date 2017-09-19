@@ -1,13 +1,13 @@
 """
-Constants for use across all of blackboard.
+Constants for use across all of bbopt.
 """
 
 # Installation constants:
 
-name = "blackboard"
-version = "0.1.0"
+name = "bbopt"
+version = "0.0.1"
 description = "Black box optimization made simple."
-github_url = "https://github.com/evhub/blackboard"
+github_url = "https://github.com/evhub/bbopt"
 author = "Evan Hubinger"
 author_email = "evanjhub@gmail.com"
 classifiers = (
@@ -26,4 +26,4 @@ extra_requirements = {
 # Interface constants:
 
 default_backend = "serving"
-data_file_ext = ".blackboard.json"
+data_file_ext = ".bbopt.json"

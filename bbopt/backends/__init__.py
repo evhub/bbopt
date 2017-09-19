@@ -1,37 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xdb75f8ea
+# __coconut_hash__ = 0x8546572c
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
 """
-Blackboard is a frontend for easily interfacing with any black box optimization framework.
-
-To use blackboard, just add
-
-    # Blackboard boilerplate:
-    from blackboard import BlackBoxOptimizer
-    bb = BlackBoxOptimizer(file=__file__)
-    if __name__ == "__main__":
-        bb.run(backend=<your backend here>)
-
-to the top of your file, then call
-
-    x = bb.param(name="x", <your parameters here>)
-
-for each of the tunable parameters in your model, and finally add
-
-    bb.maximize(x)      or      bb.minimize(x)
-
-to set the value being optimized. Then, run
-
-    python <your file here>
-
-to train your model, and just
-
-    import <your module here>
-
-to serve it.
+Backends contains all of bbopt's different backends.
 """
 
 # Coconut Header: -------------------------------------------------------------
@@ -48,4 +22,22 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 
 
-from blackboard.interface import BlackBoxOptimizer
+registered_backends = {}
+
+def init_backend(name, examples, params, **kwargs):
+    """Create a backend object of the given name with the given example data."""
+    if name in registered_backends:
+        return registered_backends[name]
+    elif name == "serving":
+        from bbopt.backends.serving import ServingBackend as Backend
+    elif name == "random":
+        from bbopt.backends.random import RandomBackend as Backend
+    elif name == "scikit-optimize":
+        from bbopt.backends.skopt import SkoptBackend as Backend
+    else:
+        raise ValueError("unknown backend %r" % name)
+    return Backend(examples, params, **kwargs)
+
+def register_backend(name, backend):
+    """Register a new backend under the given name."""
+    registered_backends[name] = backend
