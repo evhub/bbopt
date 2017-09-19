@@ -6,11 +6,18 @@ BBopt is a frontend for easily interfacing with any black box optimization frame
 
 BBopt provides a universal interface based on the standard library `random` module (so you don't even have to learn anything new!) that lets you define your tunable parameters.
 
-Once you've defined your parameters, training a black box optimization model on those parameters is as simple as `python your_file.py`, and serving your file with optimized parameters is as simple as `import your_file`.
+Once you've defined your parameters, training a black box optimization model on those parameters is as simple as
+```
+python your_file.py
+```
+and serving your file with optimized parameters as simple as
+```
+import your_file
+```
 
 ## Installation
 
-Installing BBopt is as easy as
+To get going with BBopt, just install it with
 ```
 pip install bbopt
 ```
@@ -41,11 +48,11 @@ to train your model, and just
 ```
 import <your module here>
 ```
-to serve it.
+to serve it!
 
 ## Backends
 
-Currently, bbopt only supports the `scikit-optimize` and `random` backends, but more are in the works! To change backends, just modify `backend="scikit-optimize"` in the boilerplate to whatever backend you want to use. All backends always use the universal interface of
+Currently, BBopt only supports the `scikit-optimize` and `random` backends, but more are in the works! To change backends, just modify `backend="scikit-optimize"` in the boilerplate to whatever backend you want to use. All backends always use the universal interface of
 ```python
 bb.param(name=<name>, <stdlib random function>=<args to function>)
 ```
