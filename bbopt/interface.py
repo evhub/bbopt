@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x297dfd95
+# __coconut_hash__ = 0x4dbb4ca3
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -128,8 +128,9 @@ class BlackBoxOptimizer(_coconut.object):
 
     def _save_examples(self):
         """Save example data."""
+        self._load_examples()
         if self._current_example not in self._examples:
             self._examples.append(self._current_example)
-        self._current_example = None
         with open(self._data_file, "w+") as df:
             (df.write)((str)((json.dumps)(self._json_data)))
+        self._current_example = None

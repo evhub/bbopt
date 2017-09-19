@@ -98,8 +98,9 @@ class BlackBoxOptimizer:
 
     def _save_examples(self):
         """Save example data."""
+        self._load_examples()
         if self._current_example not in self._examples:
             self._examples.append(self._current_example)
-        self._current_example = None
         with open(self._data_file, "w+") as df:
             self._json_data |> json.dumps |> str |> df.write
+        self._current_example = None
