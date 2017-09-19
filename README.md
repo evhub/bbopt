@@ -1,5 +1,7 @@
 # Blackboard
 
+_The easiest hyperparameter optimization you'll ever do._
+
 Blackboard is a frontend for easily interfacing with any black box optimization framework.
 
 To use blackboard, just add
