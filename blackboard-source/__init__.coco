@@ -1,5 +1,4 @@
-# Blackboard
-
+"""
 Blackboard is a frontend for easily interfacing with any black box optimization framework.
 
 To use blackboard, just add
@@ -27,3 +26,6 @@ to train your model, and just
     import <your module here>
 
 to serve it.
+"""
+
+from blackboard.interface import BlackBoxOptimizer

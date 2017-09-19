@@ -9,7 +9,7 @@ install-2: build
 .PHONY: build
 build:
 	coconut setup.coco --no-tco --strict
-	coconut "roe-source" roe --no-tco --strict --jobs sys
+	coconut "blackboard-source" blackboard --no-tco --strict --jobs sys
 
 .PHONY: upload
 upload: clean install
@@ -24,23 +24,23 @@ setup:
 
 .PHONY: test
 test: install
-	pytest --strict -s ./roe/tests
+	pytest --strict -s ./blackboard/tests
 
 .PHONY: test-2
 test-2: install-2
-	python2 -m pytest --strict -s ./roe/tests
+	python2 -m pytest --strict -s ./blackboard/tests
 
 .PHONY: clean
 clean:
-	rm -rf ./roe ./dist ./build
+	rm -rf ./blackboard ./dist ./build
 	find . -name '*.pyc' -delete
 	find . -name '__pycache__' -delete
 
 .PHONY: wipe
 wipe: clean
 	find . -name '*.py' -delete
-	rm -rf ./roe
+	rm -rf ./blackboard
 
 .PHONY: watch
 watch: install
-	coconut "roe-source" roe --watch --no-tco --strict
+	coconut "blackboard-source" blackboard --watch --no-tco --strict

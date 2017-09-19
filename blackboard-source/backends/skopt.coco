@@ -1,0 +1,68 @@
+"""
+The scikit-optimize backend. Does black box optimization.
+"""
+
+# Imports:
+
+from skopt import Optimizer
+from skopt.learning import GaussianProcessRegressor
+
+from blackboard.backends.random import RandomBackend
+from blackboard.util import (
+    values_sorted_by_keys,
+    split_examples,
+    replace_values,
+)
+
+# Utilities:
+
+def create_dimension(
+    guess=None,  # ignored; used in actual param call
+    randint=None,
+    uniform=None,
+    choice=None,
+):
+    if (randint, uniform, choice) |> map$((not)..(is)$(None)) |> sum != 1:
+        raise TypeError("the skopt backend requires exactly one of"
+            " randint, uniform, or choice")
+    if choice is not None:
+        if not isinstance(choice, list):
+            raise ValueError("choice must be a list")
+        return choice
+    if randint is not None:
+        if not isinstance(randint, list) or len(randint) != 2:
+            raise ValueError("randint must be a list of length 2")
+        return randint |> map$(int) |> tuple
+    if uniform is not None:
+        if not isinstance(uniform, list) or len(uniform) != 2:
+            raise ValueError("uniform must be a list of length 2")
+        return uniform |> map$(float) |> tuple
+
+# Backend:
+
+class SkoptBackend:
+    """The scikit-optimize backend uses scikit-optimize for black box optimization."""
+
+    def __init__(self, examples, params, base_estimator=GaussianProcessRegressor, **kwargs):
+        dimensions = [
+            create_dimension(**param_kwargs)
+            for param_kwargs in values_sorted_by_keys(params)
+        ]
+        data_points, objectives, minimizing = split_examples(examples)
+        if minimizing:
+            optimizer = Optimizer(dimensions, base_estimator, **kwargs)
+            optimizer.tell(data_points, objectives)
+            current_point = optimizer.ask()
+            self.current_values = replace_values(params, current_point)
+        elif minimizing is None:
+            self.current_values = {}
+        else:
+            raise ValueError("scikit-optimize only supports minimizing, not maximizing")
+
+    def param(self, name, **kwargs):
+        if name in self.current_values:
+            return self.current_values[name]
+        elif "guess" in kwargs:
+            return kwargs["guess"]
+        else:
+            return RandomBackend().param(**kwargs)

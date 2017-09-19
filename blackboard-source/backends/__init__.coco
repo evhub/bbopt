@@ -1,0 +1,23 @@
+"""
+Backends contains all of blackboard's different backends.
+"""
+
+registered_backends = {}
+
+def init_backend(name, examples, params, **kwargs):
+    """Create a backend object of the given name with the given example data."""
+    if name in registered_backends:
+        return registered_backends[name]
+    elif name == "serving":
+        from blackboard.backends.serving import ServingBackend as Backend
+    elif name == "random":
+        from blackboard.backends.random import RandomBackend as Backend
+    elif name == "scikit-optimize":
+        from blackboard.backends.skopt import SkoptBackend as Backend
+    else:
+        raise ValueError("unknown backend %r" % name)
+    return Backend(examples, params, **kwargs)
+
+def register_backend(name, backend):
+    """Register a new backend under the given name."""
+    registered_backends[name] = backend

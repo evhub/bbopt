@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x71ea0ee4
+# type: ignore
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
+
+"""Built-in Coconut utilities."""
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -603,23 +605,3 @@ def fmap(func, obj):
         return "".join(args)
     return obj.__class__(args)
 _coconut_MatchError, _coconut_count, _coconut_enumerate, _coconut_reversed, _coconut_map, _coconut_starmap, _coconut_tee, _coconut_zip, reduce, takewhile, dropwhile = MatchError, count, enumerate, reversed, map, starmap, tee, zip, _coconut.functools.reduce, _coconut.itertools.takewhile, _coconut.itertools.dropwhile
-
-# Compiled Coconut: -----------------------------------------------------------
-
-import setuptools
-
-sys = _coconut_sys
-import os.path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
-from blackboard.constants import name
-from blackboard.constants import version
-from blackboard.constants import description
-from blackboard.constants import github_url
-from blackboard.constants import author
-from blackboard.constants import author_email
-from blackboard.constants import requirements
-from blackboard.constants import classifiers
-from blackboard.constants import extra_requirements
-
-setuptools.setup(name=name, version=version, description=description, url=github_url, author=author, author_email=author_email, classifiers=(list)(classifiers), packages=setuptools.find_packages(), install_requires=(list)(requirements), extras_require=fmap(lambda k, v: (k, list(v)), extra_requirements))
