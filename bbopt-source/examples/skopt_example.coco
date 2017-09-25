@@ -6,7 +6,7 @@ if __name__ == "__main__":
 
 # Let's use some parameters!
 x0 = bb.param(name="x0", randint=(1, 10), guess=5)
-x1 = bb.param(name="x1", uniform=(0, 1))
+x1 = bb.uniform("x1", 0, 1)
 
 # And let's set our goal!
 y = x0 + x1

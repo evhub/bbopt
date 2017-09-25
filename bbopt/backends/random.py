@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xcaca6955
+# __coconut_hash__ = 0x158d4f9b
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -36,9 +36,7 @@ class RandomBackend(_coconut.object):
     def __init__(self, examples=None, params=None):
         pass  # we're choosing randomly, so we ignore everything
 
-    random_functions = {"getrandbits": random.getrandbits, "randrange": random.randrange, "randint": random.randint, "choice": random.choice, "sample": random.sample, "random": random.random, "uniform": random.uniform, "triangular": random.triangular, "betavariate": random.betavariate, "expovariate": random.expovariate, "gammavariate": random.gammavariate, "gauss": random.gauss, "lognormvariate": random.lognormvariate, "vonmisesvariate": random.vonmisesvariate, "paretovariate": random.paretovariate, "weibullvariate": random.weibullvariate}
-    if sys.version_info > (3,):
-        random_functions["choices"] = (random.choices, False)
+    random_functions = {"getrandbits": random.getrandbits, "randrange": random.randrange, "choice": random.choice, "sample": random.sample, "uniform": random.uniform, "triangular": random.triangular, "betavariate": random.betavariate, "expovariate": random.expovariate, "gammavariate": random.gammavariate, "gauss": random.gauss, "lognormvariate": random.lognormvariate, "vonmisesvariate": random.vonmisesvariate, "paretovariate": random.paretovariate, "weibullvariate": random.weibullvariate}
 
     def param(self, name=None, **kwargs):
         if len(kwargs) != 1:

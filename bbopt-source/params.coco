@@ -16,18 +16,9 @@ from bbopt.util import (
 def standardize_kwargs(kwargs):
     """Standardizes param keyword args."""
     stdkwargs = {}
-    saw_func = None
+    saw_random_func = None
     for func, args in json_serialize(kwargs).items():
-
-        # ignore the guess keyword for setting initial values
-        if func == "guess":
-            stdkwargs[func] = args
-            continue
-
-        # disallow multiple random functions
-        if saw_func:
-            raise ValueError("cannot have both %s and %s for a single parameter" % (saw_func, func))
-        saw_func = func
+        orig_func, orig_args = func, args
 
         # standardize arguments to a list
         if not isinstance(args, list):
@@ -49,6 +40,7 @@ def standardize_kwargs(kwargs):
             func = "gauss"
 
         # process standard random functions
+        got_random_func = True
         if func == "getrandbits":
             if len(args) != 1 or not isinstance(args[0], int):
                 raise format_err(ValueError, "invalid arguments to getrandbits", getrandbits)
@@ -65,9 +57,8 @@ def standardize_kwargs(kwargs):
                 raise format_err(ValueError, "invalid arguments to randrange", randrange)
             args = [start, stop, step]
         elif func == "choice":
-            if len(args) < 2:
-                raise format_err(ValueError, "choice should be a list of options, not", choice)
-            args = [args]
+            if len(args) != 1 or not isinstance(args[0], list):
+                raise format_err(ValueError, "invalid arguments to choice", choice)
         elif func == "sample":
             if len(args) != 2 or not isinstance(args[0], list) or not isinstance(args[1], int):
                 raise format_err(ValueError, "invalid arguments to sample", sample)
@@ -101,13 +92,19 @@ def standardize_kwargs(kwargs):
         elif func == "weibullvariate":
             if len(args) != 2 or not all_isinstance(args, Num):
                 raise format_err(ValueError, "invalid arguments to weibullvariate", weibullvariate)
-
-        # disallow unknown keywords
         else:
-            raise format_err(TypeError, "unknown parameter option", func)
+            got_random_func = False
 
-        stdkwargs[func] = args
+        # disallow multiple random functions and ignore other parameters
+        if saw_random_func and got_random_func:
+            raise ValueError("cannot have both %s and %s for a single parameter" % (saw_random_func, func))
+        elif got_random_func:
+            saw_random_func = func
+            stdkwargs[func] = args
+        else:
+            stdkwargs[orig_func] = orig_args
+
     # require some random function
-    if saw_func is None:
+    if saw_random_func is None:
         raise TypeError("param requires a keyword option of the form random_function=args")
     return stdkwargs

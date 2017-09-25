@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf2917e4b
+# __coconut_hash__ = 0x7b2e7cf
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -135,3 +135,70 @@ class BlackBoxOptimizer(_coconut.object):
         with open(self._data_file, "w+") as df:
             (df.write)((str)((json.dumps)(self._json_data)))
         self._current_example = None
+
+# Random Functions:
+
+    def randint(self, name, a, b):
+        """Create a new parameter with the given name modeled by random.randint(a, b)."""
+        return self.param(name, randint=(a, b))
+
+    def random(self, name):
+        """Create a new parameter with the given name modeled by random.random()."""
+        return self.param(name, random=())
+
+    def gauss(self, name, mu, sigma):
+        """Create a new parameter with the given name modeled by random.gauss(mu, sigma)."""
+        return self.param(name, gauss=(mu, sigma))
+    normalvariate = gauss
+
+    def getrandbits(self, name, k):
+        """Create a new parameter with the given name modeled by random.getrandbits(k)."""
+        return self.param(name, getrandbits=(k,))
+
+    def randrange(self, name, *args):
+        """Create a new parameter with the given name modeled by random.randrange(*args)."""
+        return self.param(name, randrange=args)
+
+    def choice(self, name, seq):
+        """Create a new parameter with the given name modeled by random.choice(seq)."""
+        return self.param(name, choice=(seq,))
+
+    def sample(self, name, population, k):
+        """Create a new parameter with the given name modeled by random.sample(population, k)."""
+        return self.param(name, sample=(population, k))
+
+    def uniform(self, name, a, b):
+        """Create a new parameter with the given name modeled by random.uniform(a, b)."""
+        return self.param(name, uniform=(a, b))
+
+    def triangular(self, name, low, high, mode):
+        """Create a new parameter with the given name modeled by random.triangular(low, high, mode)."""
+        return self.param(name, triangular=(low, high, mode))
+
+    def betavariate(self, name, alpha, beta):
+        """Create a new parameter with the given name modeled by random.betavariate(alpha, beta)."""
+        return self.param(name, betavariate=(alpha, beta))
+
+    def expovariate(self, name, lambd):
+        """Create a new parameter with the given name modeled by random.expovariate(lambd)."""
+        return self.param(name, expovariate=(lambd,))
+
+    def gammavariate(self, name, alpha, beta):
+        """Create a new parameter with the given name modeled by random.gammavariate(alpha, beta)."""
+        return self.param(name, gammavariate=(alpha, beta))
+
+    def lognormvariate(self, name, mu, sigma):
+        """Create a new parameter with the given name modeled by random.lognormvariate(mu, sigma)."""
+        return self.param(name, lognormvariate=(mu, sigma))
+
+    def vonmisesvariate(self, name, kappa):
+        """Create a new parameter with the given name modeled by random.vonmisesvariate(kappa)."""
+        return self.param(name, vonmisesvariate=(kappa,))
+
+    def paretovariate(self, name, alpha):
+        """Create a new parameter with the given name modeled by random.paretovariate(alpha)."""
+        return self.param(name, paretovariate=(alpha,))
+
+    def weibullvariate(self, name, alpha, beta):
+        """Create a new parameter with the given name modeled by random.weibullvariate(alpha, beta)."""
+        return self.param(name, weibullvariate=(alpha, beta))
