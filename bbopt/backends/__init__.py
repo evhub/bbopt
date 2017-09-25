@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x8546572c
+# __coconut_hash__ = 0x54643123
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -34,6 +34,8 @@ def init_backend(name, examples, params, **kwargs):
         from bbopt.backends.random import RandomBackend as Backend
     elif name == "scikit-optimize":
         from bbopt.backends.skopt import SkoptBackend as Backend
+    elif name == "hyperopt":
+        from bbopt.backends.hypteropt import HyperoptBackend as Backend
     else:
         raise ValueError("unknown backend %r" % name)
     return Backend(examples, params, **kwargs)

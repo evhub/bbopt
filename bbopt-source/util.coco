@@ -7,10 +7,12 @@ Utilities for use across all of bbopt.
 import os.path
 from collections.abc import Mapping, Iterable
 
-# Functions:
+# Objects:
 
-def is_str(obj) =
-    isinstance(obj, (str, py_str))
+Num = (int, float)
+Str = (str, py_str)
+
+# Functions:
 
 def norm_path(path) = (
     path
@@ -49,10 +51,9 @@ def json_serialize(obj):
             return bool(obj)
     raise TypeError("invalid JSON object %r" % obj)
 
-def values_sorted_by_keys(params):
+def sorted_items(params) =
     """Return an iterator of the dict's values sorted by its keys."""
-    for _, v in sorted(params.items()):
-        yield v
+    sorted(params.items())
 
 def split_examples(examples):
     """Split examples into a list of data points, a list of objectives, and whether minimizing (True), maximizing (False), or no data (None)."""
@@ -63,21 +64,30 @@ def split_examples(examples):
                 if minimizing is True:
                     raise ValueError("cannot have examples with maximize and examples with minimize")
                 minimizing = False
-                data_points.append(values |> values_sorted_by_keys |> list)
+                data_points.append(values |> sorted_items |> map$(.[1]) |> list)
                 objectives.append(gain)
             match {"values": values, "loss": loss}:
                 if minimizing is False:
                     raise ValueError("cannot have examples with maximize and examples with minimize")
                 minimizing = True
-                data_points.append(values |> values_sorted_by_keys |> list)
+                data_points.append(values |> sorted_items |> map$(.[1]) |> list)
                 objectives.append(loss)
         else:
             raise ValueError("invalid example %r" % example)
     return data_points, objectives, minimizing
 
 def replace_values(params, point):
-    """Return a dictionary with the values replaced."""
+    """Return a dictionary with the values replaced by the values in point,
+    where point is a list of the values corresponding to the sorted params."""
     values = {}
     for i, (k, _) in enumerate(sorted(params.items())):
         values[k] = point[i]
     return values
+
+def all_isinstance(objs, types) =
+    """Return whether all the objects have the desired type(s)."""
+    objs |> map$(isinstance$(?, types)) |> all
+
+def format_err(Error, message, object):
+    """Creates an error with a formatted error message."""
+    return Error(message + ": " + repr(object))

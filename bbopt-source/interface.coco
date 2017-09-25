@@ -8,9 +8,10 @@ import json
 import os.path
 
 from bbopt.backends import init_backend
+from bbopt.params import standardize_kwargs
 from bbopt.util import (
+    Str,
     norm_path,
-    is_str,
     json_serialize,
 )
 from bbopt.constants import (
@@ -24,7 +25,7 @@ class BlackBoxOptimizer:
     _optimizers_by_file = {}  # all Optimizer instances by file
 
     def __init__(self, file):
-        if not is_str(file):
+        if not isinstance(file, Str):
             raise TypeError("file must be a string")
         self._file = norm_path(file)
         if self._file in self._optimizers_by_file:
@@ -49,11 +50,11 @@ class BlackBoxOptimizer:
         """Create a black box parameter and return its value."""
         if self._current_example is None:
             raise ValueError("param calls must come before maximize/minimize")
-        if not is_str(name):
+        if not isinstance(name, Str):
             raise TypeError("name must be a string")
         if name in self._new_params:
             raise ValueError("parameter of name %r already exists" % name)
-        kwargs = kwargs |> json_serialize
+        kwargs = kwargs |> standardize_kwargs
         value = self._backend.param(name, **kwargs) |> json_serialize
         self._new_params[name] = kwargs
         self._current_example["values"][name] = value

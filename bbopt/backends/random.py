@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x1981faa8
+# __coconut_hash__ = 0xcaca6955
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -36,17 +36,9 @@ class RandomBackend(_coconut.object):
     def __init__(self, examples=None, params=None):
         pass  # we're choosing randomly, so we ignore everything
 
-    random_functions = {"getrandbits": (random.getrandbits, False), "randrange": (random.randrange, False), "randint": (random.randint, False), "choice": (random.choice, True), "sample": (random.sample, False), "random": (random.random, False), "uniform": (random.uniform, False), "triangular": (random.triangular, False), "betavariate": (random.betavariate, False), "expovariate": (random.expovariate, False), "gammavariate": (random.gammavariate, False), "gauss": (random.gauss, False), "lognormvariate": (random.lognormvariate, False), "vonmisesvariate": (random.vonmisesvariate, False), "paretovariate": (random.paretovariate, False), "weibullvariate": (random.weibullvariate, False)}
+    random_functions = {"getrandbits": random.getrandbits, "randrange": random.randrange, "randint": random.randint, "choice": random.choice, "sample": random.sample, "random": random.random, "uniform": random.uniform, "triangular": random.triangular, "betavariate": random.betavariate, "expovariate": random.expovariate, "gammavariate": random.gammavariate, "gauss": random.gauss, "lognormvariate": random.lognormvariate, "vonmisesvariate": random.vonmisesvariate, "paretovariate": random.paretovariate, "weibullvariate": random.weibullvariate}
     if sys.version_info > (3,):
         random_functions["choices"] = (random.choices, False)
-
-    def call_random(self, cmd, args):
-        """Call the random function cmd with the arguments args."""
-        func, takes_iterable = self.random_functions[cmd]
-        if takes_iterable or not isinstance(args, (list, tuple)):
-            return func(args)
-        else:
-            return func(*args)
 
     def param(self, name=None, **kwargs):
         if len(kwargs) != 1:
@@ -54,4 +46,4 @@ class RandomBackend(_coconut.object):
         cmd, args = _coconut_igetitem(kwargs.items(), 0)
         if cmd not in self.random_functions:
             raise ValueError("unknown random function %r" % cmd)
-        return self.call_random(cmd, args)
+        return self.random_functions[cmd](*args)

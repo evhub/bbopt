@@ -14,6 +14,8 @@ def init_backend(name, examples, params, **kwargs):
         from bbopt.backends.random import RandomBackend as Backend
     elif name == "scikit-optimize":
         from bbopt.backends.skopt import SkoptBackend as Backend
+    elif name == "hyperopt":
+        from bbopt.backends.hypteropt import HyperoptBackend as Backend
     else:
         raise ValueError("unknown backend %r" % name)
     return Backend(examples, params, **kwargs)

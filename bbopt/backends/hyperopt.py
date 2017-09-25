@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc20562e1
+# __coconut_hash__ = 0x412bdd36
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
 """
-The scikit-optimize backend. Does black box optimization using scikit-optimize.
+The hyperopt backend. Does black box optimization using hyperopt.
 """
 
 # Coconut Header: -------------------------------------------------------------
@@ -24,8 +24,7 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 # Imports:
 
-from skopt import Optimizer
-from skopt.learning import GaussianProcessRegressor
+from hyperopt import hp
 
 from bbopt.backends.random import RandomBackend
 from bbopt.util import sorted_items
@@ -34,25 +33,21 @@ from bbopt.util import replace_values
 
 # Utilities:
 
-def create_dimension(guess=None, randrange=None, uniform=None, choice=None,):
+def create_space(name, guess=None, randint=None, uniform=None, choice=None,):
     if choice is not None:
-        return choice  # lists are interpreted as choices
-    if randrange is not None:
-        start, stop, step = randrange
-        if step != 1:
-            raise ValueError("scikit-optimize backend only supports a randrange step size of 1")
-        stop -= 1  # scikit-optimize ranges are inclusive
-        return (start, stop)  # int tuples are interpreted as int ranges
+        return hp.choice(name, choice)
+    if randint is not None:
+        return hp.randint(name, randint)
     if uniform is not None:
-        return (tuple)(map(float, uniform))  # float tuples are interpreted as float ranges
+        return hp.uniform(name, *uniform)
 
 # Backend:
 
-class SkoptBackend(_coconut.object):
-    """The scikit-optimize backend uses scikit-optimize for black box optimization."""
+class HyperoptBackend(_coconut.object):
+    """The hyperopt backend uses hyperopt for black box optimization."""
 
-    def __init__(self, examples, params, base_estimator=GaussianProcessRegressor, **kwargs):
-        dimensions = [create_dimension(**param_kwargs) for _, param_kwargs in sorted_items(params)]
+    def __init__(self, examples, params, **kwargs):
+        spaces = [create_space(name, **param_kwargs) for name, param_kwargs in sorted_items(params)]
         data_points, objectives, minimizing = split_examples(examples)
         if minimizing:
             optimizer = Optimizer(dimensions, base_estimator, **kwargs)
@@ -62,7 +57,7 @@ class SkoptBackend(_coconut.object):
         elif minimizing is None:
             self.current_values = {}
         else:
-            raise ValueError("scikit-optimize only supports minimizing, not maximizing")
+            raise ValueError("hyperopt only supports minimizing, not maximizing")
 
     def param(self, name, **kwargs):
         if name in self.current_values:

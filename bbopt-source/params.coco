@@ -1,0 +1,113 @@
+"""
+Handles standardizing param calls to use standard library random functions.
+"""
+
+# Imports:
+
+from bbopt.util import (
+    Num,
+    json_serialize,
+    format_err,
+    all_isinstance,
+)
+
+# Functions:
+
+def standardize_kwargs(kwargs):
+    """Standardizes param keyword args."""
+    stdkwargs = {}
+    saw_func = None
+    for func, args in json_serialize(kwargs).items():
+
+        # ignore the guess keyword for setting initial values
+        if func == "guess":
+            stdkwargs[func] = args
+            continue
+
+        # disallow multiple random functions
+        if saw_func:
+            raise ValueError("cannot have both %s and %s for a single parameter" % (saw_func, func))
+        saw_func = func
+
+        # standardize arguments to a list
+        if not isinstance(args, list):
+            args = [args]
+
+        # alias randint, random, and normalvariate calls
+        if func == "randint":
+            if len(args) == 0 or len(args) > 3 or not all_isinstance(args, int):
+                raise format_err(ValueError, "invalid arguments to randint", randint)
+            func = "randrange"
+            args[-1] += 1
+        elif func == "random":
+            if args:
+                raise format_err(ValueError, "invalid arguments to random", random)
+            func, args = "uniform", [0, 1]
+        elif func == "normalvariate":
+            if len(args) != 2 or not all_isinstance(args, Num):
+                raise format_err(ValueError, "invalid arguments to normalvariate", normalvariate)
+            func = "gauss"
+
+        # process standard random functions
+        if func == "getrandbits":
+            if len(args) != 1 or not isinstance(args[0], int):
+                raise format_err(ValueError, "invalid arguments to getrandbits", getrandbits)
+        elif func == "randrange":
+            if not all_isinstance(args, int):
+                raise format_err(ValueError, "invalid arguments to randrange", randrange)
+            if len(args) == 1:
+                start, stop, step = 0, args[0], 1
+            elif len(args) == 2:
+                start, stop, step = args[0], args[1], 1
+            elif len(args) == 3:
+                start, stop, step = args
+            else:
+                raise format_err(ValueError, "invalid arguments to randrange", randrange)
+            args = [start, stop, step]
+        elif func == "choice":
+            if len(args) < 2:
+                raise format_err(ValueError, "choice should be a list of options, not", choice)
+            args = [args]
+        elif func == "sample":
+            if len(args) != 2 or not isinstance(args[0], list) or not isinstance(args[1], int):
+                raise format_err(ValueError, "invalid arguments to sample", sample)
+        elif func == "uniform":
+            if len(args) != 2 or not all_isinstance(args, Num):
+                raise format_err(ValueError, "invalid arguments to uniform", uniform)
+        elif func == "triangular":
+            if len(args) != 3 or not all_isinstance(args, Num):
+                raise format_err(ValueError, "invalid arguments to triangular", triangular)
+        elif func == "betavariate":
+            if len(args) != 2 or not all_isinstance(args, Num):
+                raise format_err(ValueError, "invalid arguments to betavariate", betavariate)
+        elif func == "expovariate":
+            if len(args) != 1 or not all_isinstance(args, Num):
+                raise format_err(ValueError, "invalid arguments to expovariate", expovariate)
+        elif func == "gammavariate":
+            if len(args) != 2 or not all_isinstance(args, Num):
+                raise format_err(ValueError, "invalid arguments to gammavariate", gammavariate)
+        elif func == "gauss":
+            if len(args) != 2 or not all_isinstance(args, Num):
+                raise format_err(ValueError, "invalid arguments to gauss", gauss)
+        elif func == "lognormvariate":
+            if len(args) != 2 or not all_isinstance(args, Num):
+                raise format_err(ValueError, "invalid arguments to lognormvariate", lognormvariate)
+        elif func == "vonmisesvariate":
+            if len(args) != 2 or not all_isinstance(args, Num):
+                raise format_err(ValueError, "invalid arguments to vonmisesvariate", vonmisesvariate)
+        elif func == "paretovariate":
+            if len(args) != 1 or not all_isinstance(args, Num):
+                raise format_err(ValueError, "invalid arguments to paretovariate", paretovariate)
+        elif func == "weibullvariate":
+            if len(args) != 2 or not all_isinstance(args, Num):
+                raise format_err(ValueError, "invalid arguments to weibullvariate", weibullvariate)
+
+        # disallow unknown keywords
+        else:
+            raise format_err(TypeError, "unknown parameter option", func)
+
+        stdkwargs[func] = args
+    # require some random function
+    if saw_func is None:
+        raise TypeError("param requires a keyword option of the form random_function=args")
+    return stdkwargs

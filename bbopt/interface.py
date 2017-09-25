@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x120892a5
+# __coconut_hash__ = 0xf2917e4b
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -28,8 +28,9 @@ import json
 import os.path
 
 from bbopt.backends import init_backend
+from bbopt.params import standardize_kwargs
+from bbopt.util import Str
 from bbopt.util import norm_path
-from bbopt.util import is_str
 from bbopt.util import json_serialize
 from bbopt.constants import default_backend
 from bbopt.constants import data_file_ext
@@ -40,7 +41,7 @@ class BlackBoxOptimizer(_coconut.object):
     _optimizers_by_file = {}  # all Optimizer instances by file
 
     def __init__(self, file):
-        if not is_str(file):
+        if not isinstance(file, Str):
             raise TypeError("file must be a string")
         self._file = norm_path(file)
         if self._file in self._optimizers_by_file:
@@ -65,11 +66,11 @@ class BlackBoxOptimizer(_coconut.object):
         """Create a black box parameter and return its value."""
         if self._current_example is None:
             raise ValueError("param calls must come before maximize/minimize")
-        if not is_str(name):
+        if not isinstance(name, Str):
             raise TypeError("name must be a string")
         if name in self._new_params:
             raise ValueError("parameter of name %r already exists" % name)
-        kwargs = (json_serialize)(kwargs)
+        kwargs = (standardize_kwargs)(kwargs)
         value = (json_serialize)(self._backend.param(name, **kwargs))
         self._new_params[name] = kwargs
         self._current_example["values"][name] = value

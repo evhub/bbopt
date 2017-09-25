@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa3b8501b
+# __coconut_hash__ = 0x983e2f56
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -34,10 +34,12 @@ if _coconut_sys.version_info < (3, 3):
 else:
     from collections.abc import Iterable
 
-# Functions:
+# Objects:
 
-def is_str(obj):
-    return isinstance(obj, (str, py_str))
+Num = (int, float)
+Str = (str, py_str)
+
+# Functions:
 
 def norm_path(path):
     return ((os.path.normcase)((os.path.realpath)((os.path.abspath)((os.path.expanduser)(path)))))
@@ -71,10 +73,9 @@ def json_serialize(obj):
             return bool(obj)
     raise TypeError("invalid JSON object %r" % obj)
 
-def values_sorted_by_keys(params):
+def sorted_items(params):
     """Return an iterator of the dict's values sorted by its keys."""
-    for _, v in sorted(params.items()):
-        yield v
+    return sorted(params.items())
 
 def split_examples(examples):
     """Split examples into a list of data points, a list of objectives, and whether minimizing (True), maximizing (False), or no data (None)."""
@@ -94,7 +95,7 @@ def split_examples(examples):
             if minimizing is True:
                 raise ValueError("cannot have examples with maximize and examples with minimize")
             minimizing = False
-            data_points.append((list)((values_sorted_by_keys)(values)))
+            data_points.append((list)(map(_coconut.operator.itemgetter(1), (sorted_items)(values))))
             objectives.append(gain)
         if not _coconut_match_check:
             _coconut_sentinel = _coconut.object()
@@ -109,15 +110,24 @@ def split_examples(examples):
                 if minimizing is False:
                     raise ValueError("cannot have examples with maximize and examples with minimize")
                 minimizing = True
-                data_points.append((list)((values_sorted_by_keys)(values)))
+                data_points.append((list)(map(_coconut.operator.itemgetter(1), (sorted_items)(values))))
                 objectives.append(loss)
         if not _coconut_match_check:
             raise ValueError("invalid example %r" % example)
     return data_points, objectives, minimizing
 
 def replace_values(params, point):
-    """Return a dictionary with the values replaced."""
+    """Return a dictionary with the values replaced by the values in point,
+    where point is a list of the values corresponding to the sorted params."""
     values = {}
     for i, (k, _) in enumerate(sorted(params.items())):
         values[k] = point[i]
     return values
+
+def all_isinstance(objs, types):
+    """Return whether all the objects have the desired type(s)."""
+    return (all)(map(_coconut_partial(isinstance, {1: types}, 2), objs))
+
+def format_err(Error, message, object):
+    """Creates an error with a formatted error message."""
+    return Error(message + ": " + repr(object))

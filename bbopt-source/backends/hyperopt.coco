@@ -1,0 +1,59 @@
+"""
+The hyperopt backend. Does black box optimization using hyperopt.
+"""
+
+# Imports:
+
+from hyperopt import hp
+
+from bbopt.backends.random import RandomBackend
+from bbopt.util import (
+    sorted_items,
+    split_examples,
+    replace_values,
+)
+
+# Utilities:
+
+def create_space(
+    name,
+    guess=None,  # ignored; used in actual param call
+    randint=None,
+    uniform=None,
+    choice=None,
+):
+    if choice is not None:
+        return hp.choice(name, choice)
+    if randint is not None:
+        return hp.randint(name, randint)
+    if uniform is not None:
+        return hp.uniform(name, *uniform)
+
+# Backend:
+
+class HyperoptBackend:
+    """The hyperopt backend uses hyperopt for black box optimization."""
+
+    def __init__(self, examples, params, **kwargs):
+        spaces = [
+            create_space(name, **param_kwargs)
+            for name, param_kwargs in sorted_items(params)
+        ]
+        data_points, objectives, minimizing = split_examples(examples)
+        if minimizing:
+            optimizer = Optimizer(dimensions, base_estimator, **kwargs)
+            optimizer.tell(data_points, objectives)
+            current_point = optimizer.ask()
+            self.current_values = replace_values(params, current_point)
+        elif minimizing is None:
+            self.current_values = {}
+        else:
+            raise ValueError("hyperopt only supports minimizing, not maximizing")
+
+    def param(self, name, **kwargs):
+        if name in self.current_values:
+            return self.current_values[name]
+        elif "guess" in kwargs:
+            return kwargs["guess"]
+        else:
+            return RandomBackend().param(**kwargs)

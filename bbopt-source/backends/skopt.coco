@@ -1,5 +1,5 @@
 """
-The scikit-optimize backend. Does black box optimization.
+The scikit-optimize backend. Does black box optimization using scikit-optimize.
 """
 
 # Imports:
@@ -9,7 +9,7 @@ from skopt.learning import GaussianProcessRegressor
 
 from bbopt.backends.random import RandomBackend
 from bbopt.util import (
-    values_sorted_by_keys,
+    sorted_items,
     split_examples,
     replace_values,
 )
@@ -18,25 +18,20 @@ from bbopt.util import (
 
 def create_dimension(
     guess=None,  # ignored; used in actual param call
-    randint=None,
+    randrange=None,
     uniform=None,
     choice=None,
 ):
-    if (randint, uniform, choice) |> map$((not)..(is)$(None)) |> sum != 1:
-        raise TypeError("the skopt backend requires exactly one of"
-            " randint, uniform, or choice")
     if choice is not None:
-        if not isinstance(choice, list):
-            raise ValueError("choice must be a list")
-        return choice
-    if randint is not None:
-        if not isinstance(randint, list) or len(randint) != 2:
-            raise ValueError("randint must be a list of length 2")
-        return randint |> map$(int) |> tuple
+        return choice  # lists are interpreted as choices
+    if randrange is not None:
+        start, stop, step = randrange
+        if step != 1:
+            raise ValueError("scikit-optimize backend only supports a randrange step size of 1")
+        stop -= 1  # scikit-optimize ranges are inclusive
+        return (start, stop) # int tuples are interpreted as int ranges
     if uniform is not None:
-        if not isinstance(uniform, list) or len(uniform) != 2:
-            raise ValueError("uniform must be a list of length 2")
-        return uniform |> map$(float) |> tuple
+        return uniform |> map$(float) |> tuple  # float tuples are interpreted as float ranges
 
 # Backend:
 
@@ -46,7 +41,7 @@ class SkoptBackend:
     def __init__(self, examples, params, base_estimator=GaussianProcessRegressor, **kwargs):
         dimensions = [
             create_dimension(**param_kwargs)
-            for param_kwargs in values_sorted_by_keys(params)
+            for _, param_kwargs in sorted_items(params)
         ]
         data_points, objectives, minimizing = split_examples(examples)
         if minimizing:
