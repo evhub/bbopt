@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc6424c9f
+# __coconut_hash__ = 0x6f825141
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -25,7 +25,7 @@ _coconut_sys.path.remove(_coconut_file_path)
 # Installation constants:
 
 name = "bbopt"
-version = "0.1.0"
+version = "0.1.1"
 description = "Black box optimization made simple."
 github_url = "https://github.com/evhub/bbopt"
 author = "Evan Hubinger"

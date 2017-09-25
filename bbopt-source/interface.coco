@@ -108,67 +108,67 @@ class BlackBoxOptimizer:
 
     # Random Functions:
 
-    def randint(self, name, a, b):
+    def randint(self, name, a, b, **kwargs):
         """Create a new parameter with the given name modeled by random.randint(a, b)."""
-        return self.param(name, randint=(a, b))
+        return self.param(name, randint=(a, b), **kwargs)
 
-    def random(self, name):
+    def random(self, name, **kwargs):
         """Create a new parameter with the given name modeled by random.random()."""
-        return self.param(name, random=())
+        return self.param(name, random=(), **kwargs)
 
-    def gauss(self, name, mu, sigma):
+    def gauss(self, name, mu, sigma, **kwargs):
         """Create a new parameter with the given name modeled by random.gauss(mu, sigma)."""
-        return self.param(name, gauss=(mu, sigma))
+        return self.param(name, gauss=(mu, sigma), **kwargs)
     normalvariate = gauss
 
-    def getrandbits(self, name, k):
+    def getrandbits(self, name, k, **kwargs):
         """Create a new parameter with the given name modeled by random.getrandbits(k)."""
-        return self.param(name, getrandbits=(k,))
+        return self.param(name, getrandbits=(k,), **kwargs)
 
-    def randrange(self, name, *args):
+    def randrange(self, name, *args, **kwargs):
         """Create a new parameter with the given name modeled by random.randrange(*args)."""
-        return self.param(name, randrange=args)
+        return self.param(name, randrange=args, **kwargs)
 
-    def choice(self, name, seq):
+    def choice(self, name, seq, **kwargs):
         """Create a new parameter with the given name modeled by random.choice(seq)."""
-        return self.param(name, choice=(seq,))
+        return self.param(name, choice=(seq,), **kwargs)
 
-    def sample(self, name, population, k):
+    def sample(self, name, population, k, **kwargs):
         """Create a new parameter with the given name modeled by random.sample(population, k)."""
-        return self.param(name, sample=(population, k))
+        return self.param(name, sample=(population, k), **kwargs)
 
-    def uniform(self, name, a, b):
+    def uniform(self, name, a, b, **kwargs):
         """Create a new parameter with the given name modeled by random.uniform(a, b)."""
-        return self.param(name, uniform=(a, b))
+        return self.param(name, uniform=(a, b), **kwargs)
 
-    def triangular(self, name, low, high, mode):
+    def triangular(self, name, low, high, mode, **kwargs):
         """Create a new parameter with the given name modeled by random.triangular(low, high, mode)."""
-        return self.param(name, triangular=(low, high, mode))
+        return self.param(name, triangular=(low, high, mode), **kwargs)
 
-    def betavariate(self, name, alpha, beta):
+    def betavariate(self, name, alpha, beta, **kwargs):
         """Create a new parameter with the given name modeled by random.betavariate(alpha, beta)."""
-        return self.param(name, betavariate=(alpha, beta))
+        return self.param(name, betavariate=(alpha, beta), **kwargs)
 
-    def expovariate(self, name, lambd):
+    def expovariate(self, name, lambd, **kwargs):
         """Create a new parameter with the given name modeled by random.expovariate(lambd)."""
-        return self.param(name, expovariate=(lambd,))
+        return self.param(name, expovariate=(lambd,), **kwargs)
 
-    def gammavariate(self, name, alpha, beta):
+    def gammavariate(self, name, alpha, beta, **kwargs):
         """Create a new parameter with the given name modeled by random.gammavariate(alpha, beta)."""
-        return self.param(name, gammavariate=(alpha, beta))
+        return self.param(name, gammavariate=(alpha, beta), **kwargs)
 
-    def lognormvariate(self, name, mu, sigma):
+    def lognormvariate(self, name, mu, sigma, **kwargs):
         """Create a new parameter with the given name modeled by random.lognormvariate(mu, sigma)."""
-        return self.param(name, lognormvariate=(mu, sigma))
+        return self.param(name, lognormvariate=(mu, sigma), **kwargs)
 
-    def vonmisesvariate(self, name, kappa):
+    def vonmisesvariate(self, name, kappa, **kwargs):
         """Create a new parameter with the given name modeled by random.vonmisesvariate(kappa)."""
-        return self.param(name, vonmisesvariate=(kappa,))
+        return self.param(name, vonmisesvariate=(kappa,), **kwargs)
 
-    def paretovariate(self, name, alpha):
+    def paretovariate(self, name, alpha, **kwargs):
         """Create a new parameter with the given name modeled by random.paretovariate(alpha)."""
-        return self.param(name, paretovariate=(alpha,))
+        return self.param(name, paretovariate=(alpha,), **kwargs)
 
-    def weibullvariate(self, name, alpha, beta):
+    def weibullvariate(self, name, alpha, beta, **kwargs):
         """Create a new parameter with the given name modeled by random.weibullvariate(alpha, beta)."""
-        return self.param(name, weibullvariate=(alpha, beta))
+        return self.param(name, weibullvariate=(alpha, beta), **kwargs)

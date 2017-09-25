@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x64f46b6b
+# __coconut_hash__ = 0x46d06bc2
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     bb.run(backend="scikit-optimize")
 
 # Let's use some parameters!
-x0 = bb.param(name="x0", randint=(1, 10), guess=5)
+x0 = bb.randrange("x0", 1, 11, guess=5)
 x1 = bb.uniform("x1", 0, 1)
 
 # And let's set our goal!
