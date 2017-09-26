@@ -18,16 +18,23 @@ from bbopt.util import (
 def create_space(
     name,
     guess=None,  # ignored; used in actual param call
-    randint=None,
-    uniform=None,
     choice=None,
+    randrange=None,
+    uniform=None,
+    normalvariate=None,
 ):
     if choice is not None:
         return hp.choice(name, choice)
-    if randint is not None:
-        return hp.randint(name, randint)
+    if randrange is not None:
+        start, stop, step = randrange
+        if start != 0 or step != 1:
+            raise ValueError("hyperopt backend only supports a randrange start of 0 and step of 1")
+        return hp.randrange(name, stop)
     if uniform is not None:
         return hp.uniform(name, *uniform)
+    if normalvariate is not None:
+        return hp.normal(name, *normalvariate)
+    raise TypeError("insufficiently specified parameter %r" % name)
 
 # Backend:
 

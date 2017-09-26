@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x72086d00
+# __coconut_hash__ = 0x2950e746
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -43,19 +43,19 @@ def standardize_kwargs(kwargs):
             args = [args]
 
 # alias randint, random, and normalvariate calls
-        if func == "randint":
+        if func == "randint":  # randint -> randrange
             if len(args) == 0 or len(args) > 3 or not all_isinstance(args, int):
                 raise format_err(ValueError, "invalid arguments to randint", randint)
             func = "randrange"
             args[-1] += 1
-        elif func == "random":
+        elif func == "random":  # random -> uniform
             if args:
                 raise format_err(ValueError, "invalid arguments to random", random)
             func, args = "uniform", [0, 1]
-        elif func == "normalvariate":
+        elif func == "gauss":  # gauss -> normalvariate
             if len(args) != 2 or not all_isinstance(args, Num):
-                raise format_err(ValueError, "invalid arguments to normalvariate", normalvariate)
-            func = "gauss"
+                raise format_err(ValueError, "invalid arguments to gauss", gauss)
+            func = "normalvariate"
 
 # process standard random functions
         got_random_func = True
@@ -95,9 +95,9 @@ def standardize_kwargs(kwargs):
         elif func == "gammavariate":
             if len(args) != 2 or not all_isinstance(args, Num):
                 raise format_err(ValueError, "invalid arguments to gammavariate", gammavariate)
-        elif func == "gauss":
+        elif func == "normalvariate":
             if len(args) != 2 or not all_isinstance(args, Num):
-                raise format_err(ValueError, "invalid arguments to gauss", gauss)
+                raise format_err(ValueError, "invalid arguments to normalvariate", normalvariate)
         elif func == "lognormvariate":
             if len(args) != 2 or not all_isinstance(args, Num):
                 raise format_err(ValueError, "invalid arguments to lognormvariate", lognormvariate)

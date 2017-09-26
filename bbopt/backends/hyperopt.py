@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x412bdd36
+# __coconut_hash__ = 0x4f8035e2
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -33,13 +33,19 @@ from bbopt.util import replace_values
 
 # Utilities:
 
-def create_space(name, guess=None, randint=None, uniform=None, choice=None,):
+def create_space(name, guess=None, choice=None, randrange=None, uniform=None, normalvariate=None,):
     if choice is not None:
         return hp.choice(name, choice)
-    if randint is not None:
-        return hp.randint(name, randint)
+    if randrange is not None:
+        start, stop, step = randrange
+        if start != 0 or step != 1:
+            raise ValueError("hyperopt backend only supports a randrange start of 0 and step of 1")
+        return hp.randrange(name, stop)
     if uniform is not None:
         return hp.uniform(name, *uniform)
+    if normalvariate is not None:
+        return hp.normal(name, *normalvariate)
+    raise TypeError("insufficiently specified parameter %r" % name)
 
 # Backend:
 

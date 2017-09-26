@@ -17,10 +17,11 @@ from bbopt.util import (
 # Utilities:
 
 def create_dimension(
+    name,
     guess=None,  # ignored; used in actual param call
+    choice=None,
     randrange=None,
     uniform=None,
-    choice=None,
 ):
     if choice is not None:
         return choice  # lists are interpreted as choices
@@ -32,6 +33,7 @@ def create_dimension(
         return (start, stop) # int tuples are interpreted as int ranges
     if uniform is not None:
         return uniform |> map$(float) |> tuple  # float tuples are interpreted as float ranges
+    raise TypeError("insufficiently specified parameter %r" % name)
 
 # Backend:
 
@@ -40,8 +42,8 @@ class SkoptBackend:
 
     def __init__(self, examples, params, base_estimator=GaussianProcessRegressor, **kwargs):
         dimensions = [
-            create_dimension(**param_kwargs)
-            for _, param_kwargs in sorted_items(params)
+            create_dimension(name, **param_kwargs)
+            for name, param_kwargs in sorted_items(params)
         ]
         data_points, objectives, minimizing = split_examples(examples)
         if minimizing:

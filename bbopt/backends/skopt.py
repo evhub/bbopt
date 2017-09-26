@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc20562e1
+# __coconut_hash__ = 0xefff002c
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -34,7 +34,7 @@ from bbopt.util import replace_values
 
 # Utilities:
 
-def create_dimension(guess=None, randrange=None, uniform=None, choice=None,):
+def create_dimension(name, guess=None, choice=None, randrange=None, uniform=None,):
     if choice is not None:
         return choice  # lists are interpreted as choices
     if randrange is not None:
@@ -45,6 +45,7 @@ def create_dimension(guess=None, randrange=None, uniform=None, choice=None,):
         return (start, stop)  # int tuples are interpreted as int ranges
     if uniform is not None:
         return (tuple)(map(float, uniform))  # float tuples are interpreted as float ranges
+    raise TypeError("insufficiently specified parameter %r" % name)
 
 # Backend:
 
@@ -52,7 +53,7 @@ class SkoptBackend(_coconut.object):
     """The scikit-optimize backend uses scikit-optimize for black box optimization."""
 
     def __init__(self, examples, params, base_estimator=GaussianProcessRegressor, **kwargs):
-        dimensions = [create_dimension(**param_kwargs) for _, param_kwargs in sorted_items(params)]
+        dimensions = [create_dimension(name, **param_kwargs) for name, param_kwargs in sorted_items(params)]
         data_points, objectives, minimizing = split_examples(examples)
         if minimizing:
             optimizer = Optimizer(dimensions, base_estimator, **kwargs)
