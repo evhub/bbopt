@@ -60,13 +60,13 @@ def split_examples(examples):
     data_points, objectives, minimizing = [], [], None
     for example in examples:
         case example:
-            match {"values": values, "gain": gain}:
+            match {"values": values, "gain": gain, **_}:
                 if minimizing is True:
                     raise ValueError("cannot have examples with maximize and examples with minimize")
                 minimizing = False
                 data_points.append(values |> sorted_items |> map$(.[1]) |> list)
                 objectives.append(gain)
-            match {"values": values, "loss": loss}:
+            match {"values": values, "loss": loss, **_}:
                 if minimizing is False:
                     raise ValueError("cannot have examples with maximize and examples with minimize")
                 minimizing = True
@@ -91,3 +91,31 @@ def all_isinstance(objs, types) =
 def format_err(Error, message, object):
     """Creates an error with a formatted error message."""
     return Error(message + ": " + repr(object))
+
+def negate_objective(objective):
+    if isinstance(objective, list):
+        return objective |> map$(negate_objective) |> list
+    else:
+        return -objective
+
+def best_example(examples):
+    """Return the best example seen so far."""
+    selected_example = {"values": {}}
+    max_gain, min_loss = None, None
+    for example in examples:
+        case example:
+            match {"values": values, "gain": gain, **_}:
+                if min_loss is not None:
+                    raise ValueError("cannot have examples with maximize and examples with minimize")
+                if max_gain is None or gain >= max_gain:
+                    selected_example = example
+                    max_gain = gain
+            match {"values": values, "loss": loss, **_}:
+                if max_gain is not None:
+                    raise ValueError("cannot have examples with maximize and examples with minimize")
+                if min_loss is None or loss <= min_loss:
+                    selected_example = example
+                    min_loss = loss
+        else:
+            raise ValueError("invalid example %r" % example)
+    return selected_example

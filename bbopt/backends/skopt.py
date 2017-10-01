@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xefff002c
+# __coconut_hash__ = 0x1fd606a5
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -31,6 +31,7 @@ from bbopt.backends.random import RandomBackend
 from bbopt.util import sorted_items
 from bbopt.util import split_examples
 from bbopt.util import replace_values
+from bbopt.util import negate_objective
 
 # Utilities:
 
@@ -55,15 +56,15 @@ class SkoptBackend(_coconut.object):
     def __init__(self, examples, params, base_estimator=GaussianProcessRegressor, **kwargs):
         dimensions = [create_dimension(name, **param_kwargs) for name, param_kwargs in sorted_items(params)]
         data_points, objectives, minimizing = split_examples(examples)
-        if minimizing:
-            optimizer = Optimizer(dimensions, base_estimator, **kwargs)
-            optimizer.tell(data_points, objectives)
-            current_point = optimizer.ask()
-            self.current_values = replace_values(params, current_point)
-        elif minimizing is None:
+        if minimizing is None:
             self.current_values = {}
-        else:
-            raise ValueError("scikit-optimize only supports minimizing, not maximizing")
+            return
+        if not minimizing:
+            objectives = (negate_objective)(objectives)
+        optimizer = Optimizer(dimensions, base_estimator, **kwargs)
+        optimizer.tell(data_points, objectives)
+        current_point = optimizer.ask()
+        self.current_values = replace_values(params, current_point)
 
     def param(self, name, **kwargs):
         if name in self.current_values:

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xffac0a1f
+# __coconut_hash__ = 0x3da3431a
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -28,49 +28,63 @@ import json
 import os.path
 
 from bbopt.backends import init_backend
-from bbopt.params import standardize_kwargs
+from bbopt.params import process_params
 from bbopt.util import Str
 from bbopt.util import norm_path
 from bbopt.util import json_serialize
+from bbopt.util import best_example
 from bbopt.constants import default_backend
 from bbopt.constants import data_file_ext
 
-# Interface:
+# Optimizer:
 
 class BlackBoxOptimizer(_coconut.object):
     _optimizers_by_file = {}  # all Optimizer instances by file
 
-    def __init__(self, file):
+    def __init__(self, file, pretty_json=False):
         if not isinstance(file, Str):
             raise TypeError("file must be a string")
         self._file = norm_path(file)
         if self._file in self._optimizers_by_file:
-            raise ValueError("BlackBox instance for file %r already exists" % self.file)
+            raise ValueError("BlackBoxOptimizer for file %r already exists" % self.file)
         self._optimizers_by_file[self._file] = self
+        self._pretty_json = pretty_json
         self.reset()
 
-    def reset(self):
+    def reset(self, backend=None):
         """Reset to allow another run."""
+        if backend is None:
+            backend = default_backend
         self._old_params = {}
         self._examples = []
         self._load_examples()
-        self.run(default_backend)
+        self.run(backend)
         self._new_params = {}
         self._current_example = {"values": {}}
+
+    def loop(self, n, backend=None):
+        """Return an iterator that resets the optimizer at each step."""
+        for i in range(n):
+            self.reset(backend)
+            yield i
 
     def run(self, backend, **kwargs):
         """Optimize parameters using the given backend."""
         self._backend = init_backend(backend, self._examples, self._old_params, **kwargs)
 
+    @property
+    def _got_reward(self):
+        return "loss" in self._current_example or "gain" in self._current_example
+
     def param(self, name, **kwargs):
         """Create a black box parameter and return its value."""
-        if self._current_example is None:
+        if self._got_reward:
             raise ValueError("param calls must come before maximize/minimize")
         if not isinstance(name, Str):
             raise TypeError("name must be a string")
         if name in self._new_params:
             raise ValueError("parameter of name %r already exists" % name)
-        kwargs = (standardize_kwargs)(kwargs)
+        kwargs = (process_params)(kwargs)
         value = (json_serialize)(self._backend.param(name, **kwargs))
         self._new_params[name] = kwargs
         self._current_example["values"][name] = value
@@ -78,21 +92,24 @@ class BlackBoxOptimizer(_coconut.object):
 
     def maximize(self, value):
         """Set the gain of the current run."""
-        if self._current_example is None:
-            raise ValueError("only one of maximize/minimize may be used")
-        if callable(value):
-            value = value()
-        self._current_example["gain"] = value
-        self._save_examples()
+        self._set_reward("gain", value)
 
     def minimize(self, value):
         """Set the loss of the current run."""
-        if self._current_example is None:
-            raise ValueError("only one of maximize/minimize may be used")
+        self._set_reward("loss", value)
+
+    def _set_reward(self, reward_type, value):
+        """Set the gain or loss to value."""
+        if self._got_reward:
+            raise ValueError("only one call to maximize or minimize is allowed")
         if callable(value):
             value = value()
-        self._current_example["loss"] = value
+        self._current_example[reward_type] = value
         self._save_examples()
+
+    def remember(self, info):
+        """Store a dictionary of information about the current run."""
+        self._current_example.setdefault("memo", {}).update(info)
 
     @property
     def _data_file(self):
@@ -125,7 +142,8 @@ class BlackBoxOptimizer(_coconut.object):
 
     @property
     def _json_data(self):
-        return {"params": self._new_params, "examples": self._examples}
+        self._old_params.update(self._new_params)
+        return {"params": self._old_params, "examples": self._examples}
 
     def _save_examples(self):
         """Save example data."""
@@ -133,8 +151,15 @@ class BlackBoxOptimizer(_coconut.object):
         if self._current_example not in self._examples:
             self._examples.append(self._current_example)
         with open(self._data_file, "w+") as df:
-            (df.write)((str)((json.dumps)(self._json_data)))
-        self._current_example = None
+            (df.write)((str)(json.dumps(self._json_data, indent=4 if self._pretty_json else 0)))
+
+    def get_current_run(self):
+        """Return a dictionary containing the current parameters and reward."""
+        return self._current_example
+
+    def get_optimal_run(self):
+        """Return a dictionary containing the optimal parameters and reward computed so far."""
+        return best_example(self._examples)
 
 # Random Functions:
 

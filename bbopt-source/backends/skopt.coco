@@ -12,6 +12,7 @@ from bbopt.util import (
     sorted_items,
     split_examples,
     replace_values,
+    negate_objective,
 )
 
 # Utilities:
@@ -45,16 +46,17 @@ class SkoptBackend:
             create_dimension(name, **param_kwargs)
             for name, param_kwargs in sorted_items(params)
         ]
+        # TODO: This is super dangerous if there are examples with different params than those given.
         data_points, objectives, minimizing = split_examples(examples)
-        if minimizing:
-            optimizer = Optimizer(dimensions, base_estimator, **kwargs)
-            optimizer.tell(data_points, objectives)
-            current_point = optimizer.ask()
-            self.current_values = replace_values(params, current_point)
-        elif minimizing is None:
+        if minimizing is None:
             self.current_values = {}
-        else:
-            raise ValueError("scikit-optimize only supports minimizing, not maximizing")
+            return
+        if not minimizing:
+            objectives |>= negate_objective
+        optimizer = Optimizer(dimensions, base_estimator, **kwargs)
+        optimizer.tell(data_points, objectives)
+        current_point = optimizer.ask()
+        self.current_values = replace_values(params, current_point)
 
     def param(self, name, **kwargs):
         if name in self.current_values:

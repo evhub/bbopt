@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x6f895b6b
+# __coconut_hash__ = 0x8bb5940
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -35,4 +35,4 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 
 
-from bbopt.interface import BlackBoxOptimizer
+from bbopt.optimizer import BlackBoxOptimizer

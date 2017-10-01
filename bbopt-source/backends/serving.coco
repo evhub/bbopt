@@ -2,30 +2,17 @@
 The serving backend. Selects the best existing data point.
 """
 
+# Imports:
+
+from bbopt.util import best_example
+
 # Backend:
 
 class ServingBackend:
     """The serving backend uses the parameter values from the best example."""
 
     def __init__(self, examples, params):  # ignore params since we're serving
-        self.serving_values = {}
-        max_gain, min_loss = None, None
-        for example in examples:
-            case example:
-                match {"values": values, "gain": gain}:
-                    if min_loss is not None:
-                        raise ValueError("cannot have examples with maximize and examples with minimize")
-                    if max_gain is None or gain >= max_gain:
-                        self.serving_values = values
-                        max_gain = gain
-                match {"values": values, "loss": loss}:
-                    if max_gain is not None:
-                        raise ValueError("cannot have examples with maximize and examples with minimize")
-                    if min_loss is None or loss <= min_loss:
-                        self.serving_values = values
-                        min_loss = loss
-            else:
-                raise ValueError("invalid example %r" % example)
+        self.serving_values = best_example(examples)["values"]
 
     def param(self, name, **kwargs):  # ignore kwargs since we're serving
         try:

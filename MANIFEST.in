@@ -1,0 +1,6 @@
+global-include *.txt
+global-include *.rst
+global-include *.md
+global-include *.py
+global-include *.csv
+prune *.egg-info
