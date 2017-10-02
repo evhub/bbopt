@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x1fd606a5
+# __coconut_hash__ = 0xf837df01
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -28,6 +28,7 @@ from skopt import Optimizer
 from skopt.learning import GaussianProcessRegressor
 
 from bbopt.backends.random import RandomBackend
+from bbopt.params import param_processor
 from bbopt.util import sorted_items
 from bbopt.util import split_examples
 from bbopt.util import replace_values
@@ -35,7 +36,7 @@ from bbopt.util import negate_objective
 
 # Utilities:
 
-def create_dimension(name, guess=None, choice=None, randrange=None, uniform=None,):
+def create_dimension(name, choice=None, randrange=None, uniform=None,):
     if choice is not None:
         return choice  # lists are interpreted as choices
     if randrange is not None:
@@ -54,17 +55,15 @@ class SkoptBackend(_coconut.object):
     """The scikit-optimize backend uses scikit-optimize for black box optimization."""
 
     def __init__(self, examples, params, base_estimator=GaussianProcessRegressor, **kwargs):
-        dimensions = [create_dimension(name, **param_kwargs) for name, param_kwargs in sorted_items(params)]
-        data_points, objectives, minimizing = split_examples(examples)
-        if minimizing is None:
+        dimensions = [create_dimension(name, **param_processor.filter_kwargs(param_kwargs)) for name, param_kwargs in sorted_items(params)]
+        data_points, losses = split_examples(examples, params)
+        if data_points:
+            optimizer = Optimizer(dimensions, base_estimator, **kwargs)
+            optimizer.tell(data_points, losses)
+            current_point = optimizer.ask()
+            self.current_values = replace_values(params, current_point)
+        else:
             self.current_values = {}
-            return
-        if not minimizing:
-            objectives = (negate_objective)(objectives)
-        optimizer = Optimizer(dimensions, base_estimator, **kwargs)
-        optimizer.tell(data_points, objectives)
-        current_point = optimizer.ask()
-        self.current_values = replace_values(params, current_point)
 
     def param(self, name, **kwargs):
         if name in self.current_values:

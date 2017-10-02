@@ -1,12 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4eb37162
+# __coconut_hash__ = 0xc539a244
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
-
-"""
-Constants for use across all of bbopt.
-"""
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -20,21 +16,19 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 # Compiled Coconut: -----------------------------------------------------------
 
+# BBopt boilerplate:
+from bbopt import BlackBoxOptimizer
+bb = BlackBoxOptimizer(file=__file__)
+if __name__ == "__main__":
+    bb.run(backend="scikit-optimize")
 
+use_low = (bool)(bb.getrandbits("use low", 1, guess=0))
+if use_low:
+    reward = bb.randrange("x_low", 10)
+else:
+    reward = bb.randrange("x_high", 10, 20)
 
-# Installation constants:
+bb.maximize(reward)
 
-name = "bbopt"
-version = "0.1.2"
-description = "Black box optimization made simple."
-github_url = "https://github.com/evhub/bbopt"
-author = "Evan Hubinger"
-author_email = "evanjhub@gmail.com"
-classifiers = ("Development Status :: 3 - Alpha", "License :: OSI Approved :: Apache Software License", "Topic :: Software Development :: Libraries :: Python Modules", "Operating System :: OS Independent",)
-requirements = ()
-extra_requirements = {"scikit-optimize": ("scikit-optimize",)}
-
-# Interface constants:
-
-default_backend = "serving"
-data_file_ext = ".bbopt.json"
+if __name__ == "__main__":
+    print(repr(reward))

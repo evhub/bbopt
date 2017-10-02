@@ -8,6 +8,8 @@ Does not use existing data, simply spits out random valid values.
 import sys
 import random
 
+from bbopt.params import param_processor
+
 # Backend:
 
 class RandomBackend:
@@ -35,6 +37,7 @@ class RandomBackend:
     }
 
     def param(self, name=None, **kwargs):
+        kwargs = param_processor.filter_kwargs(kwargs)  # remove non-function parameters
         if len(kwargs) != 1:
             raise TypeError("the random backend requires exactly one parameter,"
             " <name of the random function to call>=<argument(s) to that function>")

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4dea4012
+# __coconut_hash__ = 0xd93a3674
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -74,12 +74,28 @@ def json_serialize(obj):
     raise TypeError("invalid JSON object %r" % obj)
 
 def sorted_items(params):
-    """Return an iterator of the dict's values sorted by its keys."""
+    """Return an iterator of the dict's items sorted by its keys."""
     return sorted(params.items())
 
-def split_examples(examples):
-    """Split examples into a list of data points, a list of objectives, and whether minimizing (True), maximizing (False), or no data (None)."""
-    data_points, objectives, minimizing = [], [], None
+def negate_objective(objective):
+    if isinstance(objective, list):
+        return (list)(map(negate_objective, objective))
+    else:
+        return -objective
+
+def make_features(values, params, default_missing_value=None):
+    """Return an iterator of the values for the parameters in sorted order."""
+    for feature, param_kwargs in sorted_items(params):
+        if feature in values:
+            yield values[feature]
+        elif "value_when_missing" in param_kwargs:
+            yield param_kwargs["value_when_missing"]
+        else:
+            yield default_missing_value
+
+def split_examples(examples, params, default_missing_value=None):
+    """Split examples into a list of data points and a list of losses."""
+    data_points, losses = [], []
     for example in examples:
         _coconut_match_to = example
         _coconut_match_check = False
@@ -92,11 +108,7 @@ def split_examples(examples):
                 gain = _coconut_match_temp_1
                 _coconut_match_check = True
         if _coconut_match_check:
-            if minimizing is True:
-                raise ValueError("cannot have examples with maximize and examples with minimize")
-            minimizing = False
-            data_points.append((list)(map(_coconut.operator.itemgetter(1), (sorted_items)(values))))
-            objectives.append(gain)
+            loss = negate_objective(gain)
         if not _coconut_match_check:
             _coconut_sentinel = _coconut.object()
             if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
@@ -107,20 +119,18 @@ def split_examples(examples):
                     loss = _coconut_match_temp_1
                     _coconut_match_check = True
             if _coconut_match_check:
-                if minimizing is False:
-                    raise ValueError("cannot have examples with maximize and examples with minimize")
-                minimizing = True
-                data_points.append((list)(map(_coconut.operator.itemgetter(1), (sorted_items)(values))))
-                objectives.append(loss)
+                pass
         if not _coconut_match_check:
             raise ValueError("invalid example %r" % example)
-    return data_points, objectives, minimizing
+        (data_points.append)((list)(make_features(values, params, default_missing_value)))
+        (losses.append)(loss)
+    return data_points, losses
 
 def replace_values(params, point):
     """Return a dictionary with the values replaced by the values in point,
     where point is a list of the values corresponding to the sorted params."""
     values = {}
-    for i, (k, _) in enumerate(sorted(params.items())):
+    for i, k in (enumerate)((sorted)(params)):
         values[k] = point[i]
     return values
 
@@ -131,12 +141,6 @@ def all_isinstance(objs, types):
 def format_err(Error, message, object):
     """Creates an error with a formatted error message."""
     return Error(message + ": " + repr(object))
-
-def negate_objective(objective):
-    if isinstance(objective, list):
-        return (list)(map(negate_objective, objective))
-    else:
-        return -objective
 
 def best_example(examples):
     """Return the best example seen so far."""

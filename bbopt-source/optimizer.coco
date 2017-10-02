@@ -8,7 +8,7 @@ import json
 import os.path
 
 from bbopt.backends import init_backend
-from bbopt.params import process_params
+from bbopt.params import param_processor
 from bbopt.util import (
     Str,
     norm_path,
@@ -68,7 +68,7 @@ class BlackBoxOptimizer:
             raise TypeError("name must be a string")
         if name in self._new_params:
             raise ValueError("parameter of name %r already exists" % name)
-        kwargs = kwargs |> process_params
+        kwargs = kwargs |> param_processor.standardize_kwargs
         value = self._backend.param(name, **kwargs) |> json_serialize
         self._new_params[name] = kwargs
         self._current_example["values"][name] = value

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x9af896e6
+# __coconut_hash__ = 0xffb1205c
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -58,7 +58,7 @@ y_train, y_validate, y_test = y[:train_split], y[train_split:validate_split], y[
 # BBOpt setup:
 
 from bbopt import BlackBoxOptimizer
-bb = BlackBoxOptimizer(file=__file__, pretty_json=False)
+bb = BlackBoxOptimizer(file=__file__)
 
 try:
     N = int(sys.argv[1])
@@ -80,7 +80,7 @@ for i in bb.loop(n=N, backend="scikit-optimize"):
     model.add(Dense(units=2))
     model.add(Activation("softmax"))
 
-    model.compile(loss="categorical_crossentropy", optimizer=SGD(lr=bb.uniform("learning rate", 0, 0.2, guess=0.01), momentum=bb.uniform("momentum", 0, 1, guess=0.9), nesterov=(bool)(bb.randint("nesterov", 0, 1, guess=1)), decay=bb.uniform("decay", 0, 0.1, guess=0.001)), metrics=["accuracy"])
+    model.compile(loss="categorical_crossentropy", optimizer=SGD(lr=bb.uniform("learning rate", 0, 0.2, guess=0.01), momentum=bb.uniform("momentum", 0, 1, guess=0.9), nesterov=(bool)(bb.getrandbits("nesterov", 1, guess=1)), decay=bb.uniform("decay", 0, 0.1, guess=0.001)), metrics=["accuracy"])
 
     train_history = model.fit(X_train, y_train, epochs=100, batch_size=bb.randint("batch size", 1, 32, guess=16), verbose=0)
 

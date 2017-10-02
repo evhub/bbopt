@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa9b3310b
+# __coconut_hash__ = 0x1ff34e79
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -47,12 +47,12 @@ def preproc_gauss(args):
         raise format_err(ValueError, "invalid arguments to gauss", gauss)
     return "normalvariate", args
 
-# Handlers:
-
-def handle_getrandbits(args):
+def preproc_getrandbits(args):
     if len(args) != 1 or not isinstance(args[0], int):
         raise format_err(ValueError, "invalid arguments to getrandbits", args)
-    return args
+    return "randrange", [0, 2**args[0]]
+
+# Handlers:
 
 def handle_randrange(args):
     if not all_isinstance(args, int):
@@ -131,11 +131,19 @@ def handle_weibullvariate(args):
 
 class ParamProcessor(_coconut.object):
     """Processes param keyword arguments."""
-    ignored = ["guess",]
-    pre_processors = {"randint": preproc_randint, "random": preproc_random, "gauss": preproc_gauss}
-    handlers = {"getrandbits": handle_getrandbits, "randrange": handle_randrange, "choice": handle_choice, "sample": handle_sample, "uniform": handle_uniform, "triangular": handle_triangular, "betavariate": handle_betavariate, "expovariate": handle_expovariate, "gammavariate": handle_gammavariate, "normalvariate": handle_normalvariate, "lognormvariate": handle_lognormvariate, "vonmisesvariate": handle_vonmisesvariate, "paretovariate": handle_paretovariate, "weibullvariate": handle_weibullvariate}
+    ignored = ["guess", "value_when_missing",]
+    pre_processors = {"randint": preproc_randint, "random": preproc_random, "gauss": preproc_gauss, "getrandbits": preproc_getrandbits}
+    handlers = {"randrange": handle_randrange, "choice": handle_choice, "sample": handle_sample, "uniform": handle_uniform, "triangular": handle_triangular, "betavariate": handle_betavariate, "expovariate": handle_expovariate, "gammavariate": handle_gammavariate, "normalvariate": handle_normalvariate, "lognormvariate": handle_lognormvariate, "vonmisesvariate": handle_vonmisesvariate, "paretovariate": handle_paretovariate, "weibullvariate": handle_weibullvariate}
 
-    def __call__(self, kwargs):
+    def filter_kwargs(self, kwargs):
+        """Remove ignored keyword args."""
+        new_kwargs = {}
+        for func, args in kwargs.items():
+            if func not in self.ignored:
+                new_kwargs[func] = args
+        return new_kwargs
+
+    def standardize_kwargs(self, kwargs):
         """Standardizes param keyword args."""
         new_kwargs = {}
         saw_func = None
@@ -165,10 +173,11 @@ class ParamProcessor(_coconut.object):
 
             new_kwargs[func] = args
             saw_func = func
+
 # require some function
         if saw_func is None:
             raise TypeError("param requires a keyword option of the form <random function>=<args>")
 
         return (json_serialize)(new_kwargs)
 
-process_params = ParamProcessor()
+param_processor = ParamProcessor()

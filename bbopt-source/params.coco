@@ -29,12 +29,12 @@ def preproc_gauss(args):
         raise format_err(ValueError, "invalid arguments to gauss", gauss)
     return "normalvariate", args
 
-# Handlers:
-
-def handle_getrandbits(args):
+def preproc_getrandbits(args):
     if len(args) != 1 or not isinstance(args[0], int):
         raise format_err(ValueError, "invalid arguments to getrandbits", args)
-    return args
+    return "randrange", [0, 2**args[0]]
+
+# Handlers:
 
 def handle_randrange(args):
     if not all_isinstance(args, int):
@@ -115,14 +115,15 @@ class ParamProcessor:
     """Processes param keyword arguments."""
     ignored = [
         "guess",
+        "value_when_missing",
     ]
     pre_processors = {
         "randint": preproc_randint,
         "random": preproc_random,
         "gauss": preproc_gauss,
+        "getrandbits": preproc_getrandbits,
     }
     handlers = {
-        "getrandbits": handle_getrandbits,
         "randrange": handle_randrange,
         "choice": handle_choice,
         "sample": handle_sample,
@@ -138,7 +139,15 @@ class ParamProcessor:
         "weibullvariate": handle_weibullvariate,
     }
 
-    def __call__(self, kwargs):
+    def filter_kwargs(self, kwargs):
+        """Remove ignored keyword args."""
+        new_kwargs = {}
+        for func, args in kwargs.items():
+            if func not in self.ignored:
+                new_kwargs[func] = args
+        return new_kwargs
+
+    def standardize_kwargs(self, kwargs):
         """Standardizes param keyword args."""
         new_kwargs = {}
         saw_func = None
@@ -168,10 +177,11 @@ class ParamProcessor:
 
             new_kwargs[func] = args
             saw_func = func
+
         # require some function
         if saw_func is None:
             raise TypeError("param requires a keyword option of the form <random function>=<args>")
 
         return new_kwargs |> json_serialize
 
-process_params = ParamProcessor()
+param_processor = ParamProcessor()

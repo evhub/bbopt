@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x158d4f9b
+# __coconut_hash__ = 0x4952a8ed
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -28,6 +28,8 @@ _coconut_sys.path.remove(_coconut_file_path)
 sys = _coconut_sys
 import random
 
+from bbopt.params import param_processor
+
 # Backend:
 
 class RandomBackend(_coconut.object):
@@ -39,6 +41,7 @@ class RandomBackend(_coconut.object):
     random_functions = {"getrandbits": random.getrandbits, "randrange": random.randrange, "choice": random.choice, "sample": random.sample, "uniform": random.uniform, "triangular": random.triangular, "betavariate": random.betavariate, "expovariate": random.expovariate, "gammavariate": random.gammavariate, "gauss": random.gauss, "lognormvariate": random.lognormvariate, "vonmisesvariate": random.vonmisesvariate, "paretovariate": random.paretovariate, "weibullvariate": random.weibullvariate}
 
     def param(self, name=None, **kwargs):
+        kwargs = param_processor.filter_kwargs(kwargs)  # remove non-function parameters
         if len(kwargs) != 1:
             raise TypeError("the random backend requires exactly one parameter," " <name of the random function to call>=<argument(s) to that function>")
         cmd, args = _coconut_igetitem(kwargs.items(), 0)

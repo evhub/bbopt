@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x6e038bf7
+# __coconut_hash__ = 0x6f5c92c9
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -27,13 +27,14 @@ _coconut_sys.path.remove(_coconut_file_path)
 from hyperopt import hp
 
 from bbopt.backends.random import RandomBackend
+from bbopt.params import param_processor
 from bbopt.util import sorted_items
 from bbopt.util import split_examples
 from bbopt.util import replace_values
 
 # Utilities:
 
-def create_space(name, guess=None, choice=None, randrange=None, uniform=None, normalvariate=None,):
+def create_space(name, choice=None, randrange=None, uniform=None, normalvariate=None,):
     if choice is not None:
         return hp.choice(name, choice)
     if randrange is not None:
@@ -53,17 +54,15 @@ class HyperoptBackend(_coconut.object):
     """The hyperopt backend uses hyperopt for black box optimization."""
 
     def __init__(self, examples, params, **kwargs):
-        spaces = [create_space(name, **param_kwargs) for name, param_kwargs in sorted_items(params)]
-        data_points, objectives, minimizing = split_examples(examples)
-        if minimizing is None:
+        spaces = [create_space(name, **param_processor.filter_kwargs(param_kwargs)) for name, param_kwargs in sorted_items(params)]
+        data_points, objectives = split_examples(examples, params)
+        if data_points:
+            optimizer = Optimizer(spaces, **kwargs)
+            optimizer.tell(data_points, objectives)
+            current_point = optimizer.ask()
+            self.current_values = replace_values(params, current_point)
+        else:
             self.current_values = {}
-            return
-        if not minimizing:
-            objectives = (negate_objective)(objectives)
-        optimizer = Optimizer(dimensions, **kwargs)
-        optimizer.tell(data_points, objectives)
-        current_point = optimizer.ask()
-        self.current_values = replace_values(params, current_point)
 
     def param(self, name, **kwargs):
         if name in self.current_values:

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3da3431a
+# __coconut_hash__ = 0xcff1ad3c
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -28,7 +28,7 @@ import json
 import os.path
 
 from bbopt.backends import init_backend
-from bbopt.params import process_params
+from bbopt.params import param_processor
 from bbopt.util import Str
 from bbopt.util import norm_path
 from bbopt.util import json_serialize
@@ -84,7 +84,7 @@ class BlackBoxOptimizer(_coconut.object):
             raise TypeError("name must be a string")
         if name in self._new_params:
             raise ValueError("parameter of name %r already exists" % name)
-        kwargs = (process_params)(kwargs)
+        kwargs = (param_processor.standardize_kwargs)(kwargs)
         value = (json_serialize)(self._backend.param(name, **kwargs))
         self._new_params[name] = kwargs
         self._current_example["values"][name] = value

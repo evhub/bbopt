@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4009dcfe
+# __coconut_hash__ = 0xea7185c8
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -60,6 +60,9 @@ random_data = os.path.join(example_dir, "random_example.bbopt.json")
 skopt_file = os.path.join(example_dir, "skopt_example.py")
 skopt_data = os.path.join(example_dir, "skopt_example.bbopt.json")
 
+conditional_file = os.path.join(example_dir, "conditional_example.py")
+conditional_data = os.path.join(example_dir, "conditional_example.bbopt.json")
+
 # Tests:
 
 class TestExamples(unittest.TestCase):
@@ -85,3 +88,14 @@ class TestExamples(unittest.TestCase):
             assert os.path.exists(skopt_data)
             from bbopt.examples.skopt_example import y as got_y
             assert got_y == want_y
+
+    def test_conditional(self):
+        print("\ntest conditional:")
+        with remove_when_done(conditional_data):
+            want_reward = float("-inf")
+            for _ in range(10):
+                stdout = call_test(["python", conditional_file])
+                want_reward = max(int(stdout.strip()), want_reward)
+            assert os.path.exists(conditional_data)
+            from bbopt.examples.conditional_example import reward as got_reward
+            assert got_reward == want_reward

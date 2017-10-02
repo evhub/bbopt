@@ -1,0 +1,16 @@
+# BBopt boilerplate:
+from bbopt import BlackBoxOptimizer
+bb = BlackBoxOptimizer(file=__file__)
+if __name__ == "__main__":
+    bb.run(backend="scikit-optimize")
+
+use_low = bb.getrandbits("use low", 1, guess=0) |> bool
+if use_low:
+    reward = bb.randrange("x_low", 10)
+else:
+    reward = bb.randrange("x_high", 10, 20)
+
+bb.maximize(reward)
+
+if __name__ == "__main__":
+    print(repr(reward))

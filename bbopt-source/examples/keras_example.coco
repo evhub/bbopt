@@ -71,7 +71,7 @@ for i in bb.loop(n=N, backend="scikit-optimize"):
         optimizer=SGD(
             lr=bb.uniform("learning rate", 0, 0.2, guess=0.01),
             momentum=bb.uniform("momentum", 0, 1, guess=0.9),
-            nesterov=bb.randint("nesterov", 0, 1, guess=1) |> bool,
+            nesterov=bb.getrandbits("nesterov", 1, guess=1) |> bool,
             decay=bb.uniform("decay", 0, 0.1, guess=0.001),
         ),
         metrics=["accuracy"],

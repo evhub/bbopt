@@ -57,3 +57,12 @@ Currently, BBopt only supports the `scikit-optimize` and `random` backends, but 
 bb.<random function>(<name>, <args to function>)
 ```
 to define parameters.
+
+## Examples
+
+Some examples of BBopt in action (BBopt's examples are written in [Coconut](http://coconut-lang.org/)):
+
+- [`random_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/random_example.coco): Extremely basic example using the `random` backend.
+- [`skopt_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/skopt_example.coco): Slightly more complex example making use of the `scikit-optimize` backend.
+- [`conditional_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_example.coco): Example of having black box parameters that are dependent on other black box parameters.
+- [`keras_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.coco): Complete example of using BBopt to optimize a neural net in Keras.

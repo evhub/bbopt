@@ -52,35 +52,45 @@ def json_serialize(obj):
     raise TypeError("invalid JSON object %r" % obj)
 
 def sorted_items(params) =
-    """Return an iterator of the dict's values sorted by its keys."""
+    """Return an iterator of the dict's items sorted by its keys."""
     sorted(params.items())
 
-def split_examples(examples):
-    """Split examples into a list of data points, a list of objectives, and whether minimizing (True), maximizing (False), or no data (None)."""
-    data_points, objectives, minimizing = [], [], None
+def negate_objective(objective):
+    if isinstance(objective, list):
+        return objective |> map$(negate_objective) |> list
+    else:
+        return -objective
+
+def make_features(values, params, default_missing_value=None):
+    """Return an iterator of the values for the parameters in sorted order."""
+    for feature, param_kwargs in sorted_items(params):
+        if feature in values:
+            yield values[feature]
+        elif "value_when_missing" in param_kwargs:
+            yield param_kwargs["value_when_missing"]
+        else:
+            yield default_missing_value
+
+def split_examples(examples, params, default_missing_value=None):
+    """Split examples into a list of data points and a list of losses."""
+    data_points, losses = [], []
     for example in examples:
         case example:
             match {"values": values, "gain": gain, **_}:
-                if minimizing is True:
-                    raise ValueError("cannot have examples with maximize and examples with minimize")
-                minimizing = False
-                data_points.append(values |> sorted_items |> map$(.[1]) |> list)
-                objectives.append(gain)
+                loss = negate_objective(gain)
             match {"values": values, "loss": loss, **_}:
-                if minimizing is False:
-                    raise ValueError("cannot have examples with maximize and examples with minimize")
-                minimizing = True
-                data_points.append(values |> sorted_items |> map$(.[1]) |> list)
-                objectives.append(loss)
+                pass
         else:
             raise ValueError("invalid example %r" % example)
-    return data_points, objectives, minimizing
+        make_features(values, params, default_missing_value) |> list |> data_points.append
+        loss |> losses.append
+    return data_points, losses
 
 def replace_values(params, point):
     """Return a dictionary with the values replaced by the values in point,
     where point is a list of the values corresponding to the sorted params."""
     values = {}
-    for i, (k, _) in enumerate(sorted(params.items())):
+    for i, k in params |> sorted |> enumerate:
         values[k] = point[i]
     return values
 
@@ -91,12 +101,6 @@ def all_isinstance(objs, types) =
 def format_err(Error, message, object):
     """Creates an error with a formatted error message."""
     return Error(message + ": " + repr(object))
-
-def negate_objective(objective):
-    if isinstance(objective, list):
-        return objective |> map$(negate_objective) |> list
-    else:
-        return -objective
 
 def best_example(examples):
     """Return the best example seen so far."""
