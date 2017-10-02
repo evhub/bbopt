@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc539a244
+# __coconut_hash__ = 0x31262024
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -24,9 +24,9 @@ if __name__ == "__main__":
 
 use_low = (bool)(bb.getrandbits("use low", 1, guess=0))
 if use_low:
-    reward = bb.randrange("x_low", 10)
+    reward = bb.randrange("x_low", 10, value_when_missing=0)
 else:
-    reward = bb.randrange("x_high", 10, 20)
+    reward = bb.randrange("x_high", 10, 20, value_when_missing=10)
 
 bb.maximize(reward)
 
