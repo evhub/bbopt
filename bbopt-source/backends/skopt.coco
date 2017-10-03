@@ -41,12 +41,12 @@ def create_dimension(
 class SkoptBackend:
     """The scikit-optimize backend uses scikit-optimize for black box optimization."""
 
-    def __init__(self, examples, params, base_estimator=GaussianProcessRegressor, **kwargs):
+    def __init__(self, examples, params, default_placeholder=None, base_estimator=GaussianProcessRegressor, **kwargs):
         dimensions = [
             create_dimension(name, **param_processor.filter_kwargs(param_kwargs))
             for name, param_kwargs in sorted_items(params)
         ]
-        data_points, losses = split_examples(examples, params)
+        data_points, losses = split_examples(examples, params, default_placeholder)
         if data_points:
             optimizer = Optimizer(dimensions, base_estimator, **kwargs)
             optimizer.tell(data_points, losses)

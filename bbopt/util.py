@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd93a3674
+# __coconut_hash__ = 0x4d62efc8
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -83,17 +83,17 @@ def negate_objective(objective):
     else:
         return -objective
 
-def make_features(values, params, default_missing_value=None):
+def make_features(values, params, default_placeholder=None):
     """Return an iterator of the values for the parameters in sorted order."""
     for feature, param_kwargs in sorted_items(params):
         if feature in values:
             yield values[feature]
-        elif "value_when_missing" in param_kwargs:
-            yield param_kwargs["value_when_missing"]
+        elif "placeholder_when_missing" in param_kwargs:
+            yield param_kwargs["placeholder_when_missing"]
         else:
-            yield default_missing_value
+            yield default_placeholder
 
-def split_examples(examples, params, default_missing_value=None):
+def split_examples(examples, params, default_placeholder=None):
     """Split examples into a list of data points and a list of losses."""
     data_points, losses = [], []
     for example in examples:
@@ -122,7 +122,7 @@ def split_examples(examples, params, default_missing_value=None):
                 pass
         if not _coconut_match_check:
             raise ValueError("invalid example %r" % example)
-        (data_points.append)((list)(make_features(values, params, default_missing_value)))
+        (data_points.append)((list)(make_features(values, params, default_placeholder)))
         (losses.append)(loss)
     return data_points, losses
 

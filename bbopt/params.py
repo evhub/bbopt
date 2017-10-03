@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x1ff34e79
+# __coconut_hash__ = 0x444e2de8
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -131,7 +131,7 @@ def handle_weibullvariate(args):
 
 class ParamProcessor(_coconut.object):
     """Processes param keyword arguments."""
-    ignored = ["guess", "value_when_missing",]
+    ignored = ["guess", "placeholder_when_missing",]
     pre_processors = {"randint": preproc_randint, "random": preproc_random, "gauss": preproc_gauss, "getrandbits": preproc_getrandbits}
     handlers = {"randrange": handle_randrange, "choice": handle_choice, "sample": handle_sample, "uniform": handle_uniform, "triangular": handle_triangular, "betavariate": handle_betavariate, "expovariate": handle_expovariate, "gammavariate": handle_gammavariate, "normalvariate": handle_normalvariate, "lognormvariate": handle_lognormvariate, "vonmisesvariate": handle_vonmisesvariate, "paretovariate": handle_paretovariate, "weibullvariate": handle_weibullvariate}
 

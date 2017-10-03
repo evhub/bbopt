@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf837df01
+# __coconut_hash__ = 0x9c7de2f1
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -54,9 +54,9 @@ def create_dimension(name, choice=None, randrange=None, uniform=None,):
 class SkoptBackend(_coconut.object):
     """The scikit-optimize backend uses scikit-optimize for black box optimization."""
 
-    def __init__(self, examples, params, base_estimator=GaussianProcessRegressor, **kwargs):
+    def __init__(self, examples, params, default_placeholder=None, base_estimator=GaussianProcessRegressor, **kwargs):
         dimensions = [create_dimension(name, **param_processor.filter_kwargs(param_kwargs)) for name, param_kwargs in sorted_items(params)]
-        data_points, losses = split_examples(examples, params)
+        data_points, losses = split_examples(examples, params, default_placeholder)
         if data_points:
             optimizer = Optimizer(dimensions, base_estimator, **kwargs)
             optimizer.tell(data_points, losses)

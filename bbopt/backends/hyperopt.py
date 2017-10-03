@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x6f5c92c9
+# __coconut_hash__ = 0xc2eee33a
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -53,9 +53,9 @@ def create_space(name, choice=None, randrange=None, uniform=None, normalvariate=
 class HyperoptBackend(_coconut.object):
     """The hyperopt backend uses hyperopt for black box optimization."""
 
-    def __init__(self, examples, params, **kwargs):
+    def __init__(self, examples, params, default_placeholder=None, **kwargs):
         spaces = [create_space(name, **param_processor.filter_kwargs(param_kwargs)) for name, param_kwargs in sorted_items(params)]
-        data_points, objectives = split_examples(examples, params)
+        data_points, objectives = split_examples(examples, params, default_placeholder)
         if data_points:
             optimizer = Optimizer(spaces, **kwargs)
             optimizer.tell(data_points, objectives)

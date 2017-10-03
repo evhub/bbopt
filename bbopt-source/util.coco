@@ -61,17 +61,17 @@ def negate_objective(objective):
     else:
         return -objective
 
-def make_features(values, params, default_missing_value=None):
+def make_features(values, params, default_placeholder=None):
     """Return an iterator of the values for the parameters in sorted order."""
     for feature, param_kwargs in sorted_items(params):
         if feature in values:
             yield values[feature]
-        elif "value_when_missing" in param_kwargs:
-            yield param_kwargs["value_when_missing"]
+        elif "placeholder_when_missing" in param_kwargs:
+            yield param_kwargs["placeholder_when_missing"]
         else:
-            yield default_missing_value
+            yield default_placeholder
 
-def split_examples(examples, params, default_missing_value=None):
+def split_examples(examples, params, default_placeholder=None):
     """Split examples into a list of data points and a list of losses."""
     data_points, losses = [], []
     for example in examples:
@@ -82,7 +82,7 @@ def split_examples(examples, params, default_missing_value=None):
                 pass
         else:
             raise ValueError("invalid example %r" % example)
-        make_features(values, params, default_missing_value) |> list |> data_points.append
+        make_features(values, params, default_placeholder) |> list |> data_points.append
         loss |> losses.append
     return data_points, losses
 

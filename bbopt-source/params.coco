@@ -115,7 +115,7 @@ class ParamProcessor:
     """Processes param keyword arguments."""
     ignored = [
         "guess",
-        "value_when_missing",
+        "placeholder_when_missing",
     ]
     pre_processors = {
         "randint": preproc_randint,
