@@ -2,10 +2,13 @@
 Backends contains all of bbopt's different backends.
 """
 
+from copy import deepcopy
+
 registered_backends = {}
 
 def init_backend(name, examples, params, **kwargs):
     """Create a backend object of the given name with the given example data."""
+    examples, params = deepcopy(examples), deepcopy(params)
     if name in registered_backends:
         return registered_backends[name]
     elif name == "serving":

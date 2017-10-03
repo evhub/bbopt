@@ -10,6 +10,8 @@ install-2: build
 build:
 	coconut setup.coco --no-tco --strict
 	coconut "bbopt-source" bbopt --no-tco --strict --jobs sys
+	-mkdir "./bbopt/examples/data"
+	cp "./bbopt-source/examples/data/*" "./bbopt/examples/data"
 
 .PHONY: upload
 upload: clean install

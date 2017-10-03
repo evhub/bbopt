@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xe7dc6451
+# __coconut_hash__ = 0x7740416d
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -22,11 +22,11 @@ bb = BlackBoxOptimizer(file=__file__)
 if __name__ == "__main__":
     bb.run(backend="scikit-optimize")
 
-use_low = (bool)(bb.getrandbits("use low", 1, guess=0))
-if use_low:
-    reward = bb.randrange("x_low", 10, placeholder_when_missing=0)
-else:
+use_high = (bool)(bb.getrandbits("use high", 1, guess=0))
+if use_high:
     reward = bb.randrange("x_high", 10, 20, placeholder_when_missing=10)
+else:
+    reward = bb.randrange("x_low", 10, placeholder_when_missing=0)
 
 bb.maximize(reward)
 

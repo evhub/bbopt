@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x54643123
+# __coconut_hash__ = 0xd15c11f3
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -22,10 +22,13 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 
 
+from copy import deepcopy
+
 registered_backends = {}
 
 def init_backend(name, examples, params, **kwargs):
     """Create a backend object of the given name with the given example data."""
+    examples, params = deepcopy(examples), deepcopy(params)
     if name in registered_backends:
         return registered_backends[name]
     elif name == "serving":
