@@ -42,12 +42,6 @@ class BlackBoxOptimizer:
         self._load_examples()
         self.run(None)
 
-    def loop(self, n, backend, **kwargs):
-        """Return an iterator that reruns the optimizer at each step."""
-        for i in range(n):
-            self.run(backend, **kwargs)
-            yield i
-
     def run(self, backend, **kwargs):
         """Optimize parameters using the given backend."""
         if backend is None:
@@ -111,8 +105,7 @@ class BlackBoxOptimizer:
                     self._old_params = params
                     self._examples = examples
 
-    @property
-    def _json_data(self):
+    def get_data(self):
         self._old_params.update(self._new_params)
         return {
             "params": self._old_params,
@@ -125,7 +118,7 @@ class BlackBoxOptimizer:
         if self._current_example not in self._examples:
             self._examples.append(self._current_example)
         with open(self._data_file, "w+") as df:
-            self._json_data |> json.dumps$(indent=4 if self._pretty_json else None) |> str |> df.write
+            self.get_data() |> json.dumps$(indent=4 if self._pretty_json else None) |> str |> df.write
 
     def get_current_run(self):
         """Return a dictionary containing the current parameters and reward."""

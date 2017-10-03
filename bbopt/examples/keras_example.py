@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7cb1e030
+# __coconut_hash__ = 0x716caceb
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -51,24 +51,24 @@ X_train, X_validate, X_test = X[:train_split], X[train_split:validate_split], X[
 y_train, y_validate, y_test = y[:train_split], y[train_split:validate_split], y[validate_split:]
 
 # BBOpt setup:
-
 from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)
 
-try:
+# Load number of trials:
+if len(sys.argv) > 1:
     N = int(sys.argv[1])
-except Exception:
+else:
     N = 1
 
-for i in bb.loop(n=N, backend="scikit-optimize"):
+# Main loop:
+for i in range(N):
+    bb.run(backend="scikit-optimize")
 
-# Main program:
+    print("\n= %d = (example #%d)" % (i + 1, len(bb.get_data()["examples"]) + 1))
 
-    print("\n= %d =" % i)
+    model = Sequential([Dense(units=bb.randint("hidden neurons", 1, 15, guess=2), input_dim=len(X_train[0]), kernel_regularizer=l1_l2(l1=bb.uniform("l1", 0, 0.1, guess=0.005), l2=bb.uniform("l2", 0, 0.1, guess=0.05))), Activation("relu"), Dense(units=2), Activation("softmax"),])
 
-    model = Sequential([Dense(units=bb.randint("hidden neurons", 1, 15, guess=10), input_dim=len(X_train[0]), W_regularizer=l1_l2(l1=bb.uniform("l1", 0, 0.1, guess=0.01), l2=bb.uniform("l2", 0, 0.1, guess=0.01))), Activation("relu"), Dense(units=2), Activation("softmax"),])
-
-    model.compile(loss="categorical_crossentropy", optimizer=SGD(lr=bb.uniform("learning rate", 0, 0.5, guess=0.1), decay=bb.uniform("decay", 0, 0.01, guess=0.001), momentum=bb.uniform("momentum", 0, 1, guess=0.1), nesterov=(bool)(bb.getrandbits("nesterov", 1, guess=1))), metrics=["accuracy"])
+    model.compile(loss="categorical_crossentropy", optimizer=SGD(lr=bb.uniform("learning rate", 0, 0.5, guess=0.15), decay=bb.uniform("decay", 0, 0.01, guess=0.0005), momentum=bb.uniform("momentum", 0, 1, guess=0.5), nesterov=(bool)(bb.getrandbits("nesterov", 1, guess=1))), metrics=["accuracy"])
 
     train_history = model.fit(X_train, y_train, epochs=50, batch_size=bb.randint("batch size", 1, 32, guess=16), verbose=0)
 
@@ -85,5 +85,7 @@ for i in bb.loop(n=N, backend="scikit-optimize"):
 
     pprint(bb.get_current_run())
 
-print("\n= BEST =")
-pprint(bb.get_optimal_run())
+# Summary of best run:
+best_example = bb.get_optimal_run()
+print("\n= BEST = (example #%d)" % bb.get_data()["examples"].index(best_example))
+pprint(best_example)

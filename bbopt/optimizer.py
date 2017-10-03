@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x420c7d01
+# __coconut_hash__ = 0x43e585d0
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -57,12 +57,6 @@ class BlackBoxOptimizer(_coconut.object):
         self._examples = []
         self._load_examples()
         self.run(None)
-
-    def loop(self, n, backend, **kwargs):
-        """Return an iterator that reruns the optimizer at each step."""
-        for i in range(n):
-            self.run(backend, **kwargs)
-            yield i
 
     def run(self, backend, **kwargs):
         """Optimize parameters using the given backend."""
@@ -143,8 +137,7 @@ class BlackBoxOptimizer(_coconut.object):
                     self._old_params = params
                     self._examples = examples
 
-    @property
-    def _json_data(self):
+    def get_data(self):
         self._old_params.update(self._new_params)
         return {"params": self._old_params, "examples": self._examples}
 
@@ -154,7 +147,7 @@ class BlackBoxOptimizer(_coconut.object):
         if self._current_example not in self._examples:
             self._examples.append(self._current_example)
         with open(self._data_file, "w+") as df:
-            (df.write)((str)(json.dumps(self._json_data, indent=4 if self._pretty_json else None)))
+            (df.write)((str)(json.dumps(self.get_data(), indent=4 if self._pretty_json else None)))
 
     def get_current_run(self):
         """Return a dictionary containing the current parameters and reward."""
