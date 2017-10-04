@@ -1,5 +1,5 @@
 """
-The interface into bbopt for a file with black-box parameters.
+The interface into BBopt for a file with black-box parameters.
 """
 
 # Imports:
@@ -7,7 +7,7 @@ The interface into bbopt for a file with black-box parameters.
 import json
 import os.path
 
-from bbopt.backends import init_backend
+from bbopt.backends import backend_registry
 from bbopt.params import param_processor
 from bbopt.util import (
     Str,
@@ -16,7 +16,6 @@ from bbopt.util import (
     best_example,
 )
 from bbopt.constants import (
-    default_backend,
     data_file_ext,
 )
 
@@ -40,19 +39,17 @@ class BlackBoxOptimizer:
         self._old_params = {}
         self._examples = []
         self._load_examples()
-        self.run(None)
+        self.run(None)  # use serving backend
 
     def run(self, backend, **kwargs):
         """Optimize parameters using the given backend."""
-        if backend is None:
-            backend = default_backend
-        self._backend = init_backend(backend, self._examples, self._old_params, **kwargs)
+        self._backend = backend_registry.init_backend(backend, self._examples, self._old_params, **kwargs)
         self._new_params = {}
         self._current_example = {"values": {}}
 
     @property
-    def _got_reward(self):
-        return "loss" in self._current_example or "gain" in self._current_example
+    def _got_reward(self) =
+        "loss" in self._current_example or "gain" in self._current_example
 
     def param(self, name, **kwargs):
         """Create a black box parameter and return its value."""
@@ -77,12 +74,14 @@ class BlackBoxOptimizer:
     def maximize(self, value):
         """Set the gain of the current run."""
         self._set_reward("gain", value)
-        self._save_examples()
 
     def minimize(self, value):
         """Set the loss of the current run."""
         self._set_reward("loss", value)
-        self._save_examples()
+
+    @property
+    def _using_serving_backend(self) =
+        isinstance(self._backend, backend_registry[None])
 
     def _set_reward(self, reward_type, value):
         """Set the gain or loss to value."""
@@ -91,9 +90,12 @@ class BlackBoxOptimizer:
         if callable(value):
             value = value()
         self._current_example[reward_type] = value
+        if not self._using_serving_backend:
+            self._save_examples()
 
     @property
-    def _data_file(self) = os.path.splitext(self._file)[0] + data_file_ext
+    def _data_file(self) =
+        os.path.splitext(self._file)[0] + data_file_ext
 
     def _load_examples(self):
         """Load example data."""

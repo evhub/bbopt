@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x43e585d0
+# __coconut_hash__ = 0xfa605b6d
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
 """
-The interface into bbopt for a file with black-box parameters.
+The interface into BBopt for a file with black-box parameters.
 """
 
 # Coconut Header: -------------------------------------------------------------
@@ -27,13 +27,12 @@ _coconut_sys.path.remove(_coconut_file_path)
 import json
 import os.path
 
-from bbopt.backends import init_backend
+from bbopt.backends import backend_registry
 from bbopt.params import param_processor
 from bbopt.util import Str
 from bbopt.util import norm_path
 from bbopt.util import json_serialize
 from bbopt.util import best_example
-from bbopt.constants import default_backend
 from bbopt.constants import data_file_ext
 
 # Optimizer:
@@ -56,13 +55,11 @@ class BlackBoxOptimizer(_coconut.object):
         self._old_params = {}
         self._examples = []
         self._load_examples()
-        self.run(None)
+        self.run(None)  # use serving backend
 
     def run(self, backend, **kwargs):
         """Optimize parameters using the given backend."""
-        if backend is None:
-            backend = default_backend
-        self._backend = init_backend(backend, self._examples, self._old_params, **kwargs)
+        self._backend = backend_registry.init_backend(backend, self._examples, self._old_params, **kwargs)
         self._new_params = {}
         self._current_example = {"values": {}}
 
@@ -93,12 +90,14 @@ class BlackBoxOptimizer(_coconut.object):
     def maximize(self, value):
         """Set the gain of the current run."""
         self._set_reward("gain", value)
-        self._save_examples()
 
     def minimize(self, value):
         """Set the loss of the current run."""
         self._set_reward("loss", value)
-        self._save_examples()
+
+    @property
+    def _using_serving_backend(self):
+        return isinstance(self._backend, backend_registry[None])
 
     def _set_reward(self, reward_type, value):
         """Set the gain or loss to value."""
@@ -107,6 +106,8 @@ class BlackBoxOptimizer(_coconut.object):
         if callable(value):
             value = value()
         self._current_example[reward_type] = value
+        if not self._using_serving_backend:
+            self._save_examples()
 
     @property
     def _data_file(self):

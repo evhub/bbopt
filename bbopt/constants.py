@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x43853a07
+# __coconut_hash__ = 0xfb7a5e81
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
 """
-Constants for use across all of bbopt.
+Constants for use across all of BBopt.
 """
 
 # Coconut Header: -------------------------------------------------------------
@@ -25,8 +25,8 @@ _coconut_sys.path.remove(_coconut_file_path)
 # Installation constants:
 
 name = "bbopt"
-version = "0.2.0"
-description = "Black box optimization made simple."
+version = "0.2.1"
+description = "The easiest hyperparameter optimization you'll ever do."
 github_url = "https://github.com/evhub/bbopt"
 author = "Evan Hubinger"
 author_email = "evanjhub@gmail.com"
@@ -34,7 +34,6 @@ classifiers = ("Development Status :: 3 - Alpha", "License :: OSI Approved :: Ap
 requirements = ()
 extra_requirements = {"scikit-optimize": ("scikit-optimize",)}
 
-# Interface constants:
+# Optimizer constants:
 
-default_backend = "serving"
 data_file_ext = ".bbopt.json"

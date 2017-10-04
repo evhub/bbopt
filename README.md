@@ -1,7 +1,5 @@
 # BBOpt
 
-_The easiest hyperparameter optimization you'll ever do._
-
 BBopt is a frontend for easily interfacing with any black box optimization framework.
 
 BBopt provides a universal interface based on the standard library `random` module (so you don't even have to learn anything new!) that lets you define your tunable parameters.

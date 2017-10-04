@@ -36,7 +36,7 @@ validate_split = train_split + .2*len(X) |> int
 X_train, X_validate, X_test = X[:train_split], X[train_split:validate_split], X[validate_split:]
 y_train, y_validate, y_test = y[:train_split], y[train_split:validate_split], y[validate_split:]
 
-# BBOpt setup:
+# BBopt setup:
 from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)
 

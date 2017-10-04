@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd15c11f3
+# __coconut_hash__ = 0x25751311
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -22,27 +22,51 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 
 
-from copy import deepcopy
+class BackendRegistry(_coconut.object):
+    def _coconut_lambda_1(_=None):
+        from bbopt.backends.serving import ServingBackend
+        return ServingBackend
+    def _coconut_lambda_2(_=None):
+        from bbopt.backends.random import RandomBackend
+        return RandomBackend
+    def _coconut_lambda_3(_=None):
+        from bbopt.backends.skopt import SkoptBackend
+        return SkoptBackend
+    def _coconut_lambda_4(_=None):
+        from bbopt.backends.hypteropt import HyperoptBackend
+        return HyperoptBackend
+    backend_generators = {"serving": (_coconut_lambda_1), "random": (_coconut_lambda_2), "scikit-optimize": (_coconut_lambda_3), "hyperopt": (_coconut_lambda_4)}
+    registered_backends = {}
 
-registered_backends = {}
+    def __getitem__(self, name):
+        if name is None:
+            name = "serving"
+        if name in self.registered_backends:
+            return self.registered_backends[name]
+        elif name in self.backend_generators:
+            backend = self.backend_generators[name]()
+            del self.backend_generators[name]
+            self.registered_backends[name] = backend
+            return backend
+        else:
+            raise ValueError("unknown backend %r" % name)
 
-def init_backend(name, examples, params, **kwargs):
-    """Create a backend object of the given name with the given example data."""
-    examples, params = deepcopy(examples), deepcopy(params)
-    if name in registered_backends:
-        return registered_backends[name]
-    elif name == "serving":
-        from bbopt.backends.serving import ServingBackend as Backend
-    elif name == "random":
-        from bbopt.backends.random import RandomBackend as Backend
-    elif name == "scikit-optimize":
-        from bbopt.backends.skopt import SkoptBackend as Backend
-    elif name == "hyperopt":
-        from bbopt.backends.hypteropt import HyperoptBackend as Backend
-    else:
-        raise ValueError("unknown backend %r" % name)
-    return Backend(examples, params, **kwargs)
+    def __iter__(self):
+        _coconut_yield_from = backend_generators
+        for _coconut_yield_item in _coconut_yield_from:
+            yield _coconut_yield_item
 
-def register_backend(name, backend):
-    """Register a new backend under the given name."""
-    registered_backends[name] = backend
+        _coconut_yield_from = registered_backends
+        for _coconut_yield_item in _coconut_yield_from:
+            yield _coconut_yield_item
+
+
+    def register_backend(self, name, backend):
+        """Register a new backend under the given name."""
+        self.registered_backends[name] = backend
+
+    def init_backend(self, name, examples, params, **kwargs):
+        """Create a backend object of the given name with the given example data."""
+        return self[name](examples, params, **kwargs)
+
+backend_registry = BackendRegistry()

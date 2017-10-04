@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x716caceb
+# __coconut_hash__ = 0xb4c5c6bb
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -50,7 +50,7 @@ validate_split = (int)(train_split + .2 * len(X))
 X_train, X_validate, X_test = X[:train_split], X[train_split:validate_split], X[validate_split:]
 y_train, y_validate, y_test = y[:train_split], y[train_split:validate_split], y[validate_split:]
 
-# BBOpt setup:
+# BBopt setup:
 from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)
 

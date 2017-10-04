@@ -1,12 +1,12 @@
 """
-Constants for use across all of bbopt.
+Constants for use across all of BBopt.
 """
 
 # Installation constants:
 
 name = "bbopt"
-version = "0.2.0"
-description = "Black box optimization made simple."
+version = "0.2.1"
+description = "The easiest hyperparameter optimization you'll ever do."
 github_url = "https://github.com/evhub/bbopt"
 author = "Evan Hubinger"
 author_email = "evanjhub@gmail.com"
@@ -23,7 +23,6 @@ extra_requirements = {
     ),
 }
 
-# Interface constants:
+# Optimizer constants:
 
-default_backend = "serving"
 data_file_ext = ".bbopt.json"
