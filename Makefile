@@ -1,10 +1,10 @@
 .PHONY: install
 install: build
-	pip install -e .[scikit-optimize]
+	pip install -e .[all]
 
 .PHONY: install-2
 install-2: build
-	python2 -m pip install -e .[scikit-optimize]
+	python2 -m pip install -e .[all]
 
 .PHONY: build
 build:

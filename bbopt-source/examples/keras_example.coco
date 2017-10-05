@@ -86,7 +86,6 @@ for i in range(N):
         verbose=0,
     )
 
-
     train_loss, train_acc = train_history.history["loss"][-1], train_history.history["acc"][-1]
 
     validation_loss, validation_acc = model.evaluate(X_validate, y_validate, verbose=0)

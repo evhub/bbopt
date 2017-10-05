@@ -14,8 +14,10 @@ class ServingBackend:
     def __init__(self, examples, params):  # ignore params since we're serving
         self.serving_values = best_example(examples)["values"]
 
-    def param(self, name, **kwargs):  # ignore kwargs since we're serving
-        try:
-            return self.serving_values[name]
-        except KeyError:
+    def param(self, name, **kwargs):
+        match {=name: value, **_} in self.serving_values:
+            return value
+        else: if "guess" in kwargs:
+            return kwargs["guess"]
+        else:
             raise ValueError("missing data for parameter %r" % name)

@@ -4,14 +4,30 @@ The hyperopt backend. Does black box optimization using hyperopt.
 
 # Imports:
 
-from hyperopt import hp
+import numpy as np
+
+from hyperopt import (
+    hp,
+    tpe,
+    FMinIter,
+)
+from hyperopt.pyll import as_apply
+from hyperopt.base import (
+    Domain,
+    Trials,
+    STATUS_OK,
+    STATUS_RUNNING,
+    JOB_STATE_DONE,
+    spec_from_misc,
+)
 
 from bbopt.backends.random import RandomBackend
 from bbopt.params import param_processor
 from bbopt.util import (
     sorted_items,
-    split_examples,
-    replace_values,
+    negate_objective,
+    format_err,
+    make_features,
 )
 
 # Utilities:
@@ -23,42 +39,97 @@ def create_space(
     uniform=None,
     normalvariate=None,
 ):
+    """Create a hyperopt space for the given param kwargs."""
     if choice is not None:
         return hp.choice(name, choice)
     if randrange is not None:
         start, stop, step = randrange
-        if start != 0 or step != 1:
-            raise ValueError("hyperopt backend only supports a randrange start of 0 and step of 1")
-        return hp.randrange(name, stop)
+        if step != 1:
+            raise ValueError("the hyperopt backend only supports a randrange step size of 1")
+        return start + hp.randint(name, stop-1)
     if uniform is not None:
         return hp.uniform(name, *uniform)
     if normalvariate is not None:
         return hp.normal(name, *normalvariate)
     raise TypeError("insufficiently specified parameter %r" % name)
 
+def examples_to_trials(examples, params):
+    """Create hyperopt trials from the given examples."""
+    trials = []
+    for tid, ex in enumerate(examples):
+        match {"gain": gain, **_} in ex:
+            loss = negate_objective(gain)
+        else:
+            loss = ex["loss"]
+        result = {
+            "status": STATUS_OK,
+            "loss": loss,
+        }
+        vals = {}
+        idxs = {}
+        for k, v in zip(
+            sorted(params),
+            make_features(ex["values"], params)
+        ):
+            vals[k] = [v] if v is not None else []
+            idxs[k] = [tid] if v is not None else []
+        misc = {
+            "tid": tid,
+            "idxs": idxs,
+            "vals": vals,
+            "cmd": None,
+        }
+        trials.append({
+            "tid": tid,
+            "result": result,
+            "misc": misc,
+            "spec": spec_from_misc(misc),
+            "state": JOB_STATE_DONE,
+            "owner": None,
+            "book_time": None,
+            "refresh_time": None,
+            "exp_key": None,
+        })
+    return trials
+
 # Backend:
 
 class HyperoptBackend:
     """The hyperopt backend uses hyperopt for black box optimization."""
+    current_values = None
 
-    def __init__(self, examples, params, default_placeholder=None, **kwargs):
-        spaces = [
-            create_space(name, **param_processor.filter_kwargs(param_kwargs))
-            for name, param_kwargs in sorted_items(params)
-        ]
-        data_points, objectives = split_examples(examples, params, default_placeholder)
-        if data_points:
-            optimizer = Optimizer(spaces, **kwargs)
-            optimizer.tell(data_points, objectives)
-            current_point = optimizer.ask()
-            self.current_values = replace_values(params, current_point)
-        else:
+    def __init__(self, examples, params, default_placeholder=None, algo=tpe.suggest, **kwargs):
+        if not examples:
             self.current_values = {}
+            return
+        space = {
+            name: create_space(name, **param_processor.filter_kwargs(param_kwargs))
+            for name, param_kwargs in sorted_items(params)
+        } |> as_apply
+        domain = Domain(self.set_current_values, space)
+        trials = Trials()
+        trials.insert_trial_docs(examples_to_trials(examples, params))
+        FMinIter(
+            algo,
+            domain,
+            trials,
+            rstate=np.random.RandomState(),
+            **kwargs,
+        ) |> next
+        if self.current_values is None:
+            raise format_err(RuntimeError, "internal hyperopt error", (algo, domain, trials, kwargs))
+
+    def set_current_values(self, values):
+        assert isinstance(values, dict)
+        self.current_values = values
+        return {
+            "status": STATUS_RUNNING,
+        }
 
     def param(self, name, **kwargs):
-        if name in self.current_values:
-            return self.current_values[name]
-        elif "guess" in kwargs:
+        match {=name: value, **_} in self.current_values:
+            return value
+        else: if "guess" in kwargs:
             return kwargs["guess"]
         else:
             return RandomBackend().param(**kwargs)

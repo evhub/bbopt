@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xfa605b6d
+# __coconut_hash__ = 0x792cfc8e
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -51,7 +51,7 @@ class BlackBoxOptimizer(_coconut.object):
         self.reload()
 
     def reload(self):
-        """Completely wipe and restart the optimizer."""
+        """Completely reload the optimizer."""
         self._old_params = {}
         self._examples = []
         self._load_examples()

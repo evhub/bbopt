@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x9c7de2f1
+# __coconut_hash__ = 0xfe4a4a3c
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -37,12 +37,13 @@ from bbopt.util import negate_objective
 # Utilities:
 
 def create_dimension(name, choice=None, randrange=None, uniform=None,):
+    """Create a scikit-optimize dimension for the given param kwargs."""
     if choice is not None:
         return choice  # lists are interpreted as choices
     if randrange is not None:
         start, stop, step = randrange
         if step != 1:
-            raise ValueError("scikit-optimize backend only supports a randrange step size of 1")
+            raise ValueError("the scikit-optimize backend only supports a randrange step size of 1")
         stop -= 1  # scikit-optimize ranges are inclusive
         return (start, stop)  # int tuples are interpreted as int ranges
     if uniform is not None:
@@ -55,20 +56,29 @@ class SkoptBackend(_coconut.object):
     """The scikit-optimize backend uses scikit-optimize for black box optimization."""
 
     def __init__(self, examples, params, default_placeholder=None, base_estimator=GaussianProcessRegressor, **kwargs):
-        dimensions = [create_dimension(name, **param_processor.filter_kwargs(param_kwargs)) for name, param_kwargs in sorted_items(params)]
-        data_points, losses = split_examples(examples, params, default_placeholder)
-        if data_points:
-            optimizer = Optimizer(dimensions, base_estimator, **kwargs)
-            optimizer.tell(data_points, losses)
-            current_point = optimizer.ask()
-            self.current_values = replace_values(params, current_point)
-        else:
+        if not examples:
             self.current_values = {}
+            return
+        data_points, losses = split_examples(examples, params, default_placeholder)
+        dimensions = [create_dimension(name, **param_processor.filter_kwargs(param_kwargs)) for name, param_kwargs in sorted_items(params)]
+        optimizer = Optimizer(dimensions, base_estimator, **kwargs)
+        optimizer.tell(data_points, losses)
+        current_point = optimizer.ask()
+        self.current_values = replace_values(params, current_point)
 
     def param(self, name, **kwargs):
-        if name in self.current_values:
-            return self.current_values[name]
-        elif "guess" in kwargs:
-            return kwargs["guess"]
+        _coconut_match_check = False
+        _coconut_match_to = self.current_values
+        _coconut_sentinel = _coconut.object()
+        if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
+            _coconut_match_temp_0 = _coconut_match_to.get(name, _coconut_sentinel)
+            if _coconut_match_temp_0 is not _coconut_sentinel:
+                value = _coconut_match_temp_0
+                _coconut_match_check = True
+        if _coconut_match_check:
+            return value
         else:
-            return RandomBackend().param(**kwargs)
+            if "guess" in kwargs:
+                return kwargs["guess"]
+            else:
+                return RandomBackend().param(**kwargs)

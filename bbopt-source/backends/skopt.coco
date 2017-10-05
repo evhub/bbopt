@@ -24,12 +24,13 @@ def create_dimension(
     randrange=None,
     uniform=None,
 ):
+    """Create a scikit-optimize dimension for the given param kwargs."""
     if choice is not None:
         return choice  # lists are interpreted as choices
     if randrange is not None:
         start, stop, step = randrange
         if step != 1:
-            raise ValueError("scikit-optimize backend only supports a randrange step size of 1")
+            raise ValueError("the scikit-optimize backend only supports a randrange step size of 1")
         stop -= 1  # scikit-optimize ranges are inclusive
         return (start, stop) # int tuples are interpreted as int ranges
     if uniform is not None:
@@ -42,23 +43,23 @@ class SkoptBackend:
     """The scikit-optimize backend uses scikit-optimize for black box optimization."""
 
     def __init__(self, examples, params, default_placeholder=None, base_estimator=GaussianProcessRegressor, **kwargs):
+        if not examples:
+            self.current_values = {}
+            return
+        data_points, losses = split_examples(examples, params, default_placeholder)
         dimensions = [
             create_dimension(name, **param_processor.filter_kwargs(param_kwargs))
             for name, param_kwargs in sorted_items(params)
         ]
-        data_points, losses = split_examples(examples, params, default_placeholder)
-        if data_points:
-            optimizer = Optimizer(dimensions, base_estimator, **kwargs)
-            optimizer.tell(data_points, losses)
-            current_point = optimizer.ask()
-            self.current_values = replace_values(params, current_point)
-        else:
-            self.current_values = {}
+        optimizer = Optimizer(dimensions, base_estimator, **kwargs)
+        optimizer.tell(data_points, losses)
+        current_point = optimizer.ask()
+        self.current_values = replace_values(params, current_point)
 
     def param(self, name, **kwargs):
-        if name in self.current_values:
-            return self.current_values[name]
-        elif "guess" in kwargs:
+        match {=name: value, **_} in self.current_values:
+            return value
+        else: if "guess" in kwargs:
             return kwargs["guess"]
         else:
             return RandomBackend().param(**kwargs)

@@ -50,7 +50,13 @@ to serve it!
 
 ## Backends
 
-Currently, BBopt only supports the `scikit-optimize` and `random` backends, but more are in the works! To change backends, just modify `backend="scikit-optimize"` in the boilerplate to whatever backend you want to use. All backends always use the universal interface of
+Currently, BBopt only supports the following backends:
+
+- `random`: Chooses values totally randomly.
+- `scikit-optimize`: Uses [`scikit-optimize`](https://scikit-optimize.github.io/) to tune parameters.
+- `hyperopt`: Uses [`hyperopt`](http://hyperopt.github.io/hyperopt/) to tune parameters.
+
+To change backends, just modify `backend="scikit-optimize"` in the boilerplate to whatever backend you want to use. All backends always use the universal interface of
 ```python
 bb.<random function>(<name>, <args to function>)
 ```
@@ -62,5 +68,6 @@ Some examples of BBopt in action (BBopt's examples are written in [Coconut](http
 
 - [`random_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/random_example.coco): Extremely basic example using the `random` backend.
 - [`skopt_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/skopt_example.coco): Slightly more complex example making use of the `scikit-optimize` backend.
+- [`hyperopt_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/hyperopt_example.coco): Example showcasing the `hyperopt` backend.
 - [`conditional_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_example.coco): Example of having black box parameters that are dependent on other black box parameters.
 - [`keras_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.coco): Complete example of using BBopt to optimize a neural net in Keras.

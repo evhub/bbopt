@@ -7,16 +7,16 @@ class BackendRegistry:
         "serving": (def -> from bbopt.backends.serving import ServingBackend; ServingBackend),
         "random": (def -> from bbopt.backends.random import RandomBackend; RandomBackend),
         "scikit-optimize": (def -> from bbopt.backends.skopt import SkoptBackend; SkoptBackend),
-        "hyperopt": (def -> from bbopt.backends.hypteropt import HyperoptBackend; HyperoptBackend),
+        "hyperopt": (def -> from bbopt.backends.hyperopt import HyperoptBackend; HyperoptBackend),
     }
     registered_backends = {}
 
     def __getitem__(self, name):
         if name is None:
             name = "serving"
-        if name in self.registered_backends:
+        match {=name: backend, **_} in self.registered_backends:
             return self.registered_backends[name]
-        elif name in self.backend_generators:
+        else: if name in self.backend_generators:
             backend = self.backend_generators[name]()
             del self.backend_generators[name]
             self.registered_backends[name] = backend

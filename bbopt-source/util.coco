@@ -98,9 +98,9 @@ def all_isinstance(objs, types) =
     """Return whether all the objects have the desired type(s)."""
     objs |> map$(isinstance$(?, types)) |> all
 
-def format_err(Error, message, object):
+def format_err(Error, message, obj):
     """Creates an error with a formatted error message."""
-    return Error(message + ": " + repr(object))
+    return Error(message + ": " + repr(obj))
 
 def best_example(examples):
     """Return the best example seen so far."""

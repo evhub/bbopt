@@ -20,7 +20,6 @@ class RandomBackend:
 
     random_functions = {
         # name: func
-        "getrandbits": random.getrandbits,
         "randrange": random.randrange,
         "choice": random.choice,
         "sample": random.sample,
@@ -29,7 +28,7 @@ class RandomBackend:
         "betavariate": random.betavariate,
         "expovariate": random.expovariate,
         "gammavariate": random.gammavariate,
-        "gauss": random.gauss,
+        "normalvariate": random.normalvariate,
         "lognormvariate": random.lognormvariate,
         "vonmisesvariate": random.vonmisesvariate,
         "paretovariate": random.paretovariate,

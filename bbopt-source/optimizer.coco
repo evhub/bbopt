@@ -35,7 +35,7 @@ class BlackBoxOptimizer:
         self.reload()
 
     def reload(self):
-        """Completely wipe and restart the optimizer."""
+        """Completely reload the optimizer."""
         self._old_params = {}
         self._examples = []
         self._load_examples()

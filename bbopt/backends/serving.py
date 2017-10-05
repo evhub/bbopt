@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xe39c86b5
+# __coconut_hash__ = 0x91d4c92a
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -34,8 +34,19 @@ class ServingBackend(_coconut.object):
     def __init__(self, examples, params):  # ignore params since we're serving
         self.serving_values = best_example(examples)["values"]
 
-    def param(self, name, **kwargs):  # ignore kwargs since we're serving
-        try:
-            return self.serving_values[name]
-        except KeyError:
-            raise ValueError("missing data for parameter %r" % name)
+    def param(self, name, **kwargs):
+        _coconut_match_check = False
+        _coconut_match_to = self.serving_values
+        _coconut_sentinel = _coconut.object()
+        if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
+            _coconut_match_temp_0 = _coconut_match_to.get(name, _coconut_sentinel)
+            if _coconut_match_temp_0 is not _coconut_sentinel:
+                value = _coconut_match_temp_0
+                _coconut_match_check = True
+        if _coconut_match_check:
+            return value
+        else:
+            if "guess" in kwargs:
+                return kwargs["guess"]
+            else:
+                raise ValueError("missing data for parameter %r" % name)

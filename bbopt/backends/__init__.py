@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x25751311
+# __coconut_hash__ = 0x17986a13
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -33,7 +33,7 @@ class BackendRegistry(_coconut.object):
         from bbopt.backends.skopt import SkoptBackend
         return SkoptBackend
     def _coconut_lambda_4(_=None):
-        from bbopt.backends.hypteropt import HyperoptBackend
+        from bbopt.backends.hyperopt import HyperoptBackend
         return HyperoptBackend
     backend_generators = {"serving": (_coconut_lambda_1), "random": (_coconut_lambda_2), "scikit-optimize": (_coconut_lambda_3), "hyperopt": (_coconut_lambda_4)}
     registered_backends = {}
@@ -41,15 +41,24 @@ class BackendRegistry(_coconut.object):
     def __getitem__(self, name):
         if name is None:
             name = "serving"
-        if name in self.registered_backends:
+        _coconut_match_check = False
+        _coconut_match_to = self.registered_backends
+        _coconut_sentinel = _coconut.object()
+        if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
+            _coconut_match_temp_0 = _coconut_match_to.get(name, _coconut_sentinel)
+            if _coconut_match_temp_0 is not _coconut_sentinel:
+                backend = _coconut_match_temp_0
+                _coconut_match_check = True
+        if _coconut_match_check:
             return self.registered_backends[name]
-        elif name in self.backend_generators:
-            backend = self.backend_generators[name]()
-            del self.backend_generators[name]
-            self.registered_backends[name] = backend
-            return backend
         else:
-            raise ValueError("unknown backend %r" % name)
+            if name in self.backend_generators:
+                backend = self.backend_generators[name]()
+                del self.backend_generators[name]
+                self.registered_backends[name] = backend
+                return backend
+            else:
+                raise ValueError("unknown backend %r" % name)
 
     def __iter__(self):
         _coconut_yield_from = backend_generators

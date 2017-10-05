@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4d62efc8
+# __coconut_hash__ = 0x3c6fb95f
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -138,9 +138,9 @@ def all_isinstance(objs, types):
     """Return whether all the objects have the desired type(s)."""
     return (all)(map(_coconut_partial(isinstance, {1: types}, 2), objs))
 
-def format_err(Error, message, object):
+def format_err(Error, message, obj):
     """Creates an error with a formatted error message."""
-    return Error(message + ": " + repr(object))
+    return Error(message + ": " + repr(obj))
 
 def best_example(examples):
     """Return the best example seen so far."""

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xea7185c8
+# __coconut_hash__ = 0xe9765dd6
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -60,6 +60,9 @@ random_data = os.path.join(example_dir, "random_example.bbopt.json")
 skopt_file = os.path.join(example_dir, "skopt_example.py")
 skopt_data = os.path.join(example_dir, "skopt_example.bbopt.json")
 
+hyperopt_file = os.path.join(example_dir, "hyperopt_example.py")
+hyperopt_data = os.path.join(example_dir, "hyperopt_example.bbopt.json")
+
 conditional_file = os.path.join(example_dir, "conditional_example.py")
 conditional_data = os.path.join(example_dir, "conditional_example.bbopt.json")
 
@@ -87,6 +90,17 @@ class TestExamples(unittest.TestCase):
                 want_y = min(float(stdout.strip()), want_y)
             assert os.path.exists(skopt_data)
             from bbopt.examples.skopt_example import y as got_y
+            assert got_y == want_y
+
+    def test_hyperopt(self):
+        print("\ntest_hyperopt:")
+        with remove_when_done(hyperopt_data):
+            want_y = float("inf")
+            for _ in range(10):
+                stdout = call_test(["python", hyperopt_file])
+                want_y = min(float(stdout.strip()), want_y)
+            assert os.path.exists(hyperopt_data)
+            from bbopt.examples.hyperopt_example import y as got_y
             assert got_y == want_y
 
     def test_conditional(self):

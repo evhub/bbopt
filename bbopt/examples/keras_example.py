@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb4c5c6bb
+# __coconut_hash__ = 0x3d8ac827
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -71,7 +71,6 @@ for i in range(N):
     model.compile(loss="categorical_crossentropy", optimizer=SGD(lr=bb.uniform("learning rate", 0, 0.5, guess=0.15), decay=bb.uniform("decay", 0, 0.01, guess=0.0005), momentum=bb.uniform("momentum", 0, 1, guess=0.5), nesterov=(bool)(bb.getrandbits("nesterov", 1, guess=1))), metrics=["accuracy"])
 
     train_history = model.fit(X_train, y_train, epochs=50, batch_size=bb.randint("batch size", 1, 32, guess=16), verbose=0)
-
 
     train_loss, train_acc = train_history.history["loss"][-1], train_history.history["acc"][-1]
 
