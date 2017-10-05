@@ -19,6 +19,10 @@ To get going with BBopt, just install it with
 ```
 pip install bbopt
 ```
+or, to install BBopt and all of its backends as well, just run
+```
+pip install bbopt[all]
+```
 
 ## Usage
 
@@ -50,7 +54,7 @@ to serve it!
 
 ## Backends
 
-Currently, BBopt only supports the following backends:
+Currently, BBopt supports the following backends:
 
 - `random`: Chooses values totally randomly.
 - `scikit-optimize`: Uses [`scikit-optimize`](https://scikit-optimize.github.io/) to tune parameters.

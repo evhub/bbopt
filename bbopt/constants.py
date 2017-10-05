@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xec0b764c
+# __coconut_hash__ = 0x4666ca80
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -32,7 +32,7 @@ author = "Evan Hubinger"
 author_email = "evanjhub@gmail.com"
 classifiers = ("Development Status :: 3 - Alpha", "License :: OSI Approved :: Apache Software License", "Topic :: Software Development :: Libraries :: Python Modules", "Operating System :: OS Independent",)
 requirements = ()
-extra_requirements = {"scikit-optimize": ("scikit-optimize",), "hyperopt": ("hyperopt",)}
+extra_requirements = {"scikit-optimize": ("scikit-optimize",), "hyperopt": ("hyperopt", "networkx<2.0",)}
 extra_requirements["all"] = (tuple)(reduce(_coconut.operator.or_, map(set, extra_requirements.values())))
 
 # Optimizer constants:

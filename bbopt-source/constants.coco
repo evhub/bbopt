@@ -23,6 +23,8 @@ extra_requirements = {
     ),
     "hyperopt": (
         "hyperopt",
+        # fixes an error in hyperopt 0.1 with networkx>=2.0
+        "networkx<2.0",
     ),
 }
 extra_requirements["all"] = extra_requirements.values() |> map$(set) |> reduce$(|) |> tuple
