@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x46d06bc2
+# __coconut_hash__ = 0x96aa1b53
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -25,9 +25,10 @@ if __name__ == "__main__":
 # Let's use some parameters!
 x0 = bb.randrange("x0", 1, 11, guess=5)
 x1 = bb.uniform("x1", 0, 1)
+x2 = bb.choice("x2", [-10, -1, 0, 1, 10])
 
 # And let's set our goal!
-y = x0 + x1
+y = x0 + x1 * x2
 bb.minimize(y)
 
 # Finally, we'll print out the value we used for debugging purposes.

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x444e2de8
+# __coconut_hash__ = 0x286b50da
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -28,29 +28,6 @@ from bbopt.util import Num
 from bbopt.util import json_serialize
 from bbopt.util import format_err
 from bbopt.util import all_isinstance
-
-# Preprocessors:
-
-def preproc_randint(args):
-    if len(args) != 2 or not all_isinstance(args, int):
-        raise format_err(ValueError, "invalid arguments to randint", args)
-    args[-1] += 1
-    return "randrange", args
-
-def preproc_random(args):
-    if args:
-        raise format_err(ValueError, "invalid arguments to random", args)
-    return "uniform", [0, 1]
-
-def preproc_gauss(args):
-    if len(args) != 2 or not all_isinstance(args, Num):
-        raise format_err(ValueError, "invalid arguments to gauss", gauss)
-    return "normalvariate", args
-
-def preproc_getrandbits(args):
-    if len(args) != 1 or not isinstance(args[0], int):
-        raise format_err(ValueError, "invalid arguments to getrandbits", args)
-    return "randrange", [0, 2**args[0]]
 
 # Handlers:
 
@@ -132,15 +109,33 @@ def handle_weibullvariate(args):
 class ParamProcessor(_coconut.object):
     """Processes param keyword arguments."""
     ignored = ["guess", "placeholder_when_missing",]
-    pre_processors = {"randint": preproc_randint, "random": preproc_random, "gauss": preproc_gauss, "getrandbits": preproc_getrandbits}
     handlers = {"randrange": handle_randrange, "choice": handle_choice, "sample": handle_sample, "uniform": handle_uniform, "triangular": handle_triangular, "betavariate": handle_betavariate, "expovariate": handle_expovariate, "gammavariate": handle_gammavariate, "normalvariate": handle_normalvariate, "lognormvariate": handle_lognormvariate, "vonmisesvariate": handle_vonmisesvariate, "paretovariate": handle_paretovariate, "weibullvariate": handle_weibullvariate}
+
+    def supported_funcs(self):
+        """List all random functions that backends should support."""
+        return list(handlers)
+
+    def modify_kwargs(self, func, kwargs):
+        """Apply func to all kwargs with values in the random function's domain."""
+        new_kwargs = {}
+        for k, v in kwargs.items():
+            if k in self.handlers:
+# random functions hold lots of arguments, so map the function over them
+                new_kwargs[k] = map(func, v)
+            elif k in self.ignored:
+# ignored kwargs hold extra parameters, so call the function on them
+                new_kwargs[k] = func(v)
+            else:
+# otherwise, just pass the kwarg through
+                new_kwargs[k] = v
+        return new_kwargs
 
     def filter_kwargs(self, kwargs):
         """Remove ignored keyword args."""
         new_kwargs = {}
-        for func, args in kwargs.items():
-            if func not in self.ignored:
-                new_kwargs[func] = args
+        for k, v in kwargs.items():
+            if k not in self.ignored:
+                new_kwargs[k] = v
         return new_kwargs
 
     def standardize_kwargs(self, kwargs):
@@ -160,10 +155,6 @@ class ParamProcessor(_coconut.object):
 # standardize arguments to a list
             if not isinstance(args, list):
                 args = [args]
-
-# run preprocessors
-            if func in self.pre_processors:
-                func, args = self.pre_processors[func](args)
 
 # run handlers
             if func in self.handlers:

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xe9765dd6
+# __coconut_hash__ = 0x3c48c47e
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -42,13 +42,13 @@ def remove_when_done(path):
         except OSError:
             traceback.print_exc()
 
-def call_test(args):
+def call_test(args, ignore_prefix="debug"):
     """Call args on the command line for a test."""
     stdout, stderr, retcode = call_output(args)
     stdout, stderr = "".join(stdout), "".join(stderr)
     (print)((stdout + stderr).strip())
     assert not retcode and not stderr, stderr
-    return stdout
+    return "".join((line if not line.lower().startswith(ignore_prefix) else "" for line in stdout.splitlines(True)))
 
 # Constants:
 

@@ -2,13 +2,13 @@
 from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)
 if __name__ == "__main__":
-    bb.run(backend="scikit-optimize")
+    bb.run(backend="hyperopt")
 
-use_high = bb.getrandbits("use high", 1, guess=0) |> bool
+use_high = bb.randbool("use high", guess=False)
 if use_high:
-    reward = bb.randrange("x_high", 10, 20, placeholder_when_missing=10)
+    reward = bb.randrange("x_high", 10, 20)
 else:
-    reward = bb.randrange("x_low", 10, placeholder_when_missing=0)
+    reward = bb.randrange("x_low", 10)
 
 bb.maximize(reward)
 

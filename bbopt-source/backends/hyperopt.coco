@@ -41,12 +41,12 @@ def create_space(
 ):
     """Create a hyperopt space for the given param kwargs."""
     if choice is not None:
-        return hp.choice(name, choice)
+        return hp.choice(name, *choice)
     if randrange is not None:
         start, stop, step = randrange
         if step != 1:
             raise ValueError("the hyperopt backend only supports a randrange step size of 1")
-        return start + hp.randint(name, stop-1)
+        return start + hp.randint(name, stop)  # despite being called randint, stop is exclusive
     if uniform is not None:
         return hp.uniform(name, *uniform)
     if normalvariate is not None:
@@ -56,6 +56,7 @@ def create_space(
 def examples_to_trials(examples, params):
     """Create hyperopt trials from the given examples."""
     trials = []
+    NA = object()
     for tid, ex in enumerate(examples):
         match {"gain": gain, **_} in ex:
             loss = negate_objective(gain)
@@ -69,10 +70,10 @@ def examples_to_trials(examples, params):
         idxs = {}
         for k, v in zip(
             sorted(params),
-            make_features(ex["values"], params)
+            make_features(ex["values"], params, default_placeholder=NA)
         ):
-            vals[k] = [v] if v is not None else []
-            idxs[k] = [tid] if v is not None else []
+            vals[k] = [v] if v is not NA else []
+            idxs[k] = [tid] if v is not NA else []
         misc = {
             "tid": tid,
             "idxs": idxs,
@@ -98,7 +99,7 @@ class HyperoptBackend:
     """The hyperopt backend uses hyperopt for black box optimization."""
     current_values = None
 
-    def __init__(self, examples, params, default_placeholder=None, algo=tpe.suggest, **kwargs):
+    def __init__(self, examples, params, algo=tpe.suggest, **kwargs):
         if not examples:
             self.current_values = {}
             return
@@ -116,8 +117,8 @@ class HyperoptBackend:
             rstate=np.random.RandomState(),
             **kwargs,
         ) |> next
-        if self.current_values is None:
-            raise format_err(RuntimeError, "internal hyperopt error", (algo, domain, trials, kwargs))
+        assert self.current_values is not None
+        assert set(self.current_values.keys()) == set(params)
 
     def set_current_values(self, values):
         assert isinstance(values, dict)

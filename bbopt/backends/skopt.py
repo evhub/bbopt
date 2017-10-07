@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xfe4a4a3c
+# __coconut_hash__ = 0x46033470
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -39,7 +39,7 @@ from bbopt.util import negate_objective
 def create_dimension(name, choice=None, randrange=None, uniform=None,):
     """Create a scikit-optimize dimension for the given param kwargs."""
     if choice is not None:
-        return choice  # lists are interpreted as choices
+        return choice[0]  # lists are interpreted as choices
     if randrange is not None:
         start, stop, step = randrange
         if step != 1:

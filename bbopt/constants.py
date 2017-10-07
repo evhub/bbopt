@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4666ca80
+# __coconut_hash__ = 0xa3c49fd6
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -25,7 +25,7 @@ _coconut_sys.path.remove(_coconut_file_path)
 # Installation constants:
 
 name = "bbopt"
-version = "0.2.2"
+version = "0.2.3"
 description = "The easiest hyperparameter optimization you'll ever do."
 github_url = "https://github.com/evhub/bbopt"
 author = "Evan Hubinger"

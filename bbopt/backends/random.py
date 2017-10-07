@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x98fee8dd
+# __coconut_hash__ = 0xf8b163c4
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -38,7 +38,7 @@ class RandomBackend(_coconut.object):
     def __init__(self, examples=None, params=None):
         pass  # we're choosing randomly, so we ignore everything
 
-    random_functions = {"randrange": random.randrange, "choice": random.choice, "sample": random.sample, "uniform": random.uniform, "triangular": random.triangular, "betavariate": random.betavariate, "expovariate": random.expovariate, "gammavariate": random.gammavariate, "normalvariate": random.normalvariate, "lognormvariate": random.lognormvariate, "vonmisesvariate": random.vonmisesvariate, "paretovariate": random.paretovariate, "weibullvariate": random.weibullvariate}
+    random_functions = {"randrange": random.randrange, "choice": random.choice, "sample": random.sample, "uniform": random.uniform, "triangular": random.triangular, "betavariate": random.betavariate, "expovariate": random.expovariate, "gammavariate": random.gammavariate, "normalvariate": random.gauss, "lognormvariate": random.lognormvariate, "vonmisesvariate": random.vonmisesvariate, "paretovariate": random.paretovariate, "weibullvariate": random.weibullvariate}
 
     def param(self, name=None, **kwargs):
         kwargs = param_processor.filter_kwargs(kwargs)  # remove non-function parameters

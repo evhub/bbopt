@@ -26,7 +26,7 @@ def create_dimension(
 ):
     """Create a scikit-optimize dimension for the given param kwargs."""
     if choice is not None:
-        return choice  # lists are interpreted as choices
+        return choice[0]  # lists are interpreted as choices
     if randrange is not None:
         start, stop, step = randrange
         if step != 1:

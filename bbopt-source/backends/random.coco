@@ -28,7 +28,7 @@ class RandomBackend:
         "betavariate": random.betavariate,
         "expovariate": random.expovariate,
         "gammavariate": random.gammavariate,
-        "normalvariate": random.normalvariate,
+        "normalvariate": random.gauss,  # gauss is more efficient than normalvariate
         "lognormvariate": random.lognormvariate,
         "vonmisesvariate": random.vonmisesvariate,
         "paretovariate": random.paretovariate,

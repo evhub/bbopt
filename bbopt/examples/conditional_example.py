@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7740416d
+# __coconut_hash__ = 0x11473550
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -20,13 +20,13 @@ _coconut_sys.path.remove(_coconut_file_path)
 from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)
 if __name__ == "__main__":
-    bb.run(backend="scikit-optimize")
+    bb.run(backend="hyperopt")
 
-use_high = (bool)(bb.getrandbits("use high", 1, guess=0))
+use_high = bb.randbool("use high", guess=False)
 if use_high:
-    reward = bb.randrange("x_high", 10, 20, placeholder_when_missing=10)
+    reward = bb.randrange("x_high", 10, 20)
 else:
-    reward = bb.randrange("x_low", 10, placeholder_when_missing=0)
+    reward = bb.randrange("x_low", 10)
 
 bb.maximize(reward)
 

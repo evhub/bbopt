@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x792cfc8e
+# __coconut_hash__ = 0x7888336b
 
 # Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
 
@@ -26,6 +26,7 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 import json
 import os.path
+import math
 
 from bbopt.backends import backend_registry
 from bbopt.params import param_processor
@@ -158,24 +159,11 @@ class BlackBoxOptimizer(_coconut.object):
         """Return a dictionary containing the optimal parameters and reward computed so far."""
         return best_example(self._examples)
 
-# Random Functions:
+# Base Random Functions:
 
-    def randint(self, name, a, b, **kwargs):
-        """Create a new parameter with the given name modeled by random.randint(a, b)."""
-        return self.param(name, randint=(a, b), **kwargs)
-
-    def random(self, name, **kwargs):
-        """Create a new parameter with the given name modeled by random.random()."""
-        return self.param(name, random=(), **kwargs)
-
-    def gauss(self, name, mu, sigma, **kwargs):
+    def normalvariate(self, name, mu, sigma, **kwargs):
         """Create a new parameter with the given name modeled by random.gauss(mu, sigma)."""
-        return self.param(name, gauss=(mu, sigma), **kwargs)
-    normalvariate = gauss
-
-    def getrandbits(self, name, k, **kwargs):
-        """Create a new parameter with the given name modeled by random.getrandbits(k)."""
-        return self.param(name, getrandbits=(k,), **kwargs)
+        return self.param(name, normalvariate=(mu, sigma), **kwargs)
 
     def randrange(self, name, *args, **kwargs):
         """Create a new parameter with the given name modeled by random.randrange(*args)."""
@@ -224,3 +212,32 @@ class BlackBoxOptimizer(_coconut.object):
     def weibullvariate(self, name, alpha, beta, **kwargs):
         """Create a new parameter with the given name modeled by random.weibullvariate(alpha, beta)."""
         return self.param(name, weibullvariate=(alpha, beta), **kwargs)
+
+# Derived Random Functions:
+
+    def randint(self, name, a, b, **kwargs):
+        """Create a new parameter with the given name modeled by random.randint(a, b)."""
+        start, stop = a, b - 1
+        return self.param(name, randrange=(start, stop), **kwargs)
+
+    def random(self, name, **kwargs):
+        """Create a new parameter with the given name modeled by random.random()."""
+        return self.param(name, uniform=(0, 1), **kwargs)
+
+    def getrandbits(self, name, k, **kwargs):
+        """Create a new parameter with the given name modeled by random.getrandbits(k)."""
+        stop = 2**k
+        return self.param(name, randrange=(stop,), **kwargs)
+
+    gauss = normalvariate
+
+    def loguniform(self, name, min_val, max_val, **kwargs):
+        """Create a new parameter with the given name modeled by exp(uniform(log(min_val), log(max_val)))."""
+        kwargs = (_coconut.functools.partial(param_processor.modify_kwargs, math.log))(kwargs)
+        log_a, log_b = math.log(min_val), math.log(max_val)
+        return math.exp(self.uniform(log_a, log_b))
+
+    def randbool(self, name, **kwargs):
+        """Create a new boolean parameter with the given name."""
+        kwargs = (_coconut.functools.partial(param_processor.modify_kwargs, int))(kwargs)
+        return (bool)(self.getrandbits(name, 1, **kwargs))
