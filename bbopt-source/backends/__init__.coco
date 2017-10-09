@@ -4,7 +4,7 @@ Backends contains all of bbopt's different backends.
 
 class BackendRegistry:
     backend_generators = {
-        "serving": (def -> from bbopt.backends.serving import ServingBackend; ServingBackend),
+        None: (def -> from bbopt.backends.serving import ServingBackend; ServingBackend),
         "random": (def -> from bbopt.backends.random import RandomBackend; RandomBackend),
         "scikit-optimize": (def -> from bbopt.backends.skopt import SkoptBackend; SkoptBackend),
         "hyperopt": (def -> from bbopt.backends.hyperopt import HyperoptBackend; HyperoptBackend),
@@ -12,8 +12,6 @@ class BackendRegistry:
     registered_backends = {}
 
     def __getitem__(self, name):
-        if name is None:
-            name = "serving"
         match {=name: backend, **_} in self.registered_backends:
             return self.registered_backends[name]
         else: if name in self.backend_generators:
@@ -33,7 +31,7 @@ class BackendRegistry:
         self.registered_backends[name] = backend
 
     def init_backend(self, name, examples, params, **kwargs):
-        """Create a backend object of the given name with the given example data."""
+        """Create a backend object of the given name with the given data."""
         return self[name](examples, params, **kwargs)
 
 backend_registry = BackendRegistry()

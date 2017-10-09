@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xfae98a6c
+# __coconut_hash__ = 0xda3a58c4
 
 # Compiled with Coconut version 1.3.0-post_dev4 [Dead Parrot]
 
@@ -23,24 +23,22 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 
 class BackendRegistry(_coconut.object):
-    def _coconut_lambda_1(_=None):
+    def _coconut_lambda_0(_=None):
         from bbopt.backends.serving import ServingBackend
         return ServingBackend
-    def _coconut_lambda_2(_=None):
+    def _coconut_lambda_1(_=None):
         from bbopt.backends.random import RandomBackend
         return RandomBackend
-    def _coconut_lambda_3(_=None):
+    def _coconut_lambda_2(_=None):
         from bbopt.backends.skopt import SkoptBackend
         return SkoptBackend
-    def _coconut_lambda_4(_=None):
+    def _coconut_lambda_3(_=None):
         from bbopt.backends.hyperopt import HyperoptBackend
         return HyperoptBackend
-    backend_generators = {"serving": (_coconut_lambda_1), "random": (_coconut_lambda_2), "scikit-optimize": (_coconut_lambda_3), "hyperopt": (_coconut_lambda_4)}
+    backend_generators = {None: (_coconut_lambda_0), "random": (_coconut_lambda_1), "scikit-optimize": (_coconut_lambda_2), "hyperopt": (_coconut_lambda_3)}
     registered_backends = {}
 
     def __getitem__(self, name):
-        if name is None:
-            name = "serving"
         _coconut_match_check = False
         _coconut_match_to = self.registered_backends
         _coconut_sentinel = _coconut.object()
@@ -75,7 +73,7 @@ class BackendRegistry(_coconut.object):
         self.registered_backends[name] = backend
 
     def init_backend(self, name, examples, params, **kwargs):
-        """Create a backend object of the given name with the given example data."""
+        """Create a backend object of the given name with the given data."""
         return self[name](examples, params, **kwargs)
 
 backend_registry = BackendRegistry()

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xfd10e651
+# __coconut_hash__ = 0x50122f7f
 
 # Compiled with Coconut version 1.3.0-post_dev4 [Dead Parrot]
 
@@ -49,62 +49,50 @@ def handle_randrange(args):
 def handle_choice(args):
     if len(args) != 1 or not isinstance(args[0], list):
         raise format_err(ValueError, "invalid arguments to choice", args)
-    return args
 
 def handle_sample(args):
     if len(args) != 2 or not isinstance(args[0], list) or not isinstance(args[1], int):
         raise format_err(ValueError, "invalid arguments to sample", args)
-    return args
 
 def handle_uniform(args):
     if len(args) != 2 or not all_isinstance(args, Num):
         raise format_err(ValueError, "invalid arguments to uniform", args)
-    return args
 
 def handle_triangular(args):
     if len(args) != 3 or not all_isinstance(args, Num):
         raise format_err(ValueError, "invalid arguments to triangular", args)
-    return args
 
 def handle_betavariate(args):
     if len(args) != 2 or not all_isinstance(args, Num):
         raise format_err(ValueError, "invalid arguments to betavariate", args)
-    return args
 
 def handle_expovariate(args):
     if len(args) != 1 or not all_isinstance(args, Num):
         raise format_err(ValueError, "invalid arguments to expovariate", args)
-    return args
 
 def handle_gammavariate(args):
     if len(args) != 2 or not all_isinstance(args, Num):
         raise format_err(ValueError, "invalid arguments to gammavariate", args)
-    return args
 
 def handle_normalvariate(args):
     if len(args) != 2 or not all_isinstance(args, Num):
         raise format_err(ValueError, "invalid arguments to normalvariate", args)
-    return args
 
 def handle_lognormvariate(args):
     if len(args) != 2 or not all_isinstance(args, Num):
         raise format_err(ValueError, "invalid arguments to lognormvariate", args)
-    return args
 
 def handle_vonmisesvariate(args):
     if len(args) != 2 or not all_isinstance(args, Num):
         raise format_err(ValueError, "invalid arguments to vonmisesvariate", args)
-    return args
 
 def handle_paretovariate(args):
     if len(args) != 1 or not all_isinstance(args, Num):
         raise format_err(ValueError, "invalid arguments to paretovariate", args)
-    return args
 
 def handle_weibullvariate(args):
     if len(args) != 2 or not all_isinstance(args, Num):
         raise format_err(ValueError, "invalid arguments to weibullvariate", args)
-    return args
 
 # Functions:
 
@@ -172,7 +160,8 @@ class ParamProcessor(_coconut.object):
 
 # run handlers
             if func in self.handlers:
-                args = self.handlers[func](args)
+                result = self.handlers[func](args)
+                args = result if result is not None else args
             else:
                 raise TypeError("unknown param option %r" % func)
 
