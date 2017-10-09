@@ -1,4 +1,4 @@
-# BBOpt
+# BBopt
 
 BBopt is a frontend for easily interfacing with any black box optimization framework.
 
