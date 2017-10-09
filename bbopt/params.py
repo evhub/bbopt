@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xda4d4fef
+# __coconut_hash__ = 0xfd10e651
 
 # Compiled with Coconut version 1.3.0-post_dev4 [Dead Parrot]
 
@@ -23,6 +23,8 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 
 # Imports:
+
+import functools
 
 from bbopt.util import Num
 from bbopt.util import json_serialize
@@ -113,7 +115,7 @@ class ParamProcessor(_coconut.object):
 
     def supported_funcs(self):
         """List all random functions that backends should support."""
-        return list(handlers)
+        return list(self.handlers)
 
     def modify_kwargs(self, func, kwargs):
         """Apply func to all kwargs with values in the random function's domain."""
@@ -137,6 +139,18 @@ class ParamProcessor(_coconut.object):
             if k not in self.ignored:
                 new_kwargs[k] = v
         return new_kwargs
+
+    def implements_params(self, param_func, backend_name, implemented_params):
+        """Wrap the given param_func with a check that only implemented parameters are passed."""
+        implemented_param_set = set(implemented_params)
+        assert implemented_param_set <= set(self.handlers)
+        @functools.wraps(param_func)
+        def wrapped_param_func(*args, **kwargs):
+            filtered_kwarg_set = (set)((self.filter_kwargs)(kwargs))
+            if not filtered_kwarg_set < implemented_param_set:
+                raise TypeError("the %s backend does not implement the %s function(s)" % (backend_name, ", ".join(filtered_kwarg_set)))
+            return param_func(*args, **kwargs)
+        return wrapped_param_func
 
     def standardize_kwargs(self, kwargs):
         """Standardizes param keyword args."""

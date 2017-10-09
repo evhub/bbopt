@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7d08c741
+# __coconut_hash__ = 0xde686727
 
 # Compiled with Coconut version 1.3.0-post_dev4 [Dead Parrot]
 
@@ -66,6 +66,8 @@ class SkoptBackend(_coconut.object):
         current_point = optimizer.ask()
         self.current_values = replace_values(params, current_point)
 
+    _coconut_decorator_0 = _coconut.functools.partial(param_processor.implements_params, backend_name="scikit-optimize", implemented_params=("choice", "randrange", "uniform",))
+    @_coconut_decorator_0
     def param(self, name, **kwargs):
         _coconut_match_check = False
         _coconut_match_to = self.current_values

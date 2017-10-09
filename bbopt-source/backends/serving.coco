@@ -20,4 +20,4 @@ class ServingBackend:
         else: if "guess" in kwargs:
             return kwargs["guess"]
         else:
-            raise ValueError("missing data for parameter %r" % name)
+            raise ValueError("missing data for parameter %r while serving and no guess" % name)

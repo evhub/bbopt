@@ -56,6 +56,14 @@ class SkoptBackend:
         current_point = optimizer.ask()
         self.current_values = replace_values(params, current_point)
 
+    @param_processor.implements_params$(
+        backend_name="scikit-optimize",
+        implemented_params=(
+        # should match create_dimension above
+        "choice",
+        "randrange",
+        "uniform",
+    ))
     def param(self, name, **kwargs):
         match {=name: value, **_} in self.current_values:
             return value

@@ -1,5 +1,4 @@
 # Imports:
-
 import sys
 import csv
 import os.path
@@ -14,7 +13,6 @@ from keras.utils import to_categorical
 from keras.regularizers import l1_l2
 
 # Data processing:
-
 data_folder = os.path.join(os.path.dirname(__file__), "data")
 house_votes = os.path.join(data_folder, "house_votes.csv") |> np.loadtxt$(dtype=str, delimiter=",")
 

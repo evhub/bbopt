@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x640dd0e7
+# __coconut_hash__ = 0x42133b26
 
 # Compiled with Coconut version 1.3.0-post_dev4 [Dead Parrot]
 
@@ -17,7 +17,6 @@ _coconut_sys.path.remove(_coconut_file_path)
 # Compiled Coconut: -----------------------------------------------------------
 
 # Imports:
-
 sys = _coconut_sys
 import csv
 import os.path
@@ -33,7 +32,6 @@ from keras.utils import to_categorical
 from keras.regularizers import l1_l2
 
 # Data processing:
-
 data_folder = os.path.join(os.path.dirname(__file__), "data")
 house_votes = np.loadtxt(os.path.join(data_folder, "house_votes.csv"), dtype=str, delimiter=",")
 

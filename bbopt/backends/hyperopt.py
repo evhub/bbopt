@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4c165a6b
+# __coconut_hash__ = 0x5d1f7d8a
 
 # Compiled with Coconut version 1.3.0-post_dev4 [Dead Parrot]
 
@@ -111,6 +111,8 @@ class HyperoptBackend(_coconut.object):
         self.current_values = values
         return {"status": STATUS_RUNNING}
 
+    _coconut_decorator_0 = _coconut.functools.partial(param_processor.implements_params, backend_name="hyperopt", implemented_params=("choice", "randrange", "uniform", "normalvariate",))
+    @_coconut_decorator_0
     def param(self, name, **kwargs):
         _coconut_match_check = False
         _coconut_match_to = self.current_values

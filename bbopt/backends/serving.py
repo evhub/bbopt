@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4ace2269
+# __coconut_hash__ = 0x9ac4faa5
 
 # Compiled with Coconut version 1.3.0-post_dev4 [Dead Parrot]
 
@@ -49,4 +49,4 @@ class ServingBackend(_coconut.object):
             if "guess" in kwargs:
                 return kwargs["guess"]
             else:
-                raise ValueError("missing data for parameter %r" % name)
+                raise ValueError("missing data for parameter %r while serving and no guess" % name)

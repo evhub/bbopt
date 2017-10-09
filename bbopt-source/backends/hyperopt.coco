@@ -127,6 +127,15 @@ class HyperoptBackend:
             "status": STATUS_RUNNING,
         }
 
+    @param_processor.implements_params$(
+        backend_name="hyperopt",
+        implemented_params=(
+        # should match create_space above
+        "choice",
+        "randrange",
+        "uniform",
+        "normalvariate",
+    ))
     def param(self, name, **kwargs):
         match {=name: value, **_} in self.current_values:
             return value
