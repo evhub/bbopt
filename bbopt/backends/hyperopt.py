@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x1683cc9f
+# __coconut_hash__ = 0x4c165a6b
 
-# Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
+# Compiled with Coconut version 1.3.0-post_dev4 [Dead Parrot]
 
 """
 The hyperopt backend. Does black box optimization using hyperopt.
@@ -94,7 +94,7 @@ class HyperoptBackend(_coconut.object):
     """The hyperopt backend uses hyperopt for black box optimization."""
     current_values = None
 
-    def __init__(self, examples, params, algo=tpe.suggest, **kwargs):
+    def __init__(self, examples, params, algo=tpe.suggest, rstate=np.random.RandomState(), **kwargs):
         if not examples:
             self.current_values = {}
             return
@@ -102,7 +102,7 @@ class HyperoptBackend(_coconut.object):
         domain = Domain(self.set_current_values, space)
         trials = Trials()
         trials.insert_trial_docs(examples_to_trials(examples, params))
-        (next)(FMinIter(algo, domain, trials, rstate=np.random.RandomState(), **kwargs))
+        (next)(FMinIter(algo, domain, trials, rstate, **kwargs))
         assert self.current_values is not None
         assert set(self.current_values.keys()) == set(params)
 

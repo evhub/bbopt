@@ -99,7 +99,7 @@ class HyperoptBackend:
     """The hyperopt backend uses hyperopt for black box optimization."""
     current_values = None
 
-    def __init__(self, examples, params, algo=tpe.suggest, **kwargs):
+    def __init__(self, examples, params, algo=tpe.suggest, rstate=np.random.RandomState(), **kwargs):
         if not examples:
             self.current_values = {}
             return
@@ -114,7 +114,7 @@ class HyperoptBackend:
             algo,
             domain,
             trials,
-            rstate=np.random.RandomState(),
+            rstate,
             **kwargs,
         ) |> next
         assert self.current_values is not None

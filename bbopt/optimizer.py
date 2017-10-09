@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7888336b
+# __coconut_hash__ = 0xaed24078
 
-# Compiled with Coconut version 1.3.0-post_dev3 [Dead Parrot]
+# Compiled with Coconut version 1.3.0-post_dev4 [Dead Parrot]
 
 """
 The interface into BBopt for a file with black-box parameters.
@@ -41,14 +41,14 @@ from bbopt.constants import data_file_ext
 class BlackBoxOptimizer(_coconut.object):
     _optimizers_by_file = {}  # all Optimizer instances by file
 
-    def __init__(self, file, pretty_json=False):
+    def __init__(self, file, json_indent=None):
         if not isinstance(file, Str):
             raise TypeError("file must be a string")
         self._file = norm_path(file)
         if self._file in self._optimizers_by_file:
             raise ValueError("BlackBoxOptimizer for file %r already exists" % self.file)
         self._optimizers_by_file[self._file] = self
-        self._pretty_json = pretty_json
+        self._json_indent = json_indent
         self.reload()
 
     def reload(self):
@@ -88,13 +88,13 @@ class BlackBoxOptimizer(_coconut.object):
             raise ValueError("remember calls must come before maximize/minimize")
         self._current_example.setdefault("memo", {}).update(info)
 
-    def maximize(self, value):
-        """Set the gain of the current run."""
-        self._set_reward("gain", value)
-
     def minimize(self, value):
         """Set the loss of the current run."""
         self._set_reward("loss", value)
+
+    def maximize(self, value):
+        """Set the gain of the current run."""
+        self._set_reward("gain", value)
 
     @property
     def _using_serving_backend(self):
@@ -149,21 +149,20 @@ class BlackBoxOptimizer(_coconut.object):
         if self._current_example not in self._examples:
             self._examples.append(self._current_example)
         with open(self._data_file, "w+") as df:
-            (df.write)((str)(json.dumps(self.get_data(), indent=4 if self._pretty_json else None)))
+            (df.write)((str)(json.dumps(self.get_data(), indent=self._json_indent)))
 
     def get_current_run(self):
         """Return a dictionary containing the current parameters and reward."""
-        return self._current_example
+        try:
+            return self._current_example
+        except AttributeError:
+            raise ValueError("get_current_run calls must come after run")
 
     def get_optimal_run(self):
         """Return a dictionary containing the optimal parameters and reward computed so far."""
         return best_example(self._examples)
 
 # Base Random Functions:
-
-    def normalvariate(self, name, mu, sigma, **kwargs):
-        """Create a new parameter with the given name modeled by random.gauss(mu, sigma)."""
-        return self.param(name, normalvariate=(mu, sigma), **kwargs)
 
     def randrange(self, name, *args, **kwargs):
         """Create a new parameter with the given name modeled by random.randrange(*args)."""
@@ -196,6 +195,10 @@ class BlackBoxOptimizer(_coconut.object):
     def gammavariate(self, name, alpha, beta, **kwargs):
         """Create a new parameter with the given name modeled by random.gammavariate(alpha, beta)."""
         return self.param(name, gammavariate=(alpha, beta), **kwargs)
+
+    def normalvariate(self, name, mu, sigma, **kwargs):
+        """Create a new parameter with the given name modeled by random.gauss(mu, sigma)."""
+        return self.param(name, normalvariate=(mu, sigma), **kwargs)
 
     def lognormvariate(self, name, mu, sigma, **kwargs):
         """Create a new parameter with the given name modeled by random.lognormvariate(mu, sigma)."""
@@ -232,12 +235,12 @@ class BlackBoxOptimizer(_coconut.object):
     gauss = normalvariate
 
     def loguniform(self, name, min_val, max_val, **kwargs):
-        """Create a new parameter with the given name modeled by exp(uniform(log(min_val), log(max_val)))."""
+        """Create a new parameter with the given name modeled by
+        math.exp(random.uniform(math.log(min_val), math.log(max_val)))."""
         kwargs = (_coconut.functools.partial(param_processor.modify_kwargs, math.log))(kwargs)
         log_a, log_b = math.log(min_val), math.log(max_val)
         return math.exp(self.uniform(log_a, log_b))
 
     def randbool(self, name, **kwargs):
         """Create a new boolean parameter with the given name."""
-        kwargs = (_coconut.functools.partial(param_processor.modify_kwargs, int))(kwargs)
-        return (bool)(self.getrandbits(name, 1, **kwargs))
+        return self.choice(name, [True, False], **kwargs)
