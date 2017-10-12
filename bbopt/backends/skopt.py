@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xde686727
+# __coconut_hash__ = 0x38d0bc45
 
 # Compiled with Coconut version 1.3.0-post_dev4 [Dead Parrot]
 
@@ -33,6 +33,7 @@ from bbopt.util import sorted_items
 from bbopt.util import split_examples
 from bbopt.util import replace_values
 from bbopt.util import negate_objective
+from bbopt.util import serve_values
 
 # Utilities:
 
@@ -54,6 +55,7 @@ def create_dimension(name, choice=None, randrange=None, uniform=None,):
 
 class SkoptBackend(_coconut.object):
     """The scikit-optimize backend uses scikit-optimize for black box optimization."""
+    random_backend = RandomBackend()
 
     def __init__(self, examples, params, default_placeholder=None, base_estimator=GaussianProcessRegressor, **kwargs):
         if not examples:
@@ -69,18 +71,4 @@ class SkoptBackend(_coconut.object):
     _coconut_decorator_0 = _coconut.functools.partial(param_processor.implements_params, backend_name="scikit-optimize", implemented_params=("choice", "randrange", "uniform",))
     @_coconut_decorator_0
     def param(self, name, **kwargs):
-        _coconut_match_check = False
-        _coconut_match_to = self.current_values
-        _coconut_sentinel = _coconut.object()
-        if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
-            _coconut_match_temp_0 = _coconut_match_to.get(name, _coconut_sentinel)
-            if _coconut_match_temp_0 is not _coconut_sentinel:
-                value = _coconut_match_temp_0
-                _coconut_match_check = True
-        if _coconut_match_check:
-            return value
-        else:
-            if "guess" in kwargs:
-                return kwargs["guess"]
-            else:
-                return RandomBackend().param(**kwargs)
+        return serve_values(*(name, kwargs), serving_values=self.current_values, fallback_func=self.random_backend.param)

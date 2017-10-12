@@ -14,6 +14,7 @@ from bbopt.util import (
     split_examples,
     replace_values,
     negate_objective,
+    serve_values,
 )
 
 # Utilities:
@@ -41,6 +42,7 @@ def create_dimension(
 
 class SkoptBackend:
     """The scikit-optimize backend uses scikit-optimize for black box optimization."""
+    random_backend = RandomBackend()
 
     def __init__(self, examples, params, default_placeholder=None, base_estimator=GaussianProcessRegressor, **kwargs):
         if not examples:
@@ -65,9 +67,7 @@ class SkoptBackend:
         "uniform",
     ))
     def param(self, name, **kwargs):
-        match {=name: value, **_} in self.current_values:
-            return value
-        else: if "guess" in kwargs:
-            return kwargs["guess"]
-        else:
-            return RandomBackend().param(**kwargs)
+        return (name, kwargs) |*> serve_values$(
+            serving_values=self.current_values,
+            fallback_func=self.random_backend.param,
+        )

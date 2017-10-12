@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x50122f7f
+# __coconut_hash__ = 0x536c54ef
 
 # Compiled with Coconut version 1.3.0-post_dev4 [Dead Parrot]
 
@@ -35,7 +35,7 @@ from bbopt.util import all_isinstance
 
 def handle_randrange(args):
     if not all_isinstance(args, int):
-        raise format_err(ValueError, "invalid arguments to randrange", args)
+        raise format_err(ValueError, "arguments to randrange must be integers, not", args)
     if len(args) == 1:
         start, stop, step = 0, args[0], 1
     elif len(args) == 2:
@@ -43,7 +43,7 @@ def handle_randrange(args):
     elif len(args) == 3:
         start, stop, step = args
     else:
-        raise format_err(ValueError, "invalid arguments to randrange", args)
+        raise format_err(ValueError, "randrange expects between 1 and 3 arguments, not", args)
     return [start, stop, step]
 
 def handle_choice(args):
@@ -102,8 +102,11 @@ class ParamProcessor(_coconut.object):
     handlers = {"randrange": handle_randrange, "choice": handle_choice, "sample": handle_sample, "uniform": handle_uniform, "triangular": handle_triangular, "betavariate": handle_betavariate, "expovariate": handle_expovariate, "gammavariate": handle_gammavariate, "normalvariate": handle_normalvariate, "lognormvariate": handle_lognormvariate, "vonmisesvariate": handle_vonmisesvariate, "paretovariate": handle_paretovariate, "weibullvariate": handle_weibullvariate}
 
     def supported_funcs(self):
-        """List all random functions that backends should support."""
-        return list(self.handlers)
+        """Return an iterator of all random functions that backends should support."""
+        _coconut_yield_from = self.handlers
+        for _coconut_yield_item in _coconut_yield_from:
+            yield _coconut_yield_item
+
 
     def modify_kwargs(self, func, kwargs):
         """Apply func to all kwargs with values in the random function's domain."""
@@ -131,7 +134,7 @@ class ParamProcessor(_coconut.object):
     def implements_params(self, param_func, backend_name, implemented_params):
         """Wrap the given param_func with a check that only implemented parameters are passed."""
         implemented_param_set = set(implemented_params)
-        assert implemented_param_set <= set(self.handlers)
+        assert implemented_param_set <= set(self.supported_funcs())
         @functools.wraps(param_func)
         def wrapped_param_func(*args, **kwargs):
             filtered_kwarg_set = (set)((self.filter_kwargs)(kwargs))

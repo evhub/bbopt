@@ -28,6 +28,7 @@ from bbopt.util import (
     negate_objective,
     format_err,
     make_features,
+    serve_values,
 )
 
 # Utilities:
@@ -97,6 +98,7 @@ def examples_to_trials(examples, params):
 
 class HyperoptBackend:
     """The hyperopt backend uses hyperopt for black box optimization."""
+    random_backend = RandomBackend()
     current_values = None
 
     def __init__(self, examples, params, algo=tpe.suggest, rstate=np.random.RandomState(), **kwargs):
@@ -137,9 +139,7 @@ class HyperoptBackend:
         "normalvariate",
     ))
     def param(self, name, **kwargs):
-        match {=name: value, **_} in self.current_values:
-            return value
-        else: if "guess" in kwargs:
-            return kwargs["guess"]
-        else:
-            return RandomBackend().param(**kwargs)
+        return (name, kwargs) |*> serve_values$(
+            serving_values=self.current_values,
+            fallback_func=self.random_backend.param,
+        )

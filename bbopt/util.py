@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xbdbbb7c3
+# __coconut_hash__ = 0xf582b79f
 
 # Compiled with Coconut version 1.3.0-post_dev4 [Dead Parrot]
 
@@ -42,6 +42,7 @@ Str = (str, py_str)
 # Functions:
 
 def norm_path(path):
+    """Normalize the given path."""
     return ((os.path.normcase)((os.path.realpath)((os.path.abspath)((os.path.expanduser)(path)))))
 
 def json_serialize(obj):
@@ -65,12 +66,9 @@ def json_serialize(obj):
         return serialized_list
     if type(obj).__module__ == "numpy":
         import numpy as np
-        if np.issubdtype(obj, int):
-            return int(obj)
-        if np.issubdtype(obj, float):
-            return float(obj)
-        if np.issubdtype(obj, bool):
-            return bool(obj)
+        for dtype in (int, float, bool, str):
+            if np.issubdtype(obj, dtype):
+                return dtype(obj)
     raise TypeError("invalid JSON object %r" % obj)
 
 def sorted_items(params):
@@ -181,3 +179,29 @@ def best_example(examples):
         if not _coconut_match_check:
             raise ValueError("invalid example %r" % example)
     return selected_example
+
+def serve_values(param_name, param_kwargs, serving_values, fallback_func):
+    """Serve a value for the given kwargs using the given values and fallback function."""
+    _coconut_match_check = False
+    _coconut_match_to = serving_values
+    _coconut_sentinel = _coconut.object()
+    if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
+        _coconut_match_temp_0 = _coconut_match_to.get(param_name, _coconut_sentinel)
+        if _coconut_match_temp_0 is not _coconut_sentinel:
+            value = _coconut_match_temp_0
+            _coconut_match_check = True
+    if _coconut_match_check:
+        return value
+    else:
+        _coconut_match_check = False
+        _coconut_match_to = param_kwargs
+        _coconut_sentinel = _coconut.object()
+        if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
+            _coconut_match_temp_0 = _coconut_match_to.get("guess", _coconut_sentinel)
+            if _coconut_match_temp_0 is not _coconut_sentinel:
+                guess = _coconut_match_temp_0
+                _coconut_match_check = True
+        if _coconut_match_check:
+            return guess
+        else:
+            return fallback_func(param_name, **param_kwargs)

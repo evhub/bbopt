@@ -4,7 +4,10 @@ The serving backend. Selects the best existing data point.
 
 # Imports:
 
-from bbopt.util import best_example
+from bbopt.util import (
+    best_example,
+    serve_values,
+)
 
 # Backend:
 
@@ -15,9 +18,10 @@ class ServingBackend:
         self.serving_values = best_example(examples)["values"]
 
     def param(self, name, **kwargs):
-        match {=name: value, **_} in self.serving_values:
-            return value
-        else: if "guess" in kwargs:
-            return kwargs["guess"]
-        else:
-            raise ValueError("missing data for parameter %r while serving and no guess" % name)
+        return (name, kwargs) |*> serve_values$(
+            serving_values=self.serving_values,
+            fallback_func=(def (name, **kwargs) ->
+                raise ValueError("missing data for parameter %r while serving and no guess" % name)
+            ),
+        )
+

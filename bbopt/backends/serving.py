@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x9ac4faa5
+# __coconut_hash__ = 0x64015095
 
 # Compiled with Coconut version 1.3.0-post_dev4 [Dead Parrot]
 
@@ -25,6 +25,7 @@ _coconut_sys.path.remove(_coconut_file_path)
 # Imports:
 
 from bbopt.util import best_example
+from bbopt.util import serve_values
 
 # Backend:
 
@@ -35,18 +36,6 @@ class ServingBackend(_coconut.object):
         self.serving_values = best_example(examples)["values"]
 
     def param(self, name, **kwargs):
-        _coconut_match_check = False
-        _coconut_match_to = self.serving_values
-        _coconut_sentinel = _coconut.object()
-        if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
-            _coconut_match_temp_0 = _coconut_match_to.get(name, _coconut_sentinel)
-            if _coconut_match_temp_0 is not _coconut_sentinel:
-                value = _coconut_match_temp_0
-                _coconut_match_check = True
-        if _coconut_match_check:
-            return value
-        else:
-            if "guess" in kwargs:
-                return kwargs["guess"]
-            else:
-                raise ValueError("missing data for parameter %r while serving and no guess" % name)
+        def _coconut_lambda_1(name, **kwargs):
+            raise ValueError("missing data for parameter %r while serving and no guess" % name)
+        return serve_values(*(name, kwargs), serving_values=self.serving_values, fallback_func=(_coconut_lambda_1))

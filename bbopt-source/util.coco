@@ -14,13 +14,13 @@ Str = (str, py_str)
 
 # Functions:
 
-def norm_path(path) = (
-    path
+def norm_path(path) =
+    """Normalize the given path."""
+    (path
     |> os.path.expanduser
     |> os.path.abspath
     |> os.path.realpath
-    |> os.path.normcase
-)
+    |> os.path.normcase)
 
 def json_serialize(obj):
     """Serialize obj for encoding in JSON."""
@@ -43,12 +43,9 @@ def json_serialize(obj):
         return serialized_list
     if type(obj).__module__ == "numpy":
         import numpy as np
-        if np.issubdtype(obj, int):
-            return int(obj)
-        if np.issubdtype(obj, float):
-            return float(obj)
-        if np.issubdtype(obj, bool):
-            return bool(obj)
+        for dtype in (int, float, bool, str):
+            if np.issubdtype(obj, dtype):
+                return dtype(obj)
     raise TypeError("invalid JSON object %r" % obj)
 
 def sorted_items(params) =
@@ -98,9 +95,9 @@ def all_isinstance(objs, types) =
     """Return whether all the objects have the desired type(s)."""
     objs |> map$(isinstance$(?, types)) |> all
 
-def format_err(Error, message, obj):
+def format_err(Error, message, obj) =
     """Creates an error with a formatted error message."""
-    return Error(message + ": " + repr(obj))
+    Error(message + ": " + repr(obj))
 
 def best_example(examples):
     """Return the best example seen so far."""
@@ -123,3 +120,12 @@ def best_example(examples):
         else:
             raise ValueError("invalid example %r" % example)
     return selected_example
+
+def serve_values(param_name, param_kwargs, serving_values, fallback_func):
+    """Serve a value for the given kwargs using the given values and fallback function."""
+    match {=param_name: value, **_} in serving_values:
+        return value
+    else: match {"guess": guess, **_} in param_kwargs:
+        return guess
+    else:
+        return fallback_func(param_name, **param_kwargs)

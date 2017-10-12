@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x5d1f7d8a
+# __coconut_hash__ = 0x2aad9f2b
 
 # Compiled with Coconut version 1.3.0-post_dev4 [Dead Parrot]
 
@@ -43,6 +43,7 @@ from bbopt.util import sorted_items
 from bbopt.util import negate_objective
 from bbopt.util import format_err
 from bbopt.util import make_features
+from bbopt.util import serve_values
 
 # Utilities:
 
@@ -92,6 +93,7 @@ def examples_to_trials(examples, params):
 
 class HyperoptBackend(_coconut.object):
     """The hyperopt backend uses hyperopt for black box optimization."""
+    random_backend = RandomBackend()
     current_values = None
 
     def __init__(self, examples, params, algo=tpe.suggest, rstate=np.random.RandomState(), **kwargs):
@@ -114,18 +116,4 @@ class HyperoptBackend(_coconut.object):
     _coconut_decorator_0 = _coconut.functools.partial(param_processor.implements_params, backend_name="hyperopt", implemented_params=("choice", "randrange", "uniform", "normalvariate",))
     @_coconut_decorator_0
     def param(self, name, **kwargs):
-        _coconut_match_check = False
-        _coconut_match_to = self.current_values
-        _coconut_sentinel = _coconut.object()
-        if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
-            _coconut_match_temp_0 = _coconut_match_to.get(name, _coconut_sentinel)
-            if _coconut_match_temp_0 is not _coconut_sentinel:
-                value = _coconut_match_temp_0
-                _coconut_match_check = True
-        if _coconut_match_check:
-            return value
-        else:
-            if "guess" in kwargs:
-                return kwargs["guess"]
-            else:
-                return RandomBackend().param(**kwargs)
+        return serve_values(*(name, kwargs), serving_values=self.current_values, fallback_func=self.random_backend.param)
