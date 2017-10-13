@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x38d0bc45
+# __coconut_hash__ = 0x8b855108
 
 # Compiled with Coconut version 1.3.0-post_dev4 [Dead Parrot]
 
@@ -26,12 +26,15 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 from skopt import Optimizer
 from skopt.learning import GaussianProcessRegressor
+from skopt.space import Categorical
+from skopt.space import Integer
+from skopt.space import Real
 
 from bbopt.backends.random import RandomBackend
 from bbopt.params import param_processor
 from bbopt.util import sorted_items
 from bbopt.util import split_examples
-from bbopt.util import replace_values
+from bbopt.util import make_values
 from bbopt.util import negate_objective
 from bbopt.util import serve_values
 
@@ -40,15 +43,15 @@ from bbopt.util import serve_values
 def create_dimension(name, choice=None, randrange=None, uniform=None,):
     """Create a scikit-optimize dimension for the given param kwargs."""
     if choice is not None:
-        return choice[0]  # lists are interpreted as choices
+        return Categorical(*choice)
     if randrange is not None:
         start, stop, step = randrange
         if step != 1:
             raise ValueError("the scikit-optimize backend only supports a randrange step size of 1")
         stop -= 1  # scikit-optimize ranges are inclusive
-        return (start, stop)  # int tuples are interpreted as int ranges
+        return Integer(start, stop)
     if uniform is not None:
-        return (tuple)(map(float, uniform))  # float tuples are interpreted as float ranges
+        return Real(*uniform)
     raise TypeError("insufficiently specified parameter %r" % name)
 
 # Backend:
@@ -57,18 +60,20 @@ class SkoptBackend(_coconut.object):
     """The scikit-optimize backend uses scikit-optimize for black box optimization."""
     random_backend = RandomBackend()
 
-    def __init__(self, examples, params, default_placeholder=None, base_estimator=GaussianProcessRegressor, **kwargs):
+    def __init__(self, examples, params, base_estimator=GaussianProcessRegressor, **kwargs):
         if not examples:
             self.current_values = {}
             return
-        data_points, losses = split_examples(examples, params, default_placeholder)
+        def _coconut_lambda_1(name, **kwargs):
+            raise ValueError("conditional parameter %r with no placeholder_when_missing not supported by the scikit-optimize backend", name)
+        data_points, losses = split_examples(*(examples, params), fallback_func=(_coconut_lambda_1))
         dimensions = [create_dimension(name, **param_processor.filter_kwargs(param_kwargs)) for name, param_kwargs in sorted_items(params)]
         optimizer = Optimizer(dimensions, base_estimator, **kwargs)
         optimizer.tell(data_points, losses)
         current_point = optimizer.ask()
-        self.current_values = replace_values(params, current_point)
+        self.current_values = make_values(params, current_point)
 
     _coconut_decorator_0 = _coconut.functools.partial(param_processor.implements_params, backend_name="scikit-optimize", implemented_params=("choice", "randrange", "uniform",))
     @_coconut_decorator_0
     def param(self, name, **kwargs):
-        return serve_values(*(name, kwargs), serving_values=self.current_values, fallback_func=self.random_backend.param)
+        return serve_values(name, kwargs, serving_values=self.current_values, fallback_func=self.random_backend.param)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x76ae1ec5
+# __coconut_hash__ = 0xed30ee8b
 
 # Compiled with Coconut version 1.3.0-post_dev4 [Dead Parrot]
 
@@ -23,10 +23,11 @@ if __name__ == "__main__":
     bb.run(backend="hyperopt")
 
 use_high = bb.randbool("use high", guess=False)
+assert isinstance(use_high, bool)
 if use_high:
-    reward = bb.randrange("x_high", 10, 20)
+    reward = bb.randrange("x high", 10, 20)
 else:
-    reward = bb.randrange("x_low", 10)
+    reward = bb.randrange("x low", 10)
 
 bb.maximize(reward)
 

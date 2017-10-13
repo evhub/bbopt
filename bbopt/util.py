@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf582b79f
+# __coconut_hash__ = 0xbfe7beb6
 
 # Compiled with Coconut version 1.3.0-post_dev4 [Dead Parrot]
 
@@ -47,7 +47,7 @@ def norm_path(path):
 
 def json_serialize(obj):
     """Serialize obj for encoding in JSON."""
-    if obj is None or isinstance(obj, (bool, int, float, str)):
+    if obj is None or isinstance(obj, (int, float, bool, str)):
         return obj
     if isinstance(obj, bytes):
         return str(obj, encoding="utf-8")
@@ -66,6 +66,8 @@ def json_serialize(obj):
         return serialized_list
     if type(obj).__module__ == "numpy":
         import numpy as np
+# the ordering here is extremely important; int must come before bool,
+# since otherwise this will cast all ints to bools
         for dtype in (int, float, bool, str):
             if np.issubdtype(obj, dtype):
                 return dtype(obj)
@@ -81,18 +83,35 @@ def negate_objective(objective):
     else:
         return -objective
 
-def make_features(values, params, default_placeholder=None):
-    """Return an iterator of the values for the parameters in sorted order."""
-    for feature, param_kwargs in sorted_items(params):
-        if feature in values:
-            yield values[feature]
-        elif "placeholder_when_missing" in param_kwargs:
-            yield param_kwargs["placeholder_when_missing"]
+def make_features(values, params, fallback_func):
+    """Return an iterator of the values for the parameters in sorted order with the given fallback function."""
+    for name, param_kwargs in sorted_items(params):
+        _coconut_match_check = False
+        _coconut_match_to = values
+        _coconut_sentinel = _coconut.object()
+        if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
+            _coconut_match_temp_0 = _coconut_match_to.get(name, _coconut_sentinel)
+            if _coconut_match_temp_0 is not _coconut_sentinel:
+                feature = _coconut_match_temp_0
+                _coconut_match_check = True
+        if _coconut_match_check:
+            yield feature
         else:
-            yield default_placeholder
+            _coconut_match_check = False
+            _coconut_match_to = param_kwargs
+            _coconut_sentinel = _coconut.object()
+            if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
+                _coconut_match_temp_0 = _coconut_match_to.get("placeholder_when_missing", _coconut_sentinel)
+                if _coconut_match_temp_0 is not _coconut_sentinel:
+                    placeholder_value = _coconut_match_temp_0
+                    _coconut_match_check = True
+            if _coconut_match_check:
+                yield placeholder_value
+            else:
+                yield fallback_func(name, **param_kwargs)
 
-def split_examples(examples, params, default_placeholder=None):
-    """Split examples into a list of data points and a list of losses."""
+def split_examples(examples, params, fallback_func):
+    """Split examples into a list of data points and a list of losses with the given fallback function."""
     data_points, losses = [], []
     for example in examples:
         _coconut_match_to = example
@@ -120,11 +139,11 @@ def split_examples(examples, params, default_placeholder=None):
                 pass
         if not _coconut_match_check:
             raise ValueError("invalid example %r" % example)
-        (data_points.append)((list)(make_features(values, params, default_placeholder)))
+        (data_points.append)((list)(make_features(values, params, fallback_func)))
         (losses.append)(loss)
     return data_points, losses
 
-def replace_values(params, point):
+def make_values(params, point):
     """Return a dictionary with the values replaced by the values in point,
     where point is a list of the values corresponding to the sorted params."""
     values = {}

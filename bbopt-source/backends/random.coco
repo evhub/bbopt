@@ -19,7 +19,6 @@ class RandomBackend:
         pass  # we're choosing randomly, so we ignore everything
 
     random_functions = {
-        # name: func
         "randrange": random.randrange,
         "choice": random.choice,
         "sample": random.sample,

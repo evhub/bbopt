@@ -215,4 +215,4 @@ class BlackBoxOptimizer:
 
     def randbool(self, name, **kwargs):
         """Create a new boolean parameter with the given name."""
-        return self.choice(name, [True, False], **kwargs)
+        return self.choice(name, [False, True], **kwargs)

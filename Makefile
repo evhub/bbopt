@@ -6,6 +6,11 @@ install: build
 install-2: build
 	python2 -m pip install -e .[all]
 
+.PHONY: setup
+setup:
+	pip install --upgrade setuptools pip pytest
+	pip install --upgrade "coconut-develop[watch,cPyparsing]"
+
 .PHONY: build
 build:
 	coconut setup.coco --no-tco --strict
@@ -18,11 +23,6 @@ upload: clean install
 	python3 setup.py sdist bdist_wheel
 	pip3 install --upgrade twine
 	twine upload ./dist/*
-
-.PHONY: setup
-setup:
-	pip install --upgrade setuptools pip pytest
-	pip install --upgrade "coconut-develop[watch,cPyparsing]"
 
 .PHONY: test
 test: install

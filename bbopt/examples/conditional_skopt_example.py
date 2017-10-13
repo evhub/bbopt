@@ -1,12 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x35519bbd
+# __coconut_hash__ = 0x3315f569
 
 # Compiled with Coconut version 1.3.0-post_dev4 [Dead Parrot]
-
-"""
-Constants for use across all of BBopt.
-"""
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -20,21 +16,20 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 # Compiled Coconut: -----------------------------------------------------------
 
+# BBopt boilerplate:
+from bbopt import BlackBoxOptimizer
+bb = BlackBoxOptimizer(file=__file__)
+if __name__ == "__main__":
+    bb.run(backend="scikit-optimize")
 
+use_high = bb.randbool("use high", guess=False)
+assert isinstance(use_high, bool)
+if use_high:
+    reward = bb.randrange("x high", 10, 20, placeholder_when_missing=10)
+else:
+    reward = bb.randrange("x low", 10, placeholder_when_missing=0)
 
-# Installation constants:
+bb.maximize(reward)
 
-name = "bbopt"
-version = "0.2.5"
-description = "The easiest hyperparameter optimization you'll ever do."
-github_url = "https://github.com/evhub/bbopt"
-author = "Evan Hubinger"
-author_email = "evanjhub@gmail.com"
-classifiers = ("Development Status :: 3 - Alpha", "License :: OSI Approved :: Apache Software License", "Topic :: Software Development :: Libraries :: Python Modules", "Operating System :: OS Independent",)
-requirements = ()
-extra_requirements = {"scikit-optimize": ("scikit-optimize",), "hyperopt": ("hyperopt", "networkx<2.0",)}
-extra_requirements["all"] = (tuple)(reduce(_coconut.operator.or_, map(set, extra_requirements.values())))
-
-# Optimizer constants:
-
-data_file_ext = ".bbopt.json"
+if __name__ == "__main__":
+    print(repr(reward))

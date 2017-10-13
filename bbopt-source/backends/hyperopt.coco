@@ -57,7 +57,7 @@ def create_space(
 def examples_to_trials(examples, params):
     """Create hyperopt trials from the given examples."""
     trials = []
-    NA = object()
+    NA = object()  # used to mark missing values
     for tid, ex in enumerate(examples):
         match {"gain": gain, **_} in ex:
             loss = negate_objective(gain)
@@ -71,7 +71,7 @@ def examples_to_trials(examples, params):
         idxs = {}
         for k, v in zip(
             sorted(params),
-            make_features(ex["values"], params, default_placeholder=NA)
+            make_features(ex["values"], params, fallback_func=(name, **kwargs) -> NA)
         ):
             vals[k] = [v] if v is not NA else []
             idxs[k] = [tid] if v is not NA else []
@@ -138,8 +138,9 @@ class HyperoptBackend:
         "uniform",
         "normalvariate",
     ))
-    def param(self, name, **kwargs):
-        return (name, kwargs) |*> serve_values$(
-            serving_values=self.current_values,
-            fallback_func=self.random_backend.param,
-        )
+    def param(self, name, **kwargs) = serve_values(
+        name,
+        kwargs,
+        serving_values=self.current_values,
+        fallback_func=self.random_backend.param,
+    )

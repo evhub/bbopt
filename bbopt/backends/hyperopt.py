@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x2aad9f2b
+# __coconut_hash__ = 0x87ecd42b
 
 # Compiled with Coconut version 1.3.0-post_dev4 [Dead Parrot]
 
@@ -65,7 +65,7 @@ def create_space(name, choice=None, randrange=None, uniform=None, normalvariate=
 def examples_to_trials(examples, params):
     """Create hyperopt trials from the given examples."""
     trials = []
-    NA = object()
+    NA = object()  # used to mark missing values
     for tid, ex in enumerate(examples):
         _coconut_match_check = False
         _coconut_match_to = ex
@@ -82,7 +82,7 @@ def examples_to_trials(examples, params):
         result = {"status": STATUS_OK, "loss": loss}
         vals = {}
         idxs = {}
-        for k, v in zip(sorted(params), make_features(ex["values"], params, default_placeholder=NA)):
+        for k, v in zip(sorted(params), make_features(ex["values"], params, fallback_func=lambda name, **kwargs: NA)):
             vals[k] = [v] if v is not NA else []
             idxs[k] = [tid] if v is not NA else []
         misc = {"tid": tid, "idxs": idxs, "vals": vals, "cmd": None}
@@ -116,4 +116,4 @@ class HyperoptBackend(_coconut.object):
     _coconut_decorator_0 = _coconut.functools.partial(param_processor.implements_params, backend_name="hyperopt", implemented_params=("choice", "randrange", "uniform", "normalvariate",))
     @_coconut_decorator_0
     def param(self, name, **kwargs):
-        return serve_values(*(name, kwargs), serving_values=self.current_values, fallback_func=self.random_backend.param)
+        return serve_values(name, kwargs, serving_values=self.current_values, fallback_func=self.random_backend.param)

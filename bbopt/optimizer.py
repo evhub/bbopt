@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xaed24078
+# __coconut_hash__ = 0x2869210c
 
 # Compiled with Coconut version 1.3.0-post_dev4 [Dead Parrot]
 
@@ -243,4 +243,4 @@ class BlackBoxOptimizer(_coconut.object):
 
     def randbool(self, name, **kwargs):
         """Create a new boolean parameter with the given name."""
-        return self.choice(name, [True, False], **kwargs)
+        return self.choice(name, [False, True], **kwargs)

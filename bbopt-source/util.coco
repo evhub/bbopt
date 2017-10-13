@@ -24,7 +24,7 @@ def norm_path(path) =
 
 def json_serialize(obj):
     """Serialize obj for encoding in JSON."""
-    if obj is None or isinstance(obj, (bool, int, float, str)):
+    if obj is None or isinstance(obj, (int, float, bool, str)):
         return obj
     if isinstance(obj, bytes):
         return str(obj, encoding="utf-8")
@@ -43,6 +43,8 @@ def json_serialize(obj):
         return serialized_list
     if type(obj).__module__ == "numpy":
         import numpy as np
+        # the ordering here is extremely important; int must come before bool,
+        # since otherwise this will cast all ints to bools
         for dtype in (int, float, bool, str):
             if np.issubdtype(obj, dtype):
                 return dtype(obj)
@@ -58,18 +60,18 @@ def negate_objective(objective):
     else:
         return -objective
 
-def make_features(values, params, default_placeholder=None):
-    """Return an iterator of the values for the parameters in sorted order."""
-    for feature, param_kwargs in sorted_items(params):
-        if feature in values:
-            yield values[feature]
-        elif "placeholder_when_missing" in param_kwargs:
-            yield param_kwargs["placeholder_when_missing"]
+def make_features(values, params, fallback_func):
+    """Return an iterator of the values for the parameters in sorted order with the given fallback function."""
+    for name, param_kwargs in sorted_items(params):
+        match {=name: feature, **_} in values:
+            yield feature
+        else: match {"placeholder_when_missing": placeholder_value, **_} in param_kwargs:
+            yield placeholder_value
         else:
-            yield default_placeholder
+            yield fallback_func(name, **param_kwargs)
 
-def split_examples(examples, params, default_placeholder=None):
-    """Split examples into a list of data points and a list of losses."""
+def split_examples(examples, params, fallback_func):
+    """Split examples into a list of data points and a list of losses with the given fallback function."""
     data_points, losses = [], []
     for example in examples:
         case example:
@@ -79,11 +81,11 @@ def split_examples(examples, params, default_placeholder=None):
                 pass
         else:
             raise ValueError("invalid example %r" % example)
-        make_features(values, params, default_placeholder) |> list |> data_points.append
+        make_features(values, params, fallback_func) |> list |> data_points.append
         loss |> losses.append
     return data_points, losses
 
-def replace_values(params, point):
+def make_values(params, point):
     """Return a dictionary with the values replaced by the values in point,
     where point is a list of the values corresponding to the sorted params."""
     values = {}

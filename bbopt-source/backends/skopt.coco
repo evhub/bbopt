@@ -6,13 +6,18 @@ The scikit-optimize backend. Does black box optimization using scikit-optimize.
 
 from skopt import Optimizer
 from skopt.learning import GaussianProcessRegressor
+from skopt.space import (
+    Categorical,
+    Integer,
+    Real,
+)
 
 from bbopt.backends.random import RandomBackend
 from bbopt.params import param_processor
 from bbopt.util import (
     sorted_items,
     split_examples,
-    replace_values,
+    make_values,
     negate_objective,
     serve_values,
 )
@@ -27,15 +32,15 @@ def create_dimension(
 ):
     """Create a scikit-optimize dimension for the given param kwargs."""
     if choice is not None:
-        return choice[0]  # lists are interpreted as choices
+        return Categorical(*choice)
     if randrange is not None:
         start, stop, step = randrange
         if step != 1:
             raise ValueError("the scikit-optimize backend only supports a randrange step size of 1")
         stop -= 1  # scikit-optimize ranges are inclusive
-        return (start, stop) # int tuples are interpreted as int ranges
+        return Integer(start, stop)
     if uniform is not None:
-        return uniform |> map$(float) |> tuple  # float tuples are interpreted as float ranges
+        return Real(*uniform)
     raise TypeError("insufficiently specified parameter %r" % name)
 
 # Backend:
@@ -44,11 +49,14 @@ class SkoptBackend:
     """The scikit-optimize backend uses scikit-optimize for black box optimization."""
     random_backend = RandomBackend()
 
-    def __init__(self, examples, params, default_placeholder=None, base_estimator=GaussianProcessRegressor, **kwargs):
+    def __init__(self, examples, params, base_estimator=GaussianProcessRegressor, **kwargs):
         if not examples:
             self.current_values = {}
             return
-        data_points, losses = split_examples(examples, params, default_placeholder)
+        data_points, losses = (examples, params) |*> split_examples$(
+            fallback_func=(def (name, **kwargs) ->
+                raise ValueError("conditional parameter %r with no placeholder_when_missing not supported by the scikit-optimize backend", name)),
+        )
         dimensions = [
             create_dimension(name, **param_processor.filter_kwargs(param_kwargs))
             for name, param_kwargs in sorted_items(params)
@@ -56,7 +64,7 @@ class SkoptBackend:
         optimizer = Optimizer(dimensions, base_estimator, **kwargs)
         optimizer.tell(data_points, losses)
         current_point = optimizer.ask()
-        self.current_values = replace_values(params, current_point)
+        self.current_values = make_values(params, current_point)
 
     @param_processor.implements_params$(
         backend_name="scikit-optimize",
@@ -66,8 +74,9 @@ class SkoptBackend:
         "randrange",
         "uniform",
     ))
-    def param(self, name, **kwargs):
-        return (name, kwargs) |*> serve_values$(
-            serving_values=self.current_values,
-            fallback_func=self.random_backend.param,
-        )
+    def param(self, name, **kwargs) = serve_values(
+        name,
+        kwargs,
+        serving_values=self.current_values,
+        fallback_func=self.random_backend.param,
+    )
