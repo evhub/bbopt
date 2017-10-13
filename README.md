@@ -75,6 +75,7 @@ Some examples of BBopt in action (BBopt's examples are written in [Coconut](http
 - [`hyperopt_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/hyperopt_example.coco): Example showcasing the `hyperopt` backend.
 - [`conditional_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_example.coco): Example of having black box parameters that are dependent on other black box parameters.
 - [`keras_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.coco): Complete example of using BBopt to optimize a neural net in Keras.
+- [`conditional_skopt_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_skopt_example.coco): Example of using `placeholder_when_missing` to do conditional parameters with `scikit-optimize`.
 
 ## Full API
 
@@ -137,7 +138,8 @@ Every BBopt parameter definition method has the same basic form:
 - the first argument is always _name_, a unique string identifying that parameter,
 - following _name_ are whatever arguments are needed to specify the distribution's parameters, and
 - at the end are _kwargs_, which are the same for all the different methods. The allowable _kwargs_ are:
-    + _guess_, which specifies the initial value for the parameter.
+    + _guess_, which specifies the initial value for the parameter, and
+    + _placeholder\_when\_missing_, necessary only for `scikit-optimize`, which specifies what placeholder value a conditional parameter should be given if missing.
 
 #### `randrange`
 
