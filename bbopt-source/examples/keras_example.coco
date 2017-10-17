@@ -1,6 +1,5 @@
 # Imports:
 import sys
-import csv
 import os.path
 from pprint import pprint
 

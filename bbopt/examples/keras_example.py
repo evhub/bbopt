@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x42133b26
+# __coconut_hash__ = 0x20c04a3f
 
 # Compiled with Coconut version 1.3.0-post_dev4 [Dead Parrot]
 
@@ -18,7 +18,6 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 # Imports:
 sys = _coconut_sys
-import csv
 import os.path
 from pprint import pprint
 
