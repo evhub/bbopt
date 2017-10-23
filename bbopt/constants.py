@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x35519bbd
+# __coconut_hash__ = 0xcb2dd403
 
-# Compiled with Coconut version 1.3.0-post_dev4 [Dead Parrot]
+# Compiled with Coconut version 1.3.0-post_dev6 [Dead Parrot]
 
 """
 Constants for use across all of BBopt.
