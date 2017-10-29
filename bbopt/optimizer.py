@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf2807012
+# __coconut_hash__ = 0x68b02f61
 
-# Compiled with Coconut version 1.3.1 [Dead Parrot]
+# Compiled with Coconut version 1.3.1-post_dev1 [Dead Parrot]
 
 """
 The interface into BBopt for a file with black-box parameters.
@@ -97,7 +97,7 @@ class BlackBoxOptimizer(_coconut.object):
         self._set_reward("gain", value)
 
     @property
-    def _using_serving_backend(self):
+    def is_serving(self):
         return isinstance(self._backend, backend_registry[None])
 
     def _set_reward(self, reward_type, value):
@@ -107,7 +107,7 @@ class BlackBoxOptimizer(_coconut.object):
         if callable(value):
             value = value()
         self._current_example[reward_type] = value
-        if not self._using_serving_backend:
+        if not self.is_serving:
             self._save_examples()
 
     @property

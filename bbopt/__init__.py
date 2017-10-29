@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7f905b5b
+# __coconut_hash__ = 0xd7cf3fe0
 
-# Compiled with Coconut version 1.3.1 [Dead Parrot]
+# Compiled with Coconut version 1.3.1-post_dev1 [Dead Parrot]
 
 """
 BBopt black box optimization frontend

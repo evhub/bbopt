@@ -81,7 +81,7 @@ class BlackBoxOptimizer:
         self._set_reward("gain", value)
 
     @property
-    def _using_serving_backend(self) =
+    def is_serving(self) =
         isinstance(self._backend, backend_registry[None])
 
     def _set_reward(self, reward_type, value):
@@ -91,7 +91,7 @@ class BlackBoxOptimizer:
         if callable(value):
             value = value()
         self._current_example[reward_type] = value
-        if not self._using_serving_backend:
+        if not self.is_serving:
             self._save_examples()
 
     @property
