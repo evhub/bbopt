@@ -43,6 +43,11 @@ def create_dimension(
         return Real(*uniform)
     raise TypeError("insufficiently specified parameter %r" % name)
 
+strict_split_examples = split_examples$(
+    fallback_func=(def (name, **kwargs) ->
+        raise ValueError("conditional parameter %r with no placeholder_when_missing not supported by the scikit-optimize backend", name)),
+)
+
 # Backend:
 
 class SkoptBackend:
@@ -53,10 +58,7 @@ class SkoptBackend:
         if not examples:
             self.current_values = {}
             return
-        data_points, losses = (examples, params) |*> split_examples$(
-            fallback_func=(def (name, **kwargs) ->
-                raise ValueError("conditional parameter %r with no placeholder_when_missing not supported by the scikit-optimize backend", name)),
-        )
+        data_points, losses = strict_split_examples(examples, params)
         dimensions = [
             create_dimension(name, **param_processor.filter_kwargs(param_kwargs))
             for name, param_kwargs in sorted_items(params)

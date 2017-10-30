@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc6b3fde5
+# __coconut_hash__ = 0x6f9edae6
 
 # Compiled with Coconut version 1.3.1-post_dev1 [Dead Parrot]
 
@@ -54,6 +54,10 @@ def create_dimension(name, choice=None, randrange=None, uniform=None,):
         return Real(*uniform)
     raise TypeError("insufficiently specified parameter %r" % name)
 
+def _coconut_lambda_0(name, **kwargs):
+    raise ValueError("conditional parameter %r with no placeholder_when_missing not supported by the scikit-optimize backend", name)
+strict_split_examples = _coconut.functools.partial(split_examples, fallback_func=(_coconut_lambda_0))
+
 # Backend:
 
 class SkoptBackend(_coconut.object):
@@ -64,9 +68,7 @@ class SkoptBackend(_coconut.object):
         if not examples:
             self.current_values = {}
             return
-        def _coconut_lambda_1(name, **kwargs):
-            raise ValueError("conditional parameter %r with no placeholder_when_missing not supported by the scikit-optimize backend", name)
-        data_points, losses = split_examples(*(examples, params), fallback_func=(_coconut_lambda_1))
+        data_points, losses = strict_split_examples(examples, params)
         dimensions = [create_dimension(name, **param_processor.filter_kwargs(param_kwargs)) for name, param_kwargs in sorted_items(params)]
         optimizer = Optimizer(dimensions, base_estimator, **kwargs)
         optimizer.tell(data_points, losses)

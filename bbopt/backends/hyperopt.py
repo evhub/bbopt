@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa3256770
+# __coconut_hash__ = 0x5edc520d
 
 # Compiled with Coconut version 1.3.1-post_dev1 [Dead Parrot]
 
@@ -105,11 +105,11 @@ class HyperoptBackend(_coconut.object):
         trials = Trials()
         trials.insert_trial_docs(examples_to_trials(examples, params))
         (next)(FMinIter(algo, domain, trials, rstate, **kwargs))
-        assert self.current_values is not None
-        assert set(self.current_values.keys()) == set(params)
+        assert self.current_values is not None, self.current_values
+        assert set(self.current_values.keys()) == set(params), self.current_values
 
     def set_current_values(self, values):
-        assert isinstance(values, dict)
+        assert isinstance(values, dict), values
         self.current_values = values
         return {"status": STATUS_RUNNING}
 

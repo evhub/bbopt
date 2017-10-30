@@ -119,11 +119,11 @@ class HyperoptBackend:
             rstate,
             **kwargs,
         ) |> next
-        assert self.current_values is not None
-        assert set(self.current_values.keys()) == set(params)
+        assert self.current_values is not None, self.current_values
+        assert set(self.current_values.keys()) == set(params), self.current_values
 
     def set_current_values(self, values):
-        assert isinstance(values, dict)
+        assert isinstance(values, dict), values
         self.current_values = values
         return {
             "status": STATUS_RUNNING,
