@@ -34,15 +34,15 @@ test-2: install-2
 
 .PHONY: clean
 clean:
-	rm -rf ./bbopt ./dist ./build
+	rm -rf ./dist ./build
 	find . -name '*.bbopt.json' -delete
 	find . -name '*.pyc' -delete
 	find . -name '__pycache__' -delete
 
 .PHONY: wipe
 wipe: clean
-	find . -name '*.py' -delete
 	rm -rf ./bbopt
+	find . -name '*.py' -delete
 
 .PHONY: watch
 watch: install
