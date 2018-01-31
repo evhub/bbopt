@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xcbd0ffa0
+# __coconut_hash__ = 0xbb138350
 
-# Compiled with Coconut version 1.3.1-post_dev14 [Dead Parrot]
+# Compiled with Coconut version 1.3.1-post_dev16 [Dead Parrot]
 
 """
 The scikit-optimize backend. Does black box optimization using scikit-optimize.
@@ -35,7 +35,6 @@ from bbopt.params import param_processor
 from bbopt.util import sorted_items
 from bbopt.util import split_examples
 from bbopt.util import make_values
-from bbopt.util import negate_objective
 from bbopt.util import serve_values
 
 # Utilities:

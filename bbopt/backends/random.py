@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3c1aa28e
+# __coconut_hash__ = 0xf5a35d5b
 
-# Compiled with Coconut version 1.3.1-post_dev14 [Dead Parrot]
+# Compiled with Coconut version 1.3.1-post_dev16 [Dead Parrot]
 
 """
 The random backend. Used for testing purposes.
@@ -25,7 +25,6 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 # Imports:
 
-sys = _coconut_sys
 import random
 
 from bbopt.params import param_processor

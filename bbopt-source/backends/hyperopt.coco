@@ -26,7 +26,6 @@ from bbopt.params import param_processor
 from bbopt.util import (
     sorted_items,
     negate_objective,
-    format_err,
     make_features,
     serve_values,
 )

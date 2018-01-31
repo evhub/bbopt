@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # type: ignore
 
-# Compiled with Coconut version 1.3.1-post_dev14 [Dead Parrot]
+# Compiled with Coconut version 1.3.1-post_dev16 [Dead Parrot]
 
 """Built-in Coconut utilities."""
 
@@ -135,7 +135,16 @@ class _coconut(object):
         abc = collections
     else:
         import collections.abc as abc
-    Exception, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, classmethod, dict, enumerate, filter, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, map, min, max, next, object, property, range, reversed, set, slice, str, sum, super, tuple, zip, repr, bytearray = Exception, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, classmethod, dict, enumerate, filter, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, map, min, max, next, object, property, range, reversed, set, slice, str, sum, super, tuple, zip, staticmethod(repr), bytearray
+    if _coconut_sys.version_info >= (3, 2):
+        from functools import lru_cache
+    else:
+        try:
+            from backports.functools_lru_cache import lru_cache
+        except ImportError:
+            def lru_cache(*args, **kwargs):
+                """UNAVAILABLE: Run `pip install backports.functools_lru_cache` to fix."""
+                raise _coconut.ImportError("No module named 'backports.functools_lru_cache'")
+    Exception, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, classmethod, dict, enumerate, filter, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, map, min, max, next, object, property, range, reversed, set, slice, str, sum, super, tuple, zip, repr, bytearray = Exception, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, classmethod, dict, enumerate, filter, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, map, min, max, next, object, property, range, reversed, set, slice, str, sum, super, tuple, zip, staticmethod(repr), bytearray
 def _coconut_NamedTuple(name, fields):
     return _coconut.collections.namedtuple(name, [x for x, t in fields])
 class MatchError(Exception):
@@ -604,4 +613,8 @@ def fmap(func, obj):
     if _coconut.isinstance(obj, _coconut.str):
         return "".join(args)
     return obj.__class__(args)
+def memoize(maxsize=None, **kwargs):
+    return _coconut.lru_cache(maxsize, **kwargs)
+if hasattr(_coconut.lru_cache, "__doc__"):
+    memoize.__doc__ = _coconut.lru_cache.__doc__
 _coconut_MatchError, _coconut_count, _coconut_enumerate, _coconut_reversed, _coconut_map, _coconut_starmap, _coconut_tee, _coconut_zip, reduce, takewhile, dropwhile = MatchError, count, enumerate, reversed, map, starmap, tee, zip, _coconut.functools.reduce, _coconut.itertools.takewhile, _coconut.itertools.dropwhile

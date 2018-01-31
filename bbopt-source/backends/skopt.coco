@@ -18,7 +18,6 @@ from bbopt.util import (
     sorted_items,
     split_examples,
     make_values,
-    negate_objective,
     serve_values,
 )
 

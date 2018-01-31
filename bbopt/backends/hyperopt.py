@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd530f892
+# __coconut_hash__ = 0x76aa180d
 
-# Compiled with Coconut version 1.3.1-post_dev14 [Dead Parrot]
+# Compiled with Coconut version 1.3.1-post_dev16 [Dead Parrot]
 
 """
 The hyperopt backend. Does black box optimization using hyperopt.
@@ -41,7 +41,6 @@ from bbopt.backends.random import RandomBackend
 from bbopt.params import param_processor
 from bbopt.util import sorted_items
 from bbopt.util import negate_objective
-from bbopt.util import format_err
 from bbopt.util import make_features
 from bbopt.util import serve_values
 
