@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x68b02f61
+# __coconut_hash__ = 0xdaf7559e
 
-# Compiled with Coconut version 1.3.1-post_dev1 [Dead Parrot]
+# Compiled with Coconut version 1.3.1-post_dev14 [Dead Parrot]
 
 """
 The interface into BBopt for a file with black-box parameters.

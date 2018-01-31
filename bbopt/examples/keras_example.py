@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x78d86ce8
+# __coconut_hash__ = 0x4ef54e95
 
-# Compiled with Coconut version 1.3.1-post_dev1 [Dead Parrot]
+# Compiled with Coconut version 1.3.1-post_dev14 [Dead Parrot]
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -34,12 +34,12 @@ from keras.regularizers import l1_l2
 data_folder = os.path.join(os.path.dirname(__file__), "data")
 house_votes = np.loadtxt(os.path.join(data_folder, "house_votes.csv"), dtype=str, delimiter=",")
 
-def _coconut_lambda_1(_=None):
+def _coconut_lambda_0(_=None):
     raise TypeError("unknown vote %r" % _)
-X = (np.vectorize(lambda _=None: 1 if _ == "y" else -1 if _ == "n" else 0 if _ == "?" else (_coconut_lambda_1)(_)))(house_votes[:, 1:])
-def _coconut_lambda_2(_=None):
+X = (np.vectorize(lambda _=None: 1 if _ == "y" else -1 if _ == "n" else 0 if _ == "?" else (_coconut_lambda_0)(_)))(house_votes[:, 1:])
+def _coconut_lambda_1(_=None):
     raise TypeError("unknown party %r" % _)
-y = (to_categorical)((np.vectorize(lambda _=None: 1 if _ == "democrat" else 0 if _ == "republican" else (_coconut_lambda_2)(_)))(house_votes[:, 0]))
+y = (to_categorical)((np.vectorize(lambda _=None: 1 if _ == "democrat" else 0 if _ == "republican" else (_coconut_lambda_1)(_)))(house_votes[:, 0]))
 
 train_split = (int)(.6 * len(X))
 validate_split = (int)(train_split + .2 * len(X))

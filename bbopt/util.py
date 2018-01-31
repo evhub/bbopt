@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3d4cf465
+# __coconut_hash__ = 0xcd21b4
 
-# Compiled with Coconut version 1.3.1-post_dev1 [Dead Parrot]
+# Compiled with Coconut version 1.3.1-post_dev14 [Dead Parrot]
 
 """
 Utilities for use across all of bbopt.

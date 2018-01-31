@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x86bf3a68
+# __coconut_hash__ = 0x844118ca
 
-# Compiled with Coconut version 1.3.1-post_dev1 [Dead Parrot]
+# Compiled with Coconut version 1.3.1-post_dev14 [Dead Parrot]
 
 """
 The serving backend. Selects the best existing data point.
@@ -36,6 +36,6 @@ class ServingBackend(_coconut.object):
         self.serving_values = best_example(examples)["values"]
 
     def param(self, name, **kwargs):
-        def _coconut_lambda_1(name, **kwargs):
+        def _coconut_lambda_0(name, **kwargs):
             raise ValueError("missing data for parameter %r while serving and no guess" % name)
-        return serve_values(*(name, kwargs), serving_values=self.serving_values, fallback_func=(_coconut_lambda_1))
+        return serve_values(*(name, kwargs), serving_values=self.serving_values, fallback_func=(_coconut_lambda_0))
