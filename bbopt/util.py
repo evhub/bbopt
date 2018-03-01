@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x9dead248
+# __coconut_hash__ = 0xeb4e18e7
 
-# Compiled with Coconut version 1.3.1-post_dev17 [Dead Parrot]
+# Compiled with Coconut version 1.3.1-post_dev26 [Dead Parrot]
 
 """
 Utilities for use across all of bbopt.
@@ -13,6 +13,9 @@ Utilities for use across all of bbopt.
 from __future__ import print_function, absolute_import, unicode_literals, division
 import sys as _coconut_sys, os.path as _coconut_os_path
 _coconut_file_path = _coconut_os_path.dirname(_coconut_os_path.abspath(__file__))
+_coconut_cached_module = _coconut_sys.modules.get(str("__coconut__"))
+if _coconut_cached_module is not None and _coconut_os_path.dirname(_coconut_cached_module.__file__) != _coconut_file_path:
+    del _coconut_sys.modules[str("__coconut__")]
 _coconut_sys.path.insert(0, _coconut_file_path)
 from __coconut__ import _coconut, _coconut_NamedTuple, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_pipe, _coconut_star_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial
 from __coconut__ import *
@@ -86,8 +89,8 @@ def negate_objective(objective):
 def make_features(values, params, fallback_func):
     """Return an iterator of the values for the parameters in sorted order with the given fallback function."""
     for name, param_kwargs in sorted_items(params):
-        _coconut_match_check = False
         _coconut_match_to = values
+        _coconut_match_check = False
         _coconut_sentinel = _coconut.object()
         if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
             _coconut_match_temp_0 = _coconut_match_to.get(name, _coconut_sentinel)
@@ -97,8 +100,8 @@ def make_features(values, params, fallback_func):
         if _coconut_match_check:
             yield feature
         else:
-            _coconut_match_check = False
             _coconut_match_to = param_kwargs
+            _coconut_match_check = False
             _coconut_sentinel = _coconut.object()
             if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
                 _coconut_match_temp_0 = _coconut_match_to.get("placeholder_when_missing", _coconut_sentinel)
@@ -115,7 +118,7 @@ def split_examples(examples, params, fallback_func):
     data_points, losses = [], []
     for example in examples:
         _coconut_match_to = example
-        _coconut_match_check = False
+        _coconut_case_check_0 = False
         _coconut_sentinel = _coconut.object()
         if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
             _coconut_match_temp_0 = _coconut_match_to.get("values", _coconut_sentinel)
@@ -123,10 +126,10 @@ def split_examples(examples, params, fallback_func):
             if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut_match_temp_1 is not _coconut_sentinel):
                 values = _coconut_match_temp_0
                 gain = _coconut_match_temp_1
-                _coconut_match_check = True
-        if _coconut_match_check:
+                _coconut_case_check_0 = True
+        if _coconut_case_check_0:
             loss = negate_objective(gain)
-        if not _coconut_match_check:
+        if not _coconut_case_check_0:
             _coconut_sentinel = _coconut.object()
             if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
                 _coconut_match_temp_0 = _coconut_match_to.get("values", _coconut_sentinel)
@@ -134,10 +137,10 @@ def split_examples(examples, params, fallback_func):
                 if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut_match_temp_1 is not _coconut_sentinel):
                     values = _coconut_match_temp_0
                     loss = _coconut_match_temp_1
-                    _coconut_match_check = True
-            if _coconut_match_check:
+                    _coconut_case_check_0 = True
+            if _coconut_case_check_0:
                 pass
-        if not _coconut_match_check:
+        if not _coconut_case_check_0:
             raise ValueError("invalid example %r" % example)
         (data_points.append)((list)(make_features(values, params, fallback_func)))
         (losses.append)(loss)
@@ -165,7 +168,7 @@ def best_example(examples):
     max_gain, min_loss = None, None
     for example in examples:
         _coconut_match_to = example
-        _coconut_match_check = False
+        _coconut_case_check_1 = False
         _coconut_sentinel = _coconut.object()
         if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
             _coconut_match_temp_0 = _coconut_match_to.get("values", _coconut_sentinel)
@@ -173,14 +176,14 @@ def best_example(examples):
             if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut_match_temp_1 is not _coconut_sentinel):
                 values = _coconut_match_temp_0
                 gain = _coconut_match_temp_1
-                _coconut_match_check = True
-        if _coconut_match_check:
+                _coconut_case_check_1 = True
+        if _coconut_case_check_1:
             if min_loss is not None:
                 raise ValueError("cannot have examples with maximize and examples with minimize")
             if max_gain is None or gain >= max_gain:
                 selected_example = example
                 max_gain = gain
-        if not _coconut_match_check:
+        if not _coconut_case_check_1:
             _coconut_sentinel = _coconut.object()
             if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
                 _coconut_match_temp_0 = _coconut_match_to.get("values", _coconut_sentinel)
@@ -188,21 +191,21 @@ def best_example(examples):
                 if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut_match_temp_1 is not _coconut_sentinel):
                     values = _coconut_match_temp_0
                     loss = _coconut_match_temp_1
-                    _coconut_match_check = True
-            if _coconut_match_check:
+                    _coconut_case_check_1 = True
+            if _coconut_case_check_1:
                 if max_gain is not None:
                     raise ValueError("cannot have examples with maximize and examples with minimize")
                 if min_loss is None or loss <= min_loss:
                     selected_example = example
                     min_loss = loss
-        if not _coconut_match_check:
+        if not _coconut_case_check_1:
             raise ValueError("invalid example %r" % example)
     return selected_example
 
 def serve_values(param_name, param_kwargs, serving_values, fallback_func):
     """Serve a value for the given kwargs using the given values and fallback function."""
-    _coconut_match_check = False
     _coconut_match_to = serving_values
+    _coconut_match_check = False
     _coconut_sentinel = _coconut.object()
     if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
         _coconut_match_temp_0 = _coconut_match_to.get(param_name, _coconut_sentinel)
@@ -212,8 +215,8 @@ def serve_values(param_name, param_kwargs, serving_values, fallback_func):
     if _coconut_match_check:
         return value
     else:
-        _coconut_match_check = False
         _coconut_match_to = param_kwargs
+        _coconut_match_check = False
         _coconut_sentinel = _coconut.object()
         if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
             _coconut_match_temp_0 = _coconut_match_to.get("guess", _coconut_sentinel)

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x95a69c28
+# __coconut_hash__ = 0x3bf461f5
 
-# Compiled with Coconut version 1.3.1-post_dev17 [Dead Parrot]
+# Compiled with Coconut version 1.3.1-post_dev26 [Dead Parrot]
 
 """
 The interface into BBopt for a file with black-box parameters.
@@ -13,6 +13,9 @@ The interface into BBopt for a file with black-box parameters.
 from __future__ import print_function, absolute_import, unicode_literals, division
 import sys as _coconut_sys, os.path as _coconut_os_path
 _coconut_file_path = _coconut_os_path.dirname(_coconut_os_path.abspath(__file__))
+_coconut_cached_module = _coconut_sys.modules.get(str("__coconut__"))
+if _coconut_cached_module is not None and _coconut_os_path.dirname(_coconut_cached_module.__file__) != _coconut_file_path:
+    del _coconut_sys.modules[str("__coconut__")]
 _coconut_sys.path.insert(0, _coconut_file_path)
 from __coconut__ import _coconut, _coconut_NamedTuple, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_pipe, _coconut_star_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial
 from __coconut__ import *
@@ -120,8 +123,8 @@ class BlackBoxOptimizer(_coconut.object):
             with open(self._data_file, "r") as df:
                 contents = df.read()
                 if contents:
-                    _coconut_match_check = False
                     _coconut_match_to = json.loads(contents)
+                    _coconut_match_check = False
                     _coconut_sentinel = _coconut.object()
                     if (_coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping)) and (_coconut.len(_coconut_match_to) == 2):
                         _coconut_match_temp_0 = _coconut_match_to.get("params", _coconut_sentinel)
