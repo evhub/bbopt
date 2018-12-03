@@ -30,7 +30,7 @@ def json_serialize(obj):
         for k, v in obj.items():
             serialized_k = json_serialize(k)
             if not isinstance(serialized_k, str):
-                raise TypeError("dict keys must be strings, not %r" % k)
+                raise TypeError("dict keys must be strings, not {}".format(k))
             serialized_dict[k] = json_serialize(v)
         return serialized_dict
     if isinstance(obj, Iterable):
@@ -50,7 +50,7 @@ def json_serialize(obj):
             return bool(obj)
         if np.issubdtype(obj, np.str_):
             return py_str(obj)
-    raise TypeError("invalid JSON object %r" % obj)
+    raise TypeError("invalid JSON object {}".format(obj))
 
 
 def sorted_items(params) =
@@ -86,7 +86,7 @@ def split_examples(examples, params, fallback_func):
             match {"values": values, "loss": loss, **_}:
                 pass
         else:
-            raise ValueError("invalid example %r" % example)
+            raise ValueError("invalid example {}".format(example))
         make_features(values, params, fallback_func) |> list |> data_points.append
         loss |> losses.append
     return data_points, losses
@@ -130,7 +130,7 @@ def best_example(examples):
                     selected_example = example
                     min_loss = loss
         else:
-            raise ValueError("invalid example %r" % example)
+            raise ValueError("invalid example {}".format(example))
     return selected_example
 
 

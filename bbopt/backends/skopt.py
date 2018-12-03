@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x812abb6a
+# __coconut_hash__ = 0x14a20764
 
 # Compiled with Coconut version 1.4.0-post_dev2 [Ernest Scribbler]
 
@@ -705,11 +705,11 @@ def create_dimension(name, choice=None, randrange=None, uniform=None,):
         return Integer(start, stop)
     if uniform is not None:
         return Real(*uniform)
-    raise TypeError("insufficiently specified parameter %r" % name)
+    raise TypeError("insufficiently specified parameter {}".format(name))
 
 
 def _coconut_lambda_0(name, **kwargs):
-    raise ValueError("conditional parameter %r with no placeholder_when_missing not supported by the scikit-optimize backend", name)
+    raise ValueError("conditional parameter {} with no placeholder_when_missing not supported by the scikit-optimize backend".format(name))
 strict_split_examples = _coconut.functools.partial(split_examples, fallback_func=(_coconut_lambda_0))
 
 

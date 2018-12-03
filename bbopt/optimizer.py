@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4d3ff58b
+# __coconut_hash__ = 0xa67726db
 
 # Compiled with Coconut version 1.4.0-post_dev2 [Ernest Scribbler]
 
@@ -691,14 +691,22 @@ from bbopt.constants import data_file_ext
 
 
 class BlackBoxOptimizer(_coconut.object):
-    _optimizers_by_file = {}  # all Optimizer instances by file
+    _optimizers_by_file = {}  # all optimizer instances by file
+
+    @classmethod
+    def get_optimizer_for_file(file):
+        """Get the optimizer for the given file."""
+        if file in self._optimizers_by_file:
+            return self._optimizers_by_file[file]
+        else:
+            raise ValueError("could not find BlackBoxOptimizer for file {}".format(file))
 
     def __init__(self, file, json_indent=None):
         if not isinstance(file, Str):
             raise TypeError("file must be a string")
         self._file = norm_path(file)
         if self._file in self._optimizers_by_file:
-            raise ValueError("BlackBoxOptimizer for file %r already exists" % self.file)
+            raise ValueError("BlackBoxOptimizer for file {} already exists".format(self.file))
         self._optimizers_by_file[self._file] = self
         self._json_indent = json_indent
         self.reload()
@@ -727,7 +735,7 @@ class BlackBoxOptimizer(_coconut.object):
         if not isinstance(name, Str):
             raise TypeError("name must be a string")
         if name in self._new_params:
-            raise ValueError("parameter of name %r already exists" % name)
+            raise ValueError("parameter of name {} already exists".format(name))
         kwargs = (param_processor.standardize_kwargs)(kwargs)
         value = (json_serialize)(self._backend.param(name, **kwargs))
         self._new_params[name] = kwargs
@@ -763,13 +771,13 @@ class BlackBoxOptimizer(_coconut.object):
             self._save_examples()
 
     @property
-    def _data_file(self):
+    def data_file(self):
         return os.path.splitext(self._file)[0] + data_file_ext
 
     def _load_examples(self):
         """Load example data."""
-        if os.path.exists(self._data_file):
-            with open(self._data_file, "r") as df:
+        if os.path.exists(self.data_file):
+            with open(self.data_file, "r") as df:
                 contents = df.read()
                 if contents:
                     _coconut_match_to = json.loads(contents)
@@ -800,7 +808,7 @@ class BlackBoxOptimizer(_coconut.object):
         self._load_examples()
         if self._current_example not in self._examples:
             self._examples.append(self._current_example)
-        with open(self._data_file, "w+") as df:
+        with open(self.data_file, "w+") as df:
             (df.write)((str)(json.dumps(self.get_data(), indent=self._json_indent)))
 
     def get_current_run(self):

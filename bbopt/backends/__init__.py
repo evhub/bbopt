@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x5187ee98
+# __coconut_hash__ = 0x55516613
 
 # Compiled with Coconut version 1.4.0-post_dev2 [Ernest Scribbler]
 
@@ -712,7 +712,7 @@ class BackendRegistry(_coconut.object):
                 self.registered_backends[name] = backend
                 return backend
             else:
-                raise ValueError("unknown backend %r" % name)
+                raise ValueError("unknown backend {}".format(name))
 
     def __iter__(self):
         _coconut_yield_from = backend_generators

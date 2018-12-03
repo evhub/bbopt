@@ -20,14 +20,22 @@ from bbopt.constants import (
 
 
 class BlackBoxOptimizer:
-    _optimizers_by_file = {}  # all Optimizer instances by file
+    _optimizers_by_file = {}  # all optimizer instances by file
+
+    @classmethod
+    def get_optimizer_for_file(file):
+        """Get the optimizer for the given file."""
+        if file in self._optimizers_by_file:
+            return self._optimizers_by_file[file]
+        else:
+            raise ValueError("could not find BlackBoxOptimizer for file {}".format(file))
 
     def __init__(self, file, json_indent=None):
         if not isinstance(file, Str):
             raise TypeError("file must be a string")
         self._file = norm_path(file)
         if self._file in self._optimizers_by_file:
-            raise ValueError("BlackBoxOptimizer for file %r already exists" % self.file)
+            raise ValueError("BlackBoxOptimizer for file {} already exists".format(self.file))
         self._optimizers_by_file[self._file] = self
         self._json_indent = json_indent
         self.reload()
@@ -56,7 +64,7 @@ class BlackBoxOptimizer:
         if not isinstance(name, Str):
             raise TypeError("name must be a string")
         if name in self._new_params:
-            raise ValueError("parameter of name %r already exists" % name)
+            raise ValueError("parameter of name {} already exists".format(name))
         kwargs = kwargs |> param_processor.standardize_kwargs
         value = self._backend.param(name, **kwargs) |> json_serialize
         self._new_params[name] = kwargs
@@ -92,13 +100,13 @@ class BlackBoxOptimizer:
             self._save_examples()
 
     @property
-    def _data_file(self) =
+    def data_file(self) =
         os.path.splitext(self._file)[0] + data_file_ext
 
     def _load_examples(self):
         """Load example data."""
-        if os.path.exists(self._data_file):
-            with open(self._data_file, "r") as df:
+        if os.path.exists(self.data_file):
+            with open(self.data_file, "r") as df:
                 contents = df.read()
                 if contents:
                     {"params": params, "examples": examples} = json.loads(contents)
@@ -117,7 +125,7 @@ class BlackBoxOptimizer:
         self._load_examples()
         if self._current_example not in self._examples:
             self._examples.append(self._current_example)
-        with open(self._data_file, "w+") as df:
+        with open(self.data_file, "w+") as df:
             self.get_data() |> json.dumps$(indent=self._json_indent) |> str |> df.write
 
     def get_current_run(self):

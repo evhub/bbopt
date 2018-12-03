@@ -175,7 +175,7 @@ class ParamProcessor:
                 result = self.handlers[func](args)
                 args = result if result is not None else args
             else:
-                raise TypeError("unknown param option %r" % func)
+                raise TypeError("unknown param option {}".format(func))
 
             new_kwargs[func] = args
             saw_func = func

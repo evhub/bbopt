@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x8aec108f
+# __coconut_hash__ = 0x32a02219
 
 # Compiled with Coconut version 1.4.0-post_dev2 [Ernest Scribbler]
 
@@ -708,7 +708,7 @@ def json_serialize(obj):
         for k, v in obj.items():
             serialized_k = json_serialize(k)
             if not isinstance(serialized_k, str):
-                raise TypeError("dict keys must be strings, not %r" % k)
+                raise TypeError("dict keys must be strings, not {}".format(k))
             serialized_dict[k] = json_serialize(v)
         return serialized_dict
     if isinstance(obj, Iterable):
@@ -728,7 +728,7 @@ def json_serialize(obj):
             return bool(obj)
         if np.issubdtype(obj, np.str_):
             return py_str(obj)
-    raise TypeError("invalid JSON object %r" % obj)
+    raise TypeError("invalid JSON object {}".format(obj))
 
 
 def sorted_items(params):
@@ -799,7 +799,7 @@ def split_examples(examples, params, fallback_func):
             if _coconut_case_check_0:
                 pass
         if not _coconut_case_check_0:
-            raise ValueError("invalid example %r" % example)
+            raise ValueError("invalid example {}".format(example))
         (data_points.append)((list)(make_features(values, params, fallback_func)))
         (losses.append)(loss)
     return data_points, losses
@@ -861,7 +861,7 @@ def best_example(examples):
                     selected_example = example
                     min_loss = loss
         if not _coconut_case_check_1:
-            raise ValueError("invalid example %r" % example)
+            raise ValueError("invalid example {}".format(example))
     return selected_example
 
 

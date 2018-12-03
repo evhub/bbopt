@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x49f2b967
+# __coconut_hash__ = 0x786e70fd
 
 # Compiled with Coconut version 1.4.0-post_dev2 [Ernest Scribbler]
 
@@ -689,5 +689,5 @@ class ServingBackend(_coconut.object):
 
     def param(self, name, **kwargs):
         def _coconut_lambda_0(name, **kwargs):
-            raise ValueError("missing data for parameter %r while serving and no guess" % name)
+            raise ValueError("missing data for parameter {} while serving and no guess".format(name))
         return serve_values(*(name, kwargs), serving_values=self.serving_values, fallback_func=(_coconut_lambda_0))

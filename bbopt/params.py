@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb11944e1
+# __coconut_hash__ = 0x61b5ce9f
 
 # Compiled with Coconut version 1.4.0-post_dev2 [Ernest Scribbler]
 
@@ -832,7 +832,7 @@ class ParamProcessor(_coconut.object):
                 result = self.handlers[func](args)
                 args = result if result is not None else args
             else:
-                raise TypeError("unknown param option %r" % func)
+                raise TypeError("unknown param option {}".format(func))
 
             new_kwargs[func] = args
             saw_func = func

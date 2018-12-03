@@ -37,5 +37,5 @@ class RandomBackend:
             " <name of the random function to call>=<argument(s) to that function>")
         cmd, args = kwargs.items()$[0]
         if cmd not in self.random_functions:
-            raise ValueError("unknown random function %r" % cmd)
+            raise ValueError("unknown random function {}".format(cmd))
         return self.random_functions[cmd](*args)

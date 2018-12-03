@@ -19,12 +19,12 @@ X = house_votes[:,1:] |> np.vectorize(->
     1 if _ == "y"
     else -1 if _ == "n"
     else 0 if _ == "?"
-    else (def -> raise TypeError("unknown vote %r" % _))(_)
+    else (def -> raise TypeError("unknown vote {}".format(_)))(_)
 )
 y = house_votes[:,0] |> np.vectorize(->
     1 if _ == "democrat"
     else 0 if _ == "republican"
-    else (def -> raise TypeError("unknown party %r" % _))(_)
+    else (def -> raise TypeError("unknown party {}".format(_)))(_)
 ) |> to_categorical
 
 train_split = .6*len(X) |> int

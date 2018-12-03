@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x53ea853b
+# __coconut_hash__ = 0x7c9a6274
 
 # Compiled with Coconut version 1.4.0-post_dev2 [Ernest Scribbler]
 
@@ -697,5 +697,5 @@ class RandomBackend(_coconut.object):
             raise TypeError("the random backend requires exactly one parameter," " <name of the random function to call>=<argument(s) to that function>")
         cmd, args = _coconut_igetitem(kwargs.items(), 0)
         if cmd not in self.random_functions:
-            raise ValueError("unknown random function %r" % cmd)
+            raise ValueError("unknown random function {}".format(cmd))
         return self.random_functions[cmd](*args)

@@ -21,7 +21,7 @@ class BackendRegistry:
             self.registered_backends[name] = backend
             return backend
         else:
-            raise ValueError("unknown backend %r" % name)
+            raise ValueError("unknown backend {}".format(name))
 
     def __iter__(self):
         yield from backend_generators

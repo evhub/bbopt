@@ -18,7 +18,7 @@ class ServingBackend:
         return (name, kwargs) |*> serve_values$(
             serving_values=self.serving_values,
             fallback_func=(def (name, **kwargs) ->
-                raise ValueError("missing data for parameter %r while serving and no guess" % name)
+                raise ValueError("missing data for parameter {} while serving and no guess".format(name))
             ),
         )
 

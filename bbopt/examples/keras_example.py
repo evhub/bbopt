@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x5a6227e5
+# __coconut_hash__ = 0xbcfa2ddf
 
 # Compiled with Coconut version 1.4.0-post_dev2 [Ernest Scribbler]
 
@@ -690,10 +690,10 @@ data_folder = os.path.join(os.path.dirname(__file__), "data")
 house_votes = np.loadtxt(os.path.join(data_folder, "house_votes.csv"), dtype=str, delimiter=",")
 
 def _coconut_lambda_0(_=None):
-    raise TypeError("unknown vote %r" % _)
+    raise TypeError("unknown vote {}".format(_))
 X = (np.vectorize(lambda _=None: 1 if _ == "y" else -1 if _ == "n" else 0 if _ == "?" else (_coconut_lambda_0)(_)))(house_votes[:, 1:])
 def _coconut_lambda_1(_=None):
-    raise TypeError("unknown party %r" % _)
+    raise TypeError("unknown party {}".format(_))
 y = (to_categorical)((np.vectorize(lambda _=None: 1 if _ == "democrat" else 0 if _ == "republican" else (_coconut_lambda_1)(_)))(house_votes[:, 0]))
 
 train_split = (int)(.6 * len(X))

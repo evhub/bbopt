@@ -39,12 +39,12 @@ def create_dimension(
         return Integer(start, stop)
     if uniform is not None:
         return Real(*uniform)
-    raise TypeError("insufficiently specified parameter %r" % name)
+    raise TypeError("insufficiently specified parameter {}".format(name))
 
 
 strict_split_examples = split_examples$(
     fallback_func=(def (name, **kwargs) ->
-        raise ValueError("conditional parameter %r with no placeholder_when_missing not supported by the scikit-optimize backend", name)),
+        raise ValueError("conditional parameter {} with no placeholder_when_missing not supported by the scikit-optimize backend".format(name))),
 )
 
 

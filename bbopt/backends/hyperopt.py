@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb7c42bfc
+# __coconut_hash__ = 0x9babc4d7
 
 # Compiled with Coconut version 1.4.0-post_dev2 [Ernest Scribbler]
 
@@ -713,7 +713,7 @@ def create_space(name, choice=None, randrange=None, uniform=None, normalvariate=
         return hp.uniform(name, *uniform)
     if normalvariate is not None:
         return hp.normal(name, *normalvariate)
-    raise TypeError("insufficiently specified parameter %r" % name)
+    raise TypeError("insufficiently specified parameter {}".format(name))
 
 
 def examples_to_trials(examples, params):
