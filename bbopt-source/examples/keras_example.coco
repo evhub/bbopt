@@ -5,7 +5,7 @@ from pprint import pprint
 import numpy as np
 
 from keras.models import Sequential
-from keras.layers import Dense, Activation
+from keras.layers import Dense
 from keras.optimizers import SGD
 from keras.utils import to_categorical
 from keras.regularizers import l1_l2
@@ -15,20 +15,20 @@ from keras.regularizers import l1_l2
 data_folder = os.path.join(os.path.dirname(__file__), "data")
 house_votes = os.path.join(data_folder, "house_votes.csv") |> np.loadtxt$(dtype=str, delimiter=",")
 
-X = house_votes[:,1:] |> np.vectorize(->
-    1 if _ == "y"
-    else -1 if _ == "n"
-    else 0 if _ == "?"
-    else (def -> raise TypeError("unknown vote {}".format(_)))(_)
+X = house_votes[:,1:] |> np.vectorize(x ->
+    1 if x == "y"
+    else -1 if x == "n"
+    else 0 if x == "?"
+    else (def x -> raise TypeError("unknown vote {}".format(x)))(x)
 )
-y = house_votes[:,0] |> np.vectorize(->
-    1 if _ == "democrat"
-    else 0 if _ == "republican"
-    else (def -> raise TypeError("unknown party {}".format(_)))(_)
+y = house_votes[:,0] |> np.vectorize(x ->
+    1 if x == "democrat"
+    else 0 if x == "republican"
+    else (def x -> raise TypeError("unknown party {}".format(x)))(x)
 ) |> to_categorical
 
-train_split = .6*len(X) |> int
-validate_split = train_split + .2*len(X) |> int
+train_split = int(.6*len(X))
+validate_split = train_split + int(.2*len(X))
 
 X_train, X_validate, X_test = X[:train_split], X[train_split:validate_split], X[validate_split:]
 y_train, y_validate, y_test = y[:train_split], y[train_split:validate_split], y[validate_split:]
@@ -60,11 +60,12 @@ for i in range(N):
                 l1=bb.uniform("l1", 0, 0.1, guess=0.005),
                 l2=bb.uniform("l2", 0, 0.1, guess=0.05),
             ),
-
+            activation="relu",
         ),
-        Activation("relu"),
-        Dense(units=2),
-        Activation("softmax"),
+        Dense(
+            units=2,
+            activation="softmax",
+        ),
     ])
 
     model.compile(
@@ -73,7 +74,7 @@ for i in range(N):
             lr=bb.uniform("learning rate", 0, 0.5, guess=0.15),
             decay=bb.uniform("decay", 0, 0.01, guess=0.0005),
             momentum=bb.uniform("momentum", 0, 1, guess=0.5),
-            nesterov=bb.getrandbits("nesterov", 1, guess=1) |> bool,
+            nesterov=bool(bb.getrandbits("nesterov", 1, guess=1)),
         ),
         metrics=["accuracy"],
     )

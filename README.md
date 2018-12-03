@@ -1,8 +1,8 @@
 # BBopt
 
-BBopt is a frontend for easily interfacing with any black box optimization framework.
+BBopt is a frontend for easily interfacing with any black box optimization framework. Think of BBopt like [Keras](https://keras.io/) for black box optimization: one interface for any black box optimization backend.
 
-BBopt provides a universal interface based on the standard library `random` module (so you don't even have to learn anything new!) that lets you define your tunable parameters.
+Plus, BBopt provides a universal interface for defining your tunable parameters based on the standard library `random` module, so you don't even have to learn anything new!
 
 Once you've defined your parameters, training a black box optimization model on those parameters is as simple as
 ```
@@ -75,7 +75,7 @@ Some examples of BBopt in action (BBopt's examples are written in [Coconut](http
 - [`hyperopt_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/hyperopt_example.coco): Example showcasing the `hyperopt` backend.
 - [`conditional_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_example.coco): Example of having black box parameters that are dependent on other black box parameters.
 - [`conditional_skopt_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_skopt_example.coco): Example of using `placeholder_when_missing` to do conditional parameters with `scikit-optimize`.
-- [`keras_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.coco): Complete example of using BBopt to optimize a neural network in Keras. Uses the full API.
+- [`keras_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.coco): Complete example of using BBopt to optimize a neural network built with [Keras](https://keras.io/). Uses the full API instead of just the boilerplate.
 
 ## Command-Line Interface
 

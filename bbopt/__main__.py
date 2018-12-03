@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb52b4702
+# __coconut_hash__ = 0x6b99d5fa
 
 # Compiled with Coconut version 1.4.0-post_dev2 [Ernest Scribbler]
 
@@ -678,15 +678,15 @@ _coconut_MatchError, _coconut_count, _coconut_enumerate, _coconut_makedata, _coc
 
 
 import os
+import argparse
 import subprocess
-from argparse import ArgumentParser
 
 from bbopt.constants import description
 from bbopt.constants import default_trials
 from bbopt.optimizer import BlackBoxOptimizer
 
 
-parser = ArgumentParser(prog="bbopt", description=description)
+parser = argparse.ArgumentParser(prog="bbopt", description=description)
 
 parser.add_argument("file", metavar="file", type=str, help="path of the Python file to run")
 
@@ -695,6 +695,8 @@ parser.add_argument("-n", "--num-trials", metavar="trials", type=int, default=de
 parser.add_argument("-q", "--quiet", action="store_true", help="suppress all informational output")
 
 parser.add_argument("--python", metavar="executable", type=str, default="python", help="the python executable to use for running the file (defaults to 'python')")
+
+parser.add_argument("--args", type=str, nargs=argparse.REMAINDER, help="arguments to pass to the file being run")
 
 
 def main():
@@ -711,7 +713,7 @@ def main():
     for i in range(args.num_trials):
         show("[BBopt] Running black box optimization trial {}/{}...".format(i + 1, args.num_trials))
 
-        cmd = [args.python, args.file]
+        cmd = [args.python, args.file] + ((lambda _coconut_none_coalesce_item: [] if _coconut_none_coalesce_item is None else _coconut_none_coalesce_item)(args.args))
         show("> {}".format(" ".join(cmd)))
         subprocess.check_call(cmd)
 
