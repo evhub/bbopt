@@ -29,6 +29,9 @@ extra_requirements = {
     ),
 }
 extra_requirements["all"] = extra_requirements.values() |> map$(set) |> reduce$(|) |> tuple
+extra_requirements["dev"] = extra_requirements["all"] + (
+    "pytest",
+)
 
 
 # Optimizer constants:

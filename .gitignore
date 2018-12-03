@@ -106,5 +106,8 @@ ENV/
 # Sublime
 *.sublime-*
 
+# Pytest
+.pytest_cache/
+
 # BBOpt
 *.bbopt.json

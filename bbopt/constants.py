@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb7a97092
+# __coconut_hash__ = 0xef2c7d11
 
 # Compiled with Coconut version 1.4.0-post_dev2 [Ernest Scribbler]
 
@@ -690,6 +690,7 @@ classifiers = ("Development Status :: 3 - Alpha", "License :: OSI Approved :: Ap
 requirements = ()
 extra_requirements = {"scikit-optimize": ("scikit-optimize",), "hyperopt": ("hyperopt", "networkx<2.0",)}
 extra_requirements["all"] = (tuple)(reduce(_coconut.operator.or_, map(set, extra_requirements.values())))
+extra_requirements["dev"] = extra_requirements["all"] + ("pytest",)
 
 
 # Optimizer constants:

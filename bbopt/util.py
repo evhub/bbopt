@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x5cea4139
+# __coconut_hash__ = 0x8aec108f
 
 # Compiled with Coconut version 1.4.0-post_dev2 [Ernest Scribbler]
 
@@ -718,11 +718,16 @@ def json_serialize(obj):
         return serialized_list
     if type(obj).__module__ == "numpy":
         import numpy as np
-# the ordering here is extremely important; int must come before bool,
-# since otherwise this will cast all ints to bools
-        for dtype in (int, float, bool, str):
-            if np.issubdtype(obj, dtype):
-                return dtype(obj)
+# the ordering here is extremely important; int must come before
+#  bool, since otherwise this will cast all ints to bools
+        if np.issubdtype(obj, np.number) or np.issubdtype(obj, np.unsignedinteger):
+            return int(obj)
+        if np.issubdtype(obj, np.floating):
+            return float(obj)
+        if np.issubdtype(obj, np.bool_):
+            return bool(obj)
+        if np.issubdtype(obj, np.str_):
+            return py_str(obj)
     raise TypeError("invalid JSON object %r" % obj)
 
 

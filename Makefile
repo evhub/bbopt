@@ -1,10 +1,10 @@
 .PHONY: install
 install: build
-	pip install -e .[all]
+	pip install -e .[dev]
 
 .PHONY: install-2
 install-2: build
-	python2 -m pip install -e .[all]
+	python2 -m pip install -e .[dev]
 
 .PHONY: setup
 setup:
