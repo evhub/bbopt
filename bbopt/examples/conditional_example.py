@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x2244e8a2
+# __coconut_hash__ = 0x4b8a6165
 
 # Compiled with Coconut version 1.4.0-post_dev2 [Ernest Scribbler]
 
@@ -675,7 +675,7 @@ _coconut_MatchError, _coconut_count, _coconut_enumerate, _coconut_makedata, _coc
 from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)
 if __name__ == "__main__":
-    bb.run(backend="random")
+    bb.run(backend="hyperopt")
 
 
 # We set the x parameter conditional on the use_high parameter.

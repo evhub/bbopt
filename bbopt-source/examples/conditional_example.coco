@@ -2,7 +2,7 @@
 from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)
 if __name__ == "__main__":
-    bb.run(backend="random")
+    bb.run(backend="hyperopt")
 
 
 # We set the x parameter conditional on the use_high parameter.

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x14a20764
+# __coconut_hash__ = 0x5925a641
 
 # Compiled with Coconut version 1.4.0-post_dev2 [Ernest Scribbler]
 
@@ -678,7 +678,6 @@ _coconut_MatchError, _coconut_count, _coconut_enumerate, _coconut_makedata, _coc
 
 
 from skopt import Optimizer
-from skopt.learning import GaussianProcessRegressor
 from skopt.space import Categorical
 from skopt.space import Integer
 from skopt.space import Real
@@ -719,7 +718,7 @@ class SkoptBackend(_coconut.object):
     """The scikit-optimize backend uses scikit-optimize for black box optimization."""
     random_backend = RandomBackend()
 
-    def __init__(self, examples, params, base_estimator=GaussianProcessRegressor, **kwargs):
+    def __init__(self, examples, params, base_estimator="gp", **kwargs):
         if not examples:
             self.current_values = {}
             return

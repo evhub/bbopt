@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xfaa82a49
+# __coconut_hash__ = 0xdd3b3291
 
 # Compiled with Coconut version 1.4.0-post_dev2 [Ernest Scribbler]
 
@@ -735,7 +735,7 @@ class TestExamples(unittest.TestCase):
     def test_random(self):
         print("\ntest_random:")
         with remove_when_done(random_data):
-            results = call_test(["bbopt", random_file, "-q", "-n", "10"])
+            results = call_test(["bbopt", random_file, "-q", "-n", "15"])
             want = max((int(line.strip()) for line in results.splitlines()))
             assert os.path.exists(random_data)
             from bbopt.examples.random_example import x as got_x
@@ -744,7 +744,7 @@ class TestExamples(unittest.TestCase):
     def test_skopt(self):
         print("\ntest_skopt:")
         with remove_when_done(skopt_data):
-            results = call_test(["bbopt", skopt_file, "-q", "-n", "10"])
+            results = call_test(["bbopt", skopt_file, "-q", "-n", "15"])
             want = min((float(line.strip()) for line in results.splitlines()))
             assert os.path.exists(skopt_data)
             from bbopt.examples.skopt_example import y as got
@@ -753,7 +753,7 @@ class TestExamples(unittest.TestCase):
     def test_hyperopt(self):
         print("\ntest_hyperopt:")
         with remove_when_done(hyperopt_data):
-            results = call_test(["bbopt", hyperopt_file, "-q", "-n", "10"])
+            results = call_test(["bbopt", hyperopt_file, "-q", "-n", "15"])
             want = min((float(line.strip()) for line in results.splitlines()))
             assert os.path.exists(hyperopt_data)
             from bbopt.examples.hyperopt_example import y as got
@@ -762,7 +762,7 @@ class TestExamples(unittest.TestCase):
     def test_conditional(self):
         print("\ntest conditional:")
         with remove_when_done(conditional_data):
-            results = call_test(["bbopt", conditional_file, "-q", "-n", "10"])
+            results = call_test(["bbopt", conditional_file, "-q", "-n", "15"])
             want = max((int(line.strip()) for line in results.splitlines()))
             assert os.path.exists(conditional_data)
             from bbopt.examples.conditional_example import x as got
@@ -771,7 +771,7 @@ class TestExamples(unittest.TestCase):
     def test_conditional_skopt(self):
         print("\ntest conditional_skopt:")
         with remove_when_done(conditional_skopt_data):
-            results = call_test(["bbopt", conditional_skopt_file, "-q", "-n", "10"])
+            results = call_test(["bbopt", conditional_skopt_file, "-q", "-n", "15"])
             want = max((int(line.strip()) for line in results.splitlines()))
             assert os.path.exists(conditional_skopt_data)
             from bbopt.examples.conditional_skopt_example import x as got

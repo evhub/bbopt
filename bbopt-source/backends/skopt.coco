@@ -3,7 +3,6 @@ The scikit-optimize backend. Does black box optimization using scikit-optimize.
 """
 
 from skopt import Optimizer
-from skopt.learning import GaussianProcessRegressor
 from skopt.space import (
     Categorical,
     Integer,
@@ -54,7 +53,7 @@ class SkoptBackend:
     """The scikit-optimize backend uses scikit-optimize for black box optimization."""
     random_backend = RandomBackend()
 
-    def __init__(self, examples, params, base_estimator=GaussianProcessRegressor, **kwargs):
+    def __init__(self, examples, params, base_estimator="gp", **kwargs):
         if not examples:
             self.current_values = {}
             return
