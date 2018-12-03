@@ -4,7 +4,6 @@ Constants for use across all of BBopt.
 
 
 # Installation constants:
-
 name = "bbopt"
 version = "0.2.5"
 description = "The easiest hyperparameter optimization you'll ever do."
@@ -35,5 +34,8 @@ extra_requirements["dev"] = extra_requirements["all"] + (
 
 
 # Optimizer constants:
-
 data_file_ext = ".bbopt.json"
+
+
+# CLI constants:
+default_trials = 100

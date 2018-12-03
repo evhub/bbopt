@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7260eec1
+# __coconut_hash__ = 0xfaa82a49
 
 # Compiled with Coconut version 1.4.0-post_dev2 [Ernest Scribbler]
 
@@ -735,54 +735,44 @@ class TestExamples(unittest.TestCase):
     def test_random(self):
         print("\ntest_random:")
         with remove_when_done(random_data):
-            want_x = -1
-            for _ in range(10):
-                stdout = call_test(["python", random_file])
-                want_x = max(int(stdout.strip()), want_x)
+            results = call_test(["bbopt", random_file, "-q", "-n", "10"])
+            want = max((int(line.strip()) for line in results.splitlines()))
             assert os.path.exists(random_data)
             from bbopt.examples.random_example import x as got_x
-            assert got_x == want_x
+            assert got_x == want
 
     def test_skopt(self):
         print("\ntest_skopt:")
         with remove_when_done(skopt_data):
-            want_y = float("inf")
-            for _ in range(10):
-                stdout = call_test(["python", skopt_file])
-                want_y = min(float(stdout.strip()), want_y)
+            results = call_test(["bbopt", skopt_file, "-q", "-n", "10"])
+            want = min((float(line.strip()) for line in results.splitlines()))
             assert os.path.exists(skopt_data)
-            from bbopt.examples.skopt_example import y as got_y
-            assert got_y == want_y
+            from bbopt.examples.skopt_example import y as got
+            assert got == want
 
     def test_hyperopt(self):
         print("\ntest_hyperopt:")
         with remove_when_done(hyperopt_data):
-            want_y = float("inf")
-            for _ in range(10):
-                stdout = call_test(["python", hyperopt_file])
-                want_y = min(float(stdout.strip()), want_y)
+            results = call_test(["bbopt", hyperopt_file, "-q", "-n", "10"])
+            want = min((float(line.strip()) for line in results.splitlines()))
             assert os.path.exists(hyperopt_data)
-            from bbopt.examples.hyperopt_example import y as got_y
-            assert got_y == want_y
+            from bbopt.examples.hyperopt_example import y as got
+            assert got == want
 
     def test_conditional(self):
         print("\ntest conditional:")
         with remove_when_done(conditional_data):
-            want_reward = float("-inf")
-            for _ in range(10):
-                stdout = call_test(["python", conditional_file])
-                want_reward = max(int(stdout.strip()), want_reward)
+            results = call_test(["bbopt", conditional_file, "-q", "-n", "10"])
+            want = max((int(line.strip()) for line in results.splitlines()))
             assert os.path.exists(conditional_data)
-            from bbopt.examples.conditional_example import reward as got_reward
-            assert got_reward == want_reward
+            from bbopt.examples.conditional_example import x as got
+            assert got == want
 
     def test_conditional_skopt(self):
         print("\ntest conditional_skopt:")
         with remove_when_done(conditional_skopt_data):
-            want_reward = float("-inf")
-            for _ in range(10):
-                stdout = call_test(["python", conditional_skopt_file])
-                want_reward = max(int(stdout.strip()), want_reward)
+            results = call_test(["bbopt", conditional_skopt_file, "-q", "-n", "10"])
+            want = max((int(line.strip()) for line in results.splitlines()))
             assert os.path.exists(conditional_skopt_data)
-            from bbopt.examples.conditional_skopt_example import reward as got_reward
-            assert got_reward == want_reward
+            from bbopt.examples.conditional_skopt_example import x as got
+            assert got == want

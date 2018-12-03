@@ -50,7 +50,7 @@ else:
 for i in range(N):
     bb.run(backend="scikit-optimize")
 
-    print("\n= %d = (example #%d)" % (i+1, len(bb.get_data()["examples"])+1))
+    print("\n= {} = (example #{})".format(i+1, len(bb.get_data()["examples"])+1))
 
     model = Sequential([
         Dense(
@@ -108,5 +108,5 @@ for i in range(N):
 
 # Summary of best run:
 best_example = bb.get_optimal_run()
-print("\n= BEST = (example #%d)" % bb.get_data()["examples"].index(best_example))
+print("\n= BEST = (example #{})".format(bb.get_data()["examples"].index(best_example)))
 pprint(best_example)

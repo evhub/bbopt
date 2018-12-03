@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb759ca97
+# __coconut_hash__ = 0x2244e8a2
 
 # Compiled with Coconut version 1.4.0-post_dev2 [Ernest Scribbler]
 
@@ -675,19 +675,22 @@ _coconut_MatchError, _coconut_count, _coconut_enumerate, _coconut_makedata, _coc
 from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)
 if __name__ == "__main__":
-    bb.run(backend="hyperopt")
+    bb.run(backend="random")
 
 
+# We set the x parameter conditional on the use_high parameter.
 use_high = bb.randbool("use high", guess=False)
 assert isinstance(use_high, bool)
 if use_high:
-    reward = bb.randrange("x high", 10, 20)
+    x = bb.randrange("x high", 10, 20)
 else:
-    reward = bb.randrange("x low", 10)
+    x = bb.randrange("x low", 10)
 
 
-bb.maximize(reward)
+# We set x as the thing we want to optimize.
+bb.maximize(x)
 
 
+# Finally, we'll print out the value we used for debugging purposes.
 if __name__ == "__main__":
-    print(repr(reward))
+    print(repr(x))

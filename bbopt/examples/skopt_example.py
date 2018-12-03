@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc2baf5b6
+# __coconut_hash__ = 0x916d9536
 
 # Compiled with Coconut version 1.4.0-post_dev2 [Ernest Scribbler]
 
@@ -677,14 +677,17 @@ bb = BlackBoxOptimizer(file=__file__)
 if __name__ == "__main__":
     bb.run(backend="scikit-optimize")
 
+
 # Let's use some parameters!
 x0 = bb.randrange("x0", 1, 11, guess=5)
 x1 = bb.uniform("x1", 0, 1)
 x2 = bb.choice("x2", [-10, -1, 0, 1, 10])
 
+
 # And let's set our goal!
 y = x0 + x1 * x2
 bb.minimize(y)
+
 
 # Finally, we'll print out the value we used for debugging purposes.
 if __name__ == "__main__":

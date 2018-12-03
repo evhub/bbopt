@@ -20,23 +20,11 @@ from bbopt.constants import (
 
 
 class BlackBoxOptimizer:
-    _optimizers_by_file = {}  # all optimizer instances by file
-
-    @classmethod
-    def get_optimizer_for_file(file):
-        """Get the optimizer for the given file."""
-        if file in self._optimizers_by_file:
-            return self._optimizers_by_file[file]
-        else:
-            raise ValueError("could not find BlackBoxOptimizer for file {}".format(file))
 
     def __init__(self, file, json_indent=None):
         if not isinstance(file, Str):
             raise TypeError("file must be a string")
         self._file = norm_path(file)
-        if self._file in self._optimizers_by_file:
-            raise ValueError("BlackBoxOptimizer for file {} already exists".format(self.file))
-        self._optimizers_by_file[self._file] = self
         self._json_indent = json_indent
         self.reload()
 
@@ -45,7 +33,7 @@ class BlackBoxOptimizer:
         self._old_params = {}
         self._examples = []
         self._load_examples()
-        self.run(None)  # use serving backend
+        self.run(backend=None)  # backend is set to serving by default
 
     def run(self, backend, **kwargs):
         """Optimize parameters using the given backend."""

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa67726db
+# __coconut_hash__ = 0x35ba3c5b
 
 # Compiled with Coconut version 1.4.0-post_dev2 [Ernest Scribbler]
 
@@ -691,23 +691,11 @@ from bbopt.constants import data_file_ext
 
 
 class BlackBoxOptimizer(_coconut.object):
-    _optimizers_by_file = {}  # all optimizer instances by file
-
-    @classmethod
-    def get_optimizer_for_file(file):
-        """Get the optimizer for the given file."""
-        if file in self._optimizers_by_file:
-            return self._optimizers_by_file[file]
-        else:
-            raise ValueError("could not find BlackBoxOptimizer for file {}".format(file))
 
     def __init__(self, file, json_indent=None):
         if not isinstance(file, Str):
             raise TypeError("file must be a string")
         self._file = norm_path(file)
-        if self._file in self._optimizers_by_file:
-            raise ValueError("BlackBoxOptimizer for file {} already exists".format(self.file))
-        self._optimizers_by_file[self._file] = self
         self._json_indent = json_indent
         self.reload()
 
@@ -716,7 +704,7 @@ class BlackBoxOptimizer(_coconut.object):
         self._old_params = {}
         self._examples = []
         self._load_examples()
-        self.run(None)  # use serving backend
+        self.run(backend=None)  # backend is set to serving by default
 
     def run(self, backend, **kwargs):
         """Optimize parameters using the given backend."""

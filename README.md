@@ -6,7 +6,7 @@ BBopt provides a universal interface based on the standard library `random` modu
 
 Once you've defined your parameters, training a black box optimization model on those parameters is as simple as
 ```
-python your_file.py
+bbopt your_file.py
 ```
 and serving your file with optimized parameters as simple as
 ```
@@ -44,7 +44,7 @@ bb.maximize(y)      or      bb.minimize(y)
 ```
 to set the value being optimized. Then, run
 ```
-python <your file here>
+bbopt <your file here> -n <number of trials>
 ```
 to train your model, and just
 ```
@@ -60,7 +60,7 @@ Currently, BBopt supports the following backends:
 - `scikit-optimize`: Uses [`scikit-optimize`](https://scikit-optimize.github.io/) to tune parameters.
 - `hyperopt`: Uses [`hyperopt`](http://hyperopt.github.io/hyperopt/) to tune parameters.
 
-To change backends, just modify `backend="scikit-optimize"` in the boilerplate to whatever backend you want to use. All backends always use the universal interface of
+To change backends, just change `backend="scikit-optimize"` in the BBopt boilerplate to whatever backend you want to use. All backends always use the universal interface of
 ```python
 bb.<random function>(<name>, <args to function>)
 ```
@@ -74,8 +74,12 @@ Some examples of BBopt in action (BBopt's examples are written in [Coconut](http
 - [`skopt_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/skopt_example.coco): Slightly more complex example making use of the `scikit-optimize` backend.
 - [`hyperopt_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/hyperopt_example.coco): Example showcasing the `hyperopt` backend.
 - [`conditional_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_example.coco): Example of having black box parameters that are dependent on other black box parameters.
-- [`keras_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.coco): Complete example of using BBopt to optimize a neural net in Keras.
 - [`conditional_skopt_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_skopt_example.coco): Example of using `placeholder_when_missing` to do conditional parameters with `scikit-optimize`.
+- [`keras_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.coco): Complete example of using BBopt to optimize a neural network in Keras. Uses the full API.
+
+## Command-Line Interface
+
+The `bbopt` command is extremely simple in terms of what it actually does. For the command `bbopt <file> -n <trials>`, BBopt simply runs `python <file>` a number of times equal to `<trials>`. Why does this work? If you're using the basic boilerplate, then running `python <file>` will trigger the `if __name__ == "__main__":` clause, which will run a training episode. But when you go to `import` your file, the `if __name__ == "__main__":` clause won't get triggered, and you'll just get served the best parameters found so far. Since the command-line interface is so simple, advanced users who want to use the full API instead of the boilerplate need not use the `bbopt` command at all. If you want more information on the `bbopt` command, just run `bbopt -h`.
 
 ## Full API
 
@@ -129,6 +133,12 @@ Get information on the best run so far. These are the parameters that will be us
 BlackBoxOptimizer.**get_data**()
 
 Dump a dictionary containing all the information on your program collected by BBopt.
+
+#### `data_file`
+
+BlackBoxOptimizer.**data_file**
+
+The path to the file where BBopt is saving data to.
 
 ### Parameter Definition Methods
 

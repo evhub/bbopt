@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3c45a7da
+# __coconut_hash__ = 0xb52b4702
 
 # Compiled with Coconut version 1.4.0-post_dev2 [Ernest Scribbler]
+
+"""
+BBopt command line interface.
+"""
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -671,76 +675,48 @@ _coconut_MatchError, _coconut_count, _coconut_enumerate, _coconut_makedata, _coc
 
 # Compiled Coconut: -----------------------------------------------------------
 
-sys = _coconut_sys
-import os.path
-from pprint import pprint
-
-import numpy as np
-
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.layers import Activation
-from keras.optimizers import SGD
-from keras.utils import to_categorical
-from keras.regularizers import l1_l2
 
 
-# Data processing:
-data_folder = os.path.join(os.path.dirname(__file__), "data")
-house_votes = np.loadtxt(os.path.join(data_folder, "house_votes.csv"), dtype=str, delimiter=",")
+import os
+import subprocess
+from argparse import ArgumentParser
 
-def _coconut_lambda_0(_=None):
-    raise TypeError("unknown vote {}".format(_))
-X = (np.vectorize(lambda _=None: 1 if _ == "y" else -1 if _ == "n" else 0 if _ == "?" else (_coconut_lambda_0)(_)))(house_votes[:, 1:])
-def _coconut_lambda_1(_=None):
-    raise TypeError("unknown party {}".format(_))
-y = (to_categorical)((np.vectorize(lambda _=None: 1 if _ == "democrat" else 0 if _ == "republican" else (_coconut_lambda_1)(_)))(house_votes[:, 0]))
-
-train_split = (int)(.6 * len(X))
-validate_split = (int)(train_split + .2 * len(X))
-
-X_train, X_validate, X_test = X[:train_split], X[train_split:validate_split], X[validate_split:]
-y_train, y_validate, y_test = y[:train_split], y[train_split:validate_split], y[validate_split:]
+from bbopt.constants import description
+from bbopt.constants import default_trials
+from bbopt.optimizer import BlackBoxOptimizer
 
 
-# BBopt setup:
-from bbopt import BlackBoxOptimizer
-bb = BlackBoxOptimizer(file=__file__)
+parser = ArgumentParser(prog="bbopt", description=description)
+
+parser.add_argument("file", metavar="file", type=str, help="path of the Python file to run")
+
+parser.add_argument("-n", "--num-trials", metavar="trials", type=int, default=default_trials, help="number of trials to run (defaults to {})".format(default_trials))
+
+parser.add_argument("-q", "--quiet", action="store_true", help="suppress all informational output")
+
+parser.add_argument("--python", metavar="executable", type=str, default="python", help="the python executable to use for running the file (defaults to 'python')")
 
 
-# Load number of trials:
-if len(sys.argv) > 1:
-    N = int(sys.argv[1])
-else:
-    N = 1
+def main():
+    args = parser.parse_args()
+    if not os.path.isfile(args.file):
+        raise ValueError("could not find file {}".format(args.file))
+
+    def show(msg):
+        if not args.quiet:
+            print(msg)
+
+    show("[BBopt] Starting black box optimization of {}...".format(args.file))
+
+    for i in range(args.num_trials):
+        show("[BBopt] Running black box optimization trial {}/{}...".format(i + 1, args.num_trials))
+
+        cmd = [args.python, args.file]
+        show("> {}".format(" ".join(cmd)))
+        subprocess.check_call(cmd)
+
+    show("[BBopt] Black box optimization finished; data saved to {}.".format(BlackBoxOptimizer(args.file).data_file))
 
 
-# Main loop:
-for i in range(N):
-    bb.run(backend="scikit-optimize")
-
-    print("\n= {} = (example #{})".format(i + 1, len(bb.get_data()["examples"]) + 1))
-
-    model = Sequential([Dense(units=bb.randint("hidden neurons", 1, 15, guess=2), input_dim=len(X_train[0]), kernel_regularizer=l1_l2(l1=bb.uniform("l1", 0, 0.1, guess=0.005), l2=bb.uniform("l2", 0, 0.1, guess=0.05))), Activation("relu"), Dense(units=2), Activation("softmax"),])
-
-    model.compile(loss="categorical_crossentropy", optimizer=SGD(lr=bb.uniform("learning rate", 0, 0.5, guess=0.15), decay=bb.uniform("decay", 0, 0.01, guess=0.0005), momentum=bb.uniform("momentum", 0, 1, guess=0.5), nesterov=(bool)(bb.getrandbits("nesterov", 1, guess=1))), metrics=["accuracy"])
-
-    train_history = model.fit(X_train, y_train, epochs=50, batch_size=bb.randint("batch size", 1, 32, guess=16), verbose=0)
-
-    train_loss, train_acc = train_history.history["loss"][-1], train_history.history["acc"][-1]
-
-    validation_loss, validation_acc = model.evaluate(X_validate, y_validate, verbose=0)
-
-    test_loss, test_acc = model.evaluate(X_test, y_test, verbose=0)
-
-    bb.remember({"training loss": train_loss, "training accuracy": train_acc, "validation loss": validation_loss, "validation accuracy": validation_acc, "test loss": test_loss, "test accuracy": test_acc})
-
-    bb.minimize(validation_loss)
-
-    pprint(bb.get_current_run())
-
-
-# Summary of best run:
-best_example = bb.get_optimal_run()
-print("\n= BEST = (example #{})".format(bb.get_data()["examples"].index(best_example)))
-pprint(best_example)
+if __name__ == "__main__":
+    main()

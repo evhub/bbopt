@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xef2c7d11
+# __coconut_hash__ = 0x9dcdff39
 
 # Compiled with Coconut version 1.4.0-post_dev2 [Ernest Scribbler]
 
@@ -679,7 +679,6 @@ _coconut_MatchError, _coconut_count, _coconut_enumerate, _coconut_makedata, _coc
 
 
 # Installation constants:
-
 name = "bbopt"
 version = "0.2.5"
 description = "The easiest hyperparameter optimization you'll ever do."
@@ -694,5 +693,8 @@ extra_requirements["dev"] = extra_requirements["all"] + ("pytest",)
 
 
 # Optimizer constants:
-
 data_file_ext = ".bbopt.json"
+
+
+# CLI constants:
+default_trials = 100

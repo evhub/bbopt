@@ -1,0 +1,70 @@
+"""
+BBopt command line interface.
+"""
+
+import os
+import subprocess
+from argparse import ArgumentParser
+
+from bbopt.constants import description, default_trials
+from bbopt.optimizer import BlackBoxOptimizer
+
+
+parser = ArgumentParser(
+    prog="bbopt",
+    description=description,
+)
+
+parser.add_argument(
+    "file",
+    metavar="file",
+    type=str,
+    help="path of the Python file to run",
+)
+
+parser.add_argument(
+    "-n", "--num-trials",
+    metavar="trials",
+    type=int,
+    default=default_trials,
+    help="number of trials to run (defaults to {})".format(default_trials),
+)
+
+parser.add_argument(
+    "-q", "--quiet",
+    action="store_true",
+    help="suppress all informational output",
+)
+
+parser.add_argument(
+    "--python",
+    metavar="executable",
+    type=str,
+    default="python",
+    help="the python executable to use for running the file (defaults to 'python')"
+)
+
+
+def main():
+    args = parser.parse_args()
+    if not os.path.isfile(args.file):
+        raise ValueError("could not find file {}".format(args.file))
+
+    def show(msg):
+        if not args.quiet:
+            print(msg)
+
+    show("[BBopt] Starting black box optimization of {}...".format(args.file))
+
+    for i in range(args.num_trials):
+        show("[BBopt] Running black box optimization trial {}/{}...".format(i+1, args.num_trials))
+
+        cmd = [args.python, args.file]
+        show("> {}".format(" ".join(cmd)))
+        subprocess.check_call(cmd)
+
+    show("[BBopt] Black box optimization finished; data saved to {}.".format(BlackBoxOptimizer(args.file).data_file))
+
+
+if __name__ == "__main__":
+    main()

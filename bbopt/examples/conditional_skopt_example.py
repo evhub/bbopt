@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x33d699d5
+# __coconut_hash__ = 0xf83e0408
 
 # Compiled with Coconut version 1.4.0-post_dev2 [Ernest Scribbler]
 
@@ -678,16 +678,19 @@ if __name__ == "__main__":
     bb.run(backend="scikit-optimize")
 
 
+# We set the x parameter conditional on the use_high parameter.
 use_high = bb.randbool("use high", guess=False)
 assert isinstance(use_high, bool)
 if use_high:
-    reward = bb.randrange("x high", 10, 20, placeholder_when_missing=10)
+    x = bb.randrange("x high", 10, 20, placeholder_when_missing=10)
 else:
-    reward = bb.randrange("x low", 10, placeholder_when_missing=0)
+    x = bb.randrange("x low", 10, placeholder_when_missing=0)
 
 
-bb.maximize(reward)
+# We set x as the thing we want to optimize.
+bb.maximize(x)
 
 
+# Finally, we'll print out the value we used for debugging purposes.
 if __name__ == "__main__":
-    print(repr(reward))
+    print(repr(x))
