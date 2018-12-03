@@ -1,8 +1,7 @@
-# Imports:
-
 import unittest
 
 from bbopt import constants
+
 
 # Utilities:
 
@@ -23,6 +22,7 @@ def assert_hashable_or_dict(name, obj):
             assert_hashable_or_dict(name, val)
     else:
         assert is_hashable(obj), "Constant " + name + " contains unhashable values"
+
 
 # Tests:
 

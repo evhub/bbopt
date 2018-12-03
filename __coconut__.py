@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x33d699d5
+# type: ignore
 
 # Compiled with Coconut version 1.4.0-post_dev2 [Ernest Scribbler]
+
+"""Built-in Coconut utilities."""
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -668,26 +670,3 @@ def memoize(maxsize=None, *args, **kwargs):
     preventing it from being recomputed if it is called multiple times with the same arguments."""
     return _coconut.functools.lru_cache(maxsize, *args, **kwargs)
 _coconut_MatchError, _coconut_count, _coconut_enumerate, _coconut_makedata, _coconut_map, _coconut_reversed, _coconut_starmap, _coconut_tee, _coconut_zip, TYPE_CHECKING, reduce, takewhile, dropwhile = MatchError, count, enumerate, makedata, map, reversed, starmap, tee, zip, False, _coconut.functools.reduce, _coconut.itertools.takewhile, _coconut.itertools.dropwhile
-
-# Compiled Coconut: -----------------------------------------------------------
-
-# BBopt boilerplate:
-from bbopt import BlackBoxOptimizer
-bb = BlackBoxOptimizer(file=__file__)
-if __name__ == "__main__":
-    bb.run(backend="scikit-optimize")
-
-
-use_high = bb.randbool("use high", guess=False)
-assert isinstance(use_high, bool)
-if use_high:
-    reward = bb.randrange("x high", 10, 20, placeholder_when_missing=10)
-else:
-    reward = bb.randrange("x low", 10, placeholder_when_missing=0)
-
-
-bb.maximize(reward)
-
-
-if __name__ == "__main__":
-    print(repr(reward))

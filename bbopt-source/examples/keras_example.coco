@@ -1,4 +1,3 @@
-# Imports:
 import sys
 import os.path
 from pprint import pprint
@@ -10,6 +9,7 @@ from keras.layers import Dense, Activation
 from keras.optimizers import SGD
 from keras.utils import to_categorical
 from keras.regularizers import l1_l2
+
 
 # Data processing:
 data_folder = os.path.join(os.path.dirname(__file__), "data")
@@ -33,15 +33,18 @@ validate_split = train_split + .2*len(X) |> int
 X_train, X_validate, X_test = X[:train_split], X[train_split:validate_split], X[validate_split:]
 y_train, y_validate, y_test = y[:train_split], y[train_split:validate_split], y[validate_split:]
 
+
 # BBopt setup:
 from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)
+
 
 # Load number of trials:
 if len(sys.argv) > 1:
     N = int(sys.argv[1])
 else:
     N = 1
+
 
 # Main loop:
 for i in range(N):
@@ -101,6 +104,7 @@ for i in range(N):
     bb.minimize(validation_loss)
 
     pprint(bb.get_current_run())
+
 
 # Summary of best run:
 best_example = bb.get_optimal_run()

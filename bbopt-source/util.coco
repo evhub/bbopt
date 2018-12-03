@@ -2,17 +2,13 @@
 Utilities for use across all of bbopt.
 """
 
-# Imports:
-
 import os.path
 from collections.abc import Mapping, Iterable
 
-# Objects:
 
 Num = (int, float)
 Str = (str, py_str)
 
-# Functions:
 
 def norm_path(path) =
     """Normalize the given path."""
@@ -21,6 +17,7 @@ def norm_path(path) =
     |> os.path.abspath
     |> os.path.realpath
     |> os.path.normcase)
+
 
 def json_serialize(obj):
     """Serialize obj for encoding in JSON."""
@@ -50,15 +47,18 @@ def json_serialize(obj):
                 return dtype(obj)
     raise TypeError("invalid JSON object %r" % obj)
 
+
 def sorted_items(params) =
     """Return an iterator of the dict's items sorted by its keys."""
     sorted(params.items())
+
 
 def negate_objective(objective):
     if isinstance(objective, list):
         return objective |> map$(negate_objective) |> list
     else:
         return -objective
+
 
 def make_features(values, params, fallback_func):
     """Return an iterator of the values for the parameters in sorted order with the given fallback function."""
@@ -69,6 +69,7 @@ def make_features(values, params, fallback_func):
             yield placeholder_value
         else:
             yield fallback_func(name, **param_kwargs)
+
 
 def split_examples(examples, params, fallback_func):
     """Split examples into a list of data points and a list of losses with the given fallback function."""
@@ -85,6 +86,7 @@ def split_examples(examples, params, fallback_func):
         loss |> losses.append
     return data_points, losses
 
+
 def make_values(params, point):
     """Return a dictionary with the values replaced by the values in point,
     where point is a list of the values corresponding to the sorted params."""
@@ -93,13 +95,16 @@ def make_values(params, point):
         values[k] = point[i]
     return values
 
+
 def all_isinstance(objs, types) =
     """Return whether all the objects have the desired type(s)."""
     objs |> map$(isinstance$(?, types)) |> all
 
+
 def format_err(Error, message, obj) =
     """Creates an error with a formatted error message."""
     Error(message + ": " + repr(obj))
+
 
 def best_example(examples):
     """Return the best example seen so far."""
@@ -122,6 +127,7 @@ def best_example(examples):
         else:
             raise ValueError("invalid example %r" % example)
     return selected_example
+
 
 def serve_values(param_name, param_kwargs, serving_values, fallback_func):
     """Serve a value for the given kwargs using the given values and fallback function."""

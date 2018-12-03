@@ -2,6 +2,7 @@
 Constants for use across all of BBopt.
 """
 
+
 # Installation constants:
 
 name = "bbopt"
@@ -28,6 +29,7 @@ extra_requirements = {
     ),
 }
 extra_requirements["all"] = extra_requirements.values() |> map$(set) |> reduce$(|) |> tuple
+
 
 # Optimizer constants:
 

@@ -2,8 +2,6 @@
 Handles standardizing param calls to use standard library random functions.
 """
 
-# Imports:
-
 import functools
 
 from bbopt.util import (
@@ -28,55 +26,68 @@ def handle_randrange(args):
         raise format_err(ValueError, "randrange expects between 1 and 3 arguments, not", args)
     return [start, stop, step]
 
+
 def handle_choice(args):
     if len(args) != 1 or not isinstance(args[0], list):
         raise format_err(ValueError, "invalid arguments to choice", args)
+
 
 def handle_sample(args):
     if len(args) != 2 or not isinstance(args[0], list) or not isinstance(args[1], int):
         raise format_err(ValueError, "invalid arguments to sample", args)
 
+
 def handle_uniform(args):
     if len(args) != 2 or not all_isinstance(args, Num):
         raise format_err(ValueError, "invalid arguments to uniform", args)
+
 
 def handle_triangular(args):
     if len(args) != 3 or not all_isinstance(args, Num):
         raise format_err(ValueError, "invalid arguments to triangular", args)
 
+
 def handle_betavariate(args):
     if len(args) != 2 or not all_isinstance(args, Num):
         raise format_err(ValueError, "invalid arguments to betavariate", args)
+
 
 def handle_expovariate(args):
     if len(args) != 1 or not all_isinstance(args, Num):
         raise format_err(ValueError, "invalid arguments to expovariate", args)
 
+
 def handle_gammavariate(args):
     if len(args) != 2 or not all_isinstance(args, Num):
         raise format_err(ValueError, "invalid arguments to gammavariate", args)
+
 
 def handle_normalvariate(args):
     if len(args) != 2 or not all_isinstance(args, Num):
         raise format_err(ValueError, "invalid arguments to normalvariate", args)
 
+
 def handle_lognormvariate(args):
     if len(args) != 2 or not all_isinstance(args, Num):
         raise format_err(ValueError, "invalid arguments to lognormvariate", args)
+
 
 def handle_vonmisesvariate(args):
     if len(args) != 2 or not all_isinstance(args, Num):
         raise format_err(ValueError, "invalid arguments to vonmisesvariate", args)
 
+
 def handle_paretovariate(args):
     if len(args) != 1 or not all_isinstance(args, Num):
         raise format_err(ValueError, "invalid arguments to paretovariate", args)
+
 
 def handle_weibullvariate(args):
     if len(args) != 2 or not all_isinstance(args, Num):
         raise format_err(ValueError, "invalid arguments to weibullvariate", args)
 
-# Functions:
+
+# Processor:
 
 class ParamProcessor:
     """Processes param keyword arguments."""
@@ -174,5 +185,6 @@ class ParamProcessor:
             raise TypeError("param requires a keyword option of the form <random function>=<args>")
 
         return new_kwargs |> json_serialize
+
 
 param_processor = ParamProcessor()

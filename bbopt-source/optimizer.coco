@@ -2,8 +2,6 @@
 The interface into BBopt for a file with black-box parameters.
 """
 
-# Imports:
-
 import json
 import os.path
 import math
@@ -20,7 +18,6 @@ from bbopt.constants import (
     data_file_ext,
 )
 
-# Optimizer:
 
 class BlackBoxOptimizer:
     _optimizers_by_file = {}  # all Optimizer instances by file
@@ -134,7 +131,7 @@ class BlackBoxOptimizer:
         """Return a dictionary containing the optimal parameters and reward computed so far."""
         return best_example(self._examples)
 
-    # Base Random Functions:
+    # Base random functions:
 
     def randrange(self, name, *args, **kwargs):
         """Create a new parameter with the given name modeled by random.randrange(*args)."""
@@ -188,7 +185,7 @@ class BlackBoxOptimizer:
         """Create a new parameter with the given name modeled by random.weibullvariate(alpha, beta)."""
         return self.param(name, weibullvariate=(alpha, beta), **kwargs)
 
-    # Derived Random Functions:
+    # Derived random functions:
 
     def randint(self, name, a, b, **kwargs):
         """Create a new parameter with the given name modeled by random.randint(a, b)."""

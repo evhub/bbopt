@@ -16,6 +16,7 @@ from bbopt.constants import (
     extra_requirements,
 )
 
+
 setuptools.setup(
     name=name,
     version=version,

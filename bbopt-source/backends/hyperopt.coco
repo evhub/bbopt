@@ -2,8 +2,6 @@
 The hyperopt backend. Does black box optimization using hyperopt.
 """
 
-# Imports:
-
 import numpy as np
 
 from hyperopt import (
@@ -30,6 +28,7 @@ from bbopt.util import (
     serve_values,
 )
 
+
 # Utilities:
 
 def create_space(
@@ -52,6 +51,7 @@ def create_space(
     if normalvariate is not None:
         return hp.normal(name, *normalvariate)
     raise TypeError("insufficiently specified parameter %r" % name)
+
 
 def examples_to_trials(examples, params):
     """Create hyperopt trials from the given examples."""
@@ -92,6 +92,7 @@ def examples_to_trials(examples, params):
             "exp_key": None,
         })
     return trials
+
 
 # Backend:
 

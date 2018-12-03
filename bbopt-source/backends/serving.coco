@@ -2,14 +2,11 @@
 The serving backend. Selects the best existing data point.
 """
 
-# Imports:
-
 from bbopt.util import (
     best_example,
     serve_values,
 )
 
-# Backend:
 
 class ServingBackend:
     """The serving backend uses the parameter values from the best example."""

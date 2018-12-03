@@ -4,6 +4,7 @@ bb = BlackBoxOptimizer(file=__file__)
 if __name__ == "__main__":
     bb.run(backend="hyperopt")
 
+
 use_high = bb.randbool("use high", guess=False)
 assert isinstance(use_high, bool)
 if use_high:
@@ -11,7 +12,9 @@ if use_high:
 else:
     reward = bb.randrange("x low", 10)
 
+
 bb.maximize(reward)
+
 
 if __name__ == "__main__":
     print(repr(reward))

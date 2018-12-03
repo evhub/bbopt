@@ -2,6 +2,7 @@
 Backends contains all of bbopt's different backends.
 """
 
+
 class BackendRegistry:
     backend_generators = {
         None: (def -> from bbopt.backends.serving import ServingBackend; ServingBackend),
@@ -33,5 +34,6 @@ class BackendRegistry:
     def init_backend(self, name, examples, params, **kwargs):
         """Create a backend object of the given name with the given data."""
         return self[name](examples, params, **kwargs)
+
 
 backend_registry = BackendRegistry()

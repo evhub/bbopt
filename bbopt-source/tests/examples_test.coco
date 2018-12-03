@@ -8,6 +8,7 @@ from contextlib import contextmanager
 
 from coconut.command.util import call_output
 
+
 # Utilities:
 
 @contextmanager
@@ -24,6 +25,7 @@ def remove_when_done(path):
         except OSError:
             traceback.print_exc()
 
+
 def call_test(args, ignore_prefix="debug"):
     """Call args on the command line for a test."""
     stdout, stderr, retcode = call_output(args)
@@ -34,6 +36,7 @@ def call_test(args, ignore_prefix="debug"):
         line if not line.lower().startswith(ignore_prefix) else ""
         for line in stdout.splitlines(True)
     )
+
 
 # Constants:
 
