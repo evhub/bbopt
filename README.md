@@ -69,9 +69,10 @@ Some examples of BBopt in action:
 - [`random_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/random_example.py): Extremely basic example using the `random` backend.
 - [`skopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/skopt_example.py): Slightly more complex example making use of the `scikit-optimize` backend.
 - [`hyperopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/hyperopt_example.py): Example showcasing the `hyperopt` backend.
+- [`keras_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.py): Complete example of using BBopt to optimize a neural network built with [Keras](https://keras.io/). Uses the full API instead of just the boilerplate.
+- [`numpy_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/numpy_example.py): Example which showcases how to have numpy array parameters.
 - [`conditional_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_example.py): Example of having black box parameters that are dependent on other black box parameters, which is easiest to manage when using the `hyperopt` backend.
 - [`conditional_skopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_skopt_example.py): Example of using `placeholder_when_missing` to do conditional parameters with `scikit-optimize`.
-- [`keras_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.py): Complete example of using BBopt to optimize a neural network built with [Keras](https://keras.io/). Uses the full API instead of just the boilerplate.
 
 ## Command-Line Interface
 
@@ -99,11 +100,13 @@ Why does this work? If you're using the basic boilerplate, then running `python 
     1. [`getrandbits`](#getrandbits)
     1. [`choice`](#choice)
     1. [`randbool`](#randbool)
-    1. [`sample`](#sample)
     1. [`uniform`](#uniform)
     1. [`random`](#random)
     1. [`loguniform`](#loguniform)
     1. [`normalvariate`](#normalvariate)
+    1. [`rand`](#rand)
+    1. [`randn`](#randn)
+    1. [`sample`](#sample)
     1. [`lognormvariate`](#lognormvariate)
     1. [`triangular`](#triangular)
     1. [`betavariate`](#betavariate)
@@ -227,14 +230,6 @@ Create a new boolean parameter, modeled by the equivalent of `random.choice([Tru
 
 _Backends which support **randbool**: `scikit-optimize`, `hyperopt`, `random`._
 
-#### `sample`
-
-BlackBoxOptimizer.**sample**(_name_, _population_, _k_, **_kwargs_)
-
-Create a new parameter modeled by [`random.sample(population, k)`](https://docs.python.org/3/library/random.html#random.sample), which chooses _k_ elements from _population_.
-
-_Backends which support **sample**: `random`._
-
 #### `uniform`
 
 BlackBoxOptimizer.**uniform**(_name_, _a_, _b_, **_kwargs_)
@@ -270,6 +265,30 @@ BlackBoxOptimizer.**normalvariate**(_name_, _mu_, _sigma_, **_kwargs_)
 Create a new parameter modeled by [`random.normalvariate(mu, sigma)`](https://docs.python.org/3/library/random.html#random.normalvariate).
 
 _Backends which support **normalvariate**: `hyperopt`, `random`._
+
+#### `rand`
+
+BlackBoxOptimizer.**rand**(_name_, *_shape_, **_kwargs_)
+
+Create a new parameter modeled by [`numpy.random.rand(*shape)`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.rand.html#numpy.random.rand), which creates an array with entries generated uniformly in `[0, 1)`.
+
+_Backends which support **rand**: `scikit-optimize`, `hyperopt`, `random`._
+
+#### `randn`
+
+BlackBoxOptimizer.**randn**(_name_, *_shape_, **_kwargs_)
+
+Create a new parameter modeled by [`numpy.random.randn(*shape)`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.rand.html#numpy.random.rand), which creates an array with entries generated according to a standard normal distribution.
+
+_Backends which support **rand**: `hyperopt`, `random`._
+
+#### `sample`
+
+BlackBoxOptimizer.**sample**(_name_, _population_, _k_, **_kwargs_)
+
+Create a new parameter modeled by [`random.sample(population, k)`](https://docs.python.org/3/library/random.html#random.sample), which chooses _k_ elements from _population_.
+
+_Backends which support **sample**: `random`._
 
 #### `lognormvariate`
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x1f60f303
+# __coconut_hash__ = 0x517580a0
 
 # Compiled with Coconut version 1.4.0-post_dev3 [Ernest Scribbler]
 
@@ -35,6 +35,8 @@ if _coconut_sys.version_info < (3, 3):
 else:
     from collections.abc import Iterable
 
+import numpy as np
+
 
 Num = (int, float)
 Str = (str, py_str)
@@ -66,7 +68,6 @@ def json_serialize(obj):
                 serialized_list.append(json_serialize(x))
             return serialized_list
         if type(obj).__module__ == "numpy":
-            import numpy as np
 # the ordering here is extremely important; int must come before
 #  bool, since otherwise this will cast all ints to bools
             if np.issubdtype(obj, np.number) or np.issubdtype(obj, np.unsignedinteger):

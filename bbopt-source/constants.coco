@@ -18,6 +18,7 @@ classifiers = (
 )
 requirements = (
     "portalocker",
+    "numpy",
     "scikit-optimize",
     "hyperopt",
     # fixes an error in hyperopt 0.1 with networkx>=2.0

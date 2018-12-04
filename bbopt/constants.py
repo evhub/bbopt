@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb0553b95
+# __coconut_hash__ = 0x9122b8fe
 
 # Compiled with Coconut version 1.4.0-post_dev3 [Ernest Scribbler]
 
@@ -34,7 +34,7 @@ github_url = "https://github.com/evhub/bbopt"
 author = "Evan Hubinger"
 author_email = "evanjhub@gmail.com"
 classifiers = ("Development Status :: 3 - Alpha", "License :: OSI Approved :: Apache Software License", "Topic :: Software Development :: Libraries :: Python Modules", "Operating System :: OS Independent",)
-requirements = ("portalocker", "scikit-optimize", "hyperopt", "networkx<2.0",)
+requirements = ("portalocker", "numpy", "scikit-optimize", "hyperopt", "networkx<2.0",)
 extra_requirements = {"dev": ("pytest",), ":python_version<'3'": ("futures",)}
 
 

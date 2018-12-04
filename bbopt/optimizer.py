@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x1d1a5b7
+# __coconut_hash__ = 0x4dc885b2
 
 # Compiled with Coconut version 1.4.0-post_dev3 [Ernest Scribbler]
 
@@ -28,7 +28,9 @@ _coconut_sys.path.remove(_coconut_file_path)
 import json
 import os.path
 import math
+import itertools
 
+import numpy as np
 from portalocker import Lock
 
 from bbopt.backends import backend_registry
@@ -75,7 +77,7 @@ class BlackBoxOptimizer(_coconut.object):
         if self._got_reward:
             raise ValueError("param calls must come before maximize/minimize")
         if not isinstance(name, Str):
-            raise TypeError("name must be a string")
+            raise TypeError("name must be string, not {}".format(name))
         if name in self._new_params:
             raise ValueError("parameter of name {} already exists".format(name))
         kwargs = (param_processor.standardize_kwargs)(kwargs)
@@ -106,8 +108,10 @@ class BlackBoxOptimizer(_coconut.object):
         """Set the gain or loss to value."""
         if self._got_reward:
             raise ValueError("only one call to maximize or minimize is allowed")
-        if callable(value):
-            value = value()
+        if isinstance(value, np.ndarray):
+            if len(value.shape) != 1:
+                raise ValueError("gain/loss must be a scalar or 1-dimensional array, not {}".format(value))
+            value = tuple(value)
         self._current_example[reward_type] = value
         if not self.is_serving:
             self._save_data()
@@ -257,3 +261,23 @@ class BlackBoxOptimizer(_coconut.object):
     def randbool(self, name, **kwargs):
         """Create a new boolean parameter with the given name."""
         return self.choice(name, [False, True], **kwargs)
+
+# Array-based random functions:
+
+    def _array_param(self, name, shape, func):
+        """Create a new array parameter for the given name and shape with entries from func."""
+        if not isinstance(name, Str):
+            raise TypeError("name must be string, not {}".format(name))
+        arr = np.zeros(shape)
+        for indices in itertools.product(*map(range, shape)):
+            cell_name = "{}[{}]".format(name, ",".join(map(str, indices)))
+            arr[indices] = func(cell_name)
+        return arr
+
+    def rand(self, name, *shape, **kwargs):
+        """Create a new array parameter for the given name and shape modeled by np.random.rand."""
+        return self._array_param(name, shape, lambda cell_name: self.random(cell_name, **kwargs))
+
+    def randn(self, name, *shape, **kwargs):
+        """Create a new array parameter for the given name and shape modeled by np.random.randn."""
+        return self._array_param(name, shape, lambda cell_name: self.gauss(cell_name, 0, 1, **kwargs))

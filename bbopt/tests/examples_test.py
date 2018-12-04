@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7edc1c7a
+# __coconut_hash__ = 0x72df4715
 
 # Compiled with Coconut version 1.4.0-post_dev3 [Ernest Scribbler]
 
@@ -84,6 +84,9 @@ conditional_data = os.path.join(example_dir, "conditional_example.bbopt.json")
 conditional_skopt_file = os.path.join(example_dir, "conditional_skopt_example.py")
 conditional_skopt_data = os.path.join(example_dir, "conditional_skopt_example.bbopt.json")
 
+numpy_file = os.path.join(example_dir, "numpy_example.py")
+numpy_data = os.path.join(example_dir, "numpy_example.bbopt.json")
+
 
 # Tests:
 
@@ -132,4 +135,13 @@ class TestExamples(unittest.TestCase):
             want = max(get_nums(results, numtype=int))
             assert os.path.exists(conditional_skopt_data)
             from bbopt.examples.conditional_skopt_example import x as got
+            assert got == want
+
+    def test_numpy(self):
+        print("\ntest numpy:")
+        with remove_when_done(numpy_data):
+            results = call_test(["bbopt", numpy_file, "-n", "15", "-j", "4"])
+            want = min(get_nums(results, numtype=float))
+            assert os.path.exists(numpy_data)
+            from bbopt.examples.numpy_example import y as got
             assert got == want

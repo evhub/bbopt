@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x360d7bd
+# __coconut_hash__ = 0x5bcb0126
 
 # Compiled with Coconut version 1.4.0-post_dev3 [Ernest Scribbler]
 
@@ -28,7 +28,6 @@ _coconut_sys.path.remove(_coconut_file_path)
 import os
 import argparse
 import subprocess
-import traceback
 from concurrent.futures import ProcessPoolExecutor
 from pprint import pprint
 
@@ -67,14 +66,6 @@ def run_trial(args, cmd, i):
     show("{}/{} finished.".format(i + 1, args.num_trials))
 
 
-def callback_wrapper(completed_future):
-    """Ensures that all errors are always caught."""
-    try:
-        completed_future.result()
-    except:
-        traceback.print_exc()
-
-
 def main():
     args = parser.parse_args()
     if not os.path.isfile(args.file):
@@ -91,8 +82,7 @@ def main():
     else:
         with ProcessPoolExecutor(args.jobs) as executor:
             for i in range(args.num_trials):
-                future = executor.submit(run_trial, args, cmd, i)
-                future.add_done_callback(callback_wrapper)
+                executor.submit(run_trial, args, cmd, i)
 
     bb = BlackBoxOptimizer(args.file)
     show("Black box optimization finished; data saved to {}.".format(os.path.relpath(bb.data_file)))

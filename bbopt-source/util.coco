@@ -5,6 +5,8 @@ Utilities for use across all of bbopt.
 import os
 from collections.abc import Mapping, Iterable
 
+import numpy as np
+
 
 Num = (int, float)
 Str = (str, py_str)
@@ -39,7 +41,6 @@ def json_serialize(obj):
             serialized_list.append(json_serialize(x))
         return serialized_list
     if type(obj).__module__ == "numpy":
-        import numpy as np
         # the ordering here is extremely important; int must come before
         #  bool, since otherwise this will cast all ints to bools
         if np.issubdtype(obj, np.number) or np.issubdtype(obj, np.unsignedinteger):
