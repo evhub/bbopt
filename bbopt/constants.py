@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x38ea2c1a
+# __coconut_hash__ = 0xb0553b95
 
 # Compiled with Coconut version 1.4.0-post_dev3 [Ernest Scribbler]
 
@@ -28,7 +28,7 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 # Installation constants:
 name = "bbopt"
-version = "0.2.5"
+version = "0.3.0"
 description = "The easiest hyperparameter optimization you'll ever do."
 github_url = "https://github.com/evhub/bbopt"
 author = "Evan Hubinger"
@@ -45,4 +45,4 @@ lock_timeout = 5
 
 # CLI constants:
 default_trials = 100
-default_jobs = 0
+default_jobs = 1

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x30c98dff
+# __coconut_hash__ = 0x7edc1c7a
 
 # Compiled with Coconut version 1.4.0-post_dev3 [Ernest Scribbler]
 
@@ -101,7 +101,7 @@ class TestExamples(unittest.TestCase):
     def test_skopt(self):
         print("\ntest_skopt:")
         with remove_when_done(skopt_data):
-            results = call_test(["bbopt", skopt_file, "-n", "15"])
+            results = call_test(["bbopt", skopt_file, "-n", "15", "-j", "4"])
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(skopt_data)
             from bbopt.examples.skopt_example import y as got
@@ -110,7 +110,7 @@ class TestExamples(unittest.TestCase):
     def test_hyperopt(self):
         print("\ntest_hyperopt:")
         with remove_when_done(hyperopt_data):
-            results = call_test(["bbopt", hyperopt_file, "-n", "15"])
+            results = call_test(["bbopt", hyperopt_file, "-n", "15", "-j", "4"])
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(hyperopt_data)
             from bbopt.examples.hyperopt_example import y as got
@@ -119,7 +119,7 @@ class TestExamples(unittest.TestCase):
     def test_conditional(self):
         print("\ntest conditional:")
         with remove_when_done(conditional_data):
-            results = call_test(["bbopt", conditional_file, "-n", "15"])
+            results = call_test(["bbopt", conditional_file, "-n", "15", "-j", "4"])
             want = max(get_nums(results, numtype=int))
             assert os.path.exists(conditional_data)
             from bbopt.examples.conditional_example import x as got
@@ -128,7 +128,7 @@ class TestExamples(unittest.TestCase):
     def test_conditional_skopt(self):
         print("\ntest conditional_skopt:")
         with remove_when_done(conditional_skopt_data):
-            results = call_test(["bbopt", conditional_skopt_file, "-n", "15"])
+            results = call_test(["bbopt", conditional_skopt_file, "-n", "15", "-j", "4"])
             want = max(get_nums(results, numtype=int))
             assert os.path.exists(conditional_skopt_data)
             from bbopt.examples.conditional_skopt_example import x as got

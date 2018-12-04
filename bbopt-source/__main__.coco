@@ -103,10 +103,14 @@ def main():
         " ".join(cmd),
     ))
 
-    with ProcessPoolExecutor(args.jobs) as executor:
+    if args.jobs == 1:
         for i in range(args.num_trials):
-            future = executor.submit(run_trial, args, cmd, i)
-            future.add_done_callback(callback_wrapper)
+            run_trial(args, cmd, i)
+    else:
+        with ProcessPoolExecutor(args.jobs) as executor:
+            for i in range(args.num_trials):
+                future = executor.submit(run_trial, args, cmd, i)
+                future.add_done_callback(callback_wrapper)
 
     bb = BlackBoxOptimizer(args.file)
     show("Black box optimization finished; data saved to {}.".format(os.path.relpath(bb.data_file)))

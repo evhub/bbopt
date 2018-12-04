@@ -5,7 +5,7 @@ Constants for use across all of BBopt.
 
 # Installation constants:
 name = "bbopt"
-version = "0.2.5"
+version = "0.3.0"
 description = "The easiest hyperparameter optimization you'll ever do."
 github_url = "https://github.com/evhub/bbopt"
 author = "Evan Hubinger"
@@ -40,4 +40,4 @@ lock_timeout = 5
 
 # CLI constants:
 default_trials = 100
-default_jobs = 0
+default_jobs = 1

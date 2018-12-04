@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x28ce1285
+# __coconut_hash__ = 0x360d7bd
 
 # Compiled with Coconut version 1.4.0-post_dev3 [Ernest Scribbler]
 
@@ -85,10 +85,14 @@ def main():
 
     show("Running {} trials using {} processes of:\n\t> {}".format(args.num_trials, args.jobs, " ".join(cmd)))
 
-    with ProcessPoolExecutor(args.jobs) as executor:
+    if args.jobs == 1:
         for i in range(args.num_trials):
-            future = executor.submit(run_trial, args, cmd, i)
-            future.add_done_callback(callback_wrapper)
+            run_trial(args, cmd, i)
+    else:
+        with ProcessPoolExecutor(args.jobs) as executor:
+            for i in range(args.num_trials):
+                future = executor.submit(run_trial, args, cmd, i)
+                future.add_done_callback(callback_wrapper)
 
     bb = BlackBoxOptimizer(args.file)
     show("Black box optimization finished; data saved to {}.".format(os.path.relpath(bb.data_file)))

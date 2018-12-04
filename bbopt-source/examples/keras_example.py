@@ -4,7 +4,7 @@ BBopt API instead of just the boilerplate and implements its own
 (very basic) command-line interface instead of using BBopt's.
 
 To run this example, just run:
-    > python ./keras_example.py -n 15
+    > python ./keras_example.py
 """
 
 # Imports:
@@ -131,7 +131,7 @@ parser.add_argument(
     "-n", "--num-trials",
     metavar="trials",
     type=int,
-    default=1,
+    default=20,
     help="number of trials to run (defaults to 1)",
 )
 
