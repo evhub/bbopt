@@ -157,11 +157,15 @@ BlackBoxOptimizer.**randrange**(_name_, _start_, _stop_, _step_=`1`, **_kwargs_)
 
 Create a new parameter modeled by [`random.randrange(start, stop, step)`](https://docs.python.org/3/library/random.html#random.randrange), which is equivalent to `random.choice(range(start, stop, step))`, but can be much more efficient.
 
+_Backends which support **randrange**: `scikit-optimize`, `hyperopt`, `random`._
+
 #### `randint`
 
 BlackBoxOptimizer.**randint**(_name_, _a_, _b_, **_kwargs_)
 
 Create a new parameter modeled by [`random.randint(a, b)`](https://docs.python.org/3/library/random.html#random.randint), which is equivalent to `random.randrange(a, b-1)`.
+
+_Backends which support **randint**: `scikit-optimize`, `hyperopt`, `random`._
 
 #### `getrandbits`
 
@@ -169,11 +173,15 @@ BlackBoxOptimizer.**getrandbits**(_name_, _k_, **_kwargs_)
 
 Create a new parameter modeled by [`random.getrandbits(k)`](https://docs.python.org/3/library/random.html#random.getrandbits), which is equivalent to `random.randrange(0, 2**k)`.
 
+_Backends which support **getrandbits**: `scikit-optimize`, `hyperopt`, `random`._
+
 #### `choice`
 
 BlackBoxOptimizer.**choice**(_name_, _seq_, **_kwargs_)
 
 Create a new parameter modeled by [`random.choice(seq)`](https://docs.python.org/3/library/random.html#random.choice), which chooses an element from _seq_.
+
+_Backends which support **choice**: `scikit-optimize`, `hyperopt`, `random`._
 
 #### `randbool`
 
@@ -181,11 +189,15 @@ BlackBoxOptimizer.**randbool**(_name_, **_kwargs_)
 
 Create a new boolean parameter, modeled by the equivalent of `random.choice([True, False])`.
 
+_Backends which support **randbool**: `scikit-optimize`, `hyperopt`, `random`._
+
 #### `sample`
 
 BlackBoxOptimizer.**sample**(_name_, _population_, _k_, **_kwargs_)
 
 Create a new parameter modeled by [`random.sample(population, k)`](https://docs.python.org/3/library/random.html#random.sample), which chooses _k_ elements from _population_.
+
+_Backends which support **sample**: `random`._
 
 #### `uniform`
 
@@ -193,11 +205,15 @@ BlackBoxOptimizer.**uniform**(_name_, _a_, _b_, **_kwargs_)
 
 Create a new parameter modeled by [`random.uniform(a, b)`](https://docs.python.org/3/library/random.html#random.uniform), which uniformly selects a float between _a_ and _b_.
 
+_Backends which support **uniform**: `scikit-optimize`, `hyperopt`, `random`._
+
 #### `random`
 
 BlackBoxOptimizer.**random**(_name_, **_kwargs_)
 
 Create a new parameter modeled by [`random.random()`](https://docs.python.org/3/library/random.html#random.random), which is equivalent to `random.uniform(0, 1)`.
+
+_Backends which support **random**: `scikit-optimize`, `hyperopt`, `random`._
 
 #### `loguniform`
 
@@ -209,11 +225,15 @@ math.exp(random.uniform(math.log(min_val), math.log(max_val)))
 ```
 which logarithmically selects a float between _min\_val_ and _max\_val_.
 
+_Backends which support **loguniform**: `scikit-optimize`, `hyperopt`, `random`._
+
 #### `normalvariate`
 
 BlackBoxOptimizer.**normalvariate**(_name_, _mu_, _sigma_, **_kwargs_)
 
 Create a new parameter modeled by [`random.normalvariate(mu, sigma)`](https://docs.python.org/3/library/random.html#random.normalvariate).
+
+_Backends which support **uniform**: `hyperopt`, `random`._
 
 #### `lognormvariate`
 
@@ -221,11 +241,15 @@ BlackBoxOptimizer.**lognormvariate**(_name_, _mu_, _sigma_, **_kwargs_)
 
 Create a new parameter modeled by [`random.lognormvariate(mu, sigma)`](https://docs.python.org/3/library/random.html#random.lognormvariate).
 
+_Backends which support **uniform**: `random`._
+
 #### `triangular`
 
 BlackBoxOptimizer.**triangular**(_name_, _low_, _high_, _mode_, **_kwargs_)
 
 Create a new parameter modeled by [`random.triangular(low, high, mode)`](https://docs.python.org/3/library/random.html#random.triangular).
+
+_Backends which support **uniform**: `random`._
 
 #### `betavariate`
 
@@ -233,11 +257,15 @@ BlackBoxOptimizer.**betavariate**(_name_, _alpha_, _beta_, **_kwargs_)
 
 Create a new parameter modeled by [`random.betavariate(alpha, beta)`](https://docs.python.org/3/library/random.html#random.betavariate).
 
+_Backends which support **uniform**: `random`._
+
 #### `expovariate`
 
 BlackBoxOptimizer.**expovariate**(_name_, _lambd_, **_kwargs_)
 
 Create a new parameter modeled by [`random.expovariate(lambd)`](https://docs.python.org/3/library/random.html#random.expovariate).
+
+_Backends which support **uniform**: `random`._
 
 #### `gammavariate`
 
@@ -245,11 +273,15 @@ BlackBoxOptimizer.**gammavariate**(_name_, _alpha_, _beta_, **_kwargs_)
 
 Create a new parameter modeled by [`random.gammavariate(alpha, beta)`](https://docs.python.org/3/library/random.html#random.gammavariate).
 
+_Backends which support **uniform**: `random`._
+
 #### `vonmisesvariate`
 
 BlackBoxOptimizer.**vonmisesvariate**(_name_, _kappa_, **_kwargs_)
 
 Create a new parameter modeled by [`random.vonmisesvariate(kappa)`](https://docs.python.org/3/library/random.html#random.vonmisesvariate).
+
+_Backends which support **uniform**: `random`._
 
 #### `paretovariate`
 
@@ -257,8 +289,12 @@ BlackBoxOptimizer.**paretovariate**(_name_, _alpha_, **_kwargs_)
 
 Create a new parameter modeled by [`random.paretovariate(alpha)`](https://docs.python.org/3/library/random.html#random.paretovariate).
 
+_Backends which support **uniform**: `random`._
+
 #### `weibullvariate`
 
 BlackBoxOptimizer.**weibullvariate**(_name_, _alpha_, _beta_, **_kwargs_)
 
 Create a new parameter modeled by [`random.weibullvariate(alpha, beta)`](https://docs.python.org/3/library/random.html#random.weibullvariate).
+
+_Backends which support **uniform**: `random`._

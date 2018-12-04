@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x6aec9fb8
+# __coconut_hash__ = 0x85256990
 
 # Compiled with Coconut version 1.4.0-post_dev3 [Ernest Scribbler]
 
@@ -234,16 +234,16 @@ class BlackBoxOptimizer(_coconut.object):
     def randint(self, name, a, b, **kwargs):
         """Create a new parameter with the given name modeled by random.randint(a, b)."""
         start, stop = a, b - 1
-        return self.param(name, randrange=(start, stop), **kwargs)
+        return self.randrange(name, start, stop, **kwargs)
 
     def random(self, name, **kwargs):
         """Create a new parameter with the given name modeled by random.random()."""
-        return self.param(name, uniform=(0, 1), **kwargs)
+        return self.uniform(name, 0, 1, **kwargs)
 
     def getrandbits(self, name, k, **kwargs):
         """Create a new parameter with the given name modeled by random.getrandbits(k)."""
         stop = 2**k
-        return self.param(name, randrange=(stop,), **kwargs)
+        return self.randrange(name, stop, **kwargs)
 
     gauss = normalvariate
 
