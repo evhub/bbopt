@@ -233,7 +233,7 @@ BlackBoxOptimizer.**normalvariate**(_name_, _mu_, _sigma_, **_kwargs_)
 
 Create a new parameter modeled by [`random.normalvariate(mu, sigma)`](https://docs.python.org/3/library/random.html#random.normalvariate).
 
-_Backends which support **uniform**: `hyperopt`, `random`._
+_Backends which support **normalvariate**: `hyperopt`, `random`._
 
 #### `lognormvariate`
 
@@ -241,7 +241,7 @@ BlackBoxOptimizer.**lognormvariate**(_name_, _mu_, _sigma_, **_kwargs_)
 
 Create a new parameter modeled by [`random.lognormvariate(mu, sigma)`](https://docs.python.org/3/library/random.html#random.lognormvariate).
 
-_Backends which support **uniform**: `random`._
+_Backends which support **lognormvariate**: `random`._
 
 #### `triangular`
 
@@ -249,7 +249,7 @@ BlackBoxOptimizer.**triangular**(_name_, _low_, _high_, _mode_, **_kwargs_)
 
 Create a new parameter modeled by [`random.triangular(low, high, mode)`](https://docs.python.org/3/library/random.html#random.triangular).
 
-_Backends which support **uniform**: `random`._
+_Backends which support **triangular**: `random`._
 
 #### `betavariate`
 
@@ -257,7 +257,7 @@ BlackBoxOptimizer.**betavariate**(_name_, _alpha_, _beta_, **_kwargs_)
 
 Create a new parameter modeled by [`random.betavariate(alpha, beta)`](https://docs.python.org/3/library/random.html#random.betavariate).
 
-_Backends which support **uniform**: `random`._
+_Backends which support **betavariate**: `random`._
 
 #### `expovariate`
 
@@ -265,7 +265,7 @@ BlackBoxOptimizer.**expovariate**(_name_, _lambd_, **_kwargs_)
 
 Create a new parameter modeled by [`random.expovariate(lambd)`](https://docs.python.org/3/library/random.html#random.expovariate).
 
-_Backends which support **uniform**: `random`._
+_Backends which support **expovariate**: `random`._
 
 #### `gammavariate`
 
@@ -273,7 +273,7 @@ BlackBoxOptimizer.**gammavariate**(_name_, _alpha_, _beta_, **_kwargs_)
 
 Create a new parameter modeled by [`random.gammavariate(alpha, beta)`](https://docs.python.org/3/library/random.html#random.gammavariate).
 
-_Backends which support **uniform**: `random`._
+_Backends which support **gammavariate**: `random`._
 
 #### `vonmisesvariate`
 
@@ -281,7 +281,7 @@ BlackBoxOptimizer.**vonmisesvariate**(_name_, _kappa_, **_kwargs_)
 
 Create a new parameter modeled by [`random.vonmisesvariate(kappa)`](https://docs.python.org/3/library/random.html#random.vonmisesvariate).
 
-_Backends which support **uniform**: `random`._
+_Backends which support **vonmisesvariate**: `random`._
 
 #### `paretovariate`
 
@@ -289,7 +289,7 @@ BlackBoxOptimizer.**paretovariate**(_name_, _alpha_, **_kwargs_)
 
 Create a new parameter modeled by [`random.paretovariate(alpha)`](https://docs.python.org/3/library/random.html#random.paretovariate).
 
-_Backends which support **uniform**: `random`._
+_Backends which support **paretovariate**: `random`._
 
 #### `weibullvariate`
 
@@ -297,4 +297,4 @@ BlackBoxOptimizer.**weibullvariate**(_name_, _alpha_, _beta_, **_kwargs_)
 
 Create a new parameter modeled by [`random.weibullvariate(alpha, beta)`](https://docs.python.org/3/library/random.html#random.weibullvariate).
 
-_Backends which support **uniform**: `random`._
+_Backends which support **weibullvariate**: `random`._
