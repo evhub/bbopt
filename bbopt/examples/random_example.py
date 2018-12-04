@@ -1,3 +1,10 @@
+"""
+Example of using the random backend with BBopt.
+
+To run this example, just run:
+    > bbopt ./random_example.py
+"""
+
 # BBopt boilerplate:
 from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)

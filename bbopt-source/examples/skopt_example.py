@@ -1,3 +1,10 @@
+"""
+Example of using the scikit-optimize backend with BBopt.
+
+To run this example, just run:
+    > bbopt ./skopt_example.py
+"""
+
 # BBopt boilerplate:
 from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)

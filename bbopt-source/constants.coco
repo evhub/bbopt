@@ -16,26 +16,28 @@ classifiers = (
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Operating System :: OS Independent",
 )
-requirements = ()
+requirements = (
+    "portalocker",
+    "scikit-optimize",
+    "hyperopt",
+    # fixes an error in hyperopt 0.1 with networkx>=2.0
+    "networkx<2.0",
+)
 extra_requirements = {
-    "scikit-optimize": (
-        "scikit-optimize",
+    "dev": (
+        "pytest",
     ),
-    "hyperopt": (
-        "hyperopt",
-        # fixes an error in hyperopt 0.1 with networkx>=2.0
-        "networkx<2.0",
+    ":python_version<'3'": (
+        "futures",
     ),
 }
-extra_requirements["all"] = extra_requirements.values() |> map$(set) |> reduce$(|) |> tuple
-extra_requirements["dev"] = extra_requirements["all"] + (
-    "pytest",
-)
 
 
 # Optimizer constants:
 data_file_ext = ".bbopt.json"
+lock_timeout = 5
 
 
 # CLI constants:
-default_trials = 100
+default_trials = 50
+default_jobs = 4

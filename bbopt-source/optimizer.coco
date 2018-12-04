@@ -6,6 +6,8 @@ import json
 import os.path
 import math
 
+from portalocker import Lock
+
 from bbopt.backends import backend_registry
 from bbopt.params import param_processor
 from bbopt.util import (
@@ -13,9 +15,13 @@ from bbopt.util import (
     norm_path,
     json_serialize,
     best_example,
+    sync_file,
+    ensure_file,
+    clear_file,
 )
 from bbopt.constants import (
     data_file_ext,
+    lock_timeout,
 )
 
 
@@ -32,7 +38,7 @@ class BlackBoxOptimizer:
         """Completely reload the optimizer."""
         self._old_params = {}
         self._examples = []
-        self._load_examples()
+        self._load_data()
         self.run(backend=None)  # backend is set to serving by default
 
     def run(self, backend, **kwargs):
@@ -85,21 +91,31 @@ class BlackBoxOptimizer:
             value = value()
         self._current_example[reward_type] = value
         if not self.is_serving:
-            self._save_examples()
+            self._save_data()
 
     @property
     def data_file(self) =
         os.path.splitext(self._file)[0] + data_file_ext
 
-    def _load_examples(self):
-        """Load example data."""
-        if os.path.exists(self.data_file):
-            with open(self.data_file, "r") as df:
-                contents = df.read()
-                if contents:
-                    {"params": params, "examples": examples} = json.loads(contents)
-                    self._old_params = params
-                    self._examples = examples
+    def _tell_examples(self, examples):
+        """Load the given examples into memory."""
+        for x in examples:
+            if x not in self._examples:
+                self._examples.append(x)
+
+    def _load_from(self, df):
+        """Load data from the given file."""
+        contents = df.read()
+        if contents:
+            {"params": params, "examples": examples} = json.loads(contents)
+            self._old_params = params
+            self._tell_examples(examples)
+
+    def _load_data(self):
+        """Load examples from data file."""
+        ensure_file(self.data_file)
+        with Lock(self.data_file, "r", timeout=lock_timeout) as df:
+            self._load_from(df)
 
     def get_data(self):
         self._old_params.update(self._new_params)
@@ -108,13 +124,17 @@ class BlackBoxOptimizer:
             "examples": self._examples,
         }
 
-    def _save_examples(self):
-        """Save example data."""
-        self._load_examples()
-        if self._current_example not in self._examples:
-            self._examples.append(self._current_example)
-        with open(self.data_file, "w+") as df:
-            self.get_data() |> json.dumps$(indent=self._json_indent) |> str |> df.write
+    def _save_data(self):
+        """Save examples to data file."""
+        self._tell_examples([self._current_example])
+        with Lock(self.data_file, "r+", timeout=lock_timeout) as df:
+            self._load_from(df)
+            clear_file(df)
+            (self.get_data()
+                |> json.dumps$(indent=self._json_indent)
+                |> str
+                |> df.write)
+            sync_file(df)
 
     def get_current_run(self):
         """Return a dictionary containing the current parameters and reward."""

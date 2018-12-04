@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x39beed56
+# __coconut_hash__ = 0x6aec9fb8
 
 # Compiled with Coconut version 1.4.0-post_dev3 [Ernest Scribbler]
 
@@ -29,13 +29,19 @@ import json
 import os.path
 import math
 
+from portalocker import Lock
+
 from bbopt.backends import backend_registry
 from bbopt.params import param_processor
 from bbopt.util import Str
 from bbopt.util import norm_path
 from bbopt.util import json_serialize
 from bbopt.util import best_example
+from bbopt.util import sync_file
+from bbopt.util import ensure_file
+from bbopt.util import clear_file
 from bbopt.constants import data_file_ext
+from bbopt.constants import lock_timeout
 
 
 class BlackBoxOptimizer(_coconut.object):
@@ -51,7 +57,7 @@ class BlackBoxOptimizer(_coconut.object):
         """Completely reload the optimizer."""
         self._old_params = {}
         self._examples = []
-        self._load_examples()
+        self._load_data()
         self.run(backend=None)  # backend is set to serving by default
 
     def run(self, backend, **kwargs):
@@ -104,48 +110,59 @@ class BlackBoxOptimizer(_coconut.object):
             value = value()
         self._current_example[reward_type] = value
         if not self.is_serving:
-            self._save_examples()
+            self._save_data()
 
     @property
     def data_file(self):
         return os.path.splitext(self._file)[0] + data_file_ext
 
-    def _load_examples(self):
-        """Load example data."""
-        if os.path.exists(self.data_file):
-            with open(self.data_file, "r") as df:
-                contents = df.read()
-                if contents:
-                    _coconut_match_to = json.loads(contents)
-                    _coconut_match_check = False
-                    _coconut_sentinel = _coconut.object()
-                    if (_coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping)) and (_coconut.len(_coconut_match_to) == 2):
-                        _coconut_match_temp_0 = _coconut_match_to.get("params", _coconut_sentinel)
-                        _coconut_match_temp_1 = _coconut_match_to.get("examples", _coconut_sentinel)
-                        if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut_match_temp_1 is not _coconut_sentinel):
-                            params = _coconut_match_temp_0
-                            examples = _coconut_match_temp_1
-                            _coconut_match_check = True
-                    if not _coconut_match_check:
-                        _coconut_match_err = _coconut_MatchError("pattern-matching failed for " '\'{"params": params, "examples": examples} = json.loads(contents)\'' " in " + _coconut.repr(_coconut.repr(_coconut_match_to)))
-                        _coconut_match_err.pattern = '{"params": params, "examples": examples} = json.loads(contents)'
-                        _coconut_match_err.value = _coconut_match_to
-                        raise _coconut_match_err
+    def _tell_examples(self, examples):
+        """Load the given examples into memory."""
+        for x in examples:
+            if x not in self._examples:
+                self._examples.append(x)
 
-                    self._old_params = params
-                    self._examples = examples
+    def _load_from(self, df):
+        """Load data from the given file."""
+        contents = df.read()
+        if contents:
+            _coconut_match_to = json.loads(contents)
+            _coconut_match_check = False
+            _coconut_sentinel = _coconut.object()
+            if (_coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping)) and (_coconut.len(_coconut_match_to) == 2):
+                _coconut_match_temp_0 = _coconut_match_to.get("params", _coconut_sentinel)
+                _coconut_match_temp_1 = _coconut_match_to.get("examples", _coconut_sentinel)
+                if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut_match_temp_1 is not _coconut_sentinel):
+                    params = _coconut_match_temp_0
+                    examples = _coconut_match_temp_1
+                    _coconut_match_check = True
+            if not _coconut_match_check:
+                _coconut_match_err = _coconut_MatchError("pattern-matching failed for " '\'{"params": params, "examples": examples} = json.loads(contents)\'' " in " + _coconut.repr(_coconut.repr(_coconut_match_to)))
+                _coconut_match_err.pattern = '{"params": params, "examples": examples} = json.loads(contents)'
+                _coconut_match_err.value = _coconut_match_to
+                raise _coconut_match_err
+
+            self._old_params = params
+            self._tell_examples(examples)
+
+    def _load_data(self):
+        """Load examples from data file."""
+        ensure_file(self.data_file)
+        with Lock(self.data_file, "r", timeout=lock_timeout) as df:
+            self._load_from(df)
 
     def get_data(self):
         self._old_params.update(self._new_params)
         return {"params": self._old_params, "examples": self._examples}
 
-    def _save_examples(self):
-        """Save example data."""
-        self._load_examples()
-        if self._current_example not in self._examples:
-            self._examples.append(self._current_example)
-        with open(self.data_file, "w+") as df:
-            (df.write)((str)(json.dumps(self.get_data(), indent=self._json_indent)))
+    def _save_data(self):
+        """Save examples to data file."""
+        self._tell_examples([self._current_example])
+        with Lock(self.data_file, "r+", timeout=lock_timeout) as df:
+            self._load_from(df)
+            clear_file(df)
+            ((df.write)((str)(json.dumps(self.get_data(), indent=self._json_indent))))
+            sync_file(df)
 
     def get_current_run(self):
         """Return a dictionary containing the current parameters and reward."""

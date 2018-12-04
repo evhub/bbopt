@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xe99f3a53
+# __coconut_hash__ = 0x8eecf4cd
 
 # Compiled with Coconut version 1.4.0-post_dev3 [Ernest Scribbler]
 
@@ -25,7 +25,7 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 
 
-import os.path
+import os
 if _coconut_sys.version_info < (3, 3):
     from collections import Mapping
 else:
@@ -250,3 +250,24 @@ def serve_values(param_name, param_kwargs, serving_values, fallback_func):
             return guess
         else:
             return fallback_func(param_name, **param_kwargs)
+
+
+def sync_file(file_handle):
+    """Forcibly flush and sync the given file."""
+    file_handle.flush()
+    os.fsync(file_handle.fileno())
+
+
+def ensure_file(fpath):
+    """Ensure that the given file exists."""
+    try:
+        with open(fpath, "x"):
+            pass
+    except IOError:
+        pass
+
+
+def clear_file(file_handle):
+    """Empties the contents of the given file."""
+    file_handle.seek(0)
+    file_handle.truncate()

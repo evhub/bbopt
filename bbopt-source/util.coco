@@ -2,7 +2,7 @@
 Utilities for use across all of bbopt.
 """
 
-import os.path
+import os
 from collections.abc import Mapping, Iterable
 
 
@@ -142,3 +142,24 @@ def serve_values(param_name, param_kwargs, serving_values, fallback_func):
         return guess
     else:
         return fallback_func(param_name, **param_kwargs)
+
+
+def sync_file(file_handle):
+    """Forcibly flush and sync the given file."""
+    file_handle.flush()
+    os.fsync(file_handle.fileno())
+
+
+def ensure_file(fpath):
+    """Ensure that the given file exists."""
+    try:
+        with open(fpath, "x"):
+            pass
+    except IOError:
+        pass
+
+
+def clear_file(file_handle):
+    """Empties the contents of the given file."""
+    file_handle.seek(0)
+    file_handle.truncate()

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4172fe19
+# __coconut_hash__ = 0x181063d2
 
 # Compiled with Coconut version 1.4.0-post_dev3 [Ernest Scribbler]
 
@@ -34,15 +34,15 @@ github_url = "https://github.com/evhub/bbopt"
 author = "Evan Hubinger"
 author_email = "evanjhub@gmail.com"
 classifiers = ("Development Status :: 3 - Alpha", "License :: OSI Approved :: Apache Software License", "Topic :: Software Development :: Libraries :: Python Modules", "Operating System :: OS Independent",)
-requirements = ()
-extra_requirements = {"scikit-optimize": ("scikit-optimize",), "hyperopt": ("hyperopt", "networkx<2.0",)}
-extra_requirements["all"] = (tuple)(reduce(_coconut.operator.or_, map(set, extra_requirements.values())))
-extra_requirements["dev"] = extra_requirements["all"] + ("pytest",)
+requirements = ("portalocker", "scikit-optimize", "hyperopt", "networkx<2.0",)
+extra_requirements = {"dev": ("pytest",), ":python_version<'3'": ("futures",)}
 
 
 # Optimizer constants:
 data_file_ext = ".bbopt.json"
+lock_timeout = 5
 
 
 # CLI constants:
-default_trials = 100
+default_trials = 50
+default_jobs = 4

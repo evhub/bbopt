@@ -5,9 +5,16 @@ BBopt command line interface.
 import os
 import argparse
 import subprocess
+import traceback
+from concurrent.futures import ProcessPoolExecutor
+from pprint import pprint
 
-from bbopt.constants import description, default_trials
 from bbopt.optimizer import BlackBoxOptimizer
+from bbopt.constants import (
+    description,
+    default_trials,
+    default_jobs,
+)
 
 
 parser = argparse.ArgumentParser(
@@ -28,6 +35,14 @@ parser.add_argument(
     type=int,
     default=default_trials,
     help="number of trials to run (defaults to {})".format(default_trials),
+)
+
+parser.add_argument(
+    "-j", "--jobs",
+    metavar="processes",
+    type=int,
+    default=default_jobs,
+    help="number of processes to use for running multiple trials (defaults to {})".format(default_jobs),
 )
 
 parser.add_argument(
@@ -52,25 +67,54 @@ parser.add_argument(
 )
 
 
+def base_show(quiet, msg):
+    """Show the given message with [BBopt] if not quiet."""
+    if not quiet:
+        print("[BBopt]", msg)
+
+
+def run_trial(args, cmd, i):
+    """Pickleable function for running trials in parallel."""
+    show = base_show$(args.quiet)
+    show("{}/{} starting...".format(i+1, args.num_trials))
+    subprocess.check_call(cmd)
+    show("{}/{} finished.".format(i+1, args.num_trials))
+
+
+def callback_wrapper(completed_future):
+    """Ensures that all errors are always caught."""
+    try:
+        completed_future.result()
+    except:
+        traceback.print_exc()
+
+
 def main():
     args = parser.parse_args()
     if not os.path.isfile(args.file):
         raise ValueError("could not find file {}".format(args.file))
 
-    def show(msg):
-        if not args.quiet:
-            print(msg)
+    show = base_show$(args.quiet)
+    cmd = [args.python, args.file] + (args.args ?? [])
 
-    show("[BBopt] Starting black box optimization of {}...".format(args.file))
+    show("Running {} trials using {} processes of:\n\t> {}".format(
+        args.num_trials,
+        args.jobs,
+        " ".join(cmd),
+    ))
 
-    for i in range(args.num_trials):
-        show("[BBopt] Running black box optimization trial {}/{}...".format(i+1, args.num_trials))
+    with ProcessPoolExecutor(args.jobs) as executor:
+        for i in range(args.num_trials):
+            future = executor.submit(run_trial, args, cmd, i)
+            future.add_done_callback(callback_wrapper)
 
-        cmd = [args.python, args.file] + (args.args ?? [])
-        show("> {}".format(" ".join(cmd)))
-        subprocess.check_call(cmd)
+    bb = BlackBoxOptimizer(args.file)
+    show("Black box optimization finished; data saved to {}.".format(os.path.relpath(bb.data_file)))
 
-    show("[BBopt] Black box optimization finished; data saved to {}.".format(BlackBoxOptimizer(args.file).data_file))
+    if not args.quiet:
+        best_example = bb.get_optimal_run()
+        show("Summary of best run:")
+        pprint(bb.get_optimal_run())
 
 
 if __name__ == "__main__":

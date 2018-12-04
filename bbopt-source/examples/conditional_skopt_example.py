@@ -1,3 +1,13 @@
+"""
+Example of using BBopt with conditional parameters that only appear
+during some runs depending on the value(s) of other parameters. For
+this example, we use scikit-optimize for our conditional parameters,
+which requires us to pass placeholder_when_missing values.
+
+To run this example, just run:
+    > bbopt ./conditional_skopt_example.py
+"""
+
 # BBopt boilerplate:
 from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)

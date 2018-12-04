@@ -4,7 +4,7 @@ BBopt is a frontend for easily interfacing with any black box optimization frame
 
 Plus, BBopt provides a universal interface for defining your tunable parameters based on the standard library `random` module, so you don't even have to learn anything new!
 
-Once you've defined your parameters, training a black box optimization model on those parameters is as simple as
+Once you've defined your parameters, training a black box optimization model on those parameters _in parallel_ is as simple as
 ```
 bbopt your_file.py
 ```
@@ -18,10 +18,6 @@ import your_file
 To get going with BBopt, just install it with
 ```
 pip install bbopt
-```
-or, to install BBopt and all of its backends as well, just run
-```
-pip install bbopt[all]
 ```
 
 ## Basic Usage
@@ -44,7 +40,7 @@ bb.maximize(y)      or      bb.minimize(y)
 ```
 to set the value being optimized. Then, run
 ```
-bbopt <your file here> -n <number of trials>
+bbopt <your file here> -n <number of trials> -j <number of processes>
 ```
 to train your model, and just
 ```
@@ -79,7 +75,9 @@ Some examples of BBopt in action:
 
 ## Command-Line Interface
 
-The `bbopt` command is extremely simple in terms of what it actually does. For the command `bbopt <file> -n <trials>`, BBopt simply runs `python <file>` a number of times equal to `<trials>`. Why does this work? If you're using the basic boilerplate, then running `python <file>` will trigger the `if __name__ == "__main__":` clause, which will run a training episode. But when you go to `import` your file, the `if __name__ == "__main__":` clause won't get triggered, and you'll just get served the best parameters found so far. Since the command-line interface is so simple, advanced users who want to use the full API instead of the boilerplate need not use the `bbopt` command at all. If you want more information on the `bbopt` command, just run `bbopt -h`.
+The `bbopt` command is extremely simple in terms of what it actually does. For the command `bbopt <file> -n <trials> -j <processes>`, BBopt simply runs `python <file>` a number of times equal to `<trials>`, split across `<processes>` different processes.
+
+Why does this work? If you're using the basic boilerplate, then running `python <file>` will trigger the `if __name__ == "__main__":` clause, which will run a training episode. But when you go to `import` your file, the `if __name__ == "__main__":` clause won't get triggered, and you'll just get served the best parameters found so far. Since the command-line interface is so simple, advanced users who want to use the full API instead of the boilerplate need not use the `bbopt` command at all. If you want more information on the `bbopt` command, just run `bbopt -h`.
 
 ## Full API
 

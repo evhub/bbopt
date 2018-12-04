@@ -1,3 +1,10 @@
+"""
+Example of using the hyperopt backend with BBopt.
+
+To run this example, just run:
+    > bbopt ./hyperopt_example.py
+"""
+
 # BBopt boilerplate:
 from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)

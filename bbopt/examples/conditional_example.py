@@ -1,3 +1,12 @@
+"""
+Example of using BBopt with conditional parameters that only appear
+during some runs depending on the value(s) of other parameters. This
+is easiest to do using the hyperopt backend, so we use that here.
+
+To run this example, just run:
+    > bbopt ./conditional_example.py
+"""
+
 # BBopt boilerplate:
 from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)
