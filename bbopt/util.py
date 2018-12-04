@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x517580a0
+# __coconut_hash__ = 0x764b4775
 
 # Compiled with Coconut version 1.4.0-post_dev3 [Ernest Scribbler]
 
@@ -26,6 +26,7 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 
 import os
+sys = _coconut_sys
 if _coconut_sys.version_info < (3, 3):
     from collections import Mapping
 else:
@@ -266,7 +267,7 @@ def sync_file(file_handle):
 def ensure_file(fpath):
     """Ensure that the given file exists."""
     try:
-        with open(fpath, "x"):
+        with open(fpath, "x" if sys.version_info >= (3,) else "a"):
             pass
     except IOError:
         pass
