@@ -81,11 +81,47 @@ Why does this work? If you're using the basic boilerplate, then running `python 
 
 ## Full API
 
+<!-- MarkdownTOC -->
+
+1. [Black Box Optimization Methods](#black-box-optimization-methods)
+    1. [Constructor](#constructor)
+    1. [`run`](#run)
+    1. [`minimize`](#minimize)
+    1. [`maximize`](#maximize)
+    1. [`remember`](#remember)
+    1. [`get_current_run`](#get_current_run)
+    1. [`get_optimal_run`](#get_optimal_run)
+    1. [`get_data`](#get_data)
+    1. [`data_file`](#data_file)
+1. [Parameter Definition Methods](#parameter-definition-methods)
+    1. [`randrange`](#randrange)
+    1. [`randint`](#randint)
+    1. [`getrandbits`](#getrandbits)
+    1. [`choice`](#choice)
+    1. [`randbool`](#randbool)
+    1. [`sample`](#sample)
+    1. [`uniform`](#uniform)
+    1. [`random`](#random)
+    1. [`loguniform`](#loguniform)
+    1. [`normalvariate`](#normalvariate)
+    1. [`lognormvariate`](#lognormvariate)
+    1. [`triangular`](#triangular)
+    1. [`betavariate`](#betavariate)
+    1. [`expovariate`](#expovariate)
+    1. [`gammavariate`](#gammavariate)
+    1. [`vonmisesvariate`](#vonmisesvariate)
+    1. [`paretovariate`](#paretovariate)
+    1. [`weibullvariate`](#weibullvariate)
+
+<!-- /MarkdownTOC -->
+
+### Black Box Optimization Methods
+
+#### Constructor
+
 **BlackBoxOptimizer**(_file_, _json\_indent_=`None`)
 
 Create a new `bb` object; this should be done at the beginning of your program as all the other functions are methods of this object. _file_ is used by BBopt to figure out where to load and save data to (specifically `os.path.splitext(file)[0] + ".bbopt.json"`), and should usually just be set to `__file__`. _json\_indent_ is just the value of _indent_ that should be passed to [`json.dump`](https://docs.python.org/3/library/json.html#json.dump).
-
-### Black Box Optimization Methods
 
 #### `run`
 
