@@ -1,13 +1,16 @@
 """
-Example of using BBopt to tune Keras hyperparameters.
+Example of using BBopt to tune Keras hyperparameters. Uses the full
+BBopt API instead of just the boilerplate and implements its own
+(very basic) command-line interface instead of using BBopt's.
 
 To run this example, just run:
-    > bbopt ./keras_example.py
+    > python ./keras_example.py -n 15
 """
 
 # Imports:
 import sys
-import os.path
+import os
+from argparse import ArgumentParser
 from pprint import pprint
 
 import numpy as np
@@ -19,11 +22,9 @@ from keras.utils import to_categorical
 from keras.regularizers import l1_l2
 
 
-# BBopt boilerplate:
+# BBopt setup:
 from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)
-if __name__ == "__main__":
-    bb.run(backend="scikit-optimize")
 
 
 # Load raw data:
@@ -62,36 +63,40 @@ X_train, X_validate, X_test = X[:train_split], X[train_split:validate_split], X[
 y_train, y_validate, y_test = y[:train_split], y[train_split:validate_split], y[validate_split:]
 
 
-# Create and compile model:
-model = Sequential([
-    Dense(
-        units=bb.randint("hidden neurons", 1, 15, guess=2),
-        input_dim=len(X_train[0]),
-        kernel_regularizer=l1_l2(
-            l1=bb.uniform("l1", 0, 0.1, guess=0.005),
-            l2=bb.uniform("l2", 0, 0.1, guess=0.05),
+def run_trial():
+    """Run one trial of hyperparameter optimization."""
+    # Start BBopt:
+    bb.run(backend="scikit-optimize")
+
+    # Create model:
+    model = Sequential([
+        Dense(
+            units=bb.randint("hidden neurons", 1, 15, guess=2),
+            input_dim=len(X_train[0]),
+            kernel_regularizer=l1_l2(
+                l1=bb.uniform("l1", 0, 0.1, guess=0.005),
+                l2=bb.uniform("l2", 0, 0.1, guess=0.05),
+            ),
+            activation="relu",
         ),
-        activation="relu",
-    ),
-    Dense(
-        units=2,
-        activation="softmax",
-    ),
-])
+        Dense(
+            units=2,
+            activation="softmax",
+        ),
+    ])
 
-model.compile(
-    loss="categorical_crossentropy",
-    optimizer=SGD(
-        lr=bb.uniform("learning rate", 0, 0.5, guess=0.15),
-        decay=bb.uniform("decay", 0, 0.01, guess=0.0005),
-        momentum=bb.uniform("momentum", 0, 1, guess=0.5),
-        nesterov=bool(bb.getrandbits("nesterov", 1, guess=1)),
-    ),
-    metrics=["accuracy"],
-)
+    # Compile model:
+    model.compile(
+        loss="categorical_crossentropy",
+        optimizer=SGD(
+            lr=bb.uniform("learning rate", 0, 0.5, guess=0.15),
+            decay=bb.uniform("decay", 0, 0.01, guess=0.0005),
+            momentum=bb.uniform("momentum", 0, 1, guess=0.5),
+            nesterov=bool(bb.getrandbits("nesterov", 1, guess=1)),
+        ),
+        metrics=["accuracy"],
+    )
 
-
-if __name__ == "__main__":
     # Train model:
     train_history = model.fit(
         X_train,
@@ -107,7 +112,6 @@ if __name__ == "__main__":
 
     test_loss, test_acc = model.evaluate(X_test, y_test, verbose=0)
 
-
     # Store BBopt information:
     bb.remember({
         "training loss": train_loss,
@@ -121,5 +125,26 @@ if __name__ == "__main__":
     bb.minimize(validation_loss)
 
 
-    # Print stats on the current run:
-    pprint(bb.get_current_run())
+# Setup command-line interface:
+parser = ArgumentParser()
+parser.add_argument(
+    "-n", "--num-trials",
+    metavar="trials",
+    type=int,
+    default=1,
+    help="number of trials to run (defaults to 1)",
+)
+
+
+# Main loop:
+if __name__ == "__main__":
+    args = parser.parse_args()
+
+    for i in range(args.num_trials):
+        run_trial()
+        print("Summary of run {}/{}:".format(i+1, args.num_trials))
+        pprint(bb.get_current_run())
+        print()
+
+    print("\nSummary of best run:")
+    pprint(bb.get_optimal_run())

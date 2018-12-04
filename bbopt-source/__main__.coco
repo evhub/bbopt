@@ -26,7 +26,7 @@ parser.add_argument(
     "file",
     metavar="file",
     type=str,
-    help="path of the Python file to run",
+    help="path to the Python file to run",
 )
 
 parser.add_argument(
@@ -42,7 +42,7 @@ parser.add_argument(
     metavar="processes",
     type=int,
     default=default_jobs,
-    help="number of processes to use for running multiple trials (defaults to {})".format(default_jobs),
+    help="number of processes to use (defaults to {})".format(default_jobs),
 )
 
 parser.add_argument(
@@ -56,7 +56,7 @@ parser.add_argument(
     metavar="executable",
     type=str,
     default="python",
-    help="the python executable to use for running the file (defaults to 'python')"
+    help="the python executable to use (defaults to 'python')"
 )
 
 parser.add_argument(

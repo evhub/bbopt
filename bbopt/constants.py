@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x181063d2
+# __coconut_hash__ = 0x38ea2c1a
 
 # Compiled with Coconut version 1.4.0-post_dev3 [Ernest Scribbler]
 
@@ -44,5 +44,5 @@ lock_timeout = 5
 
 
 # CLI constants:
-default_trials = 50
-default_jobs = 4
+default_trials = 100
+default_jobs = 0

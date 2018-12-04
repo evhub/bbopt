@@ -39,5 +39,5 @@ lock_timeout = 5
 
 
 # CLI constants:
-default_trials = 50
-default_jobs = 4
+default_trials = 100
+default_jobs = 0

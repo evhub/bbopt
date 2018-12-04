@@ -6,6 +6,10 @@ install: build
 install-2: build
 	python2 -m pip install -e .[dev]
 
+.PHONY: force
+force: force-build
+	pip install -e .[dev]
+
 .PHONY: setup
 setup:
 	pip install --upgrade setuptools pip pytest
@@ -15,6 +19,13 @@ setup:
 build:
 	coconut setup.coco --no-tco --strict
 	coconut "bbopt-source" bbopt --no-tco --strict --jobs sys
+	-mkdir "./bbopt/examples"
+	cp -rf "./bbopt-source/examples" "./bbopt/"
+
+.PHONY: force-build
+force-build:
+	coconut setup.coco --no-tco --strict --force
+	coconut "bbopt-source" bbopt --no-tco --strict --jobs sys --force
 	-mkdir "./bbopt/examples"
 	cp -rf "./bbopt-source/examples" "./bbopt/"
 

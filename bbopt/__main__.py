@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x8f3494a0
+# __coconut_hash__ = 0x28ce1285
 
 # Compiled with Coconut version 1.4.0-post_dev3 [Ernest Scribbler]
 
@@ -40,15 +40,15 @@ from bbopt.constants import default_jobs
 
 parser = argparse.ArgumentParser(prog="bbopt", description=description)
 
-parser.add_argument("file", metavar="file", type=str, help="path of the Python file to run")
+parser.add_argument("file", metavar="file", type=str, help="path to the Python file to run")
 
 parser.add_argument("-n", "--num-trials", metavar="trials", type=int, default=default_trials, help="number of trials to run (defaults to {})".format(default_trials))
 
-parser.add_argument("-j", "--jobs", metavar="processes", type=int, default=default_jobs, help="number of processes to use for running multiple trials (defaults to {})".format(default_jobs))
+parser.add_argument("-j", "--jobs", metavar="processes", type=int, default=default_jobs, help="number of processes to use (defaults to {})".format(default_jobs))
 
 parser.add_argument("-q", "--quiet", action="store_true", help="suppress all informational output")
 
-parser.add_argument("--python", metavar="executable", type=str, default="python", help="the python executable to use for running the file (defaults to 'python')")
+parser.add_argument("--python", metavar="executable", type=str, default="python", help="the python executable to use (defaults to 'python')")
 
 parser.add_argument("--args", type=str, nargs=argparse.REMAINDER, help="arguments to pass to the file being run")
 
