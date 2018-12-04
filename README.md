@@ -1,6 +1,6 @@
 # BBopt
 
-BBopt is [Keras](https://keras.io/) for black box hyperparameter optimization: one interface for any black box optimization backend.
+BBopt aims to provide the easiest interface for hyperparameter optimization you'll ever use. Think of BBopt like [Keras](https://keras.io/) for black box hyperparameter optimization: one interface for any black box optimization backend.
 
 BBopt provides a universal interface for defining your tunable parameters based on the standard library `random` module—so you don't even have to learn anything new—and support for [`scikit-optimize`](https://scikit-optimize.github.io/) or [`hyperopt`](http://hyperopt.github.io/hyperopt/) to tune parameters—with the ability to switch back and forth while retaining all previous trials.
 
