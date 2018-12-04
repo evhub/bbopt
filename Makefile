@@ -32,8 +32,8 @@ force-build:
 .PHONY: upload
 upload: clean install
 	python3 setup.py sdist bdist_wheel
-	pip3 install --upgrade twine
-	twine upload ./dist/*
+	pip3 install --upgrade --ignore-installed twine
+	twine upload dist/*
 
 .PHONY: test
 test: install
@@ -46,9 +46,9 @@ test-2: install-2
 .PHONY: clean
 clean:
 	rm -rf ./dist ./build
-	find . -name '*.bbopt.json' -delete
-	find . -name '*.pyc' -delete
-	find . -name '__pycache__' -delete
+	-find . -name '*.bbopt.json' -delete
+	-find . -name '*.pyc' -delete
+	-find . -name '__pycache__' -delete
 
 .PHONY: wipe
 wipe: clean
