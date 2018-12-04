@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # type: ignore
 
-# Compiled with Coconut version 1.3.1-post_dev26 [Dead Parrot]
+# Compiled with Coconut version 1.4.0-post_dev3 [Ernest Scribbler]
 
 """Built-in Coconut utilities."""
 
@@ -122,8 +122,9 @@ if _coconut_sys.version_info < (3,):
 else:
     from builtins import chr, filter, hex, input, int, map, object, oct, open, print, range, str, zip, filter, reversed, enumerate
     py_chr, py_hex, py_input, py_int, py_map, py_object, py_oct, py_open, py_print, py_range, py_str, py_zip, py_filter, py_reversed, py_enumerate = chr, hex, input, int, map, object, oct, open, print, range, str, zip, filter, reversed, enumerate
+    _coconut_str = str
 class _coconut(object):
-    import collections, copy, functools, imp, itertools, operator, types, weakref
+    import collections, copy, functools, types, itertools, operator, types, weakref
     if _coconut_sys.version_info < (3, 2):
         try:
             from backports.functools_lru_cache import lru_cache
@@ -141,14 +142,14 @@ class _coconut(object):
         abc = collections
     else:
         import collections.abc as abc
-    Ellipsis, Exception, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, classmethod, dict, enumerate, filter, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, map, min, max, next, object, property, range, reversed, set, slice, str, sum, super, tuple, zip, repr, bytearray = Ellipsis, Exception, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, classmethod, dict, enumerate, filter, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, map, min, max, next, object, property, range, reversed, set, slice, str, sum, super, tuple, zip, staticmethod(repr), bytearray
+    Ellipsis, Exception, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, classmethod, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, map, min, max, next, object, property, range, reversed, set, slice, str, sum, super, tuple, zip, repr, bytearray = Ellipsis, Exception, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, classmethod, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, map, min, max, next, object, property, range, reversed, set, slice, str, sum, super, tuple, zip, staticmethod(repr), bytearray
 def _coconut_NamedTuple(name, fields):
     return _coconut.collections.namedtuple(name, [x for x, t in fields])
 class MatchError(Exception):
     """Pattern-matching error. Has attributes .pattern and .value."""
     __slots__ = ("pattern", "value")
 def _coconut_igetitem(iterable, index):
-    if isinstance(iterable, (_coconut_reversed, _coconut_map, _coconut.filter, _coconut.zip, _coconut_enumerate, _coconut_count, _coconut.abc.Sequence)):
+    if isinstance(iterable, (_coconut_reversed, _coconut_map, _coconut.zip, _coconut_enumerate, _coconut_count, _coconut.abc.Sequence)):
         return iterable[index]
     if not _coconut.isinstance(index, _coconut.slice):
         if index < 0:
@@ -157,10 +158,10 @@ def _coconut_igetitem(iterable, index):
     if index.start is not None and index.start < 0 and (index.stop is None or index.stop < 0) and index.step is None:
         queue = _coconut.collections.deque(iterable, maxlen=-index.start)
         if index.stop is not None:
-            queue = _coconut.tuple(queue)[:index.stop - index.start]
+            queue = _coconut.list(queue)[:index.stop - index.start]
         return queue
     if (index.start is not None and index.start < 0) or (index.stop is not None and index.stop < 0) or (index.step is not None and index.step < 0):
-        return _coconut.tuple(iterable)[index]
+        return _coconut.list(iterable)[index]
     return _coconut.itertools.islice(iterable, index.start, index.stop, index.step)
 class _coconut_base_compose(object):
     __slots__ = ("func", "funcstars")
@@ -333,7 +334,7 @@ class parallel_map(map):
     def __iter__(self):
         from concurrent.futures import ProcessPoolExecutor
         with ProcessPoolExecutor() as executor:
-            return _coconut.iter(_coconut.tuple(executor.map(self.func, *self.iters)))
+            return _coconut.iter(_coconut.list(executor.map(self.func, *self.iters)))
     def __repr__(self):
         return "parallel_" + _coconut_map.__repr__(self)
 class concurrent_map(map):
@@ -343,7 +344,7 @@ class concurrent_map(map):
         from concurrent.futures import ThreadPoolExecutor
         from multiprocessing import cpu_count  # cpu_count() * 5 is the default Python 3.5 thread count
         with ThreadPoolExecutor(cpu_count() * 5) as executor:
-            return _coconut.iter(_coconut.tuple(executor.map(self.func, *self.iters)))
+            return _coconut.iter(_coconut.list(executor.map(self.func, *self.iters)))
     def __repr__(self):
         return "concurrent_" + _coconut_map.__repr__(self)
 class filter(_coconut.filter):
@@ -419,7 +420,8 @@ class enumerate(_coconut.enumerate):
     def __fmap__(self, func):
         return _coconut_map(func, self)
 class count(object):
-    """count(start, step) returns an infinite iterator starting at start and increasing by step."""
+    """count(start, step) returns an infinite iterator starting at start and increasing by step.
+    If step is set to 0, count will infinitely repeat its first argument."""
     __slots__ = ("start", "step")
     def __init__(self, start=0, step=1):
         self.start = start
@@ -427,27 +429,38 @@ class count(object):
     def __iter__(self):
         while True:
             yield self.start
-            self.start += self.step
+            if self.step:
+                self.start += self.step
     def __contains__(self, elem):
-        return elem >= self.start and (elem - self.start) % self.step == 0
+        if not self.step:
+            return elem == self.start
+        if elem < self.start:
+            return False
+        return (elem - self.start) % self.step == 0
     def __getitem__(self, index):
         if _coconut.isinstance(index, _coconut.slice) and (index.start is None or index.start >= 0) and (index.stop is None or index.stop >= 0):
             if index.stop is None:
                 return self.__class__(self.start + (index.start if index.start is not None else 0), self.step * (index.step if index.step is not None else 1))
-            if _coconut.isinstance(self.start, _coconut.int) and _coconut.isinstance(self.step, _coconut.int):
+            if self.step and _coconut.isinstance(self.start, _coconut.int) and _coconut.isinstance(self.step, _coconut.int):
                 return _coconut.range(self.start + self.step * (index.start if index.start is not None else 0), self.start + self.step * index.stop, self.step * (index.step if index.step is not None else 1))
             return _coconut_map(self.__getitem__, _coconut.range(index.start if index.start is not None else 0, index.stop, index.step if index.step is not None else 1))
-        if index >= 0:
-            return self.start + self.step * index
-        raise _coconut.IndexError("count indices must be positive")
+        if index < 0:
+            raise _coconut.IndexError("count indices must be positive")
+        return self.start + self.step * index if self.step else self.start
     def count(self, elem):
         """Count the number of times elem appears in the count."""
+        if not self.step:
+            return _coconut.float("inf") if elem == self.start else 0
         return int(elem in self)
     def index(self, elem):
         """Find the index of elem in the count."""
         if elem not in self:
-            raise _coconut.ValueError(_coconut.repr(elem) + " is not in count")
-        return (elem - self.start) // self.step
+            raise _coconut.ValueError(_coconut.repr(elem) + " not in " + _coconut.repr(self))
+        return (elem - self.start) // self.step if self.step else 0
+    def __reversed__(self):
+        if not self.step:
+            return self
+        raise _coconut.TypeError(repr(self) + " object is not reversible")
     def __repr__(self):
         return "count(%r, %r)" % (self.start, self.step)
     def __hash__(self):
@@ -527,15 +540,41 @@ def recursive_iterator(func):
             tee_store[key], to_return = _coconut_tee(tee_store.get(key) or func(*args, **kwargs))
         return to_return
     return recursive_iterator_func
+class _coconut_FunctionMatchErrorContext(object):
+    from threading import local; threadlocal_var = local(); del local
+    __slots__ = ('exc_class', 'taken')
+    def __init__(self, exc_class):
+        self.exc_class = exc_class
+        self.taken = False
+    def __enter__(self):
+        try:
+            self.threadlocal_var.contexts.append(self)
+        except AttributeError:
+            self.threadlocal_var.contexts = [self]
+    def __exit__(self, type, value, traceback):
+        self.threadlocal_var.contexts.pop()
+    @classmethod
+    def get(cls):
+        try:
+            ctx = cls.threadlocal_var.contexts[-1]
+        except (AttributeError, IndexError):
+            return MatchError
+        if not ctx.taken:
+            ctx.taken = True
+            return ctx.exc_class
+        return MatchError
+_coconut_get_function_match_error = _coconut_FunctionMatchErrorContext.get
 def addpattern(base_func):
     """Decorator to add a new case to a pattern-matching function,
     where the new case is checked last."""
     def pattern_adder(func):
+        FunctionMatchError = type(_coconut_str("MatchError"), (MatchError,), {})
         @_coconut.functools.wraps(func)
         def add_pattern_func(*args, **kwargs):
             try:
-                return base_func(*args, **kwargs)
-            except _coconut_MatchError:
+                with _coconut_FunctionMatchErrorContext(FunctionMatchError):
+                    return base_func(*args, **kwargs)
+            except FunctionMatchError:
                 return func(*args, **kwargs)
         return add_pattern_func
     return pattern_adder
