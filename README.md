@@ -270,7 +270,7 @@ _Backends which support **normalvariate**: `hyperopt`, `random`._
 
 BlackBoxOptimizer.**rand**(_name_, *_shape_, **_kwargs_)
 
-Create a new parameter modeled by [`numpy.random.rand(*shape)`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.rand.html#numpy.random.rand), which creates an array with entries generated uniformly in `[0, 1)`.
+Create a new parameter modeled by [`numpy.random.rand(*shape)`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.rand.html#numpy.random.rand), which creates an array with entries generated uniformly in `[0, 1)`. _kwargs_ like _guess_ should refer to the guess for an individual entry, not the whole array.
 
 _Backends which support **rand**: `scikit-optimize`, `hyperopt`, `random`._
 
@@ -278,7 +278,7 @@ _Backends which support **rand**: `scikit-optimize`, `hyperopt`, `random`._
 
 BlackBoxOptimizer.**randn**(_name_, *_shape_, **_kwargs_)
 
-Create a new parameter modeled by [`numpy.random.randn(*shape)`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.rand.html#numpy.random.rand), which creates an array with entries generated according to a standard normal distribution.
+Create a new parameter modeled by [`numpy.random.randn(*shape)`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.rand.html#numpy.random.rand), which creates an array with entries generated according to a standard normal distribution. _kwargs_ like _guess_ should refer to the guess for an individual entry, not the whole array.
 
 _Backends which support **rand**: `hyperopt`, `random`._
 
