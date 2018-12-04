@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x14f16cf5
+# __coconut_hash__ = 0x680babb3
 
 # Compiled with Coconut version 1.4.0-post_dev3 [Ernest Scribbler]
 
@@ -68,7 +68,9 @@ def examples_to_trials(examples, params):
     """Create hyperopt trials from the given examples."""
     trials = []
     NA = object()  # used to mark missing values
+
     for tid, ex in enumerate(examples):
+
         _coconut_match_to = ex
         _coconut_match_check = False
         _coconut_sentinel = _coconut.object()
@@ -82,13 +84,17 @@ def examples_to_trials(examples, params):
         else:
             loss = ex["loss"]
         result = {"status": STATUS_OK, "loss": loss}
+
         vals = {}
         idxs = {}
         for k, v in zip(sorted(params), make_features(ex["values"], params, fallback_func=lambda name, **kwargs: NA)):
             vals[k] = [v] if v is not NA else []
             idxs[k] = [tid] if v is not NA else []
+
         misc = {"tid": tid, "idxs": idxs, "vals": vals, "cmd": None}
+
         trials.append({"tid": tid, "result": result, "misc": misc, "spec": spec_from_misc(misc), "state": JOB_STATE_DONE, "owner": None, "book_time": None, "refresh_time": None, "exp_key": None})
+
     return trials
 
 
@@ -103,19 +109,28 @@ class HyperoptBackend(_coconut.object):
         if not examples:
             self.current_values = {}
             return
+
         space = (as_apply)(dict(((name), (create_space(name, **param_processor.filter_kwargs(param_kwargs)))) for name, param_kwargs in sorted_items(params)))
+
         domain = Domain(self.set_current_values, space)
+
         trials = Trials()
         trials.insert_trial_docs(examples_to_trials(examples, params))
+
+# run one iteration of hyperparameter optimization, with values saved
+#  to the self.set_current_values callback passed to Domain
         (next)(FMinIter(algo, domain, trials, rstate, **kwargs))
+
         assert self.current_values is not None, self.current_values
         assert set(self.current_values.keys()) == set(params), self.current_values
 
     def set_current_values(self, values):
+        """Callback to set the values for this run."""
         assert isinstance(values, dict), values
         self.current_values = values
         return {"status": STATUS_RUNNING}
 
+# decorator to raise an error if kwargs include an unsupported method
     _coconut_decorator_0 = _coconut.functools.partial(param_processor.implements_params, backend_name="hyperopt", implemented_params=("choice", "randrange", "uniform", "normalvariate",))
     @_coconut_decorator_0
     def param(self, name, **kwargs):

@@ -1,5 +1,5 @@
 """
-The interface into BBopt for a file with black-box parameters.
+The main BBopt interface.
 """
 
 import json

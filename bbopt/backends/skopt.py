@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3e8073b4
+# __coconut_hash__ = 0x9e1551a1
 
 # Compiled with Coconut version 1.4.0-post_dev3 [Ernest Scribbler]
 
@@ -70,13 +70,17 @@ class SkoptBackend(_coconut.object):
         if not examples:
             self.current_values = {}
             return
+
         data_points, losses = strict_split_examples(examples, params)
         dimensions = [create_dimension(name, **param_processor.filter_kwargs(param_kwargs)) for name, param_kwargs in sorted_items(params)]
+
         optimizer = Optimizer(dimensions, base_estimator, **kwargs)
         optimizer.tell(data_points, losses)
         current_point = optimizer.ask()
+
         self.current_values = make_values(params, current_point)
 
+# decorator to raise an error if kwargs include an unsupported method
     _coconut_decorator_0 = _coconut.functools.partial(param_processor.implements_params, backend_name="scikit-optimize", implemented_params=("choice", "randrange", "uniform",))
     @_coconut_decorator_0
     def param(self, name, **kwargs):

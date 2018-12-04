@@ -57,16 +57,20 @@ class SkoptBackend:
         if not examples:
             self.current_values = {}
             return
+
         data_points, losses = strict_split_examples(examples, params)
         dimensions = [
             create_dimension(name, **param_processor.filter_kwargs(param_kwargs))
             for name, param_kwargs in sorted_items(params)
         ]
+
         optimizer = Optimizer(dimensions, base_estimator, **kwargs)
         optimizer.tell(data_points, losses)
         current_point = optimizer.ask()
+
         self.current_values = make_values(params, current_point)
 
+    # decorator to raise an error if kwargs include an unsupported method
     @param_processor.implements_params$(
         backend_name="scikit-optimize",
         implemented_params=(

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xe4c38537
+# __coconut_hash__ = 0xe7f7620c
 
 # Compiled with Coconut version 1.4.0-post_dev3 [Ernest Scribbler]
 
@@ -31,6 +31,7 @@ from bbopt.util import Num
 from bbopt.util import json_serialize
 from bbopt.util import format_err
 from bbopt.util import all_isinstance
+
 
 # Handlers:
 

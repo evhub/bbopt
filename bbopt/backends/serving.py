@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x2bcf7674
+# __coconut_hash__ = 0xbaf2cb81
 
 # Compiled with Coconut version 1.4.0-post_dev3 [Ernest Scribbler]
 
@@ -32,10 +32,13 @@ from bbopt.util import serve_values
 class ServingBackend(_coconut.object):
     """The serving backend uses the parameter values from the best example."""
 
-    def __init__(self, examples, params):  # ignore params since we're serving
+    def __init__(self, examples, params):
+# since we're serving, ignore params and just extract the best example
         self.serving_values = best_example(examples)["values"]
 
     def param(self, name, **kwargs):
+# try to look up name in serving_values,
+#  otherwise use guess, otherwise raise error
         def _coconut_lambda_0(name, **kwargs):
             raise ValueError("missing data for parameter {} while serving and no guess".format(name))
         return serve_values(*(name, kwargs), serving_values=self.serving_values, fallback_func=(_coconut_lambda_0))

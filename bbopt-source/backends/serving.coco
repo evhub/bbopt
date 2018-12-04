@@ -11,10 +11,13 @@ from bbopt.util import (
 class ServingBackend:
     """The serving backend uses the parameter values from the best example."""
 
-    def __init__(self, examples, params):  # ignore params since we're serving
+    def __init__(self, examples, params):
+        # since we're serving, ignore params and just extract the best example
         self.serving_values = best_example(examples)["values"]
 
     def param(self, name, **kwargs):
+        # try to look up name in serving_values,
+        #  otherwise use guess, otherwise raise error
         return (name, kwargs) |*> serve_values$(
             serving_values=self.serving_values,
             fallback_func=(def (name, **kwargs) ->

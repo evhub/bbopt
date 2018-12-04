@@ -172,7 +172,7 @@ Dump a dictionary containing all the information on your program collected by BB
 
 BlackBoxOptimizer.**data_file**
 
-The path to the file where BBopt is saving data to.
+A property which gives the path to the file where BBopt is saving data to.
 
 ### Parameter Definition Methods
 

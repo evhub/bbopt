@@ -57,7 +57,9 @@ def examples_to_trials(examples, params):
     """Create hyperopt trials from the given examples."""
     trials = []
     NA = object()  # used to mark missing values
+
     for tid, ex in enumerate(examples):
+
         match {"gain": gain, **_} in ex:
             loss = negate_objective(gain)
         else:
@@ -66,6 +68,7 @@ def examples_to_trials(examples, params):
             "status": STATUS_OK,
             "loss": loss,
         }
+
         vals = {}
         idxs = {}
         for k, v in zip(
@@ -74,12 +77,14 @@ def examples_to_trials(examples, params):
         ):
             vals[k] = [v] if v is not NA else []
             idxs[k] = [tid] if v is not NA else []
+
         misc = {
             "tid": tid,
             "idxs": idxs,
             "vals": vals,
             "cmd": None,
         }
+
         trials.append({
             "tid": tid,
             "result": result,
@@ -91,6 +96,7 @@ def examples_to_trials(examples, params):
             "refresh_time": None,
             "exp_key": None,
         })
+
     return trials
 
 
@@ -105,13 +111,19 @@ class HyperoptBackend:
         if not examples:
             self.current_values = {}
             return
+
         space = {
             name: create_space(name, **param_processor.filter_kwargs(param_kwargs))
             for name, param_kwargs in sorted_items(params)
         } |> as_apply
+
         domain = Domain(self.set_current_values, space)
+
         trials = Trials()
         trials.insert_trial_docs(examples_to_trials(examples, params))
+
+        # run one iteration of hyperparameter optimization, with values saved
+        #  to the self.set_current_values callback passed to Domain
         FMinIter(
             algo,
             domain,
@@ -119,16 +131,19 @@ class HyperoptBackend:
             rstate,
             **kwargs,
         ) |> next
+
         assert self.current_values is not None, self.current_values
         assert set(self.current_values.keys()) == set(params), self.current_values
 
     def set_current_values(self, values):
+        """Callback to set the values for this run."""
         assert isinstance(values, dict), values
         self.current_values = values
         return {
             "status": STATUS_RUNNING,
         }
 
+    # decorator to raise an error if kwargs include an unsupported method
     @param_processor.implements_params$(
         backend_name="hyperopt",
         implemented_params=(

@@ -135,7 +135,11 @@ def best_example(examples):
 
 
 def serve_values(param_name, param_kwargs, serving_values, fallback_func):
-    """Serve a value for the given kwargs using the given values and fallback function."""
+    """Determines the parameter value to serve for the given parameter
+    name and kwargs. Uses the following algorithm:
+    1. if param_name in serving_values, use serving_values[param_name], else
+    2. if guess in param_kwargs, use the guess, else
+    3. call fallback_func(param_name, **param_kwargs)."""
     match {=param_name: value, **_} in serving_values:
         return value
     else: match {"guess": guess, **_} in param_kwargs:

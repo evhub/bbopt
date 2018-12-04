@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x8eecf4cd
+# __coconut_hash__ = 0x1f60f303
 
 # Compiled with Coconut version 1.4.0-post_dev3 [Ernest Scribbler]
 
@@ -226,7 +226,11 @@ def best_example(examples):
 
 
 def serve_values(param_name, param_kwargs, serving_values, fallback_func):
-    """Serve a value for the given kwargs using the given values and fallback function."""
+    """Determines the parameter value to serve for the given parameter
+    name and kwargs. Uses the following algorithm:
+    1. if param_name in serving_values, use serving_values[param_name], else
+    2. if guess in param_kwargs, use the guess, else
+    3. call fallback_func(param_name, **param_kwargs)."""
     _coconut_match_to = serving_values
     _coconut_match_check = False
     _coconut_sentinel = _coconut.object()
