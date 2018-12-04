@@ -49,8 +49,8 @@ def json_serialize(obj):
         if np.issubdtype(obj, np.bool_):
             return bool(obj)
         if np.issubdtype(obj, np.str_):
-            return py_str(obj)
-    raise TypeError("invalid JSON object {}".format(obj))
+            return json_serialize(py_str(obj))
+    raise TypeError("cannot JSON serialize {}".format(obj))
 
 
 def sorted_items(params) =

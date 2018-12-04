@@ -11,22 +11,35 @@ from keras.utils import to_categorical
 from keras.regularizers import l1_l2
 
 
-# Data processing:
+# Load raw data:
 data_folder = os.path.join(os.path.dirname(__file__), "data")
-house_votes = os.path.join(data_folder, "house_votes.csv") |> np.loadtxt$(dtype=str, delimiter=",")
+house_votes = np.loadtxt(
+    os.path.join(data_folder, "house_votes.csv"),
+    dtype=str,
+    delimiter=",",
+)
 
-X = house_votes[:,1:] |> np.vectorize(x ->
+
+# Process data into X and y:
+def type_error(msg):
+    """Raise a TypeError with the given message."""
+    raise TypeError(msg)
+
+X = np.vectorize(lambda x:
     1 if x == "y"
     else -1 if x == "n"
     else 0 if x == "?"
-    else (def x -> raise TypeError("unknown vote {}".format(x)))(x)
-)
-y = house_votes[:,0] |> np.vectorize(x ->
+    else type_error("unknown vote {}".format(x))
+)(house_votes[:,1:])
+
+y = to_categorical(np.vectorize(lambda x:
     1 if x == "democrat"
     else 0 if x == "republican"
-    else (def x -> raise TypeError("unknown party {}".format(x)))(x)
-) |> to_categorical
+    else type_error("unknown party {}".format(x))
+)(house_votes[:,0]))
 
+
+# Split data into training, validation, and testing:
 train_split = int(.6*len(X))
 validate_split = train_split + int(.2*len(X))
 

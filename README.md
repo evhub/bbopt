@@ -68,14 +68,14 @@ to define parameters.
 
 ## Examples
 
-Some examples of BBopt in action (BBopt's examples are written in [Coconut](http://coconut-lang.org/)):
+Some examples of BBopt in action:
 
-- [`random_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/random_example.coco): Extremely basic example using the `random` backend.
-- [`skopt_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/skopt_example.coco): Slightly more complex example making use of the `scikit-optimize` backend.
-- [`hyperopt_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/hyperopt_example.coco): Example showcasing the `hyperopt` backend.
-- [`conditional_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_example.coco): Example of having black box parameters that are dependent on other black box parameters, which is easiest to manage when using the `hyperopt` backend.
-- [`conditional_skopt_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_skopt_example.coco): Example of using `placeholder_when_missing` to do conditional parameters with `scikit-optimize`.
-- [`keras_example.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.coco): Complete example of using BBopt to optimize a neural network built with [Keras](https://keras.io/). Uses the full API instead of just the boilerplate.
+- [`random_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/random_example.py): Extremely basic example using the `random` backend.
+- [`skopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/skopt_example.py): Slightly more complex example making use of the `scikit-optimize` backend.
+- [`hyperopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/hyperopt_example.py): Example showcasing the `hyperopt` backend.
+- [`conditional_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_example.py): Example of having black box parameters that are dependent on other black box parameters, which is easiest to manage when using the `hyperopt` backend.
+- [`conditional_skopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_skopt_example.py): Example of using `placeholder_when_missing` to do conditional parameters with `scikit-optimize`.
+- [`keras_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.py): Complete example of using BBopt to optimize a neural network built with [Keras](https://keras.io/). Uses the full API instead of just the boilerplate.
 
 ## Command-Line Interface
 
