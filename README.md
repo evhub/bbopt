@@ -72,7 +72,7 @@ Some examples of BBopt in action:
 - [`numpy_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/numpy_example.py): Example which showcases how to have numpy array parameters.
 - [`conditional_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_example.py): Example of having black box parameters that are dependent on other black box parameters, which is easiest to manage when using the `hyperopt` backend.
 - [`conditional_skopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_skopt_example.py): Example of using `placeholder_when_missing` to do conditional parameters with `scikit-optimize`.
-- [`keras_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.py): Complete example of using BBopt to optimize a neural network built with [Keras](https://keras.io/). Uses the full API instead of just the boilerplate.
+- [`keras_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.py): Complete example of using BBopt to optimize a neural network built with [Keras](https://keras.io/). Uses the full API to implement its own optimization loop and thus avoid the overhead of running the entire file multiple times.
 
 ## Command-Line Interface
 

@@ -1,7 +1,10 @@
 """
 Example of using BBopt to tune Keras hyperparameters. Uses the full
 BBopt API instead of just the boilerplate and implements its own
-(very basic) command-line interface instead of using BBopt's.
+(very basic) command-line interface instead of using BBopt's. By
+implementing our own optimization loop, we are able to avoid the
+overhead of running the entire file multiple times, which is what
+the BBopt command line does.
 
 To run this example, just run:
     > python ./keras_example.py
@@ -132,7 +135,7 @@ parser.add_argument(
     metavar="trials",
     type=int,
     default=20,
-    help="number of trials to run (defaults to 1)",
+    help="number of trials to run (defaults to 20)",
 )
 
 
