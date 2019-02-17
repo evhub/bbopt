@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf5db74e3
+# __coconut_hash__ = 0xf1ba505
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -74,7 +74,7 @@ def main():
     show = _coconut.functools.partial(base_show, args.quiet)
     cmd = [args.python, args.file] + ((lambda _coconut_none_coalesce_item: [] if _coconut_none_coalesce_item is None else _coconut_none_coalesce_item)(args.args))
 
-    show("Running {} trials using {} processes of:\n\t> {}".format(args.num_trials, args.jobs, " ".join(cmd)))
+    show("Running {} trials using {} process(es) of:\n\t> {}".format(args.num_trials, args.jobs, " ".join(cmd)))
 
     if args.jobs == 1:
         for i in range(args.num_trials):

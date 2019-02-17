@@ -88,7 +88,7 @@ def main():
     show = base_show$(args.quiet)
     cmd = [args.python, args.file] + (args.args ?? [])
 
-    show("Running {} trials using {} processes of:\n\t> {}".format(
+    show("Running {} trials using {} process(es) of:\n\t> {}".format(
         args.num_trials,
         args.jobs,
         " ".join(cmd),

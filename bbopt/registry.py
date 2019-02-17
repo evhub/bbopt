@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4c966587
+# __coconut_hash__ = 0xb0f364de
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -94,15 +94,18 @@ def _coconut_lambda_2(_=None):
 def _coconut_lambda_3(_=None):
     from bbopt.backends.hyperopt import HyperoptBackend
     return HyperoptBackend
-backend_registry = Registry(obj_name="backend", generators={"serving": (_coconut_lambda_0), "random": (_coconut_lambda_1), "scikit-optimize": (_coconut_lambda_2), "hyperopt": (_coconut_lambda_3)}, aliases={None: "serving"})
-
-
-def init_backend(name, examples, params, **kwargs):
-    """Create a backend object of the given name with the given data."""
-    return backend_registry[name](examples, params, **kwargs)
-
-
 def _coconut_lambda_4(_=None):
+    from bbopt.backends.mixture import MixtureBackend
+    return MixtureBackend
+backend_registry = Registry(obj_name="backend", generators={"serving": (_coconut_lambda_0), "random": (_coconut_lambda_1), "scikit-optimize": (_coconut_lambda_2), "hyperopt": (_coconut_lambda_3), "mixture": (_coconut_lambda_4)}, aliases={None: "serving"})
+
+
+def init_backend(name, examples, params, *args, **kwargs):
+    """Create a backend object of the given name with the given data."""
+    return backend_registry[name](examples, params, *args, **kwargs)
+
+
+def _coconut_lambda_5(_=None):
     from hyperopt import anneal
     return ("hyperopt", dict(algo=anneal.suggest))
-alg_registry = Registry(obj_name="algorithm", defaults={"serving": ("serving", {}), "random": ("random", {}), "gaussian_process": ("scikit-optimize", {}), "random_forest": ("scikit-optimize", dict(base_estimator="RF")), "extra_trees": ("scikit-optimize", dict(base_estimator="ET")), "gradient_boosted_regression_trees": ("scikit-optimize", dict(base_estimator="GBRT")), "tree_structured_parzen_estimator": ("hyperopt", {})}, generators={"annealing": (_coconut_lambda_4)}, aliases={None: "serving"})
+alg_registry = Registry(obj_name="algorithm", defaults={"serving": ("serving", {}), "random": ("random", {}), "gaussian_process": ("scikit-optimize", {}), "random_forest": ("scikit-optimize", dict(base_estimator="RF")), "extra_trees": ("scikit-optimize", dict(base_estimator="ET")), "gradient_boosted_regression_trees": ("scikit-optimize", dict(base_estimator="GBRT")), "tree_structured_parzen_estimator": ("hyperopt", {})}, generators={"annealing": (_coconut_lambda_5)}, aliases={None: "serving"})

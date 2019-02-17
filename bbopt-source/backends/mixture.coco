@@ -1,0 +1,38 @@
+"""
+The mixture backend. Lets you specify a distribution over different possible algorithms.
+"""
+
+import random
+
+from bbopt.registry import alg_registry, init_backend
+
+
+class MixtureBackend:
+    """Mixture backend. Takes in a distribution over different possible algorithms
+    of the form [(algorithm, weight)]."""
+
+    def __init__(self, examples, params, distribution):
+        total_weight = sum(weight for alg, weight in distribution)
+
+        # generate cutoff points
+        cum_probs = []
+        prev_cutoff = 0
+        for alg, weight in distribution:
+            cutoff = prev_cutoff + weight / total_weight
+            cum_probs.append((alg, cutoff))
+            prev_cutoff = cutoff
+
+        # randomly select algorithm
+        rand_val = random.random()
+        selected_alg = None
+        for alg, cutoff in cum_probs:
+            if rand_val <= cutoff:
+                selected_alg = alg
+                break
+
+        # initialize backend
+        backend, kwargs = alg_registry[selected_alg]
+        self.backend = init_backend(backend, examples, params, **kwargs)
+
+    def param(self, name, **kwargs) =
+        self.backend.param(name, **kwargs)

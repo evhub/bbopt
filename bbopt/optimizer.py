@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf6413a29
+# __coconut_hash__ = 0x50d72f4c
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -90,21 +90,21 @@ class BlackBoxOptimizer(_coconut.object):
         self._load_data()
         self.run(alg=None)  # backend is set to serving by default
 
-    def run_backend(self, backend, **kwargs):
+    def run_backend(self, backend, *args, **kwargs):
         """Optimize parameters using the given backend."""
-        self._backend = init_backend(backend, self._examples, self._old_params, **kwargs)
+        self._backend = init_backend(backend, self._examples, self._old_params, *args, **kwargs)
         self._new_params = {}
         self._current_example = {"values": {}}
 
     @property
     def algs(self):
-        return dict(((alg), (backend)) for alg, (backend, params) in alg_registry.items())
+        return dict(((alg), (backend)) for alg, (backend, kwargs) in alg_registry.items())
 
     def run(self, alg=default_alg):
         """Optimize parameters using the given algorithm
         (use .algs to get the list of valid algorithms)."""
-        backend, params = alg_registry[alg]
-        self.run_backend(backend, **params)
+        backend, kwargs = alg_registry[alg]
+        self.run_backend(backend, **kwargs)
 
     @property
     def _got_reward(self):

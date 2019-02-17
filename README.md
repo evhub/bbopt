@@ -63,6 +63,7 @@ Some examples of BBopt in action:
 - [`numpy_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/numpy_example.py): Example which showcases how to have numpy array parameters.
 - [`conditional_skopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_skopt_example.py): Example of having black box parameters that are dependent on other black box parameters using the `gaussian_process` algorithm from the `scikit-optimize` backend.
 - [`conditional_hyperopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_hyperopt_example.py): Example of doing conditional parameters with the `tree_structured_parzen_estimator` algorithm from the `hyperopt` backend.
+- [`mixture_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/mixture_example.py): Example of using the `mixture` backend to randomly switch between different algorithms.
 - [`json_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/json_example.py): Simple example of using `json` instead of `pickle` to save parameters.
 - [`keras_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.py): Complete example of using BBopt to optimize a neural network built with [Keras](https://keras.io/). Uses the full API to implement its own optimization loop and thus avoid the overhead of running the entire file multiple times.
 
@@ -149,12 +150,13 @@ Supported algorithms are:
 
 #### `run_backend`
 
-BlackBoxOptimizer.**run_backend**(_backend_, **_kwargs_)
+BlackBoxOptimizer.**run_backend**(_backend_, *_args_, **_kwargs_)
 
-The base function behind **run**. Instead of specifying an algorithm, **run_backend** lets you specify the specific backend you want to call and the parameters you want to call it with. Different backends do different things with _kwargs_:
+The base function behind **run**. Instead of specifying an algorithm, **run_backend** lets you specify the specific backend you want to call and the parameters you want to call it with. Different backends do different things with the remaining arguments:
 
-- `scikit-optimize` passes _kwargs_ to [`skopt.Optimizer`](https://scikit-optimize.github.io/#skopt.Optimizer), and
-- `hyperopt` passes _kwargs_ to [`fmin`](https://github.com/hyperopt/hyperopt/wiki/FMin).
+- `scikit-optimize` passes the arguments to [`skopt.Optimizer`](https://scikit-optimize.github.io/#skopt.Optimizer),
+- `hyperopt` passes the arguments to [`fmin`](https://github.com/hyperopt/hyperopt/wiki/FMin), and
+- `mixture` expects a `distribution` argument to specify the mixture of different algorithms to use, specifically a list of `(alg, weight)` tuples.
 
 #### `minimize`
 

@@ -49,6 +49,7 @@ backend_registry = Registry(
         "random": (def -> from bbopt.backends.random import RandomBackend; RandomBackend),
         "scikit-optimize": (def -> from bbopt.backends.skopt import SkoptBackend; SkoptBackend),
         "hyperopt": (def -> from bbopt.backends.hyperopt import HyperoptBackend; HyperoptBackend),
+        "mixture": (def -> from bbopt.backends.mixture import MixtureBackend; MixtureBackend),
     },
     aliases={
         None: "serving",
@@ -56,9 +57,9 @@ backend_registry = Registry(
 )
 
 
-def init_backend(name, examples, params, **kwargs):
+def init_backend(name, examples, params, *args, **kwargs):
     """Create a backend object of the given name with the given data."""
-    return backend_registry[name](examples, params, **kwargs)
+    return backend_registry[name](examples, params, *args, **kwargs)
 
 
 alg_registry = Registry(
