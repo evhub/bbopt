@@ -59,7 +59,7 @@ class BlackBoxOptimizer:
 
     def _dumps(self, unserialized_data):
         if self._use_json:
-            return json.dumps(unserialized_data |> json_serialize)
+            return json.dumps(unserialized_data |> json_serialize).encode(encoding="utf-8")
         else:
             return pickle.dumps(unserialized_data, protocol=pickle.HIGHEST_PROTOCOL)
 

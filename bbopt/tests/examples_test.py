@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xfb7110fe
+# __coconut_hash__ = 0x87a4db7c
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -87,6 +87,9 @@ conditional_skopt_data = os.path.join(example_dir, "conditional_skopt_example.bb
 numpy_file = os.path.join(example_dir, "numpy_example.py")
 numpy_data = os.path.join(example_dir, "numpy_example.bbopt.pickle")
 
+json_file = os.path.join(example_dir, "json_example.py")
+json_data = os.path.join(example_dir, "json_example.bbopt.json")
+
 
 # Tests:
 
@@ -144,4 +147,13 @@ class TestExamples(unittest.TestCase):
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(numpy_data)
             from bbopt.examples.numpy_example import y as got
+            assert got == want
+
+    def test_json(self):
+        print("\ntest json:")
+        with remove_when_done(json_data):
+            results = call_test(["bbopt", json_file, "-n", "15", "-j", "4"])
+            want = min(get_nums(results, numtype=float))
+            assert os.path.exists(json_data)
+            from bbopt.examples.json_example import y as got
             assert got == want

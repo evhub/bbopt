@@ -58,6 +58,7 @@ Some examples of BBopt in action:
 - [`numpy_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/numpy_example.py): Example which showcases how to have numpy array parameters.
 - [`conditional_skopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_skopt_example.py): Example of having black box parameters that are dependent on other black box parameters using the `gaussian_process` algorithm from the `scikit-optimize` backend.
 - [`conditional_hyperopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_hyperopt_example.py): Example of doing conditional parameters with the `tree_structured_parzen_estimator` algorithm from the `hyperopt` backend.
+- [`json_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/json_example.py): Simple example of using `json` instead of `pickle` to save parameters.
 - [`keras_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.py): Complete example of using BBopt to optimize a neural network built with [Keras](https://keras.io/). Uses the full API to implement its own optimization loop and thus avoid the overhead of running the entire file multiple times.
 
 ## Full API
@@ -117,7 +118,7 @@ Create a new `bb` object; this should be done at the beginning of your program a
 
 _file_ is used by BBopt to figure out where to load and save data to, and should usually just be set to `__file__` (BBopt uses `os.path.splitext(file)[0]` as the base path for the data file).
 
-_use\_json_ determines whether BBopt should use `json` or `pickle` to serialize data (if `None`, BBopt will auto-detect, defaulting to `pickle`).
+_use\_json_ determines whether BBopt should use `json` or `pickle` to serialize data (if `None`, BBopt will auto-detect, defaulting to `pickle`). `pickle` is recommended but `json` can be useful for cross-platform compatibility.
 
 #### `run`
 
@@ -201,7 +202,7 @@ Every BBopt parameter definition method has the same basic form:
 - following _name_ are whatever arguments are needed to specify the distribution's parameters, and
 - at the end are _kwargs_, which are the same for all the different methods. The allowable _kwargs_ are:
     + _guess_, which specifies the initial value for the parameter, and
-    + _placeholder\_when\_missing_, necessary only for `scikit-optimize`, which specifies what placeholder value a conditional parameter should be given if missing.
+    + _placeholder\_when\_missing_, which specifies what placeholder value a conditional parameter should be given if missing.
 
 #### `randrange`
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xce84fb8d
+# __coconut_hash__ = 0x81c84d40
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -79,7 +79,7 @@ class BlackBoxOptimizer(_coconut.object):
 
     def _dumps(self, unserialized_data):
         if self._use_json:
-            return json.dumps((json_serialize)(unserialized_data))
+            return json.dumps((json_serialize)(unserialized_data)).encode(encoding="utf-8")
         else:
             return pickle.dumps(unserialized_data, protocol=pickle.HIGHEST_PROTOCOL)
 
