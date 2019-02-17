@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x50d72f4c
+# __coconut_hash__ = 0x3a7e2b0b
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -92,7 +92,7 @@ class BlackBoxOptimizer(_coconut.object):
 
     def run_backend(self, backend, *args, **kwargs):
         """Optimize parameters using the given backend."""
-        self._backend = init_backend(backend, self._examples, self._old_params, *args, **kwargs)
+        self.backend = init_backend(backend, self._examples, self._old_params, *args, **kwargs)
         self._new_params = {}
         self._current_example = {"values": {}}
 
@@ -119,7 +119,7 @@ class BlackBoxOptimizer(_coconut.object):
         if name in self._new_params:
             raise ValueError("parameter of name {} already exists".format(name))
         kwargs = (param_processor.standardize_kwargs)(kwargs)
-        value = self._backend.param(name, **kwargs)
+        value = self.backend.param(name, **kwargs)
         self._new_params[name] = kwargs
         self._current_example["values"][name] = value
         return value
@@ -140,7 +140,7 @@ class BlackBoxOptimizer(_coconut.object):
 
     @property
     def is_serving(self):
-        return isinstance(self._backend, backend_registry[None])
+        return isinstance(self.backend, backend_registry[None])
 
     def _set_reward(self, reward_type, value):
         """Set the gain or loss to value."""

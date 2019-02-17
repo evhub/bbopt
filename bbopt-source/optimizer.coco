@@ -72,7 +72,7 @@ class BlackBoxOptimizer:
 
     def run_backend(self, backend, *args, **kwargs):
         """Optimize parameters using the given backend."""
-        self._backend = init_backend(backend, self._examples, self._old_params, *args, **kwargs)
+        self.backend = init_backend(backend, self._examples, self._old_params, *args, **kwargs)
         self._new_params = {}
         self._current_example = {"values": {}}
 
@@ -100,7 +100,7 @@ class BlackBoxOptimizer:
         if name in self._new_params:
             raise ValueError("parameter of name {} already exists".format(name))
         kwargs = kwargs |> param_processor.standardize_kwargs
-        value = self._backend.param(name, **kwargs)
+        value = self.backend.param(name, **kwargs)
         self._new_params[name] = kwargs
         self._current_example["values"][name] = value
         return value
@@ -121,7 +121,7 @@ class BlackBoxOptimizer:
 
     @property
     def is_serving(self) =
-        isinstance(self._backend, backend_registry[None])
+        isinstance(self.backend, backend_registry[None])
 
     def _set_reward(self, reward_type, value):
         """Set the gain or loss to value."""
