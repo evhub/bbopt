@@ -4,9 +4,10 @@ BBopt aims to provide the easiest hyperparameter optimization you'll ever do. Th
 
 BBopt provides:
 - a universal interface for defining your tunable parameters based on the standard library `random` module (so you don't even have to learn anything new!),
-- tons of state-of-the-art black box optimization algorithms such as Gaussian Processes from [`scikit-optimize`](https://scikit-optimize.github.io/) or Tree Structured Parzen Estimators from [`hyperopt`](http://hyperopt.github.io/hyperopt/) for tuning parameters,
-- the ability to switch algorithms (even across different backends!) while retaining all previous trials, and
-- support for optimizing over conditional parameters that only appear during some runs.
+- tons of state-of-the-art black box optimization algorithms such as Gaussian Processes from [`scikit-optimize`](https://scikit-optimize.github.io/) or Tree Structured Parzen Estimation from [`hyperopt`](http://hyperopt.github.io/hyperopt/) for tuning parameters,
+- the ability to switch algorithms (even across different backends!) while retaining all previous trials,
+- support for optimizing over conditional parameters that only appear during some runs, and
+- multiprocessing-safe data saving to enable running multiple trials in parallel.
 
 Once you've defined your parameters, training a black box optimization model on those parameters is as simple as
 ```
