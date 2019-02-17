@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x67f1a6a5
+# __coconut_hash__ = 0xd67dcbd4
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -28,14 +28,14 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 # Installation constants:
 name = "bbopt"
-version = "0.3.2"
+version = "0.4.0"
 description = "The easiest hyperparameter optimization you'll ever do."
 github_url = "https://github.com/evhub/bbopt"
 author = "Evan Hubinger"
 author_email = "evanjhub@gmail.com"
 classifiers = ("Development Status :: 3 - Alpha", "License :: OSI Approved :: Apache Software License", "Topic :: Software Development :: Libraries :: Python Modules", "Operating System :: OS Independent",)
 requirements = ("portalocker", "numpy", "scikit-optimize", "hyperopt", "networkx<2.0",)
-extra_requirements = {"dev": ("pytest",), ":python_version<'3'": ("futures",)}
+extra_requirements = {":python_version<'3'": ("futures",), "dev": ("pytest",)}
 
 
 # Optimizer constants:
