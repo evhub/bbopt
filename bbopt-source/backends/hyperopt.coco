@@ -31,6 +31,7 @@ from bbopt.util import (
 
 # Utilities:
 
+@param_processor.only_random_function_kwargs
 def create_space(
     name,
     choice=None,
@@ -113,7 +114,7 @@ class HyperoptBackend:
             return
 
         space = {
-            name: create_space(name, **param_processor.filter_kwargs(param_kwargs))
+            name: create_space(name, **param_kwargs)
             for name, param_kwargs in sorted_items(params)
         } |> as_apply
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x141c8b95
+# __coconut_hash__ = 0xd2961294
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -40,6 +40,7 @@ from bbopt.util import serve_values
 
 # Utilities:
 
+@param_processor.only_random_function_kwargs
 def create_dimension(name, choice=None, randrange=None, uniform=None,):
     """Create a scikit-optimize dimension for the given param kwargs."""
     if choice is not None:
@@ -55,6 +56,7 @@ def create_dimension(name, choice=None, randrange=None, uniform=None,):
     raise TypeError("insufficiently specified parameter {}".format(name))
 
 
+@param_processor.only_random_function_kwargs
 def choose_default_placeholder(name, choice=None, randrange=None, uniform=None,):
     """Choose a default placeholder_when_missing value for the given param kwargs."""
     if choice is not None:
@@ -80,7 +82,7 @@ class SkoptBackend(_coconut.object):
             return
 
         data_points, losses = split_examples(examples, params, fallback_func=choose_default_placeholder)
-        dimensions = [create_dimension(name, **param_processor.filter_kwargs(param_kwargs)) for name, param_kwargs in sorted_items(params)]
+        dimensions = [create_dimension(name, **param_kwargs) for name, param_kwargs in sorted_items(params)]
 
         optimizer = Optimizer(dimensions, base_estimator, **kwargs)
         optimizer.tell(data_points, losses)

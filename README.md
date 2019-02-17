@@ -2,7 +2,11 @@
 
 BBopt aims to provide the easiest hyperparameter optimization you'll ever do. Think of BBopt like [Keras](https://keras.io/) for black box hyperparameter optimization: one interface for any black box optimization backend.
 
-BBopt provides a universal interface for defining your tunable parameters based on the standard library `random` module—so you don't even have to learn anything new—and support for algorithms from [`scikit-optimize`](https://scikit-optimize.github.io/) or [`hyperopt`](http://hyperopt.github.io/hyperopt/) for tuning parameters, with the ability to switch algorithm while retaining all previous trials.
+BBopt provides:
+- a universal interface for defining your tunable parameters based on the standard library `random` module (so you don't even have to learn anything new!),
+- tons of state-of-the-art black box optimization algorithms such as Gaussian Processes from [`scikit-optimize`](https://scikit-optimize.github.io/) or Tree Structured Parzen Estimators from [`hyperopt`](http://hyperopt.github.io/hyperopt/) for tuning parameters,
+- the ability to switch algorithms (even across different backends!) while retaining all previous trials, and
+- support for optimizing over conditional parameters that only appear during some runs.
 
 Once you've defined your parameters, training a black box optimization model on those parameters is as simple as
 ```
@@ -195,12 +199,16 @@ A property which gives the path to the file where BBopt is saving data to.
 
 ### Parameter Definition Methods
 
-Every BBopt parameter definition method has the same basic form:
+Every BBopt parameter definition method has the form
+```
+bb.<random function>(<name>, <args to function>)
+```
+where
 
 - the method itself specifies what distribution is being modeled,
 - the first argument is always _name_, a unique string identifying that parameter,
 - following _name_ are whatever arguments are needed to specify the distribution's parameters, and
-- at the end are _kwargs_, which are the same for all the different methods. The allowable _kwargs_ are:
+- at the end are keyword arguments (_kwargs_), which are the same for all the different methods. The allowable _kwargs_ are:
     + _guess_, which specifies the initial value for the parameter, and
     + _placeholder\_when\_missing_, which specifies what placeholder value a conditional parameter should be given if missing.
 

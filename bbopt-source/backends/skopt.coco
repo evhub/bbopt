@@ -21,6 +21,7 @@ from bbopt.util import (
 
 # Utilities:
 
+@param_processor.only_random_function_kwargs
 def create_dimension(
     name,
     choice=None,
@@ -41,6 +42,7 @@ def create_dimension(
     raise TypeError("insufficiently specified parameter {}".format(name))
 
 
+@param_processor.only_random_function_kwargs
 def choose_default_placeholder(
     name,
     choice=None,
@@ -72,7 +74,7 @@ class SkoptBackend:
 
         data_points, losses = split_examples(examples, params, fallback_func=choose_default_placeholder)
         dimensions = [
-            create_dimension(name, **param_processor.filter_kwargs(param_kwargs))
+            create_dimension(name, **param_kwargs)
             for name, param_kwargs in sorted_items(params)
         ]
 

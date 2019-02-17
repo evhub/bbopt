@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x77b5488b
+# __coconut_hash__ = 0x2e206f4a
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -146,6 +146,13 @@ class ParamProcessor(_coconut.object):
                 new_kwargs[k] = v
         return new_kwargs
 
+    def only_random_function_kwargs(self, param_func):
+        """Wrap the given param_func by filtering out non-function kwargs."""
+        @functools.wraps(param_func)
+        def wrapped_param_func(*args, **kwargs):
+            return param_func(*args, **self.filter_kwargs(kwargs))
+        return wrapped_param_func
+
     def implements_params(self, param_func, backend_name, implemented_params):
         """Wrap the given param_func with a check that only implemented parameters are passed."""
         implemented_param_set = set(implemented_params)
@@ -154,7 +161,7 @@ class ParamProcessor(_coconut.object):
         def wrapped_param_func(*args, **kwargs):
             filtered_kwarg_set = (set)((self.filter_kwargs)(kwargs))
             if not filtered_kwarg_set < implemented_param_set:
-                raise TypeError("the %s backend does not implement the %s function(s)" % (backend_name, ", ".join(filtered_kwarg_set)))
+                raise TypeError("the {} backend does not implement the {} function(s)".format(backend_name, ", ".join(filtered_kwarg_set)))
             return param_func(*args, **kwargs)
         return wrapped_param_func
 
@@ -170,7 +177,7 @@ class ParamProcessor(_coconut.object):
 
 # only allow one function
             if saw_func is not None:
-                raise ValueError("cannot have both %s and %s for a single param" % (saw_func, func))
+                raise ValueError("cannot have both {} and {} for a single param".format(saw_func, func))
 
 # standardize arguments to a list
             if not isinstance(args, list):

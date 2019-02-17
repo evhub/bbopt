@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf21d89f2
+# __coconut_hash__ = 0xbec6928f
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -48,6 +48,7 @@ from bbopt.util import serve_values
 
 # Utilities:
 
+@param_processor.only_random_function_kwargs
 def create_space(name, choice=None, randrange=None, uniform=None, normalvariate=None,):
     """Create a hyperopt space for the given param kwargs."""
     if choice is not None:
@@ -109,7 +110,7 @@ class HyperoptBackend(_coconut.object):
             self.current_values = {}
             return
 
-        space = (as_apply)(dict(((name), (create_space(name, **param_processor.filter_kwargs(param_kwargs)))) for name, param_kwargs in sorted_items(params)))
+        space = (as_apply)(dict(((name), (create_space(name, **param_kwargs))) for name, param_kwargs in sorted_items(params)))
 
         domain = Domain(self.set_current_values, space)
 
