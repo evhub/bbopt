@@ -74,7 +74,7 @@ def run_trial():
     # Create model:
     model = Sequential([
         Dense(
-            units=bb.randint("hidden neurons", 1, 15, guess=2),
+            units=bb.randint("hidden neurons", 1, 15, guess=5),
             input_dim=len(X_train[0]),
             kernel_regularizer=l1_l2(
                 l1=bb.uniform("l1", 0, 0.1, guess=0.005),
@@ -125,10 +125,11 @@ def run_trial():
         "test accuracy": test_acc,
     })
 
+    # End run minimizing validation loss:
     bb.minimize(validation_loss)
 
 
-# Setup command-line interface:
+# Set up command-line interface:
 parser = ArgumentParser()
 parser.add_argument(
     "-n", "--num-trials",
@@ -139,10 +140,10 @@ parser.add_argument(
 )
 
 
-# Main loop:
 if __name__ == "__main__":
     args = parser.parse_args()
 
+    # Main loop:
     for i in range(args.num_trials):
         run_trial()
         print("Summary of run {}/{}:".format(i+1, args.num_trials))
