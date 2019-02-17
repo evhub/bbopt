@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd2961294
+# __coconut_hash__ = 0x63449011
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -40,33 +40,56 @@ from bbopt.util import serve_values
 
 # Utilities:
 
-@param_processor.only_random_function_kwargs
-def create_dimension(name, choice=None, randrange=None, uniform=None,):
+_coconut_decorator_0 = _coconut.functools.partial(param_processor.splitting_kwargs, ignore_options=True)
+@_coconut_decorator_0
+def create_dimension(name, func, args):
     """Create a scikit-optimize dimension for the given param kwargs."""
-    if choice is not None:
-        return Categorical(*choice)
-    if randrange is not None:
-        start, stop, step = randrange
-        if step != 1:
-            raise ValueError("the scikit-optimize backend only supports a randrange step size of 1")
-        stop -= 1  # scikit-optimize ranges are inclusive
-        return Integer(start, stop)
-    if uniform is not None:
-        return Real(*uniform)
+    _coconut_match_to = func
+    _coconut_case_check_0 = False
+    if _coconut_match_to == "choice":
+        _coconut_case_check_0 = True
+    if _coconut_case_check_0:
+        return Categorical(*args)
+    if not _coconut_case_check_0:
+        if _coconut_match_to == "randrange":
+            _coconut_case_check_0 = True
+        if _coconut_case_check_0:
+            start, stop, step = args
+            if step != 1:
+                raise ValueError("the scikit-optimize backend only supports a randrange step size of 1")
+            stop -= 1  # scikit-optimize ranges are inclusive
+            return Integer(start, stop)
+    if not _coconut_case_check_0:
+        if _coconut_match_to == "uniform":
+            _coconut_case_check_0 = True
+        if _coconut_case_check_0:
+            return Real(*args)
     raise TypeError("insufficiently specified parameter {}".format(name))
 
 
-@param_processor.only_random_function_kwargs
-def choose_default_placeholder(name, choice=None, randrange=None, uniform=None,):
+_coconut_decorator_0 = _coconut.functools.partial(param_processor.splitting_kwargs, ignore_options=True)
+@_coconut_decorator_0
+def choose_default_placeholder(name, func, args):
     """Choose a default placeholder_when_missing value for the given param kwargs."""
-    if choice is not None:
-        return _coconut_igetitem(choice, 0)
-    if randrange is not None:
-        start, stop, step = randrange
-        return start
-    if uniform is not None:
-        start, stop = uniform
-        return start
+    _coconut_match_to = func
+    _coconut_case_check_1 = False
+    if _coconut_match_to == "choice":
+        _coconut_case_check_1 = True
+    if _coconut_case_check_1:
+        choices, = args
+        return _coconut_igetitem(choices, 0)
+    if not _coconut_case_check_1:
+        if _coconut_match_to == "randrange":
+            _coconut_case_check_1 = True
+        if _coconut_case_check_1:
+            start, stop, step = args
+            return start
+    if not _coconut_case_check_1:
+        if _coconut_match_to == "uniform":
+            _coconut_case_check_1 = True
+        if _coconut_case_check_1:
+            start, stop = args
+            return start
     raise TypeError("insufficiently specified parameter {}".format(name))
 
 
@@ -91,7 +114,7 @@ class SkoptBackend(_coconut.object):
         self.current_values = make_values(params, current_point)
 
 # decorator to raise an error if kwargs include an unsupported method
-    _coconut_decorator_0 = _coconut.functools.partial(param_processor.implements_params, backend_name="scikit-optimize", implemented_params=("choice", "randrange", "uniform",))
+    _coconut_decorator_0 = _coconut.functools.partial(param_processor.implements_params, backend_name="scikit-optimize", implemented_funcs=("choice", "randrange", "uniform",), supported_options=("guess", "placeholder_when_missing",))
     @_coconut_decorator_0
     def param(self, name, **kwargs):
         return serve_values(name, kwargs, serving_values=self.current_values, fallback_func=self.random_backend.param)

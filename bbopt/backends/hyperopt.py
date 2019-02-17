@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xbec6928f
+# __coconut_hash__ = 0xe77e03eb
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -48,20 +48,35 @@ from bbopt.util import serve_values
 
 # Utilities:
 
-@param_processor.only_random_function_kwargs
-def create_space(name, choice=None, randrange=None, uniform=None, normalvariate=None,):
+# decorator to turn kwargs into the random function and its args
+_coconut_decorator_0 = _coconut.functools.partial(param_processor.splitting_kwargs, ignore_options=True)
+@_coconut_decorator_0
+def create_space(name, func, args):
     """Create a hyperopt space for the given param kwargs."""
-    if choice is not None:
-        return hp.choice(name, *choice)
-    if randrange is not None:
-        start, stop, step = randrange
-        if step != 1:
-            raise ValueError("the hyperopt backend only supports a randrange step size of 1")
-        return start + hp.randint(name, stop)  # despite being called randint, stop is exclusive
-    if uniform is not None:
-        return hp.uniform(name, *uniform)
-    if normalvariate is not None:
-        return hp.normal(name, *normalvariate)
+    _coconut_match_to = func
+    _coconut_case_check_0 = False
+    if _coconut_match_to == "choice":
+        _coconut_case_check_0 = True
+    if _coconut_case_check_0:
+        return hp.choice(name, *args)
+    if not _coconut_case_check_0:
+        if _coconut_match_to == "randrange":
+            _coconut_case_check_0 = True
+        if _coconut_case_check_0:
+            start, stop, step = args
+            if step != 1:
+                raise ValueError("the hyperopt backend only supports a randrange step size of 1")
+            return start + hp.randint(name, stop)  # despite being called randint, stop is exclusive
+    if not _coconut_case_check_0:
+        if _coconut_match_to == "uniform":
+            _coconut_case_check_0 = True
+        if _coconut_case_check_0:
+            return hp.uniform(name, *args)
+    if not _coconut_case_check_0:
+        if _coconut_match_to == "normalvariate":
+            _coconut_case_check_0 = True
+        if _coconut_case_check_0:
+            return hp.normal(name, *args)
     raise TypeError("insufficiently specified parameter {}".format(name))
 
 
@@ -131,7 +146,7 @@ class HyperoptBackend(_coconut.object):
         return {"status": STATUS_RUNNING}
 
 # decorator to raise an error if kwargs include an unsupported method
-    _coconut_decorator_0 = _coconut.functools.partial(param_processor.implements_params, backend_name="hyperopt", implemented_params=("choice", "randrange", "uniform", "normalvariate",))
+    _coconut_decorator_0 = _coconut.functools.partial(param_processor.implements_params, backend_name="hyperopt", implemented_funcs=("choice", "randrange", "uniform", "normalvariate",), supported_options=("guess", "placeholder_when_missing",))
     @_coconut_decorator_0
     def param(self, name, **kwargs):
         return serve_values(name, kwargs, serving_values=self.current_values, fallback_func=self.random_backend.param)

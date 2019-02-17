@@ -21,43 +21,36 @@ from bbopt.util import (
 
 # Utilities:
 
-@param_processor.only_random_function_kwargs
-def create_dimension(
-    name,
-    choice=None,
-    randrange=None,
-    uniform=None,
-):
+@param_processor.splitting_kwargs$(ignore_options=True)
+def create_dimension(name, func, args):
     """Create a scikit-optimize dimension for the given param kwargs."""
-    if choice is not None:
-        return Categorical(*choice)
-    if randrange is not None:
-        start, stop, step = randrange
-        if step != 1:
-            raise ValueError("the scikit-optimize backend only supports a randrange step size of 1")
-        stop -= 1  # scikit-optimize ranges are inclusive
-        return Integer(start, stop)
-    if uniform is not None:
-        return Real(*uniform)
+    case func:
+        match "choice":
+            return Categorical(*args)
+        match "randrange":
+            start, stop, step = args
+            if step != 1:
+                raise ValueError("the scikit-optimize backend only supports a randrange step size of 1")
+            stop -= 1  # scikit-optimize ranges are inclusive
+            return Integer(start, stop)
+        match "uniform":
+            return Real(*args)
     raise TypeError("insufficiently specified parameter {}".format(name))
 
 
-@param_processor.only_random_function_kwargs
-def choose_default_placeholder(
-    name,
-    choice=None,
-    randrange=None,
-    uniform=None,
-):
+@param_processor.splitting_kwargs$(ignore_options=True)
+def choose_default_placeholder(name, func, args):
     """Choose a default placeholder_when_missing value for the given param kwargs."""
-    if choice is not None:
-        return choice$[0]
-    if randrange is not None:
-        start, stop, step = randrange
-        return start
-    if uniform is not None:
-        start, stop = uniform
-        return start
+    case func:
+        match "choice":
+            choices, = args
+            return choices$[0]
+        match "randrange":
+            start, stop, step = args
+            return start
+        match "uniform":
+            start, stop = args
+            return start
     raise TypeError("insufficiently specified parameter {}".format(name))
 
 
@@ -87,12 +80,17 @@ class SkoptBackend:
     # decorator to raise an error if kwargs include an unsupported method
     @param_processor.implements_params$(
         backend_name="scikit-optimize",
-        implemented_params=(
-        # should match create_dimension above
-        "choice",
-        "randrange",
-        "uniform",
-    ))
+        implemented_funcs=(
+            # should match create_dimension and choose_default_placeholder above
+            "choice",
+            "randrange",
+            "uniform",
+        ),
+        supported_options=(
+            "guess",
+            "placeholder_when_missing",
+        ),
+    )
     def param(self, name, **kwargs) = serve_values(
         name,
         kwargs,

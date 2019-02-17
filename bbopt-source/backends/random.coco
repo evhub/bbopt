@@ -31,16 +31,13 @@ class RandomBackend:
     }
 
     def param(self, name=None, **kwargs):
-        # remove non-function parameters from kwargs
-        kwargs = param_processor.filter_kwargs(kwargs)
+        func, args, options = param_processor.split_kwargs(kwargs)
 
-        # verify kwargs and extract the random command and its arguments
-        if len(kwargs) != 1:
+        if options:
             raise TypeError("the random backend requires exactly one parameter,"
             " <name of the random function to call>=<argument(s) to that function>")
-        cmd, args = kwargs.items()$[0]
-        if cmd not in self.random_functions:
-            raise ValueError("unknown random function {}".format(cmd))
 
-        # call the proper random function
-        return self.random_functions[cmd](*args)
+        if func not in self.random_functions:
+            raise ValueError("unknown random function {}".format(func))
+
+        return self.random_functions[func](*args)

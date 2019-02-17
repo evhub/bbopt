@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x81c84d40
+# __coconut_hash__ = 0xf6413a29
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -37,9 +37,9 @@ import itertools
 import numpy as np
 from portalocker import Lock
 
-from bbopt.backends import backend_registry
-from bbopt.backends import init_backend
-from bbopt.backends import alg_registry
+from bbopt.registry import backend_registry
+from bbopt.registry import init_backend
+from bbopt.registry import alg_registry
 from bbopt.params import param_processor
 from bbopt.util import Str
 from bbopt.util import norm_path

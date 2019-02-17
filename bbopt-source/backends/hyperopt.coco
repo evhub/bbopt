@@ -31,26 +31,22 @@ from bbopt.util import (
 
 # Utilities:
 
-@param_processor.only_random_function_kwargs
-def create_space(
-    name,
-    choice=None,
-    randrange=None,
-    uniform=None,
-    normalvariate=None,
-):
+# decorator to turn kwargs into the random function and its args
+@param_processor.splitting_kwargs$(ignore_options=True)
+def create_space(name, func, args):
     """Create a hyperopt space for the given param kwargs."""
-    if choice is not None:
-        return hp.choice(name, *choice)
-    if randrange is not None:
-        start, stop, step = randrange
-        if step != 1:
-            raise ValueError("the hyperopt backend only supports a randrange step size of 1")
-        return start + hp.randint(name, stop)  # despite being called randint, stop is exclusive
-    if uniform is not None:
-        return hp.uniform(name, *uniform)
-    if normalvariate is not None:
-        return hp.normal(name, *normalvariate)
+    case func:
+        match "choice":
+            return hp.choice(name, *args)
+        match "randrange":
+            start, stop, step = args
+            if step != 1:
+                raise ValueError("the hyperopt backend only supports a randrange step size of 1")
+            return start + hp.randint(name, stop)  # despite being called randint, stop is exclusive
+        match "uniform":
+            return hp.uniform(name, *args)
+        match "normalvariate":
+            return hp.normal(name, *args)
     raise TypeError("insufficiently specified parameter {}".format(name))
 
 
@@ -147,13 +143,18 @@ class HyperoptBackend:
     # decorator to raise an error if kwargs include an unsupported method
     @param_processor.implements_params$(
         backend_name="hyperopt",
-        implemented_params=(
-        # should match create_space above
-        "choice",
-        "randrange",
-        "uniform",
-        "normalvariate",
-    ))
+        implemented_funcs=(
+            # should match create_space above
+            "choice",
+            "randrange",
+            "uniform",
+            "normalvariate",
+        ),
+        supported_options=(
+            "guess",
+            "placeholder_when_missing",
+        ),
+    )
     def param(self, name, **kwargs) = serve_values(
         name,
         kwargs,

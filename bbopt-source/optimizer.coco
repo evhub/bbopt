@@ -11,7 +11,7 @@ import itertools
 import numpy as np
 from portalocker import Lock
 
-from bbopt.backends import (
+from bbopt.registry import (
     backend_registry,
     init_backend,
     alg_registry,

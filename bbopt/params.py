@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x2e206f4a
+# __coconut_hash__ = 0xc2e17b78
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -26,9 +26,12 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 
 import functools
+if _coconut_sys.version_info < (3, 3):
+    from collections import Iterable
+else:
+    from collections.abc import Iterable
 
 from bbopt.util import Num
-from bbopt.util import json_serialize
 from bbopt.util import format_err
 from bbopt.util import all_isinstance
 
@@ -113,65 +116,29 @@ def handle_weibullvariate(args):
 
 class ParamProcessor(_coconut.object):
     """Processes param keyword arguments."""
-    ignored = ["guess", "placeholder_when_missing",]
     handlers = {"randrange": handle_randrange, "choice": handle_choice, "sample": handle_sample, "uniform": handle_uniform, "triangular": handle_triangular, "betavariate": handle_betavariate, "expovariate": handle_expovariate, "gammavariate": handle_gammavariate, "normalvariate": handle_normalvariate, "lognormvariate": handle_lognormvariate, "vonmisesvariate": handle_vonmisesvariate, "paretovariate": handle_paretovariate, "weibullvariate": handle_weibullvariate}
 
+    @property
     def supported_funcs(self):
-        """Return an iterator of all random functions that backends should support."""
-        _coconut_yield_from = self.handlers
-        for _coconut_yield_item in _coconut_yield_from:
-            yield _coconut_yield_item
-
+        return list(self.handlers)
 
     def modify_kwargs(self, func, kwargs):
         """Apply func to all kwargs with values in the random function's domain."""
         new_kwargs = {}
         for k, v in kwargs.items():
-            if k in self.handlers:
-# random functions hold lots of arguments, so map the function over them
+            if isinstance(v, Iterable):
                 new_kwargs[k] = map(func, v)
-            elif k in self.ignored:
-# ignored kwargs hold extra parameters, so call the function on them
-                new_kwargs[k] = func(v)
             else:
-# otherwise, just pass the kwarg through
-                new_kwargs[k] = v
+                new_kwargs[k] = func(v)
         return new_kwargs
-
-    def filter_kwargs(self, kwargs):
-        """Remove ignored keyword args."""
-        new_kwargs = {}
-        for k, v in kwargs.items():
-            if k not in self.ignored:
-                new_kwargs[k] = v
-        return new_kwargs
-
-    def only_random_function_kwargs(self, param_func):
-        """Wrap the given param_func by filtering out non-function kwargs."""
-        @functools.wraps(param_func)
-        def wrapped_param_func(*args, **kwargs):
-            return param_func(*args, **self.filter_kwargs(kwargs))
-        return wrapped_param_func
-
-    def implements_params(self, param_func, backend_name, implemented_params):
-        """Wrap the given param_func with a check that only implemented parameters are passed."""
-        implemented_param_set = set(implemented_params)
-        assert implemented_param_set <= set(self.supported_funcs())
-        @functools.wraps(param_func)
-        def wrapped_param_func(*args, **kwargs):
-            filtered_kwarg_set = (set)((self.filter_kwargs)(kwargs))
-            if not filtered_kwarg_set < implemented_param_set:
-                raise TypeError("the {} backend does not implement the {} function(s)".format(backend_name, ", ".join(filtered_kwarg_set)))
-            return param_func(*args, **kwargs)
-        return wrapped_param_func
 
     def standardize_kwargs(self, kwargs):
         """Standardizes param keyword args."""
         new_kwargs = {}
         saw_func = None
-        for func, args in json_serialize(kwargs).items():
-# pass through ignored kwargs
-            if func in self.ignored:
+        for func, args in kwargs.items():
+# pass through non-function kwargs
+            if func not in self.supported_funcs:
                 new_kwargs[func] = args
                 continue
 
@@ -180,15 +147,14 @@ class ParamProcessor(_coconut.object):
                 raise ValueError("cannot have both {} and {} for a single param".format(saw_func, func))
 
 # standardize arguments to a list
-            if not isinstance(args, list):
+            if isinstance(args, Iterable):
+                args = list(args)
+            else:
                 args = [args]
 
 # run handlers
-            if func in self.handlers:
-                result = self.handlers[func](args)
-                args = result if result is not None else args
-            else:
-                raise TypeError("unknown param option {}".format(func))
+            result = self.handlers[func](args)
+            args = result if result is not None else args
 
             new_kwargs[func] = args
             saw_func = func
@@ -197,7 +163,48 @@ class ParamProcessor(_coconut.object):
         if saw_func is None:
             raise TypeError("param requires a keyword option of the form <random function>=<args>")
 
-        return (json_serialize)(new_kwargs)
+        return new_kwargs
+
+    def split_kwargs(self, kwargs):
+        """Processes kwargs into func, args, options."""
+        func = None
+        args = ()
+        options = {}
+        for k, v in kwargs.items():
+            if k in self.supported_funcs:
+                func = k
+                args = v
+            else:
+                options[k] = v
+        return func, args, options
+
+    def splitting_kwargs(self, base_func, ignore_options=False):
+        """Turns base_func(*args, **kwargs) into base_func(*args, func, args, **options)."""
+        @functools.wraps(base_func)
+        def wrapped_func(*args, **kwargs):
+            func, func_args, options = self.split_kwargs(kwargs)
+            if ignore_options:
+                options = {}
+            args = args + (func, func_args)
+            return base_func(*args, **options)
+        return wrapped_func
+
+    def implements_params(self, base_func, backend_name, implemented_funcs, supported_options):
+        """Ensures base_func is only called with the given funcs and options."""
+        supported_option_set = set(supported_options)
+        @functools.wraps(base_func)
+        def wrapped_func(*args, **kwargs):
+            func, func_args, options = self.split_kwargs(kwargs)
+
+            if func not in implemented_funcs:
+                raise ValueError("the {} backend does not implement the {} function".format(backend_name, func))
+
+            unsupported_options = set(options) - supported_option_set
+            if unsupported_options:
+                raise ValueError("the {} backend does not support the {} option(s)".format(backend_name, unsupported_options))
+
+            return base_func(*args, **kwargs)
+        return wrapped_func
 
 
 param_processor = ParamProcessor()

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xaef97623
+# __coconut_hash__ = 0xde756bd8
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -40,15 +40,12 @@ class RandomBackend(_coconut.object):
     random_functions = {"randrange": random.randrange, "choice": random.choice, "sample": random.sample, "uniform": random.uniform, "triangular": random.triangular, "betavariate": random.betavariate, "expovariate": random.expovariate, "gammavariate": random.gammavariate, "normalvariate": random.gauss, "lognormvariate": random.lognormvariate, "vonmisesvariate": random.vonmisesvariate, "paretovariate": random.paretovariate, "weibullvariate": random.weibullvariate}
 
     def param(self, name=None, **kwargs):
-# remove non-function parameters from kwargs
-        kwargs = param_processor.filter_kwargs(kwargs)
+        func, args, options = param_processor.split_kwargs(kwargs)
 
-# verify kwargs and extract the random command and its arguments
-        if len(kwargs) != 1:
+        if options:
             raise TypeError("the random backend requires exactly one parameter," " <name of the random function to call>=<argument(s) to that function>")
-        cmd, args = _coconut_igetitem(kwargs.items(), 0)
-        if cmd not in self.random_functions:
-            raise ValueError("unknown random function {}".format(cmd))
 
-# call the proper random function
-        return self.random_functions[cmd](*args)
+        if func not in self.random_functions:
+            raise ValueError("unknown random function {}".format(func))
+
+        return self.random_functions[func](*args)
