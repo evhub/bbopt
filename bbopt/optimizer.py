@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4dc885b2
+# __coconut_hash__ = 0xc94c6929
 
-# Compiled with Coconut version 1.4.0-post_dev3 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
 """
 The main BBopt interface.
@@ -17,7 +17,7 @@ _coconut_cached_module = _coconut_sys.modules.get(str("__coconut__"))
 if _coconut_cached_module is not None and _coconut_os_path.dirname(_coconut_cached_module.__file__) != _coconut_file_path:
     del _coconut_sys.modules[str("__coconut__")]
 _coconut_sys.path.insert(0, _coconut_file_path)
-from __coconut__ import _coconut, _coconut_NamedTuple, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_pipe, _coconut_star_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error
+from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_pipe, _coconut_star_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_addpattern, _coconut_sentinel
 from __coconut__ import *
 _coconut_sys.path.remove(_coconut_file_path)
 
@@ -25,8 +25,12 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 
 
+import os
 import json
-import os.path
+if _coconut_sys.version_info < (3,):
+    import cPickle as pickle
+else:
+    import pickle
 import math
 import itertools
 
@@ -47,13 +51,34 @@ from bbopt.constants import lock_timeout
 
 
 class BlackBoxOptimizer(_coconut.object):
+    """Main bbopt optimizer object. See https://github.com/evhub/bbopt for documentation."""
 
-    def __init__(self, file, json_indent=None):
+    def __init__(self, file, use_json=None):
         if not isinstance(file, Str):
             raise TypeError("file must be a string")
         self._file = norm_path(file)
-        self._json_indent = json_indent
+
+        if use_json is None:
+# auto-detect use_json
+            self._use_json = True
+            if not os.path.exists(self.data_file):
+                self._use_json = False
+        else:
+            self._use_json = use_json
+
         self.reload()
+
+    def _loads(self, raw_contents):
+        if self._use_json:
+            return json.loads(raw_contents)
+        else:
+            return pickle.loads(raw_contents)
+
+    def _dumps(self, unserialized_data):
+        if self._use_json:
+            return json.dumps((json_serialize)(unserialized_data))
+        else:
+            return pickle.dumps(unserialized_data, protocol=pickle.HIGHEST_PROTOCOL)
 
     def reload(self):
         """Completely reload the optimizer."""
@@ -81,7 +106,7 @@ class BlackBoxOptimizer(_coconut.object):
         if name in self._new_params:
             raise ValueError("parameter of name {} already exists".format(name))
         kwargs = (param_processor.standardize_kwargs)(kwargs)
-        value = (json_serialize)(self._backend.param(name, **kwargs))
+        value = self._backend.param(name, **kwargs)
         self._new_params[name] = kwargs
         self._current_example["values"][name] = value
         return value
@@ -118,7 +143,7 @@ class BlackBoxOptimizer(_coconut.object):
 
     @property
     def data_file(self):
-        return os.path.splitext(self._file)[0] + data_file_ext
+        return os.path.splitext(self._file)[0] + data_file_ext + (".json" if self._use_json else ".pickle")
 
     def _tell_examples(self, examples):
         """Load the given examples into memory."""
@@ -130,9 +155,8 @@ class BlackBoxOptimizer(_coconut.object):
         """Load data from the given file."""
         contents = df.read()
         if contents:
-            _coconut_match_to = json.loads(contents)
+            _coconut_match_to = self._loads(contents)
             _coconut_match_check = False
-            _coconut_sentinel = _coconut.object()
             if (_coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping)) and (_coconut.len(_coconut_match_to) == 2):
                 _coconut_match_temp_0 = _coconut_match_to.get("params", _coconut_sentinel)
                 _coconut_match_temp_1 = _coconut_match_to.get("examples", _coconut_sentinel)
@@ -141,8 +165,8 @@ class BlackBoxOptimizer(_coconut.object):
                     examples = _coconut_match_temp_1
                     _coconut_match_check = True
             if not _coconut_match_check:
-                _coconut_match_err = _coconut_MatchError("pattern-matching failed for " '\'{"params": params, "examples": examples} = json.loads(contents)\'' " in " + _coconut.repr(_coconut.repr(_coconut_match_to)))
-                _coconut_match_err.pattern = '{"params": params, "examples": examples} = json.loads(contents)'
+                _coconut_match_err = _coconut_MatchError("pattern-matching failed for " '\'{"params": params, "examples": examples} = self._loads(contents)\'' " in " + _coconut.repr(_coconut.repr(_coconut_match_to)))
+                _coconut_match_err.pattern = '{"params": params, "examples": examples} = self._loads(contents)'
                 _coconut_match_err.value = _coconut_match_to
                 raise _coconut_match_err
 
@@ -152,7 +176,7 @@ class BlackBoxOptimizer(_coconut.object):
     def _load_data(self):
         """Load examples from data file."""
         ensure_file(self.data_file)
-        with Lock(self.data_file, "r", timeout=lock_timeout) as df:
+        with Lock(self.data_file, "rb", timeout=lock_timeout) as df:
             self._load_from(df)
 
     def get_data(self):
@@ -162,10 +186,10 @@ class BlackBoxOptimizer(_coconut.object):
     def _save_data(self):
         """Save examples to data file."""
         self._tell_examples([self._current_example])
-        with Lock(self.data_file, "r+", timeout=lock_timeout) as df:
+        with Lock(self.data_file, "rb+", timeout=lock_timeout) as df:
             self._load_from(df)
             clear_file(df)
-            ((df.write)((str)(json.dumps(self.get_data(), indent=self._json_indent))))
+            ((df.write)((self._dumps)(self.get_data())))
             sync_file(df)
 
     def get_current_run(self):

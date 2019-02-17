@@ -122,9 +122,9 @@ Why does this work? If you're using the basic boilerplate, then running `python 
 
 #### Constructor
 
-**BlackBoxOptimizer**(_file_, _json\_indent_=`None`)
+**BlackBoxOptimizer**(_file_, _use\_json_=`None`)
 
-Create a new `bb` object; this should be done at the beginning of your program as all the other functions are methods of this object. _file_ is used by BBopt to figure out where to load and save data to (specifically `os.path.splitext(file)[0] + ".bbopt.json"`), and should usually just be set to `__file__`. _json\_indent_ is just the value of _indent_ that should be passed to [`json.dump`](https://docs.python.org/3/library/json.html#json.dump).
+Create a new `bb` object; this should be done at the beginning of your program as all the other functions are methods of this object. _file_ is used by BBopt to figure out where to load and save data to, and should usually just be set to `__file__`. _use\_json_ determines whether BBopt should use `json` or `pickle` to serialize data (if `None`, BBopt will auto-detect, defaulting to `pickle`).
 
 #### `run`
 

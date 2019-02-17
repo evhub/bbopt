@@ -2,8 +2,9 @@
 The main BBopt interface.
 """
 
+import os
 import json
-import os.path
+import pickle
 import math
 import itertools
 
@@ -28,13 +29,34 @@ from bbopt.constants import (
 
 
 class BlackBoxOptimizer:
+    """Main bbopt optimizer object. See https://github.com/evhub/bbopt for documentation."""
 
-    def __init__(self, file, json_indent=None):
+    def __init__(self, file, use_json=None):
         if not isinstance(file, Str):
             raise TypeError("file must be a string")
         self._file = norm_path(file)
-        self._json_indent = json_indent
+
+        if use_json is None:
+            # auto-detect use_json
+            self._use_json = True
+            if not os.path.exists(self.data_file):
+                self._use_json = False
+        else:
+            self._use_json = use_json
+
         self.reload()
+
+    def _loads(self, raw_contents):
+        if self._use_json:
+            return json.loads(raw_contents)
+        else:
+            return pickle.loads(raw_contents)
+
+    def _dumps(self, unserialized_data):
+        if self._use_json:
+            return json.dumps(unserialized_data |> json_serialize)
+        else:
+            return pickle.dumps(unserialized_data, protocol=pickle.HIGHEST_PROTOCOL)
 
     def reload(self):
         """Completely reload the optimizer."""
@@ -62,7 +84,7 @@ class BlackBoxOptimizer:
         if name in self._new_params:
             raise ValueError("parameter of name {} already exists".format(name))
         kwargs = kwargs |> param_processor.standardize_kwargs
-        value = self._backend.param(name, **kwargs) |> json_serialize
+        value = self._backend.param(name, **kwargs)
         self._new_params[name] = kwargs
         self._current_example["values"][name] = value
         return value
@@ -99,7 +121,7 @@ class BlackBoxOptimizer:
 
     @property
     def data_file(self) =
-        os.path.splitext(self._file)[0] + data_file_ext
+        os.path.splitext(self._file)[0] + data_file_ext + (".json" if self._use_json else ".pickle")
 
     def _tell_examples(self, examples):
         """Load the given examples into memory."""
@@ -111,14 +133,14 @@ class BlackBoxOptimizer:
         """Load data from the given file."""
         contents = df.read()
         if contents:
-            {"params": params, "examples": examples} = json.loads(contents)
+            {"params": params, "examples": examples} = self._loads(contents)
             self._old_params = params
             self._tell_examples(examples)
 
     def _load_data(self):
         """Load examples from data file."""
         ensure_file(self.data_file)
-        with Lock(self.data_file, "r", timeout=lock_timeout) as df:
+        with Lock(self.data_file, "rb", timeout=lock_timeout) as df:
             self._load_from(df)
 
     def get_data(self):
@@ -131,12 +153,11 @@ class BlackBoxOptimizer:
     def _save_data(self):
         """Save examples to data file."""
         self._tell_examples([self._current_example])
-        with Lock(self.data_file, "r+", timeout=lock_timeout) as df:
+        with Lock(self.data_file, "rb+", timeout=lock_timeout) as df:
             self._load_from(df)
             clear_file(df)
             (self.get_data()
-                |> json.dumps$(indent=self._json_indent)
-                |> str
+                |> self._dumps
                 |> df.write)
             sync_file(df)
 

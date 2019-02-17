@@ -49,22 +49,22 @@ def get_nums(inputstr, numtype=float):
 example_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "examples")
 
 random_file = os.path.join(example_dir, "random_example.py")
-random_data = os.path.join(example_dir, "random_example.bbopt.json")
+random_data = os.path.join(example_dir, "random_example.bbopt.pickle")
 
 skopt_file = os.path.join(example_dir, "skopt_example.py")
-skopt_data = os.path.join(example_dir, "skopt_example.bbopt.json")
+skopt_data = os.path.join(example_dir, "skopt_example.bbopt.pickle")
 
 hyperopt_file = os.path.join(example_dir, "hyperopt_example.py")
-hyperopt_data = os.path.join(example_dir, "hyperopt_example.bbopt.json")
+hyperopt_data = os.path.join(example_dir, "hyperopt_example.bbopt.pickle")
 
 conditional_file = os.path.join(example_dir, "conditional_example.py")
-conditional_data = os.path.join(example_dir, "conditional_example.bbopt.json")
+conditional_data = os.path.join(example_dir, "conditional_example.bbopt.pickle")
 
 conditional_skopt_file = os.path.join(example_dir, "conditional_skopt_example.py")
-conditional_skopt_data = os.path.join(example_dir, "conditional_skopt_example.bbopt.json")
+conditional_skopt_data = os.path.join(example_dir, "conditional_skopt_example.bbopt.pickle")
 
 numpy_file = os.path.join(example_dir, "numpy_example.py")
-numpy_data = os.path.join(example_dir, "numpy_example.bbopt.json")
+numpy_data = os.path.join(example_dir, "numpy_example.bbopt.pickle")
 
 
 # Tests:
