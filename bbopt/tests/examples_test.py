@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf7ce60de
+# __coconut_hash__ = 0xfb7110fe
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -78,8 +78,8 @@ skopt_data = os.path.join(example_dir, "skopt_example.bbopt.pickle")
 hyperopt_file = os.path.join(example_dir, "hyperopt_example.py")
 hyperopt_data = os.path.join(example_dir, "hyperopt_example.bbopt.pickle")
 
-conditional_file = os.path.join(example_dir, "conditional_example.py")
-conditional_data = os.path.join(example_dir, "conditional_example.bbopt.pickle")
+conditional_file = os.path.join(example_dir, "conditional_hyperopt_example.py")
+conditional_data = os.path.join(example_dir, "conditional_hyperopt_example.bbopt.pickle")
 
 conditional_skopt_file = os.path.join(example_dir, "conditional_skopt_example.py")
 conditional_skopt_data = os.path.join(example_dir, "conditional_skopt_example.bbopt.pickle")
@@ -125,7 +125,7 @@ class TestExamples(unittest.TestCase):
             results = call_test(["bbopt", conditional_file, "-n", "15", "-j", "4"])
             want = max(get_nums(results, numtype=int))
             assert os.path.exists(conditional_data)
-            from bbopt.examples.conditional_example import x as got
+            from bbopt.examples.conditional_hyperopt_example import x as got
             assert got == want
 
     def test_conditional_skopt(self):

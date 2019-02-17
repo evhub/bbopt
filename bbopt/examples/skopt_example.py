@@ -1,15 +1,15 @@
 """
-Example of using the scikit-optimize backend with BBopt.
+Example of using the scikit-optimize backend and gaussian_process algorithm with BBopt.
 
 To run this example, just run:
     > bbopt ./skopt_example.py
 """
 
-# BBopt boilerplate:
+# BBopt setup:
 from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)
 if __name__ == "__main__":
-    bb.run(backend="scikit-optimize")
+    bb.run(alg="gaussian_process")
 
 
 # Let's use some parameters!

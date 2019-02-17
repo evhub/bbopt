@@ -5,11 +5,11 @@ To run this example, just run:
     > bbopt ./random_example.py
 """
 
-# BBopt boilerplate:
+# BBopt setup:
 from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)
 if __name__ == "__main__":
-    bb.run(backend="random")
+    bb.run(alg="random")
 
 
 # Let's use some parameters!

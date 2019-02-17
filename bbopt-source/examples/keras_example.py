@@ -69,7 +69,7 @@ y_train, y_validate, y_test = y[:train_split], y[train_split:validate_split], y[
 def run_trial():
     """Run one trial of hyperparameter optimization."""
     # Start BBopt:
-    bb.run(backend="scikit-optimize")
+    bb.run()
 
     # Create model:
     model = Sequential([

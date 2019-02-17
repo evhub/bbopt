@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd43d7d6f
+# __coconut_hash__ = 0x96f244eb
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -36,12 +36,12 @@ def is_hashable(obj):
         return True
 
 
-def assert_hashable_or_dict(name, obj):
+def assert_dict_or_callable_or_hashable(name, obj):
     """Assert obj is hashable, or for dicts apply recursively to values."""
     if isinstance(obj, dict):
         for val in obj.values():
-            assert_hashable_or_dict(name, val)
-    else:
+            assert_dict_or_callable_or_hashable(name, val)
+    elif not callable(obj):
         assert is_hashable(obj), "Constant " + name + " contains unhashable values"
 
 
@@ -54,4 +54,4 @@ class TestConstants(unittest.TestCase):
             if not name.startswith("__"):
                 assert not isinstance(value, list), "Constant " + name + " should be tuple, not list"
                 assert not isinstance(value, set), "Constant " + name + " should be frozenset, not set"
-                assert_hashable_or_dict(name, value)
+                assert_dict_or_callable_or_hashable(name, value)

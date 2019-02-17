@@ -5,11 +5,11 @@ To run this example, just run:
     > bbopt ./skopt_example.py
 """
 
-# BBopt boilerplate:
+# BBopt setup:
 from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)
 if __name__ == "__main__":
-    bb.run(backend="hyperopt")
+    bb.run()
 
 
 # Generate 1 x 10 and 10 x 1 random vectors.

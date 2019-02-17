@@ -41,10 +41,22 @@ def create_dimension(
     raise TypeError("insufficiently specified parameter {}".format(name))
 
 
-strict_split_examples = split_examples$(
-    fallback_func=(def (name, **kwargs) ->
-        raise ValueError("conditional parameter {} with no placeholder_when_missing not supported by the scikit-optimize backend".format(name))),
-)
+def choose_default_placeholder(
+    name,
+    choice=None,
+    randrange=None,
+    uniform=None,
+):
+    """Choose a default placeholder_when_missing value for the given param kwargs."""
+    if choice is not None:
+        return choice$[0]
+    if randrange is not None:
+        start, stop, step = randrange
+        return start
+    if uniform is not None:
+        start, stop = uniform
+        return start
+    raise TypeError("insufficiently specified parameter {}".format(name))
 
 
 # Backend:
@@ -58,7 +70,7 @@ class SkoptBackend:
             self.current_values = {}
             return
 
-        data_points, losses = strict_split_examples(examples, params)
+        data_points, losses = split_examples(examples, params, fallback_func=choose_default_placeholder)
         dimensions = [
             create_dimension(name, **param_processor.filter_kwargs(param_kwargs))
             for name, param_kwargs in sorted_items(params)

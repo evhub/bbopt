@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc94c6929
+# __coconut_hash__ = 0xce84fb8d
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -38,6 +38,8 @@ import numpy as np
 from portalocker import Lock
 
 from bbopt.backends import backend_registry
+from bbopt.backends import init_backend
+from bbopt.backends import alg_registry
 from bbopt.params import param_processor
 from bbopt.util import Str
 from bbopt.util import norm_path
@@ -48,6 +50,7 @@ from bbopt.util import ensure_file
 from bbopt.util import clear_file
 from bbopt.constants import data_file_ext
 from bbopt.constants import lock_timeout
+from bbopt.constants import default_alg
 
 
 class BlackBoxOptimizer(_coconut.object):
@@ -59,7 +62,7 @@ class BlackBoxOptimizer(_coconut.object):
         self._file = norm_path(file)
 
         if use_json is None:
-# auto-detect use_json
+# auto-detect use_json, defaulting to False
             self._use_json = True
             if not os.path.exists(self.data_file):
                 self._use_json = False
@@ -85,13 +88,23 @@ class BlackBoxOptimizer(_coconut.object):
         self._old_params = {}
         self._examples = []
         self._load_data()
-        self.run(backend=None)  # backend is set to serving by default
+        self.run(alg=None)  # backend is set to serving by default
 
-    def run(self, backend, **kwargs):
+    def run_backend(self, backend, **kwargs):
         """Optimize parameters using the given backend."""
-        self._backend = backend_registry.init_backend(backend, self._examples, self._old_params, **kwargs)
+        self._backend = init_backend(backend, self._examples, self._old_params, **kwargs)
         self._new_params = {}
         self._current_example = {"values": {}}
+
+    @property
+    def algs(self):
+        return dict(((alg), (backend)) for alg, (backend, params) in alg_registry.items())
+
+    def run(self, alg=default_alg):
+        """Optimize parameters using the given algorithm
+        (use .algs to get the list of valid algorithms)."""
+        backend, params = alg_registry[alg]
+        self.run_backend(backend, **params)
 
     @property
     def _got_reward(self):

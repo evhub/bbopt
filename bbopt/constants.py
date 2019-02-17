@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xbd371632
+# __coconut_hash__ = 0x67f1a6a5
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -41,6 +41,7 @@ extra_requirements = {"dev": ("pytest",), ":python_version<'3'": ("futures",)}
 # Optimizer constants:
 data_file_ext = ".bbopt"
 lock_timeout = 5
+default_alg = "tree_structured_parzen_estimator"
 
 
 # CLI constants:

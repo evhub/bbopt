@@ -2,38 +2,80 @@
 Backends contains all of bbopt's different backends.
 """
 
+class Registry:
+    """Registry that keeps track of registered objects."""
 
-class BackendRegistry:
-    backend_generators = {
-        None: (def -> from bbopt.backends.serving import ServingBackend; ServingBackend),
+    def __init__(self, obj_name="obj", defaults=None, generators={}, aliases={}):
+        self.obj_name = obj_name
+        self.registered = {} if defaults is None else defaults
+        self.generators = generators
+        self.aliases = aliases
+
+    def __getitem__(self, name):
+        name = self.aliases.get(name, name)
+        match {=name: value, **_} in self.registered:
+            return self.registered[name]
+        else: match {=name: gen, **_} in self.generators:
+            value = gen()
+            self.register(name, value)
+            return value
+        else:
+            raise ValueError("unknown {obj_name}: {name} (valid {obj_name}s: {valid_names})".format(
+                obj_name=self.obj_name,
+                name=name,
+                valid_names=", ".join(repr(name) for name in self),
+            ))
+
+    def __iter__(self):
+        yield from self.registered
+        for name in self.generators:
+            if name not in self.registered:
+                yield name
+
+    def items(self):
+        yield from self.registered.items()
+        for name in self.generators:
+            yield name, self[name]
+
+    def register(self, name, value):
+        """Register value under the given name."""
+        self.registered[name] = value
+
+
+backend_registry = Registry(
+    obj_name="backend",
+    generators={
+        "serving": (def -> from bbopt.backends.serving import ServingBackend; ServingBackend),
         "random": (def -> from bbopt.backends.random import RandomBackend; RandomBackend),
         "scikit-optimize": (def -> from bbopt.backends.skopt import SkoptBackend; SkoptBackend),
         "hyperopt": (def -> from bbopt.backends.hyperopt import HyperoptBackend; HyperoptBackend),
+    },
+    aliases={
+        None: "serving",
     }
-    registered_backends = {}
-
-    def __getitem__(self, name):
-        match {=name: backend, **_} in self.registered_backends:
-            return self.registered_backends[name]
-        else: if name in self.backend_generators:
-            backend = self.backend_generators[name]()
-            del self.backend_generators[name]
-            self.registered_backends[name] = backend
-            return backend
-        else:
-            raise ValueError("unknown backend {}".format(name))
-
-    def __iter__(self):
-        yield from backend_generators
-        yield from registered_backends
-
-    def register_backend(self, name, backend):
-        """Register a new backend under the given name."""
-        self.registered_backends[name] = backend
-
-    def init_backend(self, name, examples, params, **kwargs):
-        """Create a backend object of the given name with the given data."""
-        return self[name](examples, params, **kwargs)
+)
 
 
-backend_registry = BackendRegistry()
+def init_backend(name, examples, params, **kwargs):
+    """Create a backend object of the given name with the given data."""
+    return backend_registry[name](examples, params, **kwargs)
+
+
+alg_registry = Registry(
+    obj_name="algorithm",
+    defaults={
+        "serving": ("serving", {}),
+        "random": ("random", {}),
+        "gaussian_process": ("scikit-optimize", {}),
+        "random_forest": ("scikit-optimize", dict(base_estimator="RF")),
+        "extra_trees": ("scikit-optimize", dict(base_estimator="ET")),
+        "gradient_boosted_regression_trees": ("scikit-optimize", dict(base_estimator="GBRT")),
+        "tree_structured_parzen_estimator": ("hyperopt", {}),
+    },
+    generators={
+        "annealing": (def -> from hyperopt import anneal; ("hyperopt", dict(algo=anneal.suggest))),
+    },
+    aliases={
+        None: "serving",
+    }
+)

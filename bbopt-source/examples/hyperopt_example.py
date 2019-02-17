@@ -5,11 +5,11 @@ To run this example, just run:
     > bbopt ./hyperopt_example.py
 """
 
-# BBopt boilerplate:
+# BBopt setup:
 from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)
 if __name__ == "__main__":
-    bb.run(backend="hyperopt")
+    bb.run(alg="tree_structured_parzen_estimator")
 
 
 # Let's use some parameters!

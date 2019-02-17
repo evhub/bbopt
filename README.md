@@ -2,7 +2,7 @@
 
 BBopt aims to provide the easiest hyperparameter optimization you'll ever do. Think of BBopt like [Keras](https://keras.io/) for black box hyperparameter optimization: one interface for any black box optimization backend.
 
-BBopt provides a universal interface for defining your tunable parameters based on the standard library `random` module—so you don't even have to learn anything new—and support for [`scikit-optimize`](https://scikit-optimize.github.io/) or [`hyperopt`](http://hyperopt.github.io/hyperopt/) to tune parameters, with the ability to switch back and forth while retaining all previous trials.
+BBopt provides a universal interface for defining your tunable parameters based on the standard library `random` module—so you don't even have to learn anything new—and support for algorithms from [`scikit-optimize`](https://scikit-optimize.github.io/) or [`hyperopt`](http://hyperopt.github.io/hyperopt/) for tuning parameters, with the ability to switch algorithm while retaining all previous trials.
 
 Once you've defined your parameters, training a black box optimization model on those parameters is as simple as
 ```
@@ -24,11 +24,11 @@ pip install bbopt
 
 To use bbopt, just add
 ```python
-# BBopt boilerplate:
+# BBopt setup:
 from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)
 if __name__ == "__main__":
-    bb.run(backend="scikit-optimize")
+    bb.run()
 ```
 to the top of your file, then call
 ```python
@@ -48,45 +48,28 @@ import <your module here>
 ```
 to serve it!
 
-### Backends
-
-Currently, BBopt supports the following backends:
-
-- `random`: Chooses values totally randomly.
-- `scikit-optimize`: Uses [`scikit-optimize`](https://scikit-optimize.github.io/) to tune parameters.
-- `hyperopt`: Uses [`hyperopt`](http://hyperopt.github.io/hyperopt/) to tune parameters.
-
-To change backends, just change `backend="scikit-optimize"` in the BBopt boilerplate to whatever backend you want to use. All backends always use the universal interface of
-```python
-bb.<random function>(<name>, <args to function>)
-```
-to define parameters.
-
 ## Examples
 
 Some examples of BBopt in action:
 
 - [`random_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/random_example.py): Extremely basic example using the `random` backend.
-- [`skopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/skopt_example.py): Slightly more complex example making use of the `scikit-optimize` backend.
-- [`hyperopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/hyperopt_example.py): Example showcasing the `hyperopt` backend.
+- [`skopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/skopt_example.py): Slightly more complex example making use of the `gaussian_process` algorithm from the `scikit-optimize` backend.
+- [`hyperopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/hyperopt_example.py): Example showcasing the `tree_structured_parzen_estimator` algorithm from the `hyperopt` backend.
 - [`numpy_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/numpy_example.py): Example which showcases how to have numpy array parameters.
-- [`conditional_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_example.py): Example of having black box parameters that are dependent on other black box parameters, which is easiest to manage when using the `hyperopt` backend.
-- [`conditional_skopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_skopt_example.py): Example of using `placeholder_when_missing` to do conditional parameters with `scikit-optimize`.
+- [`conditional_skopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_skopt_example.py): Example of having black box parameters that are dependent on other black box parameters using the `gaussian_process` algorithm from the `scikit-optimize` backend.
+- [`conditional_hyperopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_hyperopt_example.py): Example of doing conditional parameters with the `tree_structured_parzen_estimator` algorithm from the `hyperopt` backend.
 - [`keras_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.py): Complete example of using BBopt to optimize a neural network built with [Keras](https://keras.io/). Uses the full API to implement its own optimization loop and thus avoid the overhead of running the entire file multiple times.
-
-## Command-Line Interface
-
-The `bbopt` command is extremely simple in terms of what it actually does. For the command `bbopt <file> -n <trials> -j <processes>`, BBopt simply runs `python <file>` a number of times equal to `<trials>`, split across `<processes>` different processes.
-
-Why does this work? If you're using the basic boilerplate, then running `python <file>` will trigger the `if __name__ == "__main__":` clause, which will run a training episode. But when you go to `import` your file, the `if __name__ == "__main__":` clause won't get triggered, and you'll just get served the best parameters found so far. Since the command-line interface is so simple, advanced users who want to use the full API instead of the boilerplate need not use the `bbopt` command at all. If you want more information on the `bbopt` command, just run `bbopt -h`.
 
 ## Full API
 
 <!-- MarkdownTOC -->
 
+1. [Command-Line Interface](#command-line-interface)
 1. [Black Box Optimization Methods](#black-box-optimization-methods)
     1. [Constructor](#constructor)
     1. [`run`](#run)
+    1. [`algs`](#algs)
+    1. [`run_backend`](#run_backend)
     1. [`minimize`](#minimize)
     1. [`maximize`](#maximize)
     1. [`remember`](#remember)
@@ -118,19 +101,51 @@ Why does this work? If you're using the basic boilerplate, then running `python 
 
 <!-- /MarkdownTOC -->
 
+### Command-Line Interface
+
+The `bbopt` command is extremely simple in terms of what it actually does. For the command `bbopt <file> -n <trials> -j <processes>`, BBopt simply runs `python <file>` a number of times equal to `<trials>`, split across `<processes>` different processes.
+
+Why does this work? If you're using the basic boilerplate, then running `python <file>` will trigger the `if __name__ == "__main__":` clause, which will run a training episode. But when you go to `import` your file, the `if __name__ == "__main__":` clause won't get triggered, and you'll just get served the best parameters found so far. Since the command-line interface is so simple, advanced users who want to use the full API instead of the boilerplate need not use the `bbopt` command at all. If you want more information on the `bbopt` command, just run `bbopt -h`.
+
 ### Black Box Optimization Methods
 
 #### Constructor
 
 **BlackBoxOptimizer**(_file_, _use\_json_=`None`)
 
-Create a new `bb` object; this should be done at the beginning of your program as all the other functions are methods of this object. _file_ is used by BBopt to figure out where to load and save data to, and should usually just be set to `__file__`. _use\_json_ determines whether BBopt should use `json` or `pickle` to serialize data (if `None`, BBopt will auto-detect, defaulting to `pickle`).
+Create a new `bb` object; this should be done at the beginning of your program as all the other functions are methods of this object.
+
+_file_ is used by BBopt to figure out where to load and save data to, and should usually just be set to `__file__` (BBopt uses `os.path.splitext(file)[0]` as the base path for the data file).
+
+_use\_json_ determines whether BBopt should use `json` or `pickle` to serialize data (if `None`, BBopt will auto-detect, defaulting to `pickle`).
 
 #### `run`
 
-BlackBoxOptimizer.**run**(_backend_, **_kwargs_)
+BlackBoxOptimizer.**run**(_alg_="tree_structured_parzen_estimator")
 
-Start optimizing using the given _backend_. If this method is never called, or called with `backend=None`, BBopt will just serve the best parameters found so far, which is how the basic boilerplate works. Different backends do different things with _kwargs_:
+Start optimizing using the given black box optimization algorithm. If this method is never called, or called with `alg=None`, BBopt will just serve the best parameters found so far, which is how the basic boilerplate works. Use **algs** to get the valid values for _alg_.
+
+#### `algs`
+
+BlackBoxOptimizer.**algs**
+
+A dictionary mapping the valid algorithms for use in **run** to the backend that they correspond to.
+
+Supported algorithms are:
+- `"serving"` (or `None`) (serving backend),
+- `"random"` (random backend),
+- `"tree_structured_parzen_estimator"` (`hyperopt` backend) (the default),
+- `"annealing"` (`hyperopt` backend),
+- `"gaussian_process"` (`scikit-optimize` backend),
+- `"random_forest"` (`scikit-optimize` backend),
+- `"extra_trees"` (`scikit-optimize` backend), and
+- `"gradient_boosted_regression_trees"` (`scikit-optimize` backend).
+
+#### `run_backend`
+
+BlackBoxOptimizer.**run_backend**(_backend_, **_kwargs_)
+
+The base function behind **run**. Instead of specifying an algorithm, **run_backend** lets you specify the specific backend you want to call and the parameters you want to call it with. Different backends do different things with _kwargs_:
 
 - `scikit-optimize` passes _kwargs_ to [`skopt.Optimizer`](https://scikit-optimize.github.io/#skopt.Optimizer), and
 - `hyperopt` passes _kwargs_ to [`fmin`](https://github.com/hyperopt/hyperopt/wiki/FMin).

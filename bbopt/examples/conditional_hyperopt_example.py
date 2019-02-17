@@ -1,17 +1,16 @@
 """
 Example of using BBopt with conditional parameters that only appear
-during some runs depending on the value(s) of other parameters. This
-is easiest to do using the hyperopt backend, so we use that here.
+during some runs depending on the value(s) of other parameters.
 
 To run this example, just run:
-    > bbopt ./conditional_example.py
+    > bbopt ./conditional_hyperopt_example.py
 """
 
-# BBopt boilerplate:
+# BBopt setup:
 from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)
 if __name__ == "__main__":
-    bb.run(backend="hyperopt")
+    bb.run(alg="tree_structured_parzen_estimator")
 
 
 # We set the x parameter conditional on the use_high parameter.

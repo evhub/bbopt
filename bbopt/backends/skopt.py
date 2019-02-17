@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa2bf8f70
+# __coconut_hash__ = 0x141c8b95
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -55,9 +55,17 @@ def create_dimension(name, choice=None, randrange=None, uniform=None,):
     raise TypeError("insufficiently specified parameter {}".format(name))
 
 
-def _coconut_lambda_0(name, **kwargs):
-    raise ValueError("conditional parameter {} with no placeholder_when_missing not supported by the scikit-optimize backend".format(name))
-strict_split_examples = _coconut.functools.partial(split_examples, fallback_func=(_coconut_lambda_0))
+def choose_default_placeholder(name, choice=None, randrange=None, uniform=None,):
+    """Choose a default placeholder_when_missing value for the given param kwargs."""
+    if choice is not None:
+        return _coconut_igetitem(choice, 0)
+    if randrange is not None:
+        start, stop, step = randrange
+        return start
+    if uniform is not None:
+        start, stop = uniform
+        return start
+    raise TypeError("insufficiently specified parameter {}".format(name))
 
 
 # Backend:
@@ -71,7 +79,7 @@ class SkoptBackend(_coconut.object):
             self.current_values = {}
             return
 
-        data_points, losses = strict_split_examples(examples, params)
+        data_points, losses = split_examples(examples, params, fallback_func=choose_default_placeholder)
         dimensions = [create_dimension(name, **param_processor.filter_kwargs(param_kwargs)) for name, param_kwargs in sorted_items(params)]
 
         optimizer = Optimizer(dimensions, base_estimator, **kwargs)

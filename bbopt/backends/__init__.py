@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x79997b08
+# __coconut_hash__ = 0xf261ebf4
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -25,59 +25,84 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 
 
+class Registry(_coconut.object):
+    """Registry that keeps track of registered objects."""
 
-class BackendRegistry(_coconut.object):
-    def _coconut_lambda_0(_=None):
-        from bbopt.backends.serving import ServingBackend
-        return ServingBackend
-    def _coconut_lambda_1(_=None):
-        from bbopt.backends.random import RandomBackend
-        return RandomBackend
-    def _coconut_lambda_2(_=None):
-        from bbopt.backends.skopt import SkoptBackend
-        return SkoptBackend
-    def _coconut_lambda_3(_=None):
-        from bbopt.backends.hyperopt import HyperoptBackend
-        return HyperoptBackend
-    backend_generators = {None: (_coconut_lambda_0), "random": (_coconut_lambda_1), "scikit-optimize": (_coconut_lambda_2), "hyperopt": (_coconut_lambda_3)}
-    registered_backends = {}
+    def __init__(self, obj_name="obj", defaults=None, generators={}, aliases={}):
+        self.obj_name = obj_name
+        self.registered = {} if defaults is None else defaults
+        self.generators = generators
+        self.aliases = aliases
 
     def __getitem__(self, name):
-        _coconut_match_to = self.registered_backends
+        name = self.aliases.get(name, name)
+        _coconut_match_to = self.registered
         _coconut_match_check = False
         if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
             _coconut_match_temp_0 = _coconut_match_to.get(name, _coconut_sentinel)
             if _coconut_match_temp_0 is not _coconut_sentinel:
-                backend = _coconut_match_temp_0
+                value = _coconut_match_temp_0
                 _coconut_match_check = True
         if _coconut_match_check:
-            return self.registered_backends[name]
+            return self.registered[name]
         else:
-            if name in self.backend_generators:
-                backend = self.backend_generators[name]()
-                del self.backend_generators[name]
-                self.registered_backends[name] = backend
-                return backend
+            _coconut_match_to = self.generators
+            _coconut_match_check = False
+            if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
+                _coconut_match_temp_0 = _coconut_match_to.get(name, _coconut_sentinel)
+                if _coconut_match_temp_0 is not _coconut_sentinel:
+                    gen = _coconut_match_temp_0
+                    _coconut_match_check = True
+            if _coconut_match_check:
+                value = gen()
+                self.register(name, value)
+                return value
             else:
-                raise ValueError("unknown backend {}".format(name))
+                raise ValueError("unknown {obj_name}: {name} (valid {obj_name}s: {valid_names})".format(obj_name=self.obj_name, name=name, valid_names=", ".join((repr(name) for name in self))))
 
     def __iter__(self):
-        _coconut_yield_from = backend_generators
+        _coconut_yield_from = self.registered
         for _coconut_yield_item in _coconut_yield_from:
             yield _coconut_yield_item
 
-        _coconut_yield_from = registered_backends
+        for name in self.generators:
+            if name not in self.registered:
+                yield name
+
+    def items(self):
+        _coconut_yield_from = self.registered.items()
         for _coconut_yield_item in _coconut_yield_from:
             yield _coconut_yield_item
 
+        for name in self.generators:
+            yield name, self[name]
 
-    def register_backend(self, name, backend):
-        """Register a new backend under the given name."""
-        self.registered_backends[name] = backend
-
-    def init_backend(self, name, examples, params, **kwargs):
-        """Create a backend object of the given name with the given data."""
-        return self[name](examples, params, **kwargs)
+    def register(self, name, value):
+        """Register value under the given name."""
+        self.registered[name] = value
 
 
-backend_registry = BackendRegistry()
+def _coconut_lambda_0(_=None):
+    from bbopt.backends.serving import ServingBackend
+    return ServingBackend
+def _coconut_lambda_1(_=None):
+    from bbopt.backends.random import RandomBackend
+    return RandomBackend
+def _coconut_lambda_2(_=None):
+    from bbopt.backends.skopt import SkoptBackend
+    return SkoptBackend
+def _coconut_lambda_3(_=None):
+    from bbopt.backends.hyperopt import HyperoptBackend
+    return HyperoptBackend
+backend_registry = Registry(obj_name="backend", generators={"serving": (_coconut_lambda_0), "random": (_coconut_lambda_1), "scikit-optimize": (_coconut_lambda_2), "hyperopt": (_coconut_lambda_3)}, aliases={None: "serving"})
+
+
+def init_backend(name, examples, params, **kwargs):
+    """Create a backend object of the given name with the given data."""
+    return backend_registry[name](examples, params, **kwargs)
+
+
+def _coconut_lambda_4(_=None):
+    from hyperopt import anneal
+    return ("hyperopt", dict(algo=anneal.suggest))
+alg_registry = Registry(obj_name="algorithm", defaults={"serving": ("serving", {}), "random": ("random", {}), "gaussian_process": ("scikit-optimize", {}), "random_forest": ("scikit-optimize", dict(base_estimator="RF")), "extra_trees": ("scikit-optimize", dict(base_estimator="ET")), "gradient_boosted_regression_trees": ("scikit-optimize", dict(base_estimator="GBRT")), "tree_structured_parzen_estimator": ("hyperopt", {})}, generators={"annealing": (_coconut_lambda_4)}, aliases={None: "serving"})
