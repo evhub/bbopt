@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb6cd43c7
+# __coconut_hash__ = 0x2e0c96b1
 
-# Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.0-post_dev8 [Ernest Scribbler]
 
 """
 The main BBopt interface.
@@ -71,6 +71,13 @@ class BlackBoxOptimizer(_coconut.object):
 
         self.reload()
 
+    def reload(self):
+        """Completely reload the optimizer."""
+        self._old_params = {}
+        self._examples = []
+        self._load_data()
+        self.run(alg=None)  # backend is set to serving by default
+
     def _loads(self, raw_contents):
         if self._use_json:
             return json.loads(raw_contents)
@@ -82,13 +89,6 @@ class BlackBoxOptimizer(_coconut.object):
             return json.dumps((json_serialize)(unserialized_data)).encode(encoding="utf-8")
         else:
             return pickle.dumps(unserialized_data, protocol=pickle.HIGHEST_PROTOCOL)
-
-    def reload(self):
-        """Completely reload the optimizer."""
-        self._old_params = {}
-        self._examples = []
-        self._load_data()
-        self.run(alg=None)  # backend is set to serving by default
 
     def run_backend(self, backend, *args, **kwargs):
         """Optimize parameters using the given backend."""
@@ -250,10 +250,6 @@ class BlackBoxOptimizer(_coconut.object):
         """Create a new parameter with the given name modeled by random.gauss(mu, sigma)."""
         return self.param(name, normalvariate=(mu, sigma), **kwargs)
 
-    def lognormvariate(self, name, mu, sigma, **kwargs):
-        """Create a new parameter with the given name modeled by random.lognormvariate(mu, sigma)."""
-        return self.param(name, lognormvariate=(mu, sigma), **kwargs)
-
     def vonmisesvariate(self, name, kappa, **kwargs):
         """Create a new parameter with the given name modeled by random.vonmisesvariate(kappa)."""
         return self.param(name, vonmisesvariate=(kappa,), **kwargs)
@@ -289,7 +285,12 @@ class BlackBoxOptimizer(_coconut.object):
         math.exp(random.uniform(math.log(min_val), math.log(max_val)))."""
         kwargs = (_coconut.functools.partial(param_processor.modify_kwargs, math.log))(kwargs)
         log_a, log_b = math.log(min_val), math.log(max_val)
-        return math.exp(self.uniform(log_a, log_b))
+        return math.exp(self.uniform(name, log_a, log_b, **kwargs))
+
+    def lognormvariate(self, name, mu, sigma, **kwargs):
+        """Create a new parameter with the given name modeled by random.lognormvariate(mu, sigma)."""
+        kwargs = (_coconut.functools.partial(param_processor.modify_kwargs, math.log))(kwargs)
+        return math.exp(self.normalvariate(name, mu, sigma, **kwargs))
 
     def randbool(self, name, **kwargs):
         """Create a new boolean parameter with the given name."""
@@ -297,29 +298,43 @@ class BlackBoxOptimizer(_coconut.object):
 
     def sample(self, name, population, k, **kwargs):
         """Create a new parameter with the given name modeled by random.sample(population, k)."""
+        if not isinstance(name, Str):
+            raise TypeError("name must be string, not {}".format(name))
         sampling_population = [x for x in population]
         sample = []
         for i in range(k):
-            ind = self.randrange("{}[{}]".format(name, i), len(sampling_population), **kwargs)
-            sample.append(sampling_population.pop(ind))
+            if len(sampling_population) <= 1:
+                sample.append(sampling_population[0])
+            else:
+                def _coconut_lambda_0(val):
+                    elem = _coconut_igetitem(val, i)
+                    return sampling_population.index(elem) if elem in sampling_population else 0
+                proc_kwargs = param_processor.modify_kwargs(_coconut_lambda_0, kwargs)
+                ind = self.randrange("{}[{}]".format(name, i), len(sampling_population), **proc_kwargs)
+                sample.append(sampling_population.pop(ind))
         return sample
+
+    def shuffle(self, name, x, **kwargs):
+        """Create a new parameter with the given name modeled by random.shuffle(x)."""
+        return self.sample(name, x, len(x), **kwargs)
 
 # Array-based random functions:
 
-    def _array_param(self, name, shape, func):
+    def _array_param(self, func, name, shape, kwargs):
         """Create a new array parameter for the given name and shape with entries from func."""
         if not isinstance(name, Str):
             raise TypeError("name must be string, not {}".format(name))
         arr = np.zeros(shape)
         for indices in itertools.product(*map(range, shape)):
             cell_name = "{}[{}]".format(name, ",".join(map(str, indices)))
-            arr[indices] = func(cell_name)
+            proc_kwargs = param_processor.modify_kwargs(lambda _=None: _[indices], kwargs)
+            arr[indices] = func(cell_name, **proc_kwargs)
         return arr
 
     def rand(self, name, *shape, **kwargs):
         """Create a new array parameter for the given name and shape modeled by np.random.rand."""
-        return self._array_param(name, shape, lambda cell_name: self.random(cell_name, **kwargs))
+        return self._array_param(self.random, name, shape, kwargs)
 
     def randn(self, name, *shape, **kwargs):
         """Create a new array parameter for the given name and shape modeled by np.random.randn."""
-        return self._array_param(name, shape, lambda cell_name: self.gauss(cell_name, 0, 1, **kwargs))
+        return self._array_param(_coconut_partial(self.normalvariate, {1: 0, 2: 1}, 3), name, shape, kwargs)

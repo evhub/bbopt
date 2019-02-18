@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x93355266
+# __coconut_hash__ = 0xe7df5f92
 
-# Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.0-post_dev8 [Ernest Scribbler]
 
 """
 Handles standardizing param calls to use standard library random functions.
@@ -87,11 +87,6 @@ def handle_normalvariate(args):
         raise format_err(ValueError, "invalid arguments to normalvariate", args)
 
 
-def handle_lognormvariate(args):
-    if len(args) != 2 or not all_isinstance(args, Num):
-        raise format_err(ValueError, "invalid arguments to lognormvariate", args)
-
-
 def handle_vonmisesvariate(args):
     if len(args) != 2 or not all_isinstance(args, Num):
         raise format_err(ValueError, "invalid arguments to vonmisesvariate", args)
@@ -111,7 +106,7 @@ def handle_weibullvariate(args):
 
 class ParamProcessor(_coconut.object):
     """Processes param keyword arguments."""
-    handlers = {"randrange": handle_randrange, "choice": handle_choice, "uniform": handle_uniform, "triangular": handle_triangular, "betavariate": handle_betavariate, "expovariate": handle_expovariate, "gammavariate": handle_gammavariate, "normalvariate": handle_normalvariate, "lognormvariate": handle_lognormvariate, "vonmisesvariate": handle_vonmisesvariate, "paretovariate": handle_paretovariate, "weibullvariate": handle_weibullvariate}
+    handlers = {"randrange": handle_randrange, "choice": handle_choice, "uniform": handle_uniform, "triangular": handle_triangular, "betavariate": handle_betavariate, "expovariate": handle_expovariate, "gammavariate": handle_gammavariate, "normalvariate": handle_normalvariate, "vonmisesvariate": handle_vonmisesvariate, "paretovariate": handle_paretovariate, "weibullvariate": handle_weibullvariate}
 
     @property
     def supported_funcs(self):
@@ -121,7 +116,7 @@ class ParamProcessor(_coconut.object):
         """Apply func to all kwargs with values in the random function's domain."""
         new_kwargs = {}
         for k, v in kwargs.items():
-            if isinstance(v, Iterable):
+            if k in self.supported_funcs:
                 new_kwargs[k] = map(func, v)
             else:
                 new_kwargs[k] = func(v)

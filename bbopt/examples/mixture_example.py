@@ -29,7 +29,7 @@ if isinstance(bb.backend, MixtureBackend):
 
 
 # Set up a parameter from a random sample.
-xs = bb.sample("xs", range(10), 5)
+xs = bb.sample("xs", range(10), 5, guess=[4,5,6,7,8])
 
 
 # Set the goal to be the sum.

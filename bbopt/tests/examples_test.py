@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x5eb59e57
+# __coconut_hash__ = 0xb10b4538
 
-# Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.0-post_dev8 [Ernest Scribbler]
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -26,6 +26,10 @@ import shutil
 import traceback
 import unittest
 from contextlib import contextmanager
+if _coconut_sys.version_info < (3, 4):
+    from imp import reload
+else:
+    from importlib import reload
 
 from coconut.command.util import call_output
 
@@ -145,27 +149,33 @@ class TestExamples(unittest.TestCase):
 
     def test_numpy(self):
         print("\ntest numpy:")
+        from bbopt.examples import numpy_example
+        assert numpy_example.y == 0
         with remove_when_done(numpy_data):
             results = call_test(["bbopt", numpy_file, "-n", "15", "-j", "4"])
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(numpy_data)
-            from bbopt.examples.numpy_example import y as got
-            assert got == want
+            reload(numpy_example)
+            assert numpy_example.y == want
 
     def test_json(self):
         print("\ntest json:")
+        from bbopt.examples import json_example
+        assert round(json_example.y, 5) == 6
         with remove_when_done(json_data):
             results = call_test(["bbopt", json_file, "-n", "15", "-j", "4"])
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(json_data)
-            from bbopt.examples.json_example import y as got
-            assert got == want
+            reload(json_example)
+            assert json_example.y == want
 
     def test_mixture(self):
         print("\ntest mixture:")
+        from bbopt.examples import mixture_example
+        assert mixture_example.y == sum([4, 5, 6, 7, 8])
         with remove_when_done(mixture_data):
             results = call_test(["bbopt", mixture_file, "-n", "15", "-j", "4"])
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(mixture_data)
-            from bbopt.examples.mixture_example import y as got
-            assert got == want
+            reload(mixture_example)
+            assert mixture_example.y == want

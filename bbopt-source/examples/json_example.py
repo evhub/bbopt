@@ -12,12 +12,13 @@ if __name__ == "__main__":
     bb.run()
 
 
-# Set up a uniform random 2 x 2 matrix parameter.
-X = bb.rand("X", 2, 2)
+# Set up log uniform and log normal parameters.
+x0 = bb.loguniform("x0", 1, 10, guess=5)
+x1 = bb.lognormvariate("x1", 0, 1, guess=1)
 
 
-# Set the goal to be the trace.
-y = X[0,0] + X[1,1]
+# Set the goal to be the sum.
+y = x0 + x1
 bb.minimize(y)
 
 

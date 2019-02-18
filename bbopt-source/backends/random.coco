@@ -23,7 +23,6 @@ class RandomBackend:
         "expovariate": random.expovariate,
         "gammavariate": random.gammavariate,
         "normalvariate": random.gauss,  # gauss is more efficient than normalvariate
-        "lognormvariate": random.lognormvariate,
         "vonmisesvariate": random.vonmisesvariate,
         "paretovariate": random.paretovariate,
         "weibullvariate": random.weibullvariate,

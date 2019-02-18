@@ -63,9 +63,9 @@ Some examples of BBopt in action:
 - [`numpy_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/numpy_example.py): Example which showcases how to have numpy array parameters.
 - [`conditional_skopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_skopt_example.py): Example of having black box parameters that are dependent on other black box parameters using the `gaussian_process` algorithm from the `scikit-optimize` backend.
 - [`conditional_hyperopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_hyperopt_example.py): Example of doing conditional parameters with the `tree_structured_parzen_estimator` algorithm from the `hyperopt` backend.
-- [`mixture_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/mixture_example.py): Example of using the `mixture` backend to randomly switch between different algorithms.
-- [`json_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/json_example.py): Simple example of using `json` instead of `pickle` to save parameters.
 - [`keras_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.py): Complete example of using BBopt to optimize a neural network built with [Keras](https://keras.io/). Uses the full API to implement its own optimization loop and thus avoid the overhead of running the entire file multiple times.
+- [`mixture_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/mixture_example.py): Example of using the `mixture` backend to randomly switch between different algorithms.
+- [`json_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/json_example.py): Example of using `json` instead of `pickle` to save parameters.
 
 ## Full API
 
@@ -91,13 +91,15 @@ Some examples of BBopt in action:
     1. [`getrandbits`](#getrandbits)
     1. [`choice`](#choice)
     1. [`randbool`](#randbool)
-    1. [`uniform`](#uniform)
+    1. [`shuffle`](#shuffle)
+    1. [`sample`](#sample)
     1. [`random`](#random)
+    1. [`uniform`](#uniform)
     1. [`loguniform`](#loguniform)
     1. [`normalvariate`](#normalvariate)
+    1. [`lognormvariate`](#lognormvariate)
     1. [`rand`](#rand)
     1. [`randn`](#randn)
-    1. [`sample`](#sample)
 
 <!-- /MarkdownTOC -->
 
@@ -123,7 +125,9 @@ _use\_json_ determines whether BBopt should use `json` or `pickle` to serialize 
 
 BlackBoxOptimizer.**run**(_alg_="tree_structured_parzen_estimator")
 
-Start optimizing using the given black box optimization algorithm. If this method is never called, or called with `alg=None`, BBopt will just serve the best parameters found so far, which is how the basic boilerplate works. Use **algs** to get the valid values for _alg_.
+Start optimizing using the given black box optimization algorithm. Use **algs** to get the valid values for _alg_.
+
+If this method is never called, or called with `alg=None`, BBopt will just serve the best parameters found so far, which is how the basic boilerplate works. Note that, if no saved parameter data is found, and a _guess_ is present, BBopt will use that, which is a good way of distributing your parameter values without including all your saved parameter data.
 
 #### `algs`
 
@@ -256,13 +260,21 @@ Create a new boolean parameter, modeled by the equivalent of `random.choice([Tru
 
 _Backends which support **randbool**: `scikit-optimize`, `hyperopt`, `random`._
 
-#### `uniform`
+#### `shuffle`
 
-BlackBoxOptimizer.**uniform**(_name_, _a_, _b_, **_kwargs_)
+BlackBoxOptimizer.**shuffle**(_name_, _x_, **_kwargs_)
 
-Create a new parameter modeled by [`random.uniform(a, b)`](https://docs.python.org/3/library/random.html#random.uniform), which uniformly selects a float between _a_ and _b_.
+Create a new parameter modeled by [`random.shuffle(population, k)`](https://docs.python.org/3/library/random.html#random.shuffle), except that it returns the shuffled list instead of shuffling it in place.
 
-_Backends which support **uniform**: `scikit-optimize`, `hyperopt`, `random`._
+_Backends which support **shuffle**: `scikit-optimize`, `hyperopt`, `random`._
+
+#### `sample`
+
+BlackBoxOptimizer.**sample**(_name_, _population_, _k_, **_kwargs_)
+
+Create a new parameter modeled by [`random.sample(population, k)`](https://docs.python.org/3/library/random.html#random.sample), which chooses _k_ elements from _population_.
+
+_Backends which support **sample**: `scikit-optimize`, `hyperopt`, `random`._
 
 #### `random`
 
@@ -271,6 +283,14 @@ BlackBoxOptimizer.**random**(_name_, **_kwargs_)
 Create a new parameter modeled by [`random.random()`](https://docs.python.org/3/library/random.html#random.random), which is equivalent to `random.uniform(0, 1)`.
 
 _Backends which support **random**: `scikit-optimize`, `hyperopt`, `random`._
+
+#### `uniform`
+
+BlackBoxOptimizer.**uniform**(_name_, _a_, _b_, **_kwargs_)
+
+Create a new parameter modeled by [`random.uniform(a, b)`](https://docs.python.org/3/library/random.html#random.uniform), which uniformly selects a float between _a_ and _b_.
+
+_Backends which support **uniform**: `scikit-optimize`, `hyperopt`, `random`._
 
 #### `loguniform`
 
@@ -292,11 +312,19 @@ Create a new parameter modeled by [`random.normalvariate(mu, sigma)`](https://do
 
 _Backends which support **normalvariate**: `hyperopt`, `random`._
 
+#### `lognormvariate`
+
+BlackBoxOptimizer.**lognormvariate**(_name_, _mu_, _sigma_, **_kwargs_)
+
+Create a new parameter modeled by [`random.lognormvariate(mu, sigma)`](https://docs.python.org/3/library/random.html#random.lognormvariate).
+
+_Backends which support **lognormvariate**: `hyperopt`, `random`._
+
 #### `rand`
 
 BlackBoxOptimizer.**rand**(_name_, *_shape_, **_kwargs_)
 
-Create a new parameter modeled by [`numpy.random.rand(*shape)`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.rand.html#numpy.random.rand), which creates an array with entries generated uniformly in `[0, 1)`. _kwargs_ like _guess_ should refer to the guess for an individual entry, not the whole array.
+Create a new parameter modeled by [`numpy.random.rand(*shape)`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.rand.html#numpy.random.rand), which creates an array with entries generated uniformly in `[0, 1)`.
 
 _Backends which support **rand**: `scikit-optimize`, `hyperopt`, `random`._
 
@@ -304,14 +332,6 @@ _Backends which support **rand**: `scikit-optimize`, `hyperopt`, `random`._
 
 BlackBoxOptimizer.**randn**(_name_, *_shape_, **_kwargs_)
 
-Create a new parameter modeled by [`numpy.random.randn(*shape)`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.randn.html#numpy-random-randn), which creates an array with entries generated according to a standard normal distribution. _kwargs_ like _guess_ should refer to the guess for an individual entry, not the whole array.
+Create a new parameter modeled by [`numpy.random.randn(*shape)`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.randn.html#numpy-random-randn), which creates an array with entries generated according to a standard normal distribution.
 
 _Backends which support **randn**: `hyperopt`, `random`._
-
-#### `sample`
-
-BlackBoxOptimizer.**sample**(_name_, _population_, _k_, **_kwargs_)
-
-Create a new parameter modeled by [`random.sample(population, k)`](https://docs.python.org/3/library/random.html#random.sample), which chooses _k_ elements from _population_.
-
-_Backends which support **rand**: `scikit-optimize`, `hyperopt`, `random`._
