@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc2e17b78
+# __coconut_hash__ = 0x93355266
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -57,11 +57,6 @@ def handle_choice(args):
         raise format_err(ValueError, "invalid arguments to choice", args)
 
 
-def handle_sample(args):
-    if len(args) != 2 or not isinstance(args[0], list) or not isinstance(args[1], int):
-        raise format_err(ValueError, "invalid arguments to sample", args)
-
-
 def handle_uniform(args):
     if len(args) != 2 or not all_isinstance(args, Num):
         raise format_err(ValueError, "invalid arguments to uniform", args)
@@ -116,7 +111,7 @@ def handle_weibullvariate(args):
 
 class ParamProcessor(_coconut.object):
     """Processes param keyword arguments."""
-    handlers = {"randrange": handle_randrange, "choice": handle_choice, "sample": handle_sample, "uniform": handle_uniform, "triangular": handle_triangular, "betavariate": handle_betavariate, "expovariate": handle_expovariate, "gammavariate": handle_gammavariate, "normalvariate": handle_normalvariate, "lognormvariate": handle_lognormvariate, "vonmisesvariate": handle_vonmisesvariate, "paretovariate": handle_paretovariate, "weibullvariate": handle_weibullvariate}
+    handlers = {"randrange": handle_randrange, "choice": handle_choice, "uniform": handle_uniform, "triangular": handle_triangular, "betavariate": handle_betavariate, "expovariate": handle_expovariate, "gammavariate": handle_gammavariate, "normalvariate": handle_normalvariate, "lognormvariate": handle_lognormvariate, "vonmisesvariate": handle_vonmisesvariate, "paretovariate": handle_paretovariate, "weibullvariate": handle_weibullvariate}
 
     @property
     def supported_funcs(self):

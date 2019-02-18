@@ -33,11 +33,6 @@ def handle_choice(args):
         raise format_err(ValueError, "invalid arguments to choice", args)
 
 
-def handle_sample(args):
-    if len(args) != 2 or not isinstance(args[0], list) or not isinstance(args[1], int):
-        raise format_err(ValueError, "invalid arguments to sample", args)
-
-
 def handle_uniform(args):
     if len(args) != 2 or not all_isinstance(args, Num):
         raise format_err(ValueError, "invalid arguments to uniform", args)
@@ -95,7 +90,6 @@ class ParamProcessor:
     handlers = {
         "randrange": handle_randrange,
         "choice": handle_choice,
-        "sample": handle_sample,
         "uniform": handle_uniform,
         "triangular": handle_triangular,
         "betavariate": handle_betavariate,

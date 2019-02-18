@@ -84,6 +84,7 @@ Some examples of BBopt in action:
     1. [`get_optimal_run`](#get_optimal_run)
     1. [`get_data`](#get_data)
     1. [`data_file`](#data_file)
+    1. [`backend`](#backend)
 1. [Parameter Definition Methods](#parameter-definition-methods)
     1. [`randrange`](#randrange)
     1. [`randint`](#randint)
@@ -97,14 +98,6 @@ Some examples of BBopt in action:
     1. [`rand`](#rand)
     1. [`randn`](#randn)
     1. [`sample`](#sample)
-    1. [`lognormvariate`](#lognormvariate)
-    1. [`triangular`](#triangular)
-    1. [`betavariate`](#betavariate)
-    1. [`expovariate`](#expovariate)
-    1. [`gammavariate`](#gammavariate)
-    1. [`vonmisesvariate`](#vonmisesvariate)
-    1. [`paretovariate`](#paretovariate)
-    1. [`weibullvariate`](#weibullvariate)
 
 <!-- /MarkdownTOC -->
 
@@ -199,6 +192,12 @@ Dump a dictionary containing all the information on your program collected by BB
 BlackBoxOptimizer.**data_file**
 
 A property which gives the path to the file where BBopt is saving data to.
+
+#### `backend`
+
+BlackBoxOptimizer.**backend**
+
+The backend object being used by the current BlackBoxOptimizer instance.
 
 ### Parameter Definition Methods
 
@@ -315,68 +314,4 @@ BlackBoxOptimizer.**sample**(_name_, _population_, _k_, **_kwargs_)
 
 Create a new parameter modeled by [`random.sample(population, k)`](https://docs.python.org/3/library/random.html#random.sample), which chooses _k_ elements from _population_.
 
-_Backends which support **sample**: `random`._
-
-#### `lognormvariate`
-
-BlackBoxOptimizer.**lognormvariate**(_name_, _mu_, _sigma_, **_kwargs_)
-
-Create a new parameter modeled by [`random.lognormvariate(mu, sigma)`](https://docs.python.org/3/library/random.html#random.lognormvariate).
-
-_Backends which support **lognormvariate**: `random`._
-
-#### `triangular`
-
-BlackBoxOptimizer.**triangular**(_name_, _low_, _high_, _mode_, **_kwargs_)
-
-Create a new parameter modeled by [`random.triangular(low, high, mode)`](https://docs.python.org/3/library/random.html#random.triangular).
-
-_Backends which support **triangular**: `random`._
-
-#### `betavariate`
-
-BlackBoxOptimizer.**betavariate**(_name_, _alpha_, _beta_, **_kwargs_)
-
-Create a new parameter modeled by [`random.betavariate(alpha, beta)`](https://docs.python.org/3/library/random.html#random.betavariate).
-
-_Backends which support **betavariate**: `random`._
-
-#### `expovariate`
-
-BlackBoxOptimizer.**expovariate**(_name_, _lambd_, **_kwargs_)
-
-Create a new parameter modeled by [`random.expovariate(lambd)`](https://docs.python.org/3/library/random.html#random.expovariate).
-
-_Backends which support **expovariate**: `random`._
-
-#### `gammavariate`
-
-BlackBoxOptimizer.**gammavariate**(_name_, _alpha_, _beta_, **_kwargs_)
-
-Create a new parameter modeled by [`random.gammavariate(alpha, beta)`](https://docs.python.org/3/library/random.html#random.gammavariate).
-
-_Backends which support **gammavariate**: `random`._
-
-#### `vonmisesvariate`
-
-BlackBoxOptimizer.**vonmisesvariate**(_name_, _kappa_, **_kwargs_)
-
-Create a new parameter modeled by [`random.vonmisesvariate(kappa)`](https://docs.python.org/3/library/random.html#random.vonmisesvariate).
-
-_Backends which support **vonmisesvariate**: `random`._
-
-#### `paretovariate`
-
-BlackBoxOptimizer.**paretovariate**(_name_, _alpha_, **_kwargs_)
-
-Create a new parameter modeled by [`random.paretovariate(alpha)`](https://docs.python.org/3/library/random.html#random.paretovariate).
-
-_Backends which support **paretovariate**: `random`._
-
-#### `weibullvariate`
-
-BlackBoxOptimizer.**weibullvariate**(_name_, _alpha_, _beta_, **_kwargs_)
-
-Create a new parameter modeled by [`random.weibullvariate(alpha, beta)`](https://docs.python.org/3/library/random.html#random.weibullvariate).
-
-_Backends which support **weibullvariate**: `random`._
+_Backends which support **rand**: `scikit-optimize`, `hyperopt`, `random`._

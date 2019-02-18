@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xdea05162
+# __coconut_hash__ = 0x4564f16f
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -48,15 +48,15 @@ class MixtureBackend(_coconut.object):
 
 # randomly select algorithm
         rand_val = random.random()
-        selected_alg = None
+        self.selected_alg = None
         for alg, cutoff in cum_probs:
             if rand_val <= cutoff:
-                selected_alg = alg
+                self.selected_alg = alg
                 break
 
 # initialize backend
-        self.name, kwargs = alg_registry[selected_alg]
-        self.backend = init_backend(self.name, examples, params, **kwargs)
+        self.selected_backend, kwargs = alg_registry[self.selected_alg]
+        self.backend = init_backend(self.selected_backend, examples, params, **kwargs)
 
     def param(self, name, **kwargs):
         return self.backend.param(name, **kwargs)

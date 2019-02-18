@@ -19,12 +19,21 @@ if __name__ == "__main__":
     ])
 
 
-# Set up a uniform random 2 x 2 matrix parameter.
-X = bb.rand("X", 2, 2)
+# If we're not serving, store which algorithm the
+#  mixture backend has selected.
+from bbopt.backends.mixture import MixtureBackend
+if isinstance(bb.backend, MixtureBackend):
+    bb.remember({
+        "alg": bb.backend.selected_alg,
+    })
 
 
-# Set the goal to be the absolute determinant.
-y = abs(X[0,0] * X[1,1] - X[0,1] * X[1,0])
+# Set up a parameter from a random sample.
+xs = bb.sample("xs", range(10), 5)
+
+
+# Set the goal to be the sum.
+y = sum(xs)
 bb.minimize(y)
 
 

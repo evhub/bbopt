@@ -17,7 +17,6 @@ class RandomBackend:
     random_functions = {
         "randrange": random.randrange,
         "choice": random.choice,
-        "sample": random.sample,
         "uniform": random.uniform,
         "triangular": random.triangular,
         "betavariate": random.betavariate,

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3a7e2b0b
+# __coconut_hash__ = 0xb6cd43c7
 
 # Compiled with Coconut version 1.4.0-post_dev7 [Ernest Scribbler]
 
@@ -226,10 +226,6 @@ class BlackBoxOptimizer(_coconut.object):
         """Create a new parameter with the given name modeled by random.choice(seq)."""
         return self.param(name, choice=(seq,), **kwargs)
 
-    def sample(self, name, population, k, **kwargs):
-        """Create a new parameter with the given name modeled by random.sample(population, k)."""
-        return self.param(name, sample=(population, k), **kwargs)
-
     def uniform(self, name, a, b, **kwargs):
         """Create a new parameter with the given name modeled by random.uniform(a, b)."""
         return self.param(name, uniform=(a, b), **kwargs)
@@ -298,6 +294,15 @@ class BlackBoxOptimizer(_coconut.object):
     def randbool(self, name, **kwargs):
         """Create a new boolean parameter with the given name."""
         return self.choice(name, [False, True], **kwargs)
+
+    def sample(self, name, population, k, **kwargs):
+        """Create a new parameter with the given name modeled by random.sample(population, k)."""
+        sampling_population = [x for x in population]
+        sample = []
+        for i in range(k):
+            ind = self.randrange("{}[{}]".format(name, i), len(sampling_population), **kwargs)
+            sample.append(sampling_population.pop(ind))
+        return sample
 
 # Array-based random functions:
 
