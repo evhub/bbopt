@@ -214,7 +214,7 @@ where
 - the method itself specifies what distribution is being modeled,
 - the first argument is always _name_, a unique string identifying that parameter,
 - following _name_ are whatever arguments are needed to specify the distribution's parameters, and
-- at the end are keyword arguments (_kwargs_), which are the same for all the different methods. The allowable _kwargs_ are:
+- at the end are keyword arguments, which are the same for all the different methods. The allowable _kwargs_ are:
     + _guess_, which specifies the initial value for the parameter, and
     + _placeholder\_when\_missing_, which specifies what placeholder value a conditional parameter should be given if missing.
 
@@ -316,7 +316,7 @@ _Backends which support **normalvariate**: `hyperopt`, `random`._
 
 BlackBoxOptimizer.**lognormvariate**(_name_, _mu_, _sigma_, **_kwargs_)
 
-Create a new parameter modeled by [`random.lognormvariate(mu, sigma)`](https://docs.python.org/3/library/random.html#random.lognormvariate).
+Create a new parameter modeled by [`random.lognormvariate(mu, sigma)`](https://docs.python.org/3/library/random.html#random.lognormvariate) such that the natural log is a normal distribution with mean _mu_ and standard deviation _sigma_.
 
 _Backends which support **lognormvariate**: `hyperopt`, `random`._
 
