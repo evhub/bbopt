@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x432c71f6
+# __coconut_hash__ = 0xefcbe06d
 
 # Compiled with Coconut version 1.4.0-post_dev8 [Ernest Scribbler]
 
@@ -41,11 +41,6 @@ class RandomBackend(_coconut.object):
 
     def param(self, name=None, **kwargs):
         func, args, options = param_processor.split_kwargs(kwargs)
-
-        if options:
-            raise TypeError("the random backend requires exactly one parameter," " <name of the random function to call>=<argument(s) to that function>")
-
         if func not in self.random_functions:
             raise ValueError("unknown random function {}".format(func))
-
         return self.random_functions[func](*args)

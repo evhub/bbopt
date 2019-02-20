@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x5963de9c
+# __coconut_hash__ = 0xe3ae70cd
 
 # Compiled with Coconut version 1.4.0-post_dev8 [Ernest Scribbler]
 
@@ -58,7 +58,7 @@ class Registry(_coconut.object):
         """Register value under the given name."""
         self.registered[name] = value
 
-    def run_gen(self, name, gen):
+    def run_gen(self, name):
         """Run the generator for the given name."""
         value = self.generators[name]()
         self.register(name, value)

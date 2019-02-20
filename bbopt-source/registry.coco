@@ -31,7 +31,7 @@ class Registry:
         """Register value under the given name."""
         self.registered[name] = value
 
-    def run_gen(self, name, gen):
+    def run_gen(self, name):
         """Run the generator for the given name."""
         value = self.generators[name]()
         self.register(name, value)

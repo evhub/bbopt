@@ -30,12 +30,6 @@ class RandomBackend:
 
     def param(self, name=None, **kwargs):
         func, args, options = param_processor.split_kwargs(kwargs)
-
-        if options:
-            raise TypeError("the random backend requires exactly one parameter,"
-            " <name of the random function to call>=<argument(s) to that function>")
-
         if func not in self.random_functions:
             raise ValueError("unknown random function {}".format(func))
-
         return self.random_functions[func](*args)
