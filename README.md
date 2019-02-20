@@ -1,20 +1,21 @@
 # BBopt
 
-BBopt aims to provide the easiest hyperparameter optimization you'll ever do. Think of BBopt like [Keras](https://keras.io/) for black box hyperparameter optimization: one interface for any black box optimization backend.
+BBopt aims to provide the easiest hyperparameter optimization you'll ever do. Think of BBopt like [Keras](https://keras.io/) for black box optimization: one interface for interfacing with any backend.
 
-BBopt provides:
-- a universal interface for defining your tunable parameters based on the standard library `random` module (so you don't even have to learn anything new!),
+In addition to its simple, easy-to-use interface BBopt provides:
+- a universal API for defining your tunable parameters based on the standard library `random` module (so you don't even have to learn anything new!),
 - tons of state-of-the-art black box optimization algorithms such as Gaussian Processes from [`scikit-optimize`](https://scikit-optimize.github.io/) or Tree Structured Parzen Estimation from [`hyperopt`](http://hyperopt.github.io/hyperopt/) for tuning parameters,
 - the ability to switch algorithms (even across different backends!) while retaining all previous trials,
-- support for optimizing over conditional parameters that only appear during some runs, and
-- multiprocessing-safe data saving to enable running multiple trials in parallel.
+- support for optimizing over conditional parameters that only appear during some runs,
+- multiprocessing-safe data saving to enable running multiple trials in parallel, and
+- support for all major Python versions.
 
 Once you've defined your parameters, training a black box optimization model on those parameters is as simple as
 ```
 bbopt your_file.py
 ```
-and serving your file with optimized parameters as simple as
-```
+and serving your file with optimized parameters is as simple as
+```python
 import your_file
 ```
 
@@ -136,8 +137,8 @@ BlackBoxOptimizer.**algs**
 A dictionary mapping the valid algorithms for use in **run** to the backend that they correspond to.
 
 Supported algorithms are:
-- `"serving"` (or `None`) (serving backend),
-- `"random"` (random backend),
+- `"serving"` (or `None`) (`serving` backend),
+- `"random"` (`random` backend),
 - `"tree_structured_parzen_estimator"` (`hyperopt` backend) (the default),
 - `"annealing"` (`hyperopt` backend),
 - `"gaussian_process"` (`scikit-optimize` backend),
@@ -195,7 +196,7 @@ Dump a dictionary containing all the information on your program collected by BB
 
 BlackBoxOptimizer.**data_file**
 
-A property which gives the path to the file where BBopt is saving data to.
+The path of the file where BBopt is saving data to.
 
 #### `backend`
 
@@ -207,14 +208,14 @@ The backend object being used by the current BlackBoxOptimizer instance.
 
 Every BBopt parameter definition method has the form
 ```
-bb.<random function>(<name>, <args to function>)
+bb.<random function>(<name>, <args>, **kwargs)
 ```
 where
 
 - the method itself specifies what distribution is being modeled,
 - the first argument is always _name_, a unique string identifying that parameter,
 - following _name_ are whatever arguments are needed to specify the distribution's parameters, and
-- at the end are keyword arguments, which are the same for all the different methods. The allowable _kwargs_ are:
+- at the end are keyword arguments, which are the same for all the different methods. The supported _kwargs_ are:
     + _guess_, which specifies the initial value for the parameter, and
     + _placeholder\_when\_missing_, which specifies what placeholder value a conditional parameter should be given if missing.
 
