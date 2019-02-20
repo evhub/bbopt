@@ -10,12 +10,13 @@ from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__, use_json=True)
 if __name__ == "__main__":
     bb.run_backend("mixture", [
+        ("random", 1),
+        ("tree_structured_parzen_estimator", 1),
+        ("annealing", 1),
         ("gaussian_process", 1),
         ("random_forest", 1),
         ("extra_trees", 1),
         ("gradient_boosted_regression_trees", 1),
-        ("tree_structured_parzen_estimator", 1),
-        ("annealing", 1),
     ])
 
 

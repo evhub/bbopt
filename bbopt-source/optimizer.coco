@@ -77,9 +77,7 @@ class BlackBoxOptimizer:
         self._current_example = {"values": {}}
 
     @property
-    def algs(self) = {
-        alg: backend for alg, (backend, kwargs) in alg_registry.items()
-    }
+    def algs(self) = alg_registry.asdict()
 
     def run(self, alg=default_alg):
         """Optimize parameters using the given algorithm

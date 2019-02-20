@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x2e0c96b1
+# __coconut_hash__ = 0x29f5d4d7
 
 # Compiled with Coconut version 1.4.0-post_dev8 [Ernest Scribbler]
 
@@ -98,7 +98,7 @@ class BlackBoxOptimizer(_coconut.object):
 
     @property
     def algs(self):
-        return dict(((alg), (backend)) for alg, (backend, kwargs) in alg_registry.items())
+        return alg_registry.asdict()
 
     def run(self, alg=default_alg):
         """Optimize parameters using the given algorithm

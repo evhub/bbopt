@@ -2,6 +2,9 @@
 The backend and algorithm registries.
 """
 
+import traceback
+
+
 class Registry:
     """Registry that keeps track of registered objects."""
 
@@ -15,10 +18,8 @@ class Registry:
         name = self.aliases.get(name, name)
         match {=name: value, **_} in self.registered:
             return self.registered[name]
-        else: match {=name: gen, **_} in self.generators:
-            value = gen()
-            self.register(name, value)
-            return value
+        else: if name in self.generators:
+            return self.run_gen(name)
         else:
             raise ValueError("unknown {obj_name}: {name} (valid {obj_name}s: {valid_names})".format(
                 obj_name=self.obj_name,
@@ -26,20 +27,35 @@ class Registry:
                 valid_names=", ".join(repr(name) for name in self),
             ))
 
-    def __iter__(self):
-        yield from self.registered
-        for name in self.generators:
-            if name not in self.registered:
-                yield name
-
-    def items(self):
-        yield from self.registered.items()
-        for name in self.generators:
-            yield name, self[name]
-
     def register(self, name, value):
         """Register value under the given name."""
         self.registered[name] = value
+
+    def run_gen(self, name, gen):
+        """Run the generator for the given name."""
+        value = self.generators[name]()
+        self.register(name, value)
+        del self.generators[name]
+        return value
+
+    def __iter__(self):
+        yield from self.registered
+        yield from self.generators
+
+    def run_all_gens(self):
+        """Run all generators."""
+        for name in self.generators:
+            self.run_gen(name)
+
+    def items(self):
+        """Get all items in the registry as (name, value) pairs."""
+        self.run_all_gens()
+        yield from self.registered.items()
+
+    def asdict(self):
+        """Convert registry to dictionary."""
+        self.run_all_gens()
+        return self.registered
 
 
 backend_registry = Registry(

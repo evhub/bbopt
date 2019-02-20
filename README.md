@@ -134,7 +134,7 @@ If this method is never called, or called with `alg=None`, BBopt will just serve
 
 BlackBoxOptimizer.**algs**
 
-A dictionary mapping the valid algorithms for use in **run** to the backend that they correspond to.
+A dictionary mapping the valid algorithms for use in **run** to the pair `(backend, kwargs)` of the backend and arguments to that backend that the algorithm corresponds to.
 
 Supported algorithms are:
 - `"serving"` (or `None`) (`serving` backend),

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf9e81316
+# __coconut_hash__ = 0x5963de9c
 
 # Compiled with Coconut version 1.4.0-post_dev8 [Ernest Scribbler]
 
@@ -25,6 +25,9 @@ _coconut_sys.path.remove(_coconut_file_path)
 
 
 
+import traceback
+
+
 class Registry(_coconut.object):
     """Registry that keeps track of registered objects."""
 
@@ -46,40 +49,49 @@ class Registry(_coconut.object):
         if _coconut_match_check:
             return self.registered[name]
         else:
-            _coconut_match_to = self.generators
-            _coconut_match_check = False
-            if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
-                _coconut_match_temp_0 = _coconut_match_to.get(name, _coconut_sentinel)
-                if _coconut_match_temp_0 is not _coconut_sentinel:
-                    gen = _coconut_match_temp_0
-                    _coconut_match_check = True
-            if _coconut_match_check:
-                value = gen()
-                self.register(name, value)
-                return value
+            if name in self.generators:
+                return self.run_gen(name)
             else:
                 raise ValueError("unknown {obj_name}: {name} (valid {obj_name}s: {valid_names})".format(obj_name=self.obj_name, name=name, valid_names=", ".join((repr(name) for name in self))))
+
+    def register(self, name, value):
+        """Register value under the given name."""
+        self.registered[name] = value
+
+    def run_gen(self, name, gen):
+        """Run the generator for the given name."""
+        value = self.generators[name]()
+        self.register(name, value)
+        del self.generators[name]
+        return value
 
     def __iter__(self):
         _coconut_yield_from = self.registered
         for _coconut_yield_item in _coconut_yield_from:
             yield _coconut_yield_item
 
+        _coconut_yield_from = self.generators
+        for _coconut_yield_item in _coconut_yield_from:
+            yield _coconut_yield_item
+
+
+    def run_all_gens(self):
+        """Run all generators."""
         for name in self.generators:
-            if name not in self.registered:
-                yield name
+            self.run_gen(name)
 
     def items(self):
+        """Get all items in the registry as (name, value) pairs."""
+        self.run_all_gens()
         _coconut_yield_from = self.registered.items()
         for _coconut_yield_item in _coconut_yield_from:
             yield _coconut_yield_item
 
-        for name in self.generators:
-            yield name, self[name]
 
-    def register(self, name, value):
-        """Register value under the given name."""
-        self.registered[name] = value
+    def asdict(self):
+        """Convert registry to dictionary."""
+        self.run_all_gens()
+        return self.registered
 
 
 def _coconut_lambda_0(_=None):
