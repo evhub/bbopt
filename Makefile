@@ -1,14 +1,14 @@
 .PHONY: install
 install: build
-	pip install -e .[dev]
+	pip install -Ue .[dev]
 
 .PHONY: install-2
 install-2: build
-	python2 -m pip install -e .[dev]
+	python2 -m pip install -Ue .[dev]
 
 .PHONY: force
 force: force-build
-	pip install -e .[dev]
+	pip install -Ue .[dev]
 
 .PHONY: setup
 setup:

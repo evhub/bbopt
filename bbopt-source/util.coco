@@ -158,11 +158,15 @@ def sync_file(file_handle):
 
 def ensure_file(fpath):
     """Ensure that the given file exists."""
-    try:
-        with open(fpath, "x" if sys.version_info >= (3,) else "a"):
+    if sys.version_info >= (3,):
+        try:
+            with open(fpath, "x"):
+                pass
+        except FileExistsError:
             pass
-    except IOError:
-        pass
+    else:
+        with open(fpath, "a"):
+            pass
 
 
 def clear_file(file_handle):

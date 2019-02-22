@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb10b4538
+# __coconut_hash__ = 0x728c86c2
 
 # Compiled with Coconut version 1.4.0-post_dev8 [Ernest Scribbler]
 
@@ -51,12 +51,17 @@ def remove_when_done(path):
             traceback.print_exc()
 
 
-def call_test(args):
+def call_test(args, ignore_errs=[]):
     """Call args on the command line for a test."""
     stdout, stderr, retcode = call_output(args)
     stdout, stderr = "".join(stdout), "".join(stderr)
     (print)((stdout + stderr).strip())
-    assert not retcode and not stderr, stderr
+    clean_stderr = []
+    for line in stderr.splitlines():
+        if not any((ignore in line for ignore in ignore_errs)):
+            clean_stderr.append(line)
+    clean_stderr = "\n".join(clean_stderr)
+    assert not retcode and not clean_stderr, clean_stderr
     return stdout
 
 
@@ -174,7 +179,7 @@ class TestExamples(unittest.TestCase):
         from bbopt.examples import mixture_example
         assert mixture_example.y == sum([4, 5, 6, 7, 8])
         with remove_when_done(mixture_data):
-            results = call_test(["bbopt", mixture_file, "-n", "15", "-j", "4"])
+            results = call_test(["bbopt", mixture_file, "-n", "15", "-j", "4"], ignore_errs=["UserWarning: The objective has been evaluated at this point before." "warnings.warn(",])
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(mixture_data)
             reload(mixture_example)

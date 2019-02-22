@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x90b121ce
+# __coconut_hash__ = 0x4fe8645b
 
 # Compiled with Coconut version 1.4.0-post_dev8 [Ernest Scribbler]
 
@@ -258,11 +258,15 @@ def sync_file(file_handle):
 
 def ensure_file(fpath):
     """Ensure that the given file exists."""
-    try:
-        with open(fpath, "x" if sys.version_info >= (3,) else "a"):
+    if sys.version_info >= (3,):
+        try:
+            with open(fpath, "x"):
+                pass
+        except FileExistsError:
             pass
-    except IOError:
-        pass
+    else:
+        with open(fpath, "a"):
+            pass
 
 
 def clear_file(file_handle):
