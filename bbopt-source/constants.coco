@@ -21,7 +21,6 @@ requirements = (
     "numpy",
     "scikit-optimize",
     "hyperopt",
-    "scikit-learn",
     # fixes an error in hyperopt 0.1 with networkx>=2.0
     "networkx<2.0",
 )
@@ -31,6 +30,8 @@ extra_requirements = {
     ),
     "dev": (
         "pytest",
+        "keras",
+        "scikit-learn",
     ),
 }
 

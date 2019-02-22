@@ -25,6 +25,7 @@ To get going with BBopt, just install it with
 ```
 pip install bbopt
 ```
+or, to also install the extra dependencies necessary for running BBopt's examples, run `pip install bbopt[dev]`.
 
 ## Basic Usage
 
