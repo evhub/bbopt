@@ -17,7 +17,7 @@ from argparse import ArgumentParser
 from pprint import pprint
 
 import numpy as np
-
+from sklearn import datasets
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.optimizers import SGD
@@ -30,32 +30,11 @@ from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)
 
 
-# Load raw data:
-data_folder = os.path.join(os.path.dirname(__file__), "data")
-house_votes = np.loadtxt(
-    os.path.join(data_folder, "house_votes.csv"),
-    dtype=str,
-    delimiter=",",
-)
+# Load data into X and y:
+iris = datasets.load_iris()
 
-
-# Process data into X and y:
-def type_error(msg):
-    """Raise a TypeError with the given message."""
-    raise TypeError(msg)
-
-X = np.vectorize(lambda x:
-    1 if x == "y"
-    else -1 if x == "n"
-    else 0 if x == "?"
-    else type_error("unknown vote {}".format(x))
-)(house_votes[:,1:])
-
-y = to_categorical(np.vectorize(lambda x:
-    1 if x == "democrat"
-    else 0 if x == "republican"
-    else type_error("unknown party {}".format(x))
-)(house_votes[:,0]))
+X = iris.data
+y = to_categorical(iris.target)
 
 
 # Split data into training, validation, and testing:
@@ -75,15 +54,15 @@ def run_trial():
     model = Sequential([
         Dense(
             units=bb.randint("hidden neurons", 1, 15, guess=5),
-            input_dim=len(X_train[0]),
+            input_shape=X.shape[1:],
             kernel_regularizer=l1_l2(
                 l1=bb.uniform("l1", 0, 0.1, guess=0.005),
                 l2=bb.uniform("l2", 0, 0.1, guess=0.05),
             ),
-            activation="relu",
+            activation=bb.choice("activation", ["relu", "elu"]),
         ),
         Dense(
-            units=2,
+            units=y.shape[1],
             activation="softmax",
         ),
     ])
