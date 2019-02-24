@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xbb08a649
+# __coconut_hash__ = 0xc072b587
 
 # Compiled with Coconut version 1.4.0-post_dev10 [Ernest Scribbler]
 
@@ -53,7 +53,7 @@ def remove_when_done(path):
             traceback.print_exc()
 
 
-always_ignore_errs = ("DeprecationWarning: numpy.core.umath_tests is an internal NumPy module", "from numpy.core.umath_tests import",)
+always_ignore_errs = ("DeprecationWarning: numpy.core.umath_tests is an internal NumPy module", "from numpy.core.umath_tests import", "RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility.", "return f(*args, **kwds)",)
 
 
 def call_test(args, ignore_errs=(), prepend_py=True):

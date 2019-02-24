@@ -30,7 +30,9 @@ def remove_when_done(path):
 
 always_ignore_errs = (
     "DeprecationWarning: numpy.core.umath_tests is an internal NumPy module",
-    "from numpy.core.umath_tests import",
+        "from numpy.core.umath_tests import",
+    "RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility.",
+        "return f(*args, **kwds)",
 )
 
 
@@ -157,7 +159,7 @@ class TestExamples(unittest.TestCase):
                 ["bbopt", mixture_file, "-n", "15", "-j", "4"],
                 ignore_errs=(
                     "UserWarning: The objective has been evaluated at this point before."
-                    "warnings.warn(",
+                        "warnings.warn(",
                 ),
             )
             want = min(get_nums(results, numtype=float))
