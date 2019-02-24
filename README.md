@@ -25,7 +25,7 @@ To get going with BBopt, just install it with
 ```
 pip install bbopt
 ```
-or, to also install the extra dependencies necessary for running BBopt's examples, run `pip install bbopt[dev]`.
+or, to also install the extra dependencies necessary for running BBopt's examples, run `pip install bbopt[examples]`.
 
 ## Basic Usage
 
@@ -115,13 +115,13 @@ Why does this work? If you're using the basic boilerplate, then running `python 
 
 #### Constructor
 
-**BlackBoxOptimizer**(_file_, _use\_json_=`None`)
+**BlackBoxOptimizer**(_file_, _protocol_=`None`)
 
 Create a new `bb` object; this should be done at the beginning of your program as all the other functions are methods of this object.
 
 _file_ is used by BBopt to figure out where to load and save data to, and should usually just be set to `__file__` (BBopt uses `os.path.splitext(file)[0]` as the base path for the data file).
 
-_use\_json_ determines whether BBopt should use `json` or `pickle` to serialize data (if `None`, BBopt will auto-detect, defaulting to `pickle`). `pickle` is recommended but `json` can be useful for cross-platform compatibility.
+_protocol_ determines how BBopt serializes data. If `None` (the default), BBopt will use pickle protocol 2, which is the highest version that works on both Python 2 and Python 3 (unless a `json` file is present, in which case BBopt will use `json`). To use the newest protocol instead, pass `protocol=-1`. If `protocol="json"`, BBopt will use `json` instead of `pickle`, which has the best cross-platform compatibility.
 
 #### `run`
 

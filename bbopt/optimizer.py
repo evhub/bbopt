@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x29f5d4d7
+# __coconut_hash__ = 0x5bb68e71
 
 # Compiled with Coconut version 1.4.0-post_dev8 [Ernest Scribbler]
 
@@ -19,7 +19,7 @@ if _coconut_cached_module is not None and _coconut_os_path.dirname(_coconut_cach
 _coconut_sys.path.insert(0, _coconut_file_path)
 from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_pipe, _coconut_star_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_addpattern, _coconut_sentinel
 from __coconut__ import *
-_coconut_sys.path.remove(_coconut_file_path)
+_coconut_sys.path.pop(0)
 
 # Compiled Coconut: -----------------------------------------------------------
 
@@ -51,23 +51,24 @@ from bbopt.util import clear_file
 from bbopt.constants import data_file_ext
 from bbopt.constants import lock_timeout
 from bbopt.constants import default_alg
+from bbopt.constants import default_protocol
 
 
 class BlackBoxOptimizer(_coconut.object):
     """Main bbopt optimizer object. See https://github.com/evhub/bbopt for documentation."""
 
-    def __init__(self, file, use_json=None):
+    def __init__(self, file, protocol=None):
         if not isinstance(file, Str):
             raise TypeError("file must be a string")
         self._file = norm_path(file)
 
-        if use_json is None:
-# auto-detect use_json, defaulting to False
-            self._use_json = True
+        if protocol is None:
+# auto-detect protocol
+            self._protocol = "json"
             if not os.path.exists(self.data_file):
-                self._use_json = False
+                self._protocol = default_protocol
         else:
-            self._use_json = use_json
+            self._protocol = protocol
 
         self.reload()
 
@@ -77,6 +78,10 @@ class BlackBoxOptimizer(_coconut.object):
         self._examples = []
         self._load_data()
         self.run(alg=None)  # backend is set to serving by default
+
+    @property
+    def _use_json(self):
+        return self._protocol == "json"
 
     def _loads(self, raw_contents):
         if self._use_json:
@@ -88,7 +93,7 @@ class BlackBoxOptimizer(_coconut.object):
         if self._use_json:
             return json.dumps((json_serialize)(unserialized_data)).encode(encoding="utf-8")
         else:
-            return pickle.dumps(unserialized_data, protocol=pickle.HIGHEST_PROTOCOL)
+            return pickle.dumps(unserialized_data, protocol=self._protocol)
 
     def run_backend(self, backend, *args, **kwargs):
         """Optimize parameters using the given backend."""

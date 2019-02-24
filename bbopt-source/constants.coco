@@ -17,29 +17,36 @@ classifiers = (
     "Operating System :: OS Independent",
 )
 requirements = (
-    "portalocker",
     "numpy",
-    "scikit-optimize",
-    "hyperopt",
+    "portalocker>=1.4",
+    "scikit-optimize>=0.5.2",
+    "hyperopt>=0.1.2",
     # fixes an error in hyperopt 0.1 with networkx>=2.0
     "networkx<2.0",
 )
 extra_requirements = {
     ":python_version<'3'": (
-        "futures",
+        "futures>=3.2",
     ),
-    "dev": (
-        "pytest",
+    "examples": (
         "keras",
         "scikit-learn",
     ),
 }
+extra_requirements["dev"] = (
+    extra_requirements["examples"]
+    + (
+        "coconut-develop",
+        "pytest>=3.0",
+    )
+)
 
 
 # Optimizer constants:
 data_file_ext = ".bbopt"
 lock_timeout = 5
 default_alg = "tree_structured_parzen_estimator"
+default_protocol = 2
 
 
 # CLI constants:

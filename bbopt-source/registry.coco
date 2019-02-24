@@ -2,8 +2,6 @@
 The backend and algorithm registries.
 """
 
-import traceback
-
 
 class Registry:
     """Registry that keeps track of registered objects."""

@@ -32,7 +32,7 @@ if _coconut_cached_module is not None and _coconut_os_path.dirname(_coconut_cach
 _coconut_sys.path.insert(0, _coconut_file_path)
 from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_pipe, _coconut_star_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_addpattern, _coconut_sentinel
 from __coconut__ import *
-_coconut_sys.path.remove(_coconut_file_path)
+_coconut_sys.path.pop(0)
 
 # Compiled Coconut: -----------------------------------------------------------
 

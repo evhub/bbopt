@@ -36,12 +36,12 @@ upload: clean install
 	twine upload dist/*
 
 .PHONY: test
-test: install
-	pytest --strict -s ./bbopt/tests
+test: clean install
+	pytest --strict --fulltrace -s ./bbopt/tests
 
 .PHONY: test-2
-test-2: install-2
-	python2 -m pytest --strict -s ./bbopt/tests
+test-2: clean install-2
+	python2 -m pytest --strict --fulltrace -s ./bbopt/tests
 
 .PHONY: clean
 clean:

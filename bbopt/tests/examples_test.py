@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x728c86c2
+# __coconut_hash__ = 0x371212f5
 
 # Compiled with Coconut version 1.4.0-post_dev8 [Ernest Scribbler]
 
@@ -15,13 +15,14 @@ if _coconut_cached_module is not None and _coconut_os_path.dirname(_coconut_cach
 _coconut_sys.path.insert(0, _coconut_file_path)
 from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_pipe, _coconut_star_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_addpattern, _coconut_sentinel
 from __coconut__ import *
-_coconut_sys.path.remove(_coconut_file_path)
+_coconut_sys.path.pop(0)
 
 # Compiled Coconut: -----------------------------------------------------------
 
 # Imports:
 
 import os
+sys = _coconut_sys
 import shutil
 import traceback
 import unittest
@@ -51,8 +52,10 @@ def remove_when_done(path):
             traceback.print_exc()
 
 
-def call_test(args, ignore_errs=[]):
+def call_test(args, ignore_errs=[], prepend_py=True):
     """Call args on the command line for a test."""
+    if prepend_py:
+        args = [sys.executable, "-m"] + args
     stdout, stderr, retcode = call_output(args)
     stdout, stderr = "".join(stdout), "".join(stderr)
     (print)((stdout + stderr).strip())
@@ -87,8 +90,8 @@ skopt_data = os.path.join(example_dir, "skopt_example.bbopt.pickle")
 hyperopt_file = os.path.join(example_dir, "hyperopt_example.py")
 hyperopt_data = os.path.join(example_dir, "hyperopt_example.bbopt.pickle")
 
-conditional_file = os.path.join(example_dir, "conditional_hyperopt_example.py")
-conditional_data = os.path.join(example_dir, "conditional_hyperopt_example.bbopt.pickle")
+conditional_hyperopt_file = os.path.join(example_dir, "conditional_hyperopt_example.py")
+conditional_hyperopt_data = os.path.join(example_dir, "conditional_hyperopt_example.bbopt.pickle")
 
 conditional_skopt_file = os.path.join(example_dir, "conditional_skopt_example.py")
 conditional_skopt_data = os.path.join(example_dir, "conditional_skopt_example.bbopt.pickle")
@@ -108,7 +111,7 @@ mixture_data = os.path.join(example_dir, "mixture_example.bbopt.json")
 class TestExamples(unittest.TestCase):
 
     def test_random(self):
-        print("\ntest_random:")
+        print("\ntest random:")
         with remove_when_done(random_data):
             results = call_test(["bbopt", random_file, "-n", "15"])
             want = max(get_nums(results, numtype=int))
@@ -117,7 +120,7 @@ class TestExamples(unittest.TestCase):
             assert got_x == want
 
     def test_skopt(self):
-        print("\ntest_skopt:")
+        print("\ntest skopt:")
         with remove_when_done(skopt_data):
             results = call_test(["bbopt", skopt_file, "-n", "15", "-j", "4"])
             want = min(get_nums(results, numtype=float))
@@ -126,7 +129,7 @@ class TestExamples(unittest.TestCase):
             assert got == want
 
     def test_hyperopt(self):
-        print("\ntest_hyperopt:")
+        print("\ntest hyperopt:")
         with remove_when_done(hyperopt_data):
             results = call_test(["bbopt", hyperopt_file, "-n", "15", "-j", "4"])
             want = min(get_nums(results, numtype=float))
@@ -135,11 +138,11 @@ class TestExamples(unittest.TestCase):
             assert got == want
 
     def test_conditional(self):
-        print("\ntest conditional:")
-        with remove_when_done(conditional_data):
-            results = call_test(["bbopt", conditional_file, "-n", "15", "-j", "4"])
+        print("\ntest conditional_hyperopt:")
+        with remove_when_done(conditional_hyperopt_data):
+            results = call_test(["bbopt", conditional_hyperopt_file, "-n", "15", "-j", "4"])
             want = max(get_nums(results, numtype=int))
-            assert os.path.exists(conditional_data)
+            assert os.path.exists(conditional_hyperopt_data)
             from bbopt.examples.conditional_hyperopt_example import x as got
             assert got == want
 

@@ -30,24 +30,25 @@ from bbopt.constants import (
     data_file_ext,
     lock_timeout,
     default_alg,
+    default_protocol,
 )
 
 
 class BlackBoxOptimizer:
     """Main bbopt optimizer object. See https://github.com/evhub/bbopt for documentation."""
 
-    def __init__(self, file, use_json=None):
+    def __init__(self, file, protocol=None):
         if not isinstance(file, Str):
             raise TypeError("file must be a string")
         self._file = norm_path(file)
 
-        if use_json is None:
-            # auto-detect use_json, defaulting to False
-            self._use_json = True
+        if protocol is None:
+            # auto-detect protocol
+            self._protocol = "json"
             if not os.path.exists(self.data_file):
-                self._use_json = False
+                self._protocol = default_protocol
         else:
-            self._use_json = use_json
+            self._protocol = protocol
 
         self.reload()
 
@@ -57,6 +58,10 @@ class BlackBoxOptimizer:
         self._examples = []
         self._load_data()
         self.run(alg=None)  # backend is set to serving by default
+
+    @property
+    def _use_json(self):
+        return self._protocol == "json"
 
     def _loads(self, raw_contents):
         if self._use_json:
@@ -68,7 +73,7 @@ class BlackBoxOptimizer:
         if self._use_json:
             return json.dumps(unserialized_data |> json_serialize).encode(encoding="utf-8")
         else:
-            return pickle.dumps(unserialized_data, protocol=pickle.HIGHEST_PROTOCOL)
+            return pickle.dumps(unserialized_data, protocol=self._protocol)
 
     def run_backend(self, backend, *args, **kwargs):
         """Optimize parameters using the given backend."""
