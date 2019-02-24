@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xac057cf0
+# __coconut_hash__ = 0x8fd77f52
 
 # Compiled with Coconut version 1.4.0-post_dev10 [Ernest Scribbler]
 
@@ -87,7 +87,7 @@ class BlackBoxOptimizer(_coconut.object):
 
     def _loads(self, raw_contents):
         if self._use_json:
-            return json.loads(raw_contents)
+            return json.loads(str(raw_contents, encoding="utf-8"))
         else:
             return pickle.loads(raw_contents)
 
