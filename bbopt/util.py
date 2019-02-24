@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xfbfc63b5
+# __coconut_hash__ = 0x75c33fb4
 
 # Compiled with Coconut version 1.4.0-post_dev10 [Ernest Scribbler]
 
@@ -65,7 +65,7 @@ def denumpy(obj, fallback=None):
     if np.issubdtype(obj, np.bool_):
         return bool(obj)
     if np.issubdtype(obj, np.str_):
-        return py_str(obj)
+        return str(obj)
     if fallback is not None:
         fallback()
     return obj

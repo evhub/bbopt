@@ -38,7 +38,7 @@ def denumpy(obj, fallback=None):
     if np.issubdtype(obj, np.bool_):
         return bool(obj)
     if np.issubdtype(obj, np.str_):
-        return py_str(obj)
+        return str(obj)
     if fallback is not None:
         fallback()
     return obj
