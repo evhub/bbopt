@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd25868f9
+# __coconut_hash__ = 0xbb08a649
 
-# Compiled with Coconut version 1.4.0-post_dev9 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.0-post_dev10 [Ernest Scribbler]
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -12,10 +12,11 @@ _coconut_file_path = _coconut_os_path.dirname(_coconut_os_path.dirname(_coconut_
 _coconut_cached_module = _coconut_sys.modules.get(str("__coconut__"))
 if _coconut_cached_module is not None and _coconut_os_path.dirname(_coconut_cached_module.__file__) != _coconut_file_path:
     del _coconut_sys.modules[str("__coconut__")]
-_coconut_sys.path.insert(0, _coconut_file_path)
+_coconut_sys.path.append(_coconut_file_path)
 from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_pipe, _coconut_star_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_addpattern, _coconut_sentinel
 from __coconut__ import *
-_coconut_sys.path.pop(0)
+if _coconut_sys.version_info >= (3,):
+    _coconut_sys.path.pop()
 
 # Compiled Coconut: -----------------------------------------------------------
 
@@ -52,7 +53,10 @@ def remove_when_done(path):
             traceback.print_exc()
 
 
-def call_test(args, ignore_errs=[], prepend_py=True):
+always_ignore_errs = ("DeprecationWarning: numpy.core.umath_tests is an internal NumPy module", "from numpy.core.umath_tests import",)
+
+
+def call_test(args, ignore_errs=(), prepend_py=True):
     """Call args on the command line for a test."""
     if prepend_py:
         args = [sys.executable, "-m"] + args
@@ -61,7 +65,7 @@ def call_test(args, ignore_errs=[], prepend_py=True):
     (print)((stdout + stderr).strip())
     clean_stderr = []
     for line in stderr.splitlines():
-        if not any((ignore in line for ignore in ignore_errs)):
+        if not any((ignore in line for ignore in _coconut.itertools.chain.from_iterable((_coconut_func() for _coconut_func in (lambda: always_ignore_errs, lambda: ignore_errs))))):
             clean_stderr.append(line)
     clean_stderr = "\n".join(clean_stderr)
     assert not retcode and not clean_stderr, clean_stderr
@@ -171,7 +175,7 @@ class TestExamples(unittest.TestCase):
         from bbopt.examples import mixture_example
         assert mixture_example.y == sum([4, 5, 6, 7, 8])
         with remove_when_done(mixture_data):
-            results = call_test(["bbopt", mixture_file, "-n", "15", "-j", "4"], ignore_errs=["UserWarning: The objective has been evaluated at this point before." "warnings.warn(",])
+            results = call_test(["bbopt", mixture_file, "-n", "15", "-j", "4"], ignore_errs=("UserWarning: The objective has been evaluated at this point before." "warnings.warn(",))
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(mixture_data)
             reload(mixture_example)

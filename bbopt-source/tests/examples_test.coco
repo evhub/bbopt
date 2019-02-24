@@ -28,7 +28,13 @@ def remove_when_done(path):
             traceback.print_exc()
 
 
-def call_test(args, ignore_errs=[], prepend_py=True):
+always_ignore_errs = (
+    "DeprecationWarning: numpy.core.umath_tests is an internal NumPy module",
+    "from numpy.core.umath_tests import",
+)
+
+
+def call_test(args, ignore_errs=(), prepend_py=True):
     """Call args on the command line for a test."""
     if prepend_py:
         args = [sys.executable, "-m"] + args
@@ -37,7 +43,7 @@ def call_test(args, ignore_errs=[], prepend_py=True):
     (stdout + stderr).strip() |> print
     clean_stderr = []
     for line in stderr.splitlines():
-        if not any(ignore in line for ignore in ignore_errs):
+        if not any(ignore in line for ignore in always_ignore_errs :: ignore_errs):
             clean_stderr.append(line)
     clean_stderr = "\n".join(clean_stderr)
     assert not retcode and not clean_stderr, clean_stderr
@@ -149,10 +155,10 @@ class TestExamples(unittest.TestCase):
         with remove_when_done(mixture_data):
             results = call_test(
                 ["bbopt", mixture_file, "-n", "15", "-j", "4"],
-                ignore_errs=[
+                ignore_errs=(
                     "UserWarning: The objective has been evaluated at this point before."
                     "warnings.warn(",
-                ],
+                ),
             )
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(mixture_data)

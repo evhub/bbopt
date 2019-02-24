@@ -71,6 +71,9 @@ class SkoptBackend:
             for name, param_kwargs in sorted_items(params)
         ]
 
+        if isinstance(base_estimator, str):
+            base_estimator = py_str(base_estimator)
+
         optimizer = Optimizer(dimensions, base_estimator, **kwargs)
         optimizer.tell(data_points, losses)
         current_point = optimizer.ask()
