@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf7008e49
+# __coconut_hash__ = 0x65fdbbee
 
 # Compiled with Coconut version 1.4.0-post_dev9 [Ernest Scribbler]
 
 """
-BBopt command line interface.
+Endpoint for the BBopt CLI.
 """
 
 # Coconut Header: -------------------------------------------------------------
@@ -25,73 +25,7 @@ _coconut_sys.path.pop(0)
 
 
 
-import os
-sys = _coconut_sys
-import argparse
-import subprocess
-from concurrent.futures import ProcessPoolExecutor
-from pprint import pprint
-
-from bbopt.optimizer import BlackBoxOptimizer
-from bbopt.constants import description
-from bbopt.constants import default_trials
-from bbopt.constants import default_jobs
-
-
-parser = argparse.ArgumentParser(prog="bbopt", description=description)
-
-parser.add_argument("file", metavar="file", type=str, help="path to the Python file to run")
-
-parser.add_argument("-n", "--num-trials", metavar="trials", type=int, default=default_trials, help="number of trials to run (defaults to {})".format(default_trials))
-
-parser.add_argument("-j", "--jobs", metavar="processes", type=int, default=default_jobs, help="number of processes to use (defaults to {})".format(default_jobs))
-
-parser.add_argument("-q", "--quiet", action="store_true", help="suppress all informational output")
-
-parser.add_argument("--python", metavar="executable", type=str, default=sys.executable, help="the python executable to use (defaults to the current python)")
-
-parser.add_argument("--args", type=str, nargs=argparse.REMAINDER, help="arguments to pass to the file being run")
-
-
-def base_show(quiet, msg):
-    """Show the given message with [BBopt] if not quiet."""
-    if not quiet:
-        print("[BBopt]", msg)
-
-
-def run_trial(args, cmd, i):
-    """Pickleable function for running trials in parallel."""
-    show = _coconut.functools.partial(base_show, args.quiet)
-    show("{}/{} starting...".format(i + 1, args.num_trials))
-    subprocess.check_call(cmd)
-    show("{}/{} finished.".format(i + 1, args.num_trials))
-
-
-def main():
-    args = parser.parse_args()
-    if not os.path.isfile(args.file):
-        raise ValueError("could not find file {}".format(args.file))
-
-    show = _coconut.functools.partial(base_show, args.quiet)
-    cmd = [args.python, args.file] + ((lambda _coconut_none_coalesce_item: [] if _coconut_none_coalesce_item is None else _coconut_none_coalesce_item)(args.args))
-
-    show("Running {} trials using {} process(es) of:\n\t> {}".format(args.num_trials, args.jobs, " ".join(cmd)))
-
-    if args.jobs == 1:
-        for i in range(args.num_trials):
-            run_trial(args, cmd, i)
-    else:
-        with ProcessPoolExecutor(args.jobs) as executor:
-            for i in range(args.num_trials):
-                executor.submit(run_trial, args, cmd, i)
-
-    if not args.quiet:
-        bb = BlackBoxOptimizer(args.file)
-        show("Black box optimization finished; data saved to {}.".format(os.path.relpath(bb.data_file)))
-
-        best_example = bb.get_optimal_run()
-        show("Summary of best run:")
-        pprint(bb.get_optimal_run())
+from bbopt.cli import main
 
 
 if __name__ == "__main__":

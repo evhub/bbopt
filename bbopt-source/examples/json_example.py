@@ -7,7 +7,7 @@ To run this example, just run:
 
 # BBopt setup:
 from bbopt import BlackBoxOptimizer
-bb = BlackBoxOptimizer(file=__file__, use_json=True)
+bb = BlackBoxOptimizer(file=__file__, protocol="json")
 if __name__ == "__main__":
     bb.run()
 

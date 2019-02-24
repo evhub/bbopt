@@ -30,7 +30,7 @@ setuptools.setup(
     extras_require=extra_requirements |> fmap$((k, v) -> (k, list(v))),
     entry_points={
         "console_scripts": [
-            "bbopt = bbopt.__main__:main",
+            "bbopt = bbopt.cli:main",
         ],
     },
 )

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb8edd736
+# __coconut_hash__ = 0xd25868f9
 
 # Compiled with Coconut version 1.4.0-post_dev9 [Ernest Scribbler]
 
@@ -99,11 +99,11 @@ conditional_skopt_data = os.path.join(example_dir, "conditional_skopt_example.bb
 numpy_file = os.path.join(example_dir, "numpy_example.py")
 numpy_data = os.path.join(example_dir, "numpy_example.bbopt.pickle")
 
+mixture_file = os.path.join(example_dir, "mixture_example.py")
+mixture_data = os.path.join(example_dir, "mixture_example.bbopt.pickle")
+
 json_file = os.path.join(example_dir, "json_example.py")
 json_data = os.path.join(example_dir, "json_example.bbopt.json")
-
-mixture_file = os.path.join(example_dir, "mixture_example.py")
-mixture_data = os.path.join(example_dir, "mixture_example.bbopt.json")
 
 
 # Tests:
@@ -166,17 +166,6 @@ class TestExamples(unittest.TestCase):
             reload(numpy_example)
             assert numpy_example.y == want
 
-    def test_json(self):
-        print("\ntest json:")
-        from bbopt.examples import json_example
-        assert round(json_example.y, 5) == 6
-        with remove_when_done(json_data):
-            results = call_test(["bbopt", json_file, "-n", "15", "-j", "4"])
-            want = min(get_nums(results, numtype=float))
-            assert os.path.exists(json_data)
-            reload(json_example)
-            assert json_example.y == want
-
     def test_mixture(self):
         print("\ntest mixture:")
         from bbopt.examples import mixture_example
@@ -187,3 +176,14 @@ class TestExamples(unittest.TestCase):
             assert os.path.exists(mixture_data)
             reload(mixture_example)
             assert mixture_example.y == want
+
+    def test_json(self):
+        print("\ntest json:")
+        from bbopt.examples import json_example
+        assert round(json_example.y, 5) == 6
+        with remove_when_done(json_data):
+            results = call_test(["bbopt", json_file, "-n", "15", "-j", "4"])
+            want = min(get_nums(results, numtype=float))
+            assert os.path.exists(json_data)
+            reload(json_example)
+            assert json_example.y == want

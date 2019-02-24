@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xba17cbac
+# __coconut_hash__ = 0x50769ed2
 
 # Compiled with Coconut version 1.4.0-post_dev9 [Ernest Scribbler]
 
@@ -692,4 +692,4 @@ from constants import classifiers
 from constants import extra_requirements
 
 
-setuptools.setup(name=name, version=version, description=description, url=github_url, author=author, author_email=author_email, classifiers=(list)(classifiers), packages=setuptools.find_packages(), install_requires=(list)(requirements), extras_require=fmap(lambda k, v: (k, list(v)), extra_requirements), entry_points={"console_scripts": ["bbopt = bbopt.__main__:main",]})
+setuptools.setup(name=name, version=version, description=description, url=github_url, author=author, author_email=author_email, classifiers=(list)(classifiers), packages=setuptools.find_packages(), install_requires=(list)(requirements), extras_require=fmap(lambda k, v: (k, list(v)), extra_requirements), entry_points={"console_scripts": ["bbopt = bbopt.cli:main",]})
