@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd519fc05
+# __coconut_hash__ = 0xf7008e49
 
 # Compiled with Coconut version 1.4.0-post_dev9 [Ernest Scribbler]
 
@@ -26,6 +26,7 @@ _coconut_sys.path.pop(0)
 
 
 import os
+sys = _coconut_sys
 import argparse
 import subprocess
 from concurrent.futures import ProcessPoolExecutor
@@ -47,7 +48,7 @@ parser.add_argument("-j", "--jobs", metavar="processes", type=int, default=defau
 
 parser.add_argument("-q", "--quiet", action="store_true", help="suppress all informational output")
 
-parser.add_argument("--python", metavar="executable", type=str, default="python", help="the python executable to use (defaults to 'python')")
+parser.add_argument("--python", metavar="executable", type=str, default=sys.executable, help="the python executable to use (defaults to the current python)")
 
 parser.add_argument("--args", type=str, nargs=argparse.REMAINDER, help="arguments to pass to the file being run")
 
@@ -84,10 +85,10 @@ def main():
             for i in range(args.num_trials):
                 executor.submit(run_trial, args, cmd, i)
 
-    bb = BlackBoxOptimizer(args.file)
-    show("Black box optimization finished; data saved to {}.".format(os.path.relpath(bb.data_file)))
-
     if not args.quiet:
+        bb = BlackBoxOptimizer(args.file)
+        show("Black box optimization finished; data saved to {}.".format(os.path.relpath(bb.data_file)))
+
         best_example = bb.get_optimal_run()
         show("Summary of best run:")
         pprint(bb.get_optimal_run())

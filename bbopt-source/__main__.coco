@@ -3,6 +3,7 @@ BBopt command line interface.
 """
 
 import os
+import sys
 import argparse
 import subprocess
 from concurrent.futures import ProcessPoolExecutor
@@ -54,8 +55,8 @@ parser.add_argument(
     "--python",
     metavar="executable",
     type=str,
-    default="python",
-    help="the python executable to use (defaults to 'python')"
+    default=sys.executable,
+    help="the python executable to use (defaults to the current python)"
 )
 
 parser.add_argument(
@@ -102,10 +103,10 @@ def main():
             for i in range(args.num_trials):
                 executor.submit(run_trial, args, cmd, i)
 
-    bb = BlackBoxOptimizer(args.file)
-    show("Black box optimization finished; data saved to {}.".format(os.path.relpath(bb.data_file)))
-
     if not args.quiet:
+        bb = BlackBoxOptimizer(args.file)
+        show("Black box optimization finished; data saved to {}.".format(os.path.relpath(bb.data_file)))
+
         best_example = bb.get_optimal_run()
         show("Summary of best run:")
         pprint(bb.get_optimal_run())

@@ -53,6 +53,9 @@ clean:
 
 .PHONY: wipe
 wipe: clean
+	-pip uninstall bbopt
+	-pip2 uninstall bbopt
+	-pip3 uninstall bbopt
 	rm -rf ./bbopt ./setup.py
 
 .PHONY: watch
