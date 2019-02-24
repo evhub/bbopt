@@ -25,6 +25,7 @@ from bbopt.util import (
     sync_file,
     ensure_file,
     clear_file,
+    denumpy_all,
 )
 from bbopt.constants import (
     data_file_ext,
@@ -134,7 +135,7 @@ class BlackBoxOptimizer:
             if len(value.shape) != 1:
                 raise ValueError("gain/loss must be a scalar or 1-dimensional array, not {}".format(value))
             value = tuple(value)
-        self._current_example[reward_type] = value
+        self._current_example[reward_type] = denumpy_all(value)
         if not self.is_serving:
             self._save_data()
 

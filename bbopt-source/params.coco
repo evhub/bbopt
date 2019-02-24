@@ -9,6 +9,7 @@ from bbopt.util import (
     Num,
     format_err,
     all_isinstance,
+    denumpy_all,
 )
 
 
@@ -115,6 +116,9 @@ class ParamProcessor:
         new_kwargs = {}
         saw_func = None
         for func, args in kwargs.items():
+            # denumpy args
+            args = denumpy_all(args)
+
             # pass through non-function kwargs
             if func not in self.supported_funcs:
                 new_kwargs[func] = args

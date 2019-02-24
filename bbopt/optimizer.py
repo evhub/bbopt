@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xbdc966ea
+# __coconut_hash__ = 0xac057cf0
 
 # Compiled with Coconut version 1.4.0-post_dev10 [Ernest Scribbler]
 
@@ -49,6 +49,7 @@ from bbopt.util import best_example
 from bbopt.util import sync_file
 from bbopt.util import ensure_file
 from bbopt.util import clear_file
+from bbopt.util import denumpy_all
 from bbopt.constants import data_file_ext
 from bbopt.constants import lock_timeout
 from bbopt.constants import default_alg
@@ -156,7 +157,7 @@ class BlackBoxOptimizer(_coconut.object):
             if len(value.shape) != 1:
                 raise ValueError("gain/loss must be a scalar or 1-dimensional array, not {}".format(value))
             value = tuple(value)
-        self._current_example[reward_type] = value
+        self._current_example[reward_type] = denumpy_all(value)
         if not self.is_serving:
             self._save_data()
 

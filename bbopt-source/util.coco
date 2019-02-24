@@ -22,6 +22,43 @@ def norm_path(path) =
     |> os.path.normcase)
 
 
+def isnumpy(obj):
+    """Determines if obj is a numpy scalar."""
+    return type(obj).__module__ == "numpy" and np.isscalar(obj)
+
+
+def denumpy(obj, fallback=None):
+    """Convert numpy data types to their Python equivalents."""
+    # the ordering here is extremely important; int must come before
+    #  bool, since otherwise this will cast all ints to bools
+    if np.issubdtype(obj, np.number) or np.issubdtype(obj, np.unsignedinteger):
+        return int(obj)
+    if np.issubdtype(obj, np.floating):
+        return float(obj)
+    if np.issubdtype(obj, np.bool_):
+        return bool(obj)
+    if np.issubdtype(obj, np.str_):
+        return py_str(obj)
+    if fallback is not None:
+        fallback()
+    return obj
+
+
+def denumpy_all(obj):
+    """Recursively apply denumpy to the given obj."""
+    if isinstance(obj, (list, tuple)):
+        return obj |> fmap$(denumpy_all)
+    elif isinstance(obj, dict):
+        return {
+            denumpy_all(k): denumpy_all(v)
+            for k, v in obj.items()
+        }
+    elif isnumpy(obj):
+        return denumpy(obj)
+    else:
+        return obj
+
+
 def json_serialize(obj):
     """Serialize obj for encoding in JSON."""
     if obj is None or isinstance(obj, (int, float, bool, str)):
@@ -41,17 +78,8 @@ def json_serialize(obj):
         for x in obj:
             serialized_list.append(json_serialize(x))
         return serialized_list
-    if type(obj).__module__ == "numpy":
-        # the ordering here is extremely important; int must come before
-        #  bool, since otherwise this will cast all ints to bools
-        if np.issubdtype(obj, np.number) or np.issubdtype(obj, np.unsignedinteger):
-            return int(obj)
-        if np.issubdtype(obj, np.floating):
-            return float(obj)
-        if np.issubdtype(obj, np.bool_):
-            return bool(obj)
-        if np.issubdtype(obj, np.str_):
-            return json_serialize(py_str(obj))
+    if isnumpy(obj):
+        return denumpy(obj, fallback=(def -> raise TypeError("cannot JSON serialize numpy dtype {}".format(obj.dtype))))
     raise TypeError("cannot JSON serialize {}".format(obj))
 
 

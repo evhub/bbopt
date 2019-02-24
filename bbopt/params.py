@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa292a73d
+# __coconut_hash__ = 0xf45b2261
 
 # Compiled with Coconut version 1.4.0-post_dev10 [Ernest Scribbler]
 
@@ -35,6 +35,7 @@ else:
 from bbopt.util import Num
 from bbopt.util import format_err
 from bbopt.util import all_isinstance
+from bbopt.util import denumpy_all
 
 
 # Handlers:
@@ -128,6 +129,9 @@ class ParamProcessor(_coconut.object):
         new_kwargs = {}
         saw_func = None
         for func, args in kwargs.items():
+# denumpy args
+            args = denumpy_all(args)
+
 # pass through non-function kwargs
             if func not in self.supported_funcs:
                 new_kwargs[func] = args

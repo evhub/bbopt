@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc307d04f
+# __coconut_hash__ = 0xfbfc63b5
 
 # Compiled with Coconut version 1.4.0-post_dev10 [Ernest Scribbler]
 
@@ -49,51 +49,66 @@ def norm_path(path):
     return ((os.path.normcase)((os.path.realpath)((os.path.abspath)((os.path.expanduser)(path)))))
 
 
-def json_serialize(obj):
-    """Serialize obj for encoding in JSON."""
-    while True:
-        if obj is None or isinstance(obj, (int, float, bool, str)):
-            return obj
-        if isinstance(obj, bytes):
-            return str(obj, encoding="utf-8")
-        if isinstance(obj, Mapping):
-            serialized_dict = {}
-            for k, v in obj.items():
-                serialized_k = json_serialize(k)
-                if not isinstance(serialized_k, str):
-                    raise TypeError("dict keys must be strings, not {}".format(k))
-                serialized_dict[k] = json_serialize(v)
-            return serialized_dict
-        if isinstance(obj, Iterable):
-            serialized_list = []
-            for x in obj:
-                serialized_list.append(json_serialize(x))
-            return serialized_list
-        if type(obj).__module__ == "numpy":
+def isnumpy(obj):
+    """Determines if obj is a numpy scalar."""
+    return type(obj).__module__ == "numpy" and np.isscalar(obj)
+
+
+def denumpy(obj, fallback=None):
+    """Convert numpy data types to their Python equivalents."""
 # the ordering here is extremely important; int must come before
 #  bool, since otherwise this will cast all ints to bools
-            if np.issubdtype(obj, np.number) or np.issubdtype(obj, np.unsignedinteger):
-                return int(obj)
-            if np.issubdtype(obj, np.floating):
-                return float(obj)
-            if np.issubdtype(obj, np.bool_):
-                return bool(obj)
-            if np.issubdtype(obj, np.str_):
-                try:
-                    _coconut_is_recursive = json_serialize is _coconut_recursive_func_1
-                except _coconut.NameError:
-                    _coconut_is_recursive = False
-                if _coconut_is_recursive:
-                    obj = py_str(obj)
-                    continue
-                else:
-                    return json_serialize(py_str(obj))
-
-        raise TypeError("cannot JSON serialize {}".format(obj))
+    if np.issubdtype(obj, np.number) or np.issubdtype(obj, np.unsignedinteger):
+        return int(obj)
+    if np.issubdtype(obj, np.floating):
+        return float(obj)
+    if np.issubdtype(obj, np.bool_):
+        return bool(obj)
+    if np.issubdtype(obj, np.str_):
+        return py_str(obj)
+    if fallback is not None:
+        fallback()
+    return obj
 
 
-        return None
-_coconut_recursive_func_1 = json_serialize
+def denumpy_all(obj):
+    """Recursively apply denumpy to the given obj."""
+    if isinstance(obj, (list, tuple)):
+        return fmap(denumpy_all, obj)
+    elif isinstance(obj, dict):
+        return dict(((denumpy_all(k)), (denumpy_all(v))) for k, v in obj.items())
+    elif isnumpy(obj):
+        return denumpy(obj)
+    else:
+        return obj
+
+
+def json_serialize(obj):
+    """Serialize obj for encoding in JSON."""
+    if obj is None or isinstance(obj, (int, float, bool, str)):
+        return obj
+    if isinstance(obj, bytes):
+        return str(obj, encoding="utf-8")
+    if isinstance(obj, Mapping):
+        serialized_dict = {}
+        for k, v in obj.items():
+            serialized_k = json_serialize(k)
+            if not isinstance(serialized_k, str):
+                raise TypeError("dict keys must be strings, not {}".format(k))
+            serialized_dict[k] = json_serialize(v)
+        return serialized_dict
+    if isinstance(obj, Iterable):
+        serialized_list = []
+        for x in obj:
+            serialized_list.append(json_serialize(x))
+        return serialized_list
+    if isnumpy(obj):
+        def _coconut_lambda_0(_=None):
+            raise TypeError("cannot JSON serialize numpy dtype {}".format(obj.dtype))
+        return denumpy(obj, fallback=(_coconut_lambda_0))
+    raise TypeError("cannot JSON serialize {}".format(obj))
+
+
 def sorted_items(params):
     """Return an iterator of the dict's items sorted by its keys."""
     return sorted(params.items())
