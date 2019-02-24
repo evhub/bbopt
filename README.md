@@ -121,7 +121,7 @@ Create a new `bb` object; this should be done at the beginning of your program a
 
 _file_ is used by BBopt to figure out where to load and save data to, and should usually just be set to `__file__` (BBopt uses `os.path.splitext(file)[0]` as the base path for the data file).
 
-_protocol_ determines how BBopt serializes data. If `None` (the default), BBopt will use pickle protocol 2, which is the highest version that works on both Python 2 and Python 3 (unless a `json` file is present, in which case BBopt will use `json`). To use the newest protocol instead, pass `protocol=-1`. If `protocol="json"`, BBopt will use `json` instead of `pickle`, which has the best cross-platform compatibility.
+_protocol_ determines how BBopt serializes data. If `None` (the default), BBopt will use pickle protocol 2, which is the highest version that works on both Python 2 and Python 3 (unless a `json` file is present, in which case BBopt will use `json`). To use the newest protocol instead, pass `protocol=-1`. If `protocol="json"`, BBopt will use `json` instead of `pickle`, which is occasionally useful for cross-platform compatibility.
 
 #### `run`
 
