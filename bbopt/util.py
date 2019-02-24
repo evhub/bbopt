@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4fe8645b
+# __coconut_hash__ = 0xbc8d787a
 
-# Compiled with Coconut version 1.4.0-post_dev8 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.0-post_dev9 [Ernest Scribbler]
 
 """
 Utilities for use across all of bbopt.
