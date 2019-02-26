@@ -1,6 +1,6 @@
 # BBopt
 
-BBopt aims to provide the easiest hyperparameter optimization you'll ever do. Think of BBopt like [Keras](https://keras.io/) for black box optimization: one interface for interfacing with any backend.
+BBopt aims to provide the easiest hyperparameter optimization you'll ever do. Think of BBopt like [Keras](https://keras.io/) for black box optimization: one universal interface for working with any backend.
 
 In addition to its simple, easy-to-use interface BBopt provides:
 - a universal API for defining your tunable parameters based on the standard library [`random`](https://docs.python.org/3.4/library/random.html) module (so you don't even have to learn anything new!),
