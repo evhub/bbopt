@@ -8,7 +8,7 @@ In addition to its simple, easy-to-use interface BBopt provides:
 - the ability to switch algorithms (even across different backends!) while retaining all previous trials,
 - support for optimizing over conditional parameters that only appear during some runs,
 - multiprocessing-safe data saving to enable running multiple trials in parallel, and
-- support for all major Python versions (`2.7` or `3.3`+).
+- support for all major Python versions (`2.7` or `3.3+`).
 
 Once you've defined your parameters, training a black box optimization model on those parameters is as simple as
 ```
