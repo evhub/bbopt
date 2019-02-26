@@ -220,6 +220,8 @@ where
     + _guess_, which specifies the initial value for the parameter, and
     + _placeholder\_when\_missing_, which specifies what placeholder value a conditional parameter should be given if missing.
 
+_Important note: Once you bind a name to a parameter you cannot change that parameter's options. Thus, if the options defining your parameters can vary from run to run, you must use a different name for each possible combination._
+
 #### `randrange`
 
 BlackBoxOptimizer.**randrange**(_name_, _stop_, **_kwargs_)
