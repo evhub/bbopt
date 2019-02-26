@@ -29,15 +29,16 @@ if isinstance(bb.backend, MixtureBackend):
     })
 
 
-# Set up a parameter from a random sample.
+# Set up a parameter from a choice and a random sample.
 xs = bb.sample("xs", range(10), 5, guess=[4,5,6,7,8])
+y = bb.choice("y", [1, 10, 100], guess=10)
 
 
-# Set the goal to be the sum.
-y = sum(xs)
-bb.minimize(y)
+# Set the goal to be the absolute difference of sum(xs) and y.
+loss = abs(sum(xs) - y)
+bb.minimize(loss)
 
 
 # Finally, we'll print out the value we used for debugging purposes.
 if __name__ == "__main__":
-    print(repr(y))
+    print(repr(loss))

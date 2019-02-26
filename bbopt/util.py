@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x75c33fb4
+# __coconut_hash__ = 0x4bc36269
 
 # Compiled with Coconut version 1.4.0-post_dev10 [Ernest Scribbler]
 
@@ -121,8 +121,9 @@ def negate_objective(objective):
         return -objective
 
 
-def make_features(values, params, fallback_func):
-    """Return an iterator of the values for the parameters in sorted order with the given fallback function."""
+def make_features(values, params, fallback_func, convert_choice=False):
+    """Return an iterator of the values for the parameters in sorted order with the given fallback function.
+    If convert choice, converts choice values into choice indices."""
     for name, param_kwargs in sorted_items(params):
         _coconut_match_to = values
         _coconut_match_check = False
@@ -132,6 +133,19 @@ def make_features(values, params, fallback_func):
                 feature = _coconut_match_temp_0
                 _coconut_match_check = True
         if _coconut_match_check:
+            if convert_choice:
+                _coconut_match_to = param_kwargs
+                _coconut_match_check = False
+                if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
+                    _coconut_match_temp_0 = _coconut_match_to.get("choice", _coconut_sentinel)
+                    if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut.isinstance(_coconut_match_temp_0, _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_temp_0) == 1):
+                        choices = _coconut_match_temp_0[0]
+                        _coconut_match_check = True
+                if _coconut_match_check:
+                    try:
+                        feature = choices.index(feature)
+                    except IndexError:
+                        raise ValueError("prior choice {} does not appear in choices {}".format(feature, choices))
             yield feature
         else:
             _coconut_match_to = param_kwargs

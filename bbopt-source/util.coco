@@ -95,10 +95,17 @@ def negate_objective(objective):
         return -objective
 
 
-def make_features(values, params, fallback_func):
-    """Return an iterator of the values for the parameters in sorted order with the given fallback function."""
+def make_features(values, params, fallback_func, convert_choice=False):
+    """Return an iterator of the values for the parameters in sorted order with the given fallback function.
+    If convert choice, converts choice values into choice indices."""
     for name, param_kwargs in sorted_items(params):
         match {=name: feature, **_} in values:
+            if convert_choice:
+                match {"choice": (choices,), **_} in param_kwargs:
+                    try:
+                        feature = choices.index(feature)
+                    except IndexError:
+                        raise ValueError("prior choice {} does not appear in choices {}".format(feature, choices))
             yield feature
         else: match {"placeholder_when_missing": placeholder_value, **_} in param_kwargs:
             yield placeholder_value

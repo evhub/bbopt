@@ -70,7 +70,12 @@ def examples_to_trials(examples, params):
         idxs = {}
         for k, v in zip(
             sorted(params),
-            make_features(ex["values"], params, fallback_func=(name, **kwargs) -> NA)
+            make_features(
+                ex["values"],
+                params,
+                fallback_func=(name, **kwargs) -> NA,
+                convert_choice=True,
+            ),
         ):
             vals[k] = [v] if v is not NA else []
             idxs[k] = [tid] if v is not NA else []
@@ -104,7 +109,7 @@ class HyperoptBackend:
     random_backend = RandomBackend()
     current_values = None
 
-    def __init__(self, examples, params, algo=tpe.suggest, rstate=np.random.RandomState(), **kwargs):
+    def __init__(self, examples, params, algo=tpe.suggest, rstate=np.random.RandomState(), show_progressbar=False, **kwargs):
         if not examples:
             self.current_values = {}
             return
@@ -126,6 +131,7 @@ class HyperoptBackend:
             domain,
             trials,
             rstate,
+            show_progressbar=show_progressbar,
             **kwargs,
         ) |> next
 

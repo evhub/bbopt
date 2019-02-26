@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc072b587
+# __coconut_hash__ = 0x85cd25d0
 
 # Compiled with Coconut version 1.4.0-post_dev10 [Ernest Scribbler]
 
@@ -25,8 +25,8 @@ if _coconut_sys.version_info >= (3,):
 import os
 sys = _coconut_sys
 import shutil
-import traceback
 import unittest
+import traceback
 from contextlib import contextmanager
 if _coconut_sys.version_info < (3, 4):
     from imp import reload
@@ -39,8 +39,13 @@ from coconut.command.util import call_output
 # Utilities:
 
 @contextmanager
-def remove_when_done(path):
-    """Removes a path when done."""
+def using(path):
+    """Removes a path when the context is started and ended."""
+    if os.path.exists(path):
+        if os.path.isdir(path):
+            shutil.rmtree(path)
+        elif os.path.isfile(path):
+            os.remove(path)
     try:
         yield
     finally:
@@ -116,7 +121,7 @@ class TestExamples(unittest.TestCase):
 
     def test_random(self):
         print("\ntest random:")
-        with remove_when_done(random_data):
+        with using(random_data):
             results = call_test(["bbopt", random_file, "-n", "15"])
             want = max(get_nums(results, numtype=int))
             assert os.path.exists(random_data)
@@ -125,7 +130,7 @@ class TestExamples(unittest.TestCase):
 
     def test_skopt(self):
         print("\ntest skopt:")
-        with remove_when_done(skopt_data):
+        with using(skopt_data):
             results = call_test(["bbopt", skopt_file, "-n", "15", "-j", "4"])
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(skopt_data)
@@ -134,7 +139,7 @@ class TestExamples(unittest.TestCase):
 
     def test_hyperopt(self):
         print("\ntest hyperopt:")
-        with remove_when_done(hyperopt_data):
+        with using(hyperopt_data):
             results = call_test(["bbopt", hyperopt_file, "-n", "15", "-j", "4"])
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(hyperopt_data)
@@ -143,7 +148,7 @@ class TestExamples(unittest.TestCase):
 
     def test_conditional(self):
         print("\ntest conditional_hyperopt:")
-        with remove_when_done(conditional_hyperopt_data):
+        with using(conditional_hyperopt_data):
             results = call_test(["bbopt", conditional_hyperopt_file, "-n", "15", "-j", "4"])
             want = max(get_nums(results, numtype=int))
             assert os.path.exists(conditional_hyperopt_data)
@@ -152,7 +157,7 @@ class TestExamples(unittest.TestCase):
 
     def test_conditional_skopt(self):
         print("\ntest conditional_skopt:")
-        with remove_when_done(conditional_skopt_data):
+        with using(conditional_skopt_data):
             results = call_test(["bbopt", conditional_skopt_file, "-n", "15", "-j", "4"])
             want = max(get_nums(results, numtype=int))
             assert os.path.exists(conditional_skopt_data)
@@ -163,7 +168,7 @@ class TestExamples(unittest.TestCase):
         print("\ntest numpy:")
         from bbopt.examples import numpy_example
         assert numpy_example.y == 0
-        with remove_when_done(numpy_data):
+        with using(numpy_data):
             results = call_test(["bbopt", numpy_file, "-n", "15", "-j", "4"])
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(numpy_data)
@@ -173,19 +178,19 @@ class TestExamples(unittest.TestCase):
     def test_mixture(self):
         print("\ntest mixture:")
         from bbopt.examples import mixture_example
-        assert mixture_example.y == sum([4, 5, 6, 7, 8])
-        with remove_when_done(mixture_data):
+        assert mixture_example.loss == abs(sum([4, 5, 6, 7, 8]) - 10)
+        with using(mixture_data):
             results = call_test(["bbopt", mixture_file, "-n", "15", "-j", "4"], ignore_errs=("UserWarning: The objective has been evaluated at this point before." "warnings.warn(",))
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(mixture_data)
             reload(mixture_example)
-            assert mixture_example.y == want
+            assert mixture_example.loss == want
 
     def test_json(self):
         print("\ntest json:")
         from bbopt.examples import json_example
         assert round(json_example.y, 5) == 6
-        with remove_when_done(json_data):
+        with using(json_data):
             results = call_test(["bbopt", json_file, "-n", "15", "-j", "4"])
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(json_data)

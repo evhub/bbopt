@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc408c9d3
+# __coconut_hash__ = 0x4027651d
 
 # Compiled with Coconut version 1.4.0-post_dev10 [Ernest Scribbler]
 
@@ -103,7 +103,7 @@ def examples_to_trials(examples, params):
 
         vals = {}
         idxs = {}
-        for k, v in zip(sorted(params), make_features(ex["values"], params, fallback_func=lambda name, **kwargs: NA)):
+        for k, v in zip(sorted(params), make_features(ex["values"], params, fallback_func=lambda name, **kwargs: NA, convert_choice=True)):
             vals[k] = [v] if v is not NA else []
             idxs[k] = [tid] if v is not NA else []
 
@@ -121,7 +121,7 @@ class HyperoptBackend(_coconut.object):
     random_backend = RandomBackend()
     current_values = None
 
-    def __init__(self, examples, params, algo=tpe.suggest, rstate=np.random.RandomState(), **kwargs):
+    def __init__(self, examples, params, algo=tpe.suggest, rstate=np.random.RandomState(), show_progressbar=False, **kwargs):
         if not examples:
             self.current_values = {}
             return
@@ -135,7 +135,7 @@ class HyperoptBackend(_coconut.object):
 
 # run one iteration of hyperparameter optimization, with values saved
 #  to the self.set_current_values callback passed to Domain
-        (next)(FMinIter(algo, domain, trials, rstate, **kwargs))
+        (next)(FMinIter(algo, domain, trials, rstate, show_progressbar=show_progressbar, **kwargs))
 
         assert self.current_values is not None, self.current_values
         assert set(self.current_values.keys()) == set(params), self.current_values
