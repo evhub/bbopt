@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x43b49c1b
+# __coconut_hash__ = 0x44bd7c64
 
-# Compiled with Coconut version 1.4.0-post_dev10 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.0-post_dev14 [Ernest Scribbler]
 
 """
 The random backend. Used for testing purposes.
