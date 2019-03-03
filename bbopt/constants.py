@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xe8920fb1
+# __coconut_hash__ = 0xfa056c6e
 
-# Compiled with Coconut version 1.4.0-post_dev14 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.0-post_dev16 [Ernest Scribbler]
 
 """
 Constants for use across all of BBopt.
@@ -35,7 +35,7 @@ github_url = "https://github.com/evhub/bbopt"
 author = "Evan Hubinger"
 author_email = "evanjhub@gmail.com"
 classifiers = ("Development Status :: 3 - Alpha", "License :: OSI Approved :: Apache Software License", "Topic :: Software Development :: Libraries :: Python Modules", "Operating System :: OS Independent",)
-requirements = ("numpy", "portalocker>=1.4", "scikit-optimize>=0.5.2", "hyperopt>=0.1.2", "networkx<2.0",)
+requirements = ("numpy>=1.0", "portalocker>=1.4", "scikit-optimize>=0.5.2", "hyperopt>=0.1.2", "networkx>=1.0,<2.0",)
 extra_requirements = {":python_version<'3'": ("futures>=3.2",), "examples": ("keras", "scikit-learn",)}
 extra_requirements["dev"] = (extra_requirements["examples"] + ("coconut-develop", "pytest>=3.0",))
 

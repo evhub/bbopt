@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb18c34cc
+# __coconut_hash__ = 0x5cb3bb3b
 
-# Compiled with Coconut version 1.4.0-post_dev14 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.0-post_dev16 [Ernest Scribbler]
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -666,6 +666,9 @@ def fmap(func, obj):
     Override by defining obj.__fmap__(func)."""
     if _coconut.hasattr(obj, "__fmap__"):
         return obj.__fmap__(func)
+    if obj.__class__.__module__ == "numpy":
+        from numpy import vectorize
+        return vectorize(func)(obj)
     return _coconut_makedata(obj.__class__, *(_coconut_starmap(func, obj.items()) if _coconut.isinstance(obj, _coconut.abc.Mapping) else _coconut_map(func, obj)))
 def memoize(maxsize=None, *args, **kwargs):
     """Decorator that memoizes a function,

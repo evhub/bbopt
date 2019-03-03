@@ -17,12 +17,12 @@ classifiers = (
     "Operating System :: OS Independent",
 )
 requirements = (
-    "numpy",
+    "numpy>=1.0",
     "portalocker>=1.4",
     "scikit-optimize>=0.5.2",
     "hyperopt>=0.1.2",
     # fixes an error in hyperopt 0.1 with networkx>=2.0
-    "networkx<2.0",
+    "networkx>=1.0,<2.0",
 )
 extra_requirements = {
     ":python_version<'3'": (
