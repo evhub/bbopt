@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4d7b3bd5
+# __coconut_hash__ = 0xacab9f53
 
-# Compiled with Coconut version 1.4.0-post_dev16 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.0-post_dev22 [Ernest Scribbler]
 
 """
 The main BBopt interface.
@@ -17,7 +17,7 @@ _coconut_cached_module = _coconut_sys.modules.get(str("__coconut__"))
 if _coconut_cached_module is not None and _coconut_os_path.dirname(_coconut_cached_module.__file__) != _coconut_file_path:
     del _coconut_sys.modules[str("__coconut__")]
 _coconut_sys.path.insert(0, _coconut_file_path)
-from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_pipe, _coconut_star_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_addpattern, _coconut_sentinel
+from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_back_pipe, _coconut_star_pipe, _coconut_back_star_pipe, _coconut_dubstar_pipe, _coconut_back_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_addpattern, _coconut_sentinel
 from __coconut__ import *
 if _coconut_sys.version_info >= (3,):
     _coconut_sys.path.pop(0)
@@ -185,7 +185,8 @@ class BlackBoxOptimizer(_coconut.object):
                     examples = _coconut_match_temp_1
                     _coconut_match_check = True
             if not _coconut_match_check:
-                _coconut_match_err = _coconut_MatchError("pattern-matching failed for " '\'{"params": params, "examples": examples} = self._loads(contents)\'' " in " + _coconut.repr(_coconut.repr(_coconut_match_to)))
+                _coconut_match_val_repr = _coconut.repr(_coconut_match_to)
+                _coconut_match_err = _coconut_MatchError("pattern-matching failed for " '\'{"params": params, "examples": examples} = self._loads(contents)\'' " in " + (_coconut_match_val_repr if _coconut.len(_coconut_match_val_repr) <= 500 else _coconut_match_val_repr[:500] + "..."))
                 _coconut_match_err.pattern = '{"params": params, "examples": examples} = self._loads(contents)'
                 _coconut_match_err.value = _coconut_match_to
                 raise _coconut_match_err

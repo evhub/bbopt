@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # type: ignore
 
-# Compiled with Coconut version 1.4.0-post_dev16 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.0-post_dev22 [Ernest Scribbler]
 
 """Built-in Coconut utilities."""
 
@@ -12,7 +12,7 @@ from __future__ import print_function, absolute_import, unicode_literals, divisi
 import sys as _coconut_sys
 if _coconut_sys.version_info < (3,):
     from __builtin__ import chr, filter, hex, input, int, map, object, oct, open, print, range, str, zip, filter, reversed, enumerate, raw_input, xrange
-    py_chr, py_hex, py_input, py_int, py_map, py_object, py_oct, py_open, py_print, py_range, py_str, py_zip, py_filter, py_reversed, py_enumerate, py_raw_input, py_xrange = chr, hex, input, int, map, object, oct, open, print, range, str, zip, filter, reversed, enumerate, raw_input, xrange
+    py_chr, py_hex, py_input, py_int, py_map, py_object, py_oct, py_open, py_print, py_range, py_str, py_zip, py_filter, py_reversed, py_enumerate, py_raw_input, py_xrange, py_repr = chr, hex, input, int, map, object, oct, open, print, range, str, zip, filter, reversed, enumerate, raw_input, xrange, repr
     _coconut_NotImplemented, _coconut_raw_input, _coconut_xrange, _coconut_int, _coconut_long, _coconut_print, _coconut_str, _coconut_unicode, _coconut_repr = NotImplemented, raw_input, xrange, int, long, print, str, unicode, repr
     from future_builtins import *
     chr, str = unichr, unicode
@@ -121,7 +121,7 @@ if _coconut_sys.version_info < (3,):
         _coconut_copy_reg.pickle(_coconut_functools.partial, _coconut_reduce_partial)
 else:
     from builtins import chr, filter, hex, input, int, map, object, oct, open, print, range, str, zip, filter, reversed, enumerate
-    py_chr, py_hex, py_input, py_int, py_map, py_object, py_oct, py_open, py_print, py_range, py_str, py_zip, py_filter, py_reversed, py_enumerate = chr, hex, input, int, map, object, oct, open, print, range, str, zip, filter, reversed, enumerate
+    py_chr, py_hex, py_input, py_int, py_map, py_object, py_oct, py_open, py_print, py_range, py_str, py_zip, py_filter, py_reversed, py_enumerate, py_repr = chr, hex, input, int, map, object, oct, open, print, range, str, zip, filter, reversed, enumerate, repr
     _coconut_str = str
 class _coconut(object):
     import collections, copy, functools, types, itertools, operator, weakref, threading
@@ -171,29 +171,40 @@ class _coconut_base_compose(object):
     def __init__(self, func, *funcstars):
         self.func = func
         self.funcstars = []
-        for f, star in funcstars:
+        for f, stars in funcstars:
             if isinstance(f, _coconut_base_compose):
-                self.funcstars.append((f.func, star))
+                self.funcstars.append((f.func, stars))
                 self.funcstars += f.funcstars
             else:
-                self.funcstars.append((f, star))
+                self.funcstars.append((f, stars))
     def __call__(self, *args, **kwargs):
         arg = self.func(*args, **kwargs)
-        for f, star in self.funcstars:
-            arg = f(*arg) if star else f(arg)
+        for f, stars in self.funcstars:
+            if stars == 0:
+                arg = f(arg)
+            elif stars == 1:
+                arg = f(*arg)
+            elif stars == 2:
+                arg = f(**arg)
+            else:
+                raise ValueError()
         return arg
     def __repr__(self):
-        return _coconut.repr(self.func) + " " + " ".join(("..*> " if star else "..> ") + _coconut.repr(f) for f, star in self.funcstars)
+        return _coconut.repr(self.func) + " " + " ".join(("..*> " if star == 1 else "..**>" if star == 2 else "..> ") + _coconut.repr(f) for f, star in self.funcstars)
     def __reduce__(self):
         return (self.__class__, (self.func,) + _coconut.tuple(self.funcstars))
-def _coconut_forward_compose(func, *funcs): return _coconut_base_compose(func, *((f, False) for f in funcs))
+def _coconut_forward_compose(func, *funcs): return _coconut_base_compose(func, *((f, 0) for f in funcs))
 def _coconut_back_compose(*funcs): return _coconut_forward_compose(*_coconut.reversed(funcs))
-def _coconut_forward_star_compose(func, *funcs): return _coconut_base_compose(func, *((f, True) for f in funcs))
+def _coconut_forward_star_compose(func, *funcs): return _coconut_base_compose(func, *((f, 1) for f in funcs))
 def _coconut_back_star_compose(*funcs): return _coconut_forward_star_compose(*_coconut.reversed(funcs))
+def _coconut_forward_dubstar_compose(func, *funcs): return _coconut_base_compose(func, *((f, 2) for f in funcs))
+def _coconut_back_dubstar_compose(*funcs): return _coconut_forward_dubstar_compose(*_coconut.reversed(funcs))
 def _coconut_pipe(x, f): return f(x)
 def _coconut_star_pipe(xs, f): return f(*xs)
+def _coconut_dubstar_pipe(kws, f): return f(**kws)
 def _coconut_back_pipe(f, x): return f(x)
 def _coconut_back_star_pipe(f, xs): return f(*xs)
+def _coconut_back_dubstar_pipe(f, kws): return f(**kws)
 def _coconut_bool_and(a, b): return a and b
 def _coconut_bool_or(a, b): return a or b
 def _coconut_none_coalesce(a, b): return a if a is not None else b
