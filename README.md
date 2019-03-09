@@ -113,6 +113,8 @@ Why does this work? If you're using the basic boilerplate, then running `python 
 
 ### Black Box Optimization Methods
 
+_Note that BBopt is written in [Coconut](http://coconut-lang.org/) and compiled into Python, not written in Python directly, which means if you want to look at BBopt's source code, you should look at the `.coco` files in [`bbopt-source`](https://github.com/evhub/bbopt/tree/master/bbopt-source) not the `.py` files in [`bbopt`](https://github.com/evhub/bbopt/tree/master/bbopt)._
+
 #### Constructor
 
 **BlackBoxOptimizer**(_file_, _protocol_=`None`)
