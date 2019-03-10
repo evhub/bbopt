@@ -1,0 +1,99 @@
+"""
+Utilities for use in BBopt backends.
+"""
+
+from bbopt.params import param_processor
+from bbopt.util import sorted_items
+
+
+def negate_objective(objective):
+    if isinstance(objective, list):
+        return objective |> map$(negate_objective) |> list
+    else:
+        return -objective
+
+
+def make_features(values, params, fallback_func=param_processor.choose_default_placeholder, convert_choice=False):
+    """Return an iterator of the values for the parameters in sorted order with the given fallback function.
+    If convert choice, converts choice values into choice indices."""
+    for name, (func, args, kwargs) in sorted_items(params):
+        # determine feature
+        match {=name: feature, **_} in values:
+            pass
+        else: match {"placeholder_when_missing": placeholder_value, **_} in kwargs:
+            feature = placeholder_value
+        else:
+            feature = fallback_func(name, func, *args, **kwargs)
+
+        # convert choice to index if convert_choice
+        if convert_choice and func == "choice":
+            choices, = args
+            try:
+                feature = choices.index(feature)
+            except IndexError:
+                raise ValueError("prior choice {} does not appear in choices {}".format(feature, choices))
+
+        yield feature
+
+
+def split_examples(examples, params, fallback_func=param_processor.choose_default_placeholder, convert_choice=False):
+    """Split examples into a list of data points and a list of losses with the given fallback function."""
+    data_points, losses = [], []
+    for example in examples:
+        case example:
+            match {"values": values, "gain": gain, **_}:
+                loss = negate_objective(gain)
+            match {"values": values, "loss": loss, **_}:
+                pass
+        else:
+            raise ValueError("invalid example {}".format(example))
+        features = make_features(values, params, fallback_func, convert_choice) |> list
+        features |> data_points.append
+        loss |> losses.append
+    return data_points, losses
+
+
+def make_values(params, point):
+    """Return a dictionary with the values replaced by the values in point,
+    where point is a list of the values corresponding to the sorted params."""
+    values = {}
+    for i, k in params |> sorted |> enumerate:
+        values[k] = point[i]
+    return values
+
+
+def serve_values(
+        name,
+        func,
+        args,
+        kwargs,
+        serving_values,
+        fallback_func,
+        backend_name=None,
+        implemented_funcs=None,
+        supported_kwargs=None,
+    ):
+    """Determines the parameter value to serve for the given parameter
+    name and kwargs. First checks for unsupported funcs or kwargs, then
+    uses the following algorithm:
+    1. if name in serving_values, use serving_values[name], else
+    2. if guess in kwargs, use the guess, else
+    3. call fallback_func(name, func, *args, **kwargs)."""
+    # validate arguments
+    if implemented_funcs is not None:
+        assert backend_name is not None, "serve_values expects a backend_name argument when doing func validation"
+        if func not in implemented_funcs:
+            raise ValueError(f"the {backend_name} backend does not implement the {func} function")
+    if supported_kwargs is not None:
+        assert backend_name is not None, "serve_values expects a backend_name argument when doing kwargs validation"
+        unsupported_kwargs = set(kwargs) - set(supported_kwargs)
+        if unsupported_kwargs:
+            raise ValueError(f"the {backend_name} backend does not support {unsupported_kwargs} option(s)")
+
+    # determine value
+    match {=name: value, **_} in serving_values:
+        return value
+    else: match {"guess": guess, **_} in kwargs:
+        return guess
+    else:
+        return fallback_func(name, func, *args, **kwargs)

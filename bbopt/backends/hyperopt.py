@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x95f18e3e
+# __coconut_hash__ = 0x604c2407
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -39,20 +39,17 @@ from hyperopt.base import STATUS_RUNNING
 from hyperopt.base import JOB_STATE_DONE
 from hyperopt.base import spec_from_misc
 
-from bbopt.backends.random import RandomBackend
-from bbopt.params import param_processor
 from bbopt.util import sorted_items
-from bbopt.util import negate_objective
-from bbopt.util import make_features
-from bbopt.util import serve_values
+from bbopt.backends.random import RandomBackend
+from bbopt.backends.util import negate_objective
+from bbopt.backends.util import make_features
+from bbopt.backends.util import serve_values
 
 
 # Utilities:
 
 # decorator to turn kwargs into the random function and its args
-_coconut_decorator_0 = _coconut.functools.partial(param_processor.splitting_kwargs, ignore_options=True)
-@_coconut_decorator_0
-def create_space(name, func, args):
+def create_space(name, func, *args):
     """Create a hyperopt space for the given param kwargs."""
     _coconut_match_to = func
     _coconut_case_check_0 = False
@@ -78,7 +75,7 @@ def create_space(name, func, args):
             _coconut_case_check_0 = True
         if _coconut_case_check_0:
             return hp.normal(name, *args)
-    raise TypeError("insufficiently specified parameter {}".format(name))
+    raise TypeError("insufficiently specified parameter {_coconut_format_0}".format(_coconut_format_0=(name)))
 
 
 def examples_to_trials(examples, params):
@@ -103,7 +100,7 @@ def examples_to_trials(examples, params):
 
         vals = {}
         idxs = {}
-        for k, v in zip(sorted(params), make_features(ex["values"], params, fallback_func=lambda name, **kwargs: NA, convert_choice=True)):
+        for k, v in zip(sorted(params), make_features(ex["values"], params, fallback_func=lambda name, func, *args, **kwargs: NA, convert_choice=True)):
             vals[k] = [v] if v is not NA else []
             idxs[k] = [tid] if v is not NA else []
 
@@ -126,12 +123,20 @@ class HyperoptBackend(_coconut.object):
             self.current_values = {}
             return
 
-        space = (as_apply)(dict(((name), (create_space(name, **param_kwargs))) for name, param_kwargs in sorted_items(params)))
+        space = (as_apply)(dict(((name), (create_space(name, func, *args))) for name, (func, args, kwargs) in sorted_items(params)))
+
+        sys = _coconut_sys
+        space.pprint(sys.stdout)
 
         domain = Domain(self.set_current_values, space)
 
+        trial_list = examples_to_trials(examples, params)
+
+        from pprint import pprint
+        pprint(trial_list)
+
         trials = Trials()
-        trials.insert_trial_docs(examples_to_trials(examples, params))
+        trials.insert_trial_docs(trial_list)
 
 # run one iteration of hyperparameter optimization, with values saved
 #  to the self.set_current_values callback passed to Domain
@@ -146,8 +151,5 @@ class HyperoptBackend(_coconut.object):
         self.current_values = values
         return {"status": STATUS_RUNNING}
 
-# decorator to raise an error if kwargs include an unsupported method
-    _coconut_decorator_0 = _coconut.functools.partial(param_processor.implements_params, backend_name="hyperopt", implemented_funcs=("choice", "randrange", "uniform", "normalvariate",), supported_options=("guess", "placeholder_when_missing",))
-    @_coconut_decorator_0
-    def param(self, name, **kwargs):
-        return serve_values(name, kwargs, serving_values=self.current_values, fallback_func=self.random_backend.param)
+    def param(self, name, func, *args, **kwargs):
+        return serve_values(name, func, args, kwargs, serving_values=self.current_values, fallback_func=self.random_backend.param, backend_name="hyperopt", implemented_funcs=("choice", "randrange", "uniform", "normalvariate",), supported_kwargs=("guess", "placeholder_when_missing",))

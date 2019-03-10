@@ -90,66 +90,6 @@ def sorted_items(params) =
     sorted(params.items())
 
 
-def negate_objective(objective):
-    if isinstance(objective, list):
-        return objective |> map$(negate_objective) |> list
-    else:
-        return -objective
-
-
-def make_features(values, params, fallback_func, convert_choice=False):
-    """Return an iterator of the values for the parameters in sorted order with the given fallback function.
-    If convert choice, converts choice values into choice indices."""
-    for name, param_kwargs in sorted_items(params):
-        match {=name: feature, **_} in values:
-            if convert_choice:
-                match {"choice": (choices,), **_} in param_kwargs:
-                    try:
-                        feature = choices.index(feature)
-                    except IndexError:
-                        raise ValueError("prior choice {} does not appear in choices {}".format(feature, choices))
-            yield feature
-        else: match {"placeholder_when_missing": placeholder_value, **_} in param_kwargs:
-            yield placeholder_value
-        else:
-            yield fallback_func(name, **param_kwargs)
-
-
-def split_examples(examples, params, fallback_func):
-    """Split examples into a list of data points and a list of losses with the given fallback function."""
-    data_points, losses = [], []
-    for example in examples:
-        case example:
-            match {"values": values, "gain": gain, **_}:
-                loss = negate_objective(gain)
-            match {"values": values, "loss": loss, **_}:
-                pass
-        else:
-            raise ValueError("invalid example {}".format(example))
-        make_features(values, params, fallback_func) |> list |> data_points.append
-        loss |> losses.append
-    return data_points, losses
-
-
-def make_values(params, point):
-    """Return a dictionary with the values replaced by the values in point,
-    where point is a list of the values corresponding to the sorted params."""
-    values = {}
-    for i, k in params |> sorted |> enumerate:
-        values[k] = point[i]
-    return values
-
-
-def all_isinstance(objs, types) =
-    """Return whether all the objects have the desired type(s)."""
-    objs |> map$(isinstance$(?, types)) |> all
-
-
-def format_err(Error, message, obj) =
-    """Creates an error with a formatted error message."""
-    Error(message + ": " + repr(obj))
-
-
 def best_example(examples):
     """Return the best example seen so far."""
     selected_example = {"values": {}}
@@ -169,22 +109,18 @@ def best_example(examples):
                     selected_example = example
                     min_loss = loss
         else:
-            raise ValueError("invalid example {}".format(example))
+            raise ValueError(f"invalid example {example}")
     return selected_example
 
 
-def serve_values(param_name, param_kwargs, serving_values, fallback_func):
-    """Determines the parameter value to serve for the given parameter
-    name and kwargs. Uses the following algorithm:
-    1. if param_name in serving_values, use serving_values[param_name], else
-    2. if guess in param_kwargs, use the guess, else
-    3. call fallback_func(param_name, **param_kwargs)."""
-    match {=param_name: value, **_} in serving_values:
-        return value
-    else: match {"guess": guess, **_} in param_kwargs:
-        return guess
-    else:
-        return fallback_func(param_name, **param_kwargs)
+def all_isinstance(objs, types) =
+    """Return whether all the objects have the desired type(s)."""
+    objs |> map$(isinstance$(?, types)) |> all
+
+
+def format_err(Error, message, obj) =
+    """Creates an error with a formatted error message."""
+    Error(message + ": " + repr(obj))
 
 
 def sync_file(file_handle):

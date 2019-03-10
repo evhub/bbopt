@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x8ff8ebfe
+# __coconut_hash__ = 0xbc329350
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -39,9 +39,9 @@ from coconut.command.util import call_output
 # Utilities:
 
 @contextmanager
-def using(path):
-    """Removes a path when the context is started and ended."""
-    if os.path.exists(path):
+def using(path, rem_on_start=True, rem_on_end=False):
+    """Removes a path when the context is started and/or ended."""
+    if rem_on_start and os.path.exists(path):
         if os.path.isdir(path):
             shutil.rmtree(path)
         elif os.path.isfile(path):
@@ -49,16 +49,17 @@ def using(path):
     try:
         yield
     finally:
-        try:
-            if os.path.isdir(path):
-                shutil.rmtree(path)
-            elif os.path.isfile(path):
-                os.remove(path)
-        except OSError:
-            traceback.print_exc()
+        if rem_on_end:
+            try:
+                if os.path.isdir(path):
+                    shutil.rmtree(path)
+                elif os.path.isfile(path):
+                    os.remove(path)
+            except OSError:
+                traceback.print_exc()
 
 
-always_ignore_errs = ("DeprecationWarning: numpy.core.umath_tests is an internal NumPy module", "from numpy.core.umath_tests import", "RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility.", "return f(*args, **kwds)",)
+always_ignore_errs = ("DeprecationWarning: numpy.core.umath_tests is an internal NumPy module", "from numpy.core.umath_tests import", "RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility.", "return f(*args, **kwds)", "UserWarning: The objective has been evaluated at this point before.", 'warnings.warn("The objective has been evaluated',)
 
 
 def call_test(args, ignore_errs=(), prepend_py=True):
@@ -87,6 +88,8 @@ def get_nums(inputstr, numtype=float):
 
 
 # Constants:
+
+NUM_TRIALS = 25
 
 example_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "examples")
 
@@ -122,77 +125,84 @@ class TestExamples(unittest.TestCase):
     def test_random(self):
         print("\ntest random:")
         with using(random_data):
-            results = call_test(["bbopt", random_file, "-n", "15"])
+            results = call_test(["bbopt", random_file, "-n", str(NUM_TRIALS)])
             want = max(get_nums(results, numtype=int))
             assert os.path.exists(random_data)
-            from bbopt.examples.random_example import x as got_x
-            assert got_x == want
+            from bbopt.examples import random_example
+            assert random_example.x == want
+            assert random_example.bb.num_examples == NUM_TRIALS
 
     def test_skopt(self):
         print("\ntest skopt:")
         with using(skopt_data):
-            results = call_test(["bbopt", skopt_file, "-n", "15", "-j", "4"])
+            results = call_test(["bbopt", skopt_file, "-n", str(NUM_TRIALS), "-j", "4"])
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(skopt_data)
-            from bbopt.examples.skopt_example import y as got
-            assert got == want
+            from bbopt.examples import skopt_example
+            assert skopt_example.y == want
+            assert skopt_example.bb.num_examples == NUM_TRIALS
 
     def test_hyperopt(self):
         print("\ntest hyperopt:")
         with using(hyperopt_data):
-            results = call_test(["bbopt", hyperopt_file, "-n", "15", "-j", "4"])
+            results = call_test(["bbopt", hyperopt_file, "-n", str(NUM_TRIALS), "-j", "4"])
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(hyperopt_data)
-            from bbopt.examples.hyperopt_example import y as got
-            assert got == want
+            from bbopt.examples import hyperopt_example
+            assert hyperopt_example.y == want
+            assert hyperopt_example.bb.num_examples == NUM_TRIALS
 
-    def test_conditional(self):
+    def test_conditional_hyperopt(self):
         print("\ntest conditional_hyperopt:")
         with using(conditional_hyperopt_data):
-            results = call_test(["bbopt", conditional_hyperopt_file, "-n", "15", "-j", "4"])
+            results = call_test(["bbopt", conditional_hyperopt_file, "-n", str(NUM_TRIALS), "-j", "4"])
             want = max(get_nums(results, numtype=int))
             assert os.path.exists(conditional_hyperopt_data)
-            from bbopt.examples.conditional_hyperopt_example import x as got
-            assert got == want
+            from bbopt.examples import conditional_hyperopt_example
+            assert conditional_hyperopt_example.x == want
+            assert conditional_hyperopt_example.bb.num_examples == NUM_TRIALS
 
     def test_conditional_skopt(self):
         print("\ntest conditional_skopt:")
         with using(conditional_skopt_data):
-            results = call_test(["bbopt", conditional_skopt_file, "-n", "15", "-j", "4"])
+            results = call_test(["bbopt", conditional_skopt_file, "-n", str(NUM_TRIALS), "-j", "4"])
             want = max(get_nums(results, numtype=int))
             assert os.path.exists(conditional_skopt_data)
-            from bbopt.examples.conditional_skopt_example import x as got
-            assert got == want
+            from bbopt.examples import conditional_skopt_example
+            assert conditional_skopt_example.x == want
 
     def test_numpy(self):
         print("\ntest numpy:")
-        from bbopt.examples import numpy_example
-        assert numpy_example.y == 0
         with using(numpy_data):
-            results = call_test(["bbopt", numpy_file, "-n", "15", "-j", "4"])
+            from bbopt.examples import numpy_example
+            assert numpy_example.y == 0
+            results = call_test(["bbopt", numpy_file, "-n", str(NUM_TRIALS), "-j", "4"])
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(numpy_data)
             reload(numpy_example)
             assert numpy_example.y == want
+            assert numpy_example.bb.num_examples == NUM_TRIALS
 
     def test_mixture(self):
         print("\ntest mixture:")
-        from bbopt.examples import mixture_example
-        assert mixture_example.loss == abs(sum([4, 5, 6, 7, 8]) - 10)
         with using(mixture_data):
-            results = call_test(["bbopt", mixture_file, "-n", "15", "-j", "4"], ignore_errs=("UserWarning: The objective has been evaluated at this point before." "warnings.warn(",))
+            from bbopt.examples import mixture_example
+            assert mixture_example.loss == abs(sum([4, 5, 6, 7, 8]) - 10)
+            results = call_test(["bbopt", mixture_file, "-n", str(NUM_TRIALS), "-j", "4"])
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(mixture_data)
             reload(mixture_example)
             assert mixture_example.loss == want
+            assert mixture_example.bb.num_examples == NUM_TRIALS
 
     def test_json(self):
         print("\ntest json:")
-        from bbopt.examples import json_example
-        assert round(json_example.y, 5) == 6
         with using(json_data):
-            results = call_test(["bbopt", json_file, "-n", "15", "-j", "4"])
+            from bbopt.examples import json_example
+            assert round(json_example.y, 5) == 6
+            results = call_test(["bbopt", json_file, "-n", str(NUM_TRIALS), "-j", "4"])
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(json_data)
             reload(json_example)
             assert json_example.y == want
+            assert json_example.bb.num_examples == NUM_TRIALS

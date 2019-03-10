@@ -34,7 +34,7 @@ parser.add_argument(
     metavar="trials",
     type=int,
     default=default_trials,
-    help="number of trials to run (defaults to {})".format(default_trials),
+    help=f"number of trials to run (defaults to {default_trials})",
 )
 
 parser.add_argument(
@@ -42,7 +42,7 @@ parser.add_argument(
     metavar="processes",
     type=int,
     default=default_jobs,
-    help="number of processes to use (defaults to {})".format(default_jobs),
+    help=f"number of processes to use (defaults to {default_jobs})",
 )
 
 parser.add_argument(
@@ -76,24 +76,21 @@ def base_show(quiet, msg):
 def run_trial(args, cmd, i):
     """Pickleable function for running trials in parallel."""
     show = base_show$(args.quiet)
-    show("{}/{} starting...".format(i+1, args.num_trials))
+    show(f"{i+1}/{args.num_trials} starting...")
     subprocess.check_call(cmd)
-    show("{}/{} finished.".format(i+1, args.num_trials))
+    show(f"{i+1}/{args.num_trials} finished.")
 
 
 def main():
     args = parser.parse_args()
     if not os.path.isfile(args.file):
-        raise ValueError("could not find file {}".format(args.file))
+        raise ValueError(f"could not find file {args.file}")
 
     show = base_show$(args.quiet)
     cmd = [args.python, args.file] + (args.args ?? [])
 
-    show("Running {} trials using {} process(es) of:\n\t> {}".format(
-        args.num_trials,
-        args.jobs,
-        " ".join(cmd),
-    ))
+    cmd_str = " ".join(cmd)
+    show(f"Running {args.num_trials} trials using {args.jobs} process(es) of:\n\t> {cmd_str}")
 
     if args.jobs == 1:
         for i in range(args.num_trials):
@@ -105,7 +102,8 @@ def main():
 
     if not args.quiet:
         bb = BlackBoxOptimizer(args.file)
-        show("Black box optimization finished; data saved to {}.".format(os.path.relpath(bb.data_file)))
+        rel_data_file = os.path.relpath(bb.data_file)
+        show(f"Black box optimization finished; data saved to {rel_data_file}.")
 
         best_example = bb.get_optimal_run()
         show("Summary of best run:")

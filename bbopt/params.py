@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa53a40d3
+# __coconut_hash__ = 0xe42911fb
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -26,11 +26,7 @@ if _coconut_sys.version_info >= (3,):
 
 
 
-import functools
-if _coconut_sys.version_info < (3, 3):
-    from collections import Iterable
-else:
-    from collections.abc import Iterable
+from math import log as ln
 
 from bbopt.util import Num
 from bbopt.util import format_err
@@ -104,102 +100,97 @@ def handle_weibullvariate(args):
         raise format_err(ValueError, "invalid arguments to weibullvariate", args)
 
 
+# Placeholders:
+
+def placeholder_randrange(start, stop, step):
+    return start
+
+
+def placeholder_choice(choices):
+    return _coconut_igetitem(choices, 0)
+
+
+def placeholder_uniform(start, stop):
+    return start
+
+
+def placeholder_triangular(low, high, mode):
+    return mode
+
+
+def placeholder_betavariate(alpha, beta):
+    return 0.5
+
+
+def placeholder_expovariate(lambd):
+    return 1 / lambd
+
+
+def placeholder_gammavariate(alpha, beta):
+    return alpha / beta
+
+
+def placeholder_normalvariate(mu, sigma):
+    return mu
+
+
+def placeholder_vonmisesvariate(mu, kappa):
+    return mu
+
+
+def placeholder_paretovariate(alpha):
+    return 1
+
+
+def placeholder_weibullvariate(alpha, beta):
+    return alpha * ln(2)**(1 / beta)
+
+
+
 # Processor:
 
 class ParamProcessor(_coconut.object):
     """Processes param keyword arguments."""
     handlers = {"randrange": handle_randrange, "choice": handle_choice, "uniform": handle_uniform, "triangular": handle_triangular, "betavariate": handle_betavariate, "expovariate": handle_expovariate, "gammavariate": handle_gammavariate, "normalvariate": handle_normalvariate, "vonmisesvariate": handle_vonmisesvariate, "paretovariate": handle_paretovariate, "weibullvariate": handle_weibullvariate}
-
-    @property
-    def supported_funcs(self):
-        return list(self.handlers)
+    placeholder_funcs = {"randrange": placeholder_randrange, "choice": placeholder_choice, "uniform": placeholder_uniform, "triangular": placeholder_triangular, "betavariate": placeholder_betavariate, "expovariate": placeholder_expovariate, "gammavariate": placeholder_gammavariate, "normalvariate": placeholder_normalvariate, "vonmisesvariate": placeholder_vonmisesvariate, "paretovariate": placeholder_paretovariate, "weibullvariate": placeholder_weibullvariate}
 
     def modify_kwargs(self, func, kwargs):
         """Apply func to all kwargs with values in the random function's domain."""
         new_kwargs = {}
         for k, v in kwargs.items():
-            if k in self.supported_funcs:
+            if k in self.handlers:
                 new_kwargs[k] = map(func, v)
             else:
                 new_kwargs[k] = func(v)
         return new_kwargs
 
-    def standardize_kwargs(self, kwargs):
-        """Standardizes param keyword args."""
-        new_kwargs = {}
-        saw_func = None
-        for func, args in kwargs.items():
+    def standardize_args(self, func, args):
+        """Standardize param func and args."""
 # denumpy args
-            args = denumpy_all(args)
-
-# pass through non-function kwargs
-            if func not in self.supported_funcs:
-                new_kwargs[func] = args
-                continue
-
-# only allow one function
-            if saw_func is not None:
-                raise ValueError("cannot have both {} and {} for a single param".format(saw_func, func))
+        args = denumpy_all(args)
 
 # standardize arguments to a list
-            if isinstance(args, Iterable):
-                args = list(args)
-            else:
-                args = [args]
+        args = list(args)
 
-# run handlers
-            result = self.handlers[func](args)
-            args = result if result is not None else args
+# detect invalid funcs
+        if func not in self.handlers:
+            raise ValueError("unknown parameter definition function {_coconut_format_0}".format(_coconut_format_0=(func)))
 
-            new_kwargs[func] = args
-            saw_func = func
+# run handler
+        result = self.handlers[func](args)
+        args = result if result is not None else args
 
-# require some function
-        if saw_func is None:
-            raise TypeError("param requires a keyword option of the form <random function>=<args>")
+        return args
 
-        return new_kwargs
+    def standardize_kwargs(self, kwargs):
+        """Standardizes param keyword args."""
+        return fmap(lambda k, v: denumpy_all((k, v)), kwargs)
 
-    def split_kwargs(self, kwargs):
-        """Processes kwargs into func, args, options."""
-        func = None
-        args = ()
-        options = {}
-        for k, v in kwargs.items():
-            if k in self.supported_funcs:
-                func = k
-                args = v
-            else:
-                options[k] = v
-        return func, args, options
-
-    def splitting_kwargs(self, base_func, ignore_options=False):
-        """Turns base_func(*args, **kwargs) into base_func(*args, func, args, **options)."""
-        @functools.wraps(base_func)
-        def wrapped_func(*args, **kwargs):
-            func, func_args, options = self.split_kwargs(kwargs)
-            if ignore_options:
-                options = {}
-            args = args + (func, func_args)
-            return base_func(*args, **options)
-        return wrapped_func
-
-    def implements_params(self, base_func, backend_name, implemented_funcs, supported_options):
-        """Ensures base_func is only called with the given funcs and options."""
-        supported_option_set = set(supported_options)
-        @functools.wraps(base_func)
-        def wrapped_func(*args, **kwargs):
-            func, func_args, options = self.split_kwargs(kwargs)
-
-            if func not in implemented_funcs:
-                raise ValueError("the {} backend does not implement the {} function".format(backend_name, func))
-
-            unsupported_options = set(options) - supported_option_set
-            if unsupported_options:
-                raise ValueError("the {} backend does not support the {} option(s)".format(backend_name, unsupported_options))
-
-            return base_func(*args, **kwargs)
-        return wrapped_func
+    def choose_default_placeholder(self, name, func, *args, **kwargs):
+        """Choose a default placeholder_when_missing value for the given parameter."""
+        if func not in self.placeholder_funcs:
+            raise ValueError("unknown parameter definition function {_coconut_format_0}".format(_coconut_format_0=(func)))
+        return self.placeholder_funcs[func](*args)
 
 
 param_processor = ParamProcessor()

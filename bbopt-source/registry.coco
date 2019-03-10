@@ -19,11 +19,8 @@ class Registry:
         else: if name in self.generators:
             return self.run_gen(name)
         else:
-            raise ValueError("unknown {obj_name}: {name} (valid {obj_name}s: {valid_names})".format(
-                obj_name=self.obj_name,
-                name=name,
-                valid_names=", ".join(repr(name) for name in self),
-            ))
+            valid_names = ", ".join(repr(name) for name in self)
+            raise ValueError(f"unknown {obj_name}: {name} (valid {obj_name}s: {valid_names})")
 
     def register(self, name, value):
         """Register value under the given name."""

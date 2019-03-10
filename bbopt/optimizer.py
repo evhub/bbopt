@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xe6ce0f73
+# __coconut_hash__ = 0xfb82bb68
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -34,6 +34,7 @@ else:
     import pickle
 import math
 import itertools
+import time
 
 import numpy as np
 from portalocker import Lock
@@ -84,6 +85,7 @@ class BlackBoxOptimizer(_coconut.object):
 
     @property
     def _use_json(self):
+        """Whether we are currently saving in json or pickle."""
         return self._protocol == "json"
 
     def _loads(self, raw_contents):
@@ -108,6 +110,7 @@ class BlackBoxOptimizer(_coconut.object):
 
     @property
     def algs(self):
+        """All algorithms supported by run."""
         return alg_registry.asdict()
 
     def run(self, alg=default_alg):
@@ -118,6 +121,7 @@ class BlackBoxOptimizer(_coconut.object):
 
     @property
     def _got_reward(self):
+        """Whether we have seen a maximize/minimize call yet."""
         return "loss" in self._current_example or "gain" in self._current_example
 
     def _param(self, name, func, *args, **kwargs):
@@ -125,16 +129,15 @@ class BlackBoxOptimizer(_coconut.object):
         if self._got_reward:
             raise ValueError("all parameter definitions must come before maximize/minimize")
         if not isinstance(name, Str):
-            raise TypeError("name must be a string, not {}".format(name))
+            raise TypeError("name must be a string, not {_coconut_format_0}".format(_coconut_format_0=(name)))
         if name in self._new_params:
-            raise ValueError("parameter of name {} already exists".format(name))
+            raise ValueError("parameter of name {_coconut_format_0} already exists".format(_coconut_format_0=(name)))
 
-        param_kwargs = kwargs
-        param_kwargs[func] = args
-        param_kwargs = (param_processor.standardize_kwargs)(param_kwargs)
+        args = param_processor.standardize_args(func, args)
+        kwargs = param_processor.standardize_kwargs(kwargs)
 
-        value = self.backend.param(name, **param_kwargs)
-        self._new_params[name] = param_kwargs
+        value = self.backend.param(name, func, *args, **kwargs)
+        self._new_params[name] = (func, args, kwargs)
         self._current_example["values"][name] = value
         return value
 
@@ -154,6 +157,7 @@ class BlackBoxOptimizer(_coconut.object):
 
     @property
     def is_serving(self):
+        """Whether we are currently using the serving backend or not."""
         return isinstance(self.backend, backend_registry[None])
 
     def _set_reward(self, reward_type, value):
@@ -162,7 +166,7 @@ class BlackBoxOptimizer(_coconut.object):
             raise ValueError("only one call to maximize or minimize is allowed")
         if isinstance(value, np.ndarray):
             if len(value.shape) != 1:
-                raise ValueError("gain/loss must be a scalar or 1-dimensional array, not {}".format(value))
+                raise ValueError("gain/loss must be a scalar or 1-dimensional array, not {_coconut_format_0}".format(_coconut_format_0=(value)))
             value = tuple(value)
         self._current_example[reward_type] = denumpy_all(value)
         if not self.is_serving:
@@ -170,13 +174,14 @@ class BlackBoxOptimizer(_coconut.object):
 
     @property
     def data_file(self):
+        """The path to the file we are saving data to."""
         return os.path.splitext(self._file)[0] + data_file_ext + (".json" if self._use_json else ".pickle")
 
     def tell_examples(self, examples):
         """Load the given examples into memory."""
-        for x in examples:
-            if x not in self._examples:
-                self._examples.append(x)
+        for ex in examples:
+            if ex not in self._examples:
+                self._examples.append(ex)
 
     def _load_from(self, df):
         """Load data from the given file."""
@@ -212,10 +217,18 @@ class BlackBoxOptimizer(_coconut.object):
         self._old_params.update(self._new_params)
         return {"params": self._old_params, "examples": self._examples}
 
+    @property
+    def num_examples(self):
+        """The number of examples seen so far (current example not counted until maximize/minimize call)."""
+        return len(self._examples)
+
     def _save_data(self):
         """Save examples to data file."""
-        self.tell_examples([self._current_example])
+        assert "timestamp" not in self._current_example, "multiple _save_data calls on _current_example = {_coconut_format_0}".format(_coconut_format_0=(self._current_example))
         with Lock(self.data_file, "rb+", timeout=lock_timeout) as df:
+# we create the timestamp while we have the lock to ensure its uniqueness
+            self._current_example["timestamp"] = time.time()
+            self.tell_examples([self._current_example])
             self._load_from(df)
             clear_file(df)
             ((df.write)((self._dumps)(self.get_data())))
@@ -315,7 +328,7 @@ class BlackBoxOptimizer(_coconut.object):
     def sample(self, name, population, k, **kwargs):
         """Create a new parameter with the given name modeled by random.sample(population, k)."""
         if not isinstance(name, Str):
-            raise TypeError("name must be string, not {}".format(name))
+            raise TypeError("name must be string, not {_coconut_format_0}".format(_coconut_format_0=(name)))
         sampling_population = [x for x in population]
         sample = []
         for i in range(k):
@@ -326,7 +339,7 @@ class BlackBoxOptimizer(_coconut.object):
                     elem = _coconut_igetitem(val, i)
                     return sampling_population.index(elem) if elem in sampling_population else 0
                 proc_kwargs = param_processor.modify_kwargs(_coconut_lambda_0, kwargs)
-                ind = self.randrange("{}[{}]".format(name, i), len(sampling_population), **proc_kwargs)
+                ind = self.randrange("{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(i)), len(sampling_population), **proc_kwargs)
                 sample.append(sampling_population.pop(ind))
         return sample
 
@@ -339,10 +352,11 @@ class BlackBoxOptimizer(_coconut.object):
     def _array_param(self, func, name, shape, kwargs):
         """Create a new array parameter for the given name and shape with entries from func."""
         if not isinstance(name, Str):
-            raise TypeError("name must be string, not {}".format(name))
+            raise TypeError("name must be string, not {_coconut_format_0}".format(_coconut_format_0=(name)))
         arr = np.zeros(shape)
         for indices in itertools.product(*map(range, shape)):
-            cell_name = "{}[{}]".format(name, ",".join(map(str, indices)))
+            index_str = ",".join(map(str, indices))
+            cell_name = "{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(index_str))
             proc_kwargs = param_processor.modify_kwargs(lambda _=None: _[indices], kwargs)
             arr[indices] = func(cell_name, **proc_kwargs)
         return arr

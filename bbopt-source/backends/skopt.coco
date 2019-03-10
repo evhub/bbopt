@@ -9,10 +9,9 @@ from skopt.space import (
     Real,
 )
 
+from bbopt.util import sorted_items
 from bbopt.backends.random import RandomBackend
-from bbopt.params import param_processor
-from bbopt.util import (
-    sorted_items,
+from bbopt.backends.util import (
     split_examples,
     make_values,
     serve_values,
@@ -21,8 +20,7 @@ from bbopt.util import (
 
 # Utilities:
 
-@param_processor.splitting_kwargs$(ignore_options=True)
-def create_dimension(name, func, args):
+def create_dimension(name, func, *args):
     """Create a scikit-optimize dimension for the given param kwargs."""
     case func:
         match "choice":
@@ -35,23 +33,7 @@ def create_dimension(name, func, args):
             return Integer(start, stop)
         match "uniform":
             return Real(*args)
-    raise TypeError("insufficiently specified parameter {}".format(name))
-
-
-@param_processor.splitting_kwargs$(ignore_options=True)
-def choose_default_placeholder(name, func, args):
-    """Choose a default placeholder_when_missing value for the given param kwargs."""
-    case func:
-        match "choice":
-            choices, = args
-            return choices$[0]
-        match "randrange":
-            start, stop, step = args
-            return start
-        match "uniform":
-            start, stop = args
-            return start
-    raise TypeError("insufficiently specified parameter {}".format(name))
+    raise TypeError(f"insufficiently specified parameter {name}")
 
 
 # Backend:
@@ -65,10 +47,10 @@ class SkoptBackend:
             self.current_values = {}
             return
 
-        data_points, losses = split_examples(examples, params, fallback_func=choose_default_placeholder)
+        data_points, losses = split_examples(examples, params)
         dimensions = [
-            create_dimension(name, **param_kwargs)
-            for name, param_kwargs in sorted_items(params)
+            create_dimension(name, func, *args)
+            for name, (func, args, kwargs) in sorted_items(params)
         ]
 
         if isinstance(base_estimator, str):
@@ -80,23 +62,22 @@ class SkoptBackend:
 
         self.current_values = make_values(params, current_point)
 
-    # decorator to raise an error if kwargs include an unsupported method
-    @param_processor.implements_params$(
+    def param(self, name, func, *args, **kwargs) = serve_values(
+        name,
+        func,
+        args,
+        kwargs,
+        serving_values=self.current_values,
+        fallback_func=self.random_backend.param,
         backend_name="scikit-optimize",
         implemented_funcs=(
-            # should match create_dimension and choose_default_placeholder above
+            # should match create_dimension above
             "choice",
             "randrange",
             "uniform",
         ),
-        supported_options=(
+        supported_kwargs=(
             "guess",
             "placeholder_when_missing",
         ),
-    )
-    def param(self, name, **kwargs) = serve_values(
-        name,
-        kwargs,
-        serving_values=self.current_values,
-        fallback_func=self.random_backend.param,
     )

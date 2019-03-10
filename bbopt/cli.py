@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa455f92e
+# __coconut_hash__ = 0xb7a3b64b
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -43,9 +43,9 @@ parser = argparse.ArgumentParser(prog="bbopt", description=description)
 
 parser.add_argument("file", metavar="file", type=str, help="path to the Python file to run")
 
-parser.add_argument("-n", "--num-trials", metavar="trials", type=int, default=default_trials, help="number of trials to run (defaults to {})".format(default_trials))
+parser.add_argument("-n", "--num-trials", metavar="trials", type=int, default=default_trials, help="number of trials to run (defaults to {_coconut_format_0})".format(_coconut_format_0=(default_trials)))
 
-parser.add_argument("-j", "--jobs", metavar="processes", type=int, default=default_jobs, help="number of processes to use (defaults to {})".format(default_jobs))
+parser.add_argument("-j", "--jobs", metavar="processes", type=int, default=default_jobs, help="number of processes to use (defaults to {_coconut_format_0})".format(_coconut_format_0=(default_jobs)))
 
 parser.add_argument("-q", "--quiet", action="store_true", help="suppress all informational output")
 
@@ -63,20 +63,21 @@ def base_show(quiet, msg):
 def run_trial(args, cmd, i):
     """Pickleable function for running trials in parallel."""
     show = _coconut.functools.partial(base_show, args.quiet)
-    show("{}/{} starting...".format(i + 1, args.num_trials))
+    show("{_coconut_format_0}/{_coconut_format_1} starting...".format(_coconut_format_0=(i+1), _coconut_format_1=(args.num_trials)))
     subprocess.check_call(cmd)
-    show("{}/{} finished.".format(i + 1, args.num_trials))
+    show("{_coconut_format_0}/{_coconut_format_1} finished.".format(_coconut_format_0=(i+1), _coconut_format_1=(args.num_trials)))
 
 
 def main():
     args = parser.parse_args()
     if not os.path.isfile(args.file):
-        raise ValueError("could not find file {}".format(args.file))
+        raise ValueError("could not find file {_coconut_format_0}".format(_coconut_format_0=(args.file)))
 
     show = _coconut.functools.partial(base_show, args.quiet)
     cmd = [args.python, args.file] + ((lambda _coconut_none_coalesce_item: [] if _coconut_none_coalesce_item is None else _coconut_none_coalesce_item)(args.args))
 
-    show("Running {} trials using {} process(es) of:\n\t> {}".format(args.num_trials, args.jobs, " ".join(cmd)))
+    cmd_str = " ".join(cmd)
+    show("Running {_coconut_format_0} trials using {_coconut_format_1} process(es) of:\n\t> {_coconut_format_2}".format(_coconut_format_0=(args.num_trials), _coconut_format_1=(args.jobs), _coconut_format_2=(cmd_str)))
 
     if args.jobs == 1:
         for i in range(args.num_trials):
@@ -88,7 +89,8 @@ def main():
 
     if not args.quiet:
         bb = BlackBoxOptimizer(args.file)
-        show("Black box optimization finished; data saved to {}.".format(os.path.relpath(bb.data_file)))
+        rel_data_file = os.path.relpath(bb.data_file)
+        show("Black box optimization finished; data saved to {_coconut_format_0}.".format(_coconut_format_0=(rel_data_file)))
 
         best_example = bb.get_optimal_run()
         show("Summary of best run:")

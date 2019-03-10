@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x8c73b020
+# __coconut_hash__ = 0x8d12bacb
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -116,56 +116,10 @@ def sorted_items(params):
     return sorted(params.items())
 
 
-def negate_objective(objective):
-    if isinstance(objective, list):
-        return (list)(map(negate_objective, objective))
-    else:
-        return -objective
-
-
-def make_features(values, params, fallback_func, convert_choice=False):
-    """Return an iterator of the values for the parameters in sorted order with the given fallback function.
-    If convert choice, converts choice values into choice indices."""
-    for name, param_kwargs in sorted_items(params):
-        _coconut_match_to = values
-        _coconut_match_check = False
-        if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
-            _coconut_match_temp_0 = _coconut_match_to.get(name, _coconut_sentinel)
-            if _coconut_match_temp_0 is not _coconut_sentinel:
-                feature = _coconut_match_temp_0
-                _coconut_match_check = True
-        if _coconut_match_check:
-            if convert_choice:
-                _coconut_match_to = param_kwargs
-                _coconut_match_check = False
-                if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
-                    _coconut_match_temp_0 = _coconut_match_to.get("choice", _coconut_sentinel)
-                    if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut.isinstance(_coconut_match_temp_0, _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_temp_0) == 1):
-                        choices = _coconut_match_temp_0[0]
-                        _coconut_match_check = True
-                if _coconut_match_check:
-                    try:
-                        feature = choices.index(feature)
-                    except IndexError:
-                        raise ValueError("prior choice {} does not appear in choices {}".format(feature, choices))
-            yield feature
-        else:
-            _coconut_match_to = param_kwargs
-            _coconut_match_check = False
-            if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
-                _coconut_match_temp_0 = _coconut_match_to.get("placeholder_when_missing", _coconut_sentinel)
-                if _coconut_match_temp_0 is not _coconut_sentinel:
-                    placeholder_value = _coconut_match_temp_0
-                    _coconut_match_check = True
-            if _coconut_match_check:
-                yield placeholder_value
-            else:
-                yield fallback_func(name, **param_kwargs)
-
-
-def split_examples(examples, params, fallback_func):
-    """Split examples into a list of data points and a list of losses with the given fallback function."""
-    data_points, losses = [], []
+def best_example(examples):
+    """Return the best example seen so far."""
+    selected_example = {"values": {}}
+    max_gain, min_loss = None, None
     for example in examples:
         _coconut_match_to = example
         _coconut_case_check_0 = False
@@ -177,7 +131,11 @@ def split_examples(examples, params, fallback_func):
                 gain = _coconut_match_temp_1
                 _coconut_case_check_0 = True
         if _coconut_case_check_0:
-            loss = negate_objective(gain)
+            if min_loss is not None:
+                raise ValueError("cannot have examples with maximize and examples with minimize")
+            if max_gain is None or gain >= max_gain:
+                selected_example = example
+                max_gain = gain
         if not _coconut_case_check_0:
             if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
                 _coconut_match_temp_0 = _coconut_match_to.get("values", _coconut_sentinel)
@@ -187,21 +145,14 @@ def split_examples(examples, params, fallback_func):
                     loss = _coconut_match_temp_1
                     _coconut_case_check_0 = True
             if _coconut_case_check_0:
-                pass
+                if max_gain is not None:
+                    raise ValueError("cannot have examples with maximize and examples with minimize")
+                if min_loss is None or loss <= min_loss:
+                    selected_example = example
+                    min_loss = loss
         if not _coconut_case_check_0:
-            raise ValueError("invalid example {}".format(example))
-        (data_points.append)((list)(make_features(values, params, fallback_func)))
-        (losses.append)(loss)
-    return data_points, losses
-
-
-def make_values(params, point):
-    """Return a dictionary with the values replaced by the values in point,
-    where point is a list of the values corresponding to the sorted params."""
-    values = {}
-    for i, k in (enumerate)((sorted)(params)):
-        values[k] = point[i]
-    return values
+            raise ValueError("invalid example {_coconut_format_0}".format(_coconut_format_0=(example)))
+    return selected_example
 
 
 def all_isinstance(objs, types):
@@ -212,74 +163,6 @@ def all_isinstance(objs, types):
 def format_err(Error, message, obj):
     """Creates an error with a formatted error message."""
     return Error(message + ": " + repr(obj))
-
-
-def best_example(examples):
-    """Return the best example seen so far."""
-    selected_example = {"values": {}}
-    max_gain, min_loss = None, None
-    for example in examples:
-        _coconut_match_to = example
-        _coconut_case_check_1 = False
-        if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
-            _coconut_match_temp_0 = _coconut_match_to.get("values", _coconut_sentinel)
-            _coconut_match_temp_1 = _coconut_match_to.get("gain", _coconut_sentinel)
-            if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut_match_temp_1 is not _coconut_sentinel):
-                values = _coconut_match_temp_0
-                gain = _coconut_match_temp_1
-                _coconut_case_check_1 = True
-        if _coconut_case_check_1:
-            if min_loss is not None:
-                raise ValueError("cannot have examples with maximize and examples with minimize")
-            if max_gain is None or gain >= max_gain:
-                selected_example = example
-                max_gain = gain
-        if not _coconut_case_check_1:
-            if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
-                _coconut_match_temp_0 = _coconut_match_to.get("values", _coconut_sentinel)
-                _coconut_match_temp_1 = _coconut_match_to.get("loss", _coconut_sentinel)
-                if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut_match_temp_1 is not _coconut_sentinel):
-                    values = _coconut_match_temp_0
-                    loss = _coconut_match_temp_1
-                    _coconut_case_check_1 = True
-            if _coconut_case_check_1:
-                if max_gain is not None:
-                    raise ValueError("cannot have examples with maximize and examples with minimize")
-                if min_loss is None or loss <= min_loss:
-                    selected_example = example
-                    min_loss = loss
-        if not _coconut_case_check_1:
-            raise ValueError("invalid example {}".format(example))
-    return selected_example
-
-
-def serve_values(param_name, param_kwargs, serving_values, fallback_func):
-    """Determines the parameter value to serve for the given parameter
-    name and kwargs. Uses the following algorithm:
-    1. if param_name in serving_values, use serving_values[param_name], else
-    2. if guess in param_kwargs, use the guess, else
-    3. call fallback_func(param_name, **param_kwargs)."""
-    _coconut_match_to = serving_values
-    _coconut_match_check = False
-    if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
-        _coconut_match_temp_0 = _coconut_match_to.get(param_name, _coconut_sentinel)
-        if _coconut_match_temp_0 is not _coconut_sentinel:
-            value = _coconut_match_temp_0
-            _coconut_match_check = True
-    if _coconut_match_check:
-        return value
-    else:
-        _coconut_match_to = param_kwargs
-        _coconut_match_check = False
-        if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
-            _coconut_match_temp_0 = _coconut_match_to.get("guess", _coconut_sentinel)
-            if _coconut_match_temp_0 is not _coconut_sentinel:
-                guess = _coconut_match_temp_0
-                _coconut_match_check = True
-        if _coconut_match_check:
-            return guess
-        else:
-            return fallback_func(param_name, **param_kwargs)
 
 
 def sync_file(file_handle):

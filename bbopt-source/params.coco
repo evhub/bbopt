@@ -2,8 +2,7 @@
 Handles standardizing param calls to use standard library random functions.
 """
 
-import functools
-from collections.abc import Iterable
+from math import log as ln
 
 from bbopt.util import (
     Num,
@@ -79,6 +78,53 @@ def handle_weibullvariate(args):
         raise format_err(ValueError, "invalid arguments to weibullvariate", args)
 
 
+# Placeholders:
+
+def placeholder_randrange(start, stop, step) =
+    start
+
+
+def placeholder_choice(choices) =
+    choices$[0]
+
+
+def placeholder_uniform(start, stop) =
+    start
+
+
+def placeholder_triangular(low, high, mode) =
+    mode
+
+
+def placeholder_betavariate(alpha, beta) =
+    0.5
+
+
+def placeholder_expovariate(lambd) =
+    1/lambd
+
+
+def placeholder_gammavariate(alpha, beta) =
+    alpha/beta
+
+
+def placeholder_normalvariate(mu, sigma) =
+    mu
+
+
+def placeholder_vonmisesvariate(mu, kappa) =
+    mu
+
+
+def placeholder_paretovariate(alpha) =
+    1
+
+
+def placeholder_weibullvariate(alpha, beta) =
+    alpha * ln(2)**(1/beta)
+
+
+
 # Processor:
 
 class ParamProcessor:
@@ -96,97 +142,57 @@ class ParamProcessor:
         "paretovariate": handle_paretovariate,
         "weibullvariate": handle_weibullvariate,
     }
-
-    @property
-    def supported_funcs(self) =
-        list(self.handlers)
+    placeholder_funcs = {
+        "randrange": placeholder_randrange,
+        "choice": placeholder_choice,
+        "uniform": placeholder_uniform,
+        "triangular": placeholder_triangular,
+        "betavariate": placeholder_betavariate,
+        "expovariate": placeholder_expovariate,
+        "gammavariate": placeholder_gammavariate,
+        "normalvariate": placeholder_normalvariate,
+        "vonmisesvariate": placeholder_vonmisesvariate,
+        "paretovariate": placeholder_paretovariate,
+        "weibullvariate": placeholder_weibullvariate,
+    }
 
     def modify_kwargs(self, func, kwargs):
         """Apply func to all kwargs with values in the random function's domain."""
         new_kwargs = {}
         for k, v in kwargs.items():
-            if k in self.supported_funcs:
+            if k in self.handlers:
                 new_kwargs[k] = map(func, v)
             else:
                 new_kwargs[k] = func(v)
         return new_kwargs
 
+    def standardize_args(self, func, args):
+        """Standardize param func and args."""
+        # denumpy args
+        args = denumpy_all(args)
+
+        # standardize arguments to a list
+        args = list(args)
+
+        # detect invalid funcs
+        if func not in self.handlers:
+            raise ValueError(f"unknown parameter definition function {func}")
+
+        # run handler
+        result = self.handlers[func](args)
+        args = result if result is not None else args
+
+        return args
+
     def standardize_kwargs(self, kwargs):
         """Standardizes param keyword args."""
-        new_kwargs = {}
-        saw_func = None
-        for func, args in kwargs.items():
-            # denumpy args
-            args = denumpy_all(args)
+        return kwargs |> fmap$((k, v) -> denumpy_all((k, v)))
 
-            # pass through non-function kwargs
-            if func not in self.supported_funcs:
-                new_kwargs[func] = args
-                continue
-
-            # only allow one function
-            if saw_func is not None:
-                raise ValueError("cannot have both {} and {} for a single param".format(saw_func, func))
-
-            # standardize arguments to a list
-            if isinstance(args, Iterable):
-                args = list(args)
-            else:
-                args = [args]
-
-            # run handlers
-            result = self.handlers[func](args)
-            args = result if result is not None else args
-
-            new_kwargs[func] = args
-            saw_func = func
-
-        # require some function
-        if saw_func is None:
-            raise TypeError("param requires a keyword option of the form <random function>=<args>")
-
-        return new_kwargs
-
-    def split_kwargs(self, kwargs):
-        """Processes kwargs into func, args, options."""
-        func = None
-        args = ()
-        options = {}
-        for k, v in kwargs.items():
-            if k in self.supported_funcs:
-                func = k
-                args = v
-            else:
-                options[k] = v
-        return func, args, options
-
-    def splitting_kwargs(self, base_func, ignore_options=False):
-        """Turns base_func(*args, **kwargs) into base_func(*args, func, args, **options)."""
-        @functools.wraps(base_func)
-        def wrapped_func(*args, **kwargs):
-            func, func_args, options = self.split_kwargs(kwargs)
-            if ignore_options:
-                options = {}
-            args = args + (func, func_args)
-            return base_func(*args, **options)
-        return wrapped_func
-
-    def implements_params(self, base_func, backend_name, implemented_funcs, supported_options):
-        """Ensures base_func is only called with the given funcs and options."""
-        supported_option_set = set(supported_options)
-        @functools.wraps(base_func)
-        def wrapped_func(*args, **kwargs):
-            func, func_args, options = self.split_kwargs(kwargs)
-
-            if func not in implemented_funcs:
-                raise ValueError("the {} backend does not implement the {} function".format(backend_name, func))
-
-            unsupported_options = set(options) - supported_option_set
-            if unsupported_options:
-                raise ValueError("the {} backend does not support the {} option(s)".format(backend_name, unsupported_options))
-
-            return base_func(*args, **kwargs)
-        return wrapped_func
+    def choose_default_placeholder(self, name, func, *args, **kwargs):
+        """Choose a default placeholder_when_missing value for the given parameter."""
+        if func not in self.placeholder_funcs:
+            raise ValueError(f"unknown parameter definition function {func}")
+        return self.placeholder_funcs[func](*args)
 
 
 param_processor = ParamProcessor()

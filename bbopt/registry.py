@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x43355d4f
+# __coconut_hash__ = 0xab93091e
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -51,7 +51,8 @@ class Registry(_coconut.object):
             if name in self.generators:
                 return self.run_gen(name)
             else:
-                raise ValueError("unknown {obj_name}: {name} (valid {obj_name}s: {valid_names})".format(obj_name=self.obj_name, name=name, valid_names=", ".join((repr(name) for name in self))))
+                valid_names = ", ".join((repr(name) for name in self))
+                raise ValueError("unknown {_coconut_format_0}: {_coconut_format_1} (valid {_coconut_format_2}s: {_coconut_format_3})".format(_coconut_format_0=(obj_name), _coconut_format_1=(name), _coconut_format_2=(obj_name), _coconut_format_3=(valid_names)))
 
     def register(self, name, value):
         """Register value under the given name."""

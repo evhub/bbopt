@@ -35,5 +35,5 @@ class MixtureBackend:
         self.selected_backend, kwargs = alg_registry[self.selected_alg]
         self.backend = init_backend(self.selected_backend, examples, params, **kwargs)
 
-    def param(self, name, **kwargs) =
-        self.backend.param(name, **kwargs)
+    def param(self, name, func, *args, **kwargs) =
+        self.backend.param(name, func, *args, **kwargs)
