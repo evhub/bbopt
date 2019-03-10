@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd723621f
+# __coconut_hash__ = 0x36af53be
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -37,11 +37,13 @@ def negate_objective(objective):
         return -objective
 
 
-def make_features(values, params, fallback_func=param_processor.choose_default_placeholder, convert_choice=False):
+def make_features(values, params, fallback_func=param_processor.choose_default_placeholder, converters={}, convert_fallback=True,):
     """Return an iterator of the values for the parameters in sorted order with the given fallback function.
-    If convert choice, converts choice values into choice indices."""
+    If passed, converters must map funcs to functions from (value, *args) -> new_value which will be run
+    on the resulting value for that func (but only on fallbacks if convert_fallback)."""
     for name, (func, args, kwargs) in sorted_items(params):
 # determine feature
+        fallback = False
         _coconut_match_to = values
         _coconut_match_check = False
         if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
@@ -62,23 +64,30 @@ def make_features(values, params, fallback_func=param_processor.choose_default_p
             if _coconut_match_check:
                 feature = placeholder_value
             else:
+                fallback = True
                 feature = fallback_func(name, func, *args, **kwargs)
 
-# convert choice to index if convert_choice
-        if convert_choice and func == "choice":
-            choices, = args
-            try:
-                feature = choices.index(feature)
-            except IndexError:
-                raise ValueError("prior choice {} does not appear in choices {}".format(feature, choices))
+# run converters
+        if not fallback or convert_fallback:
+            _coconut_match_to = converters
+            _coconut_match_check = False
+            if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
+                _coconut_match_temp_0 = _coconut_match_to.get(func, _coconut_sentinel)
+                if _coconut_match_temp_0 is not _coconut_sentinel:
+                    converter_func = _coconut_match_temp_0
+                    _coconut_match_check = True
+            if _coconut_match_check:
+                feature = converter_func(feature, *args)
 
         yield feature
 
 
-def split_examples(examples, params, fallback_func=param_processor.choose_default_placeholder, convert_choice=False):
+def split_examples(examples, params, fallback_func=param_processor.choose_default_placeholder, converters={}, convert_fallback=True,):
     """Split examples into a list of data points and a list of losses with the given fallback function."""
     data_points, losses = [], []
     for example in examples:
+
+# extract values, loss
         _coconut_match_to = example
         _coconut_case_check_0 = False
         if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
@@ -102,9 +111,14 @@ def split_examples(examples, params, fallback_func=param_processor.choose_defaul
                 pass
         if not _coconut_case_check_0:
             raise ValueError("invalid example {}".format(example))
-        features = (list)(make_features(values, params, fallback_func, convert_choice))
+
+# extract features
+        features = (list)(make_features(values, params, fallback_func, converters, convert_fallback))
+
+# add to data_points, losses
         (data_points.append)(features)
         (losses.append)(loss)
+
     return data_points, losses
 
 

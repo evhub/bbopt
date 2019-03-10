@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x604c2407
+# __coconut_hash__ = 0x50ce882
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -100,7 +100,7 @@ def examples_to_trials(examples, params):
 
         vals = {}
         idxs = {}
-        for k, v in zip(sorted(params), make_features(ex["values"], params, fallback_func=lambda name, func, *args, **kwargs: NA, convert_choice=True)):
+        for k, v in zip(sorted(params), make_features(ex["values"], params, fallback_func=lambda name, func, *args, **kwargs: NA, converters={"choice": lambda val, choices: choices.index(val), "randrange": lambda val, start, stop, step: val - start}, convert_fallback=False)):
             vals[k] = [v] if v is not NA else []
             idxs[k] = [tid] if v is not NA else []
 
@@ -125,15 +125,9 @@ class HyperoptBackend(_coconut.object):
 
         space = (as_apply)(dict(((name), (create_space(name, func, *args))) for name, (func, args, kwargs) in sorted_items(params)))
 
-        sys = _coconut_sys
-        space.pprint(sys.stdout)
-
         domain = Domain(self.set_current_values, space)
 
         trial_list = examples_to_trials(examples, params)
-
-        from pprint import pprint
-        pprint(trial_list)
 
         trials = Trials()
         trials.insert_trial_docs(trial_list)
