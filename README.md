@@ -330,7 +330,7 @@ _Backends which support **lognormvariate**: `hyperopt`, `random`._
 
 BlackBoxOptimizer.**rand**(_name_, *_shape_, **_kwargs_)
 
-Create a new parameter modeled by [`numpy.random.rand(*shape)`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.rand.html#numpy.random.rand), which creates an array with entries generated uniformly in `[0, 1)`.
+Create a new parameter modeled by [`numpy.random.rand(*shape)`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.rand.html#numpy.random.rand), which creates a `numpy` array of the given shape with entries generated uniformly in `[0, 1)`.
 
 _Backends which support **rand**: `scikit-optimize`, `hyperopt`, `random`._
 
@@ -338,6 +338,6 @@ _Backends which support **rand**: `scikit-optimize`, `hyperopt`, `random`._
 
 BlackBoxOptimizer.**randn**(_name_, *_shape_, **_kwargs_)
 
-Create a new parameter modeled by [`numpy.random.randn(*shape)`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.randn.html#numpy-random-randn), which creates an array with entries generated according to a standard normal distribution.
+Create a new parameter modeled by [`numpy.random.randn(*shape)`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.randn.html#numpy-random-randn), which creates a `numpy` array of the given shape with entries generated according to a standard normal distribution.
 
 _Backends which support **randn**: `hyperopt`, `random`._
