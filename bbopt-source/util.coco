@@ -29,15 +29,17 @@ def isnumpy(obj):
 
 def denumpy(obj, fallback=None):
     """Convert numpy data types to their Python equivalents."""
-    # the ordering here is extremely important; int must come before
-    #  bool, since otherwise this will cast all ints to bools
-    if np.issubdtype(obj, np.number) or np.issubdtype(obj, np.unsignedinteger):
-        return int(obj)
+    # the ordering here is extremely important; float must
+    #  come before int and int must come before bool
+    if np.issubdtype(obj, np.complexfloating):
+        return complex(obj)
     if np.issubdtype(obj, np.floating):
         return float(obj)
+    if np.issubdtype(obj, np.signedinteger) or np.issubdtype(obj, np.unsignedinteger):
+        return int(obj)
     if np.issubdtype(obj, np.bool_):
         return bool(obj)
-    if np.issubdtype(obj, np.str_):
+    if np.issubdtype(obj, np.str_) or np.issubdtype(obj, np.unicode_):
         return str(obj)
     if fallback is not None:
         fallback()

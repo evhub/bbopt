@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x196e8565
+# __coconut_hash__ = 0xe6ce0f73
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -120,7 +120,7 @@ class BlackBoxOptimizer(_coconut.object):
     def _got_reward(self):
         return "loss" in self._current_example or "gain" in self._current_example
 
-    def _param(self, name, **kwargs):
+    def _param(self, name, func, *args, **kwargs):
         """Create a black box parameter and return its value."""
         if self._got_reward:
             raise ValueError("all parameter definitions must come before maximize/minimize")
@@ -128,9 +128,13 @@ class BlackBoxOptimizer(_coconut.object):
             raise TypeError("name must be a string, not {}".format(name))
         if name in self._new_params:
             raise ValueError("parameter of name {} already exists".format(name))
-        kwargs = (param_processor.standardize_kwargs)(kwargs)
-        value = self.backend.param(name, **kwargs)
-        self._new_params[name] = kwargs
+
+        param_kwargs = kwargs
+        param_kwargs[func] = args
+        param_kwargs = (param_processor.standardize_kwargs)(param_kwargs)
+
+        value = self.backend.param(name, **param_kwargs)
+        self._new_params[name] = param_kwargs
         self._current_example["values"][name] = value
         return value
 
@@ -168,7 +172,7 @@ class BlackBoxOptimizer(_coconut.object):
     def data_file(self):
         return os.path.splitext(self._file)[0] + data_file_ext + (".json" if self._use_json else ".pickle")
 
-    def _tell_examples(self, examples):
+    def tell_examples(self, examples):
         """Load the given examples into memory."""
         for x in examples:
             if x not in self._examples:
@@ -195,7 +199,7 @@ class BlackBoxOptimizer(_coconut.object):
                 raise _coconut_match_err
 
             self._old_params = params
-            self._tell_examples(examples)
+            self.tell_examples(examples)
 
     def _load_data(self):
         """Load examples from data file."""
@@ -210,7 +214,7 @@ class BlackBoxOptimizer(_coconut.object):
 
     def _save_data(self):
         """Save examples to data file."""
-        self._tell_examples([self._current_example])
+        self.tell_examples([self._current_example])
         with Lock(self.data_file, "rb+", timeout=lock_timeout) as df:
             self._load_from(df)
             clear_file(df)
@@ -232,47 +236,47 @@ class BlackBoxOptimizer(_coconut.object):
 
     def randrange(self, name, *args, **kwargs):
         """Create a new parameter with the given name modeled by random.randrange(*args)."""
-        return self._param(name, randrange=args, **kwargs)
+        return self._param(name, "randrange", *args, **kwargs)
 
     def choice(self, name, seq, **kwargs):
         """Create a new parameter with the given name modeled by random.choice(seq)."""
-        return self._param(name, choice=(seq,), **kwargs)
+        return self._param(name, "choice", seq, **kwargs)
 
     def uniform(self, name, a, b, **kwargs):
         """Create a new parameter with the given name modeled by random.uniform(a, b)."""
-        return self._param(name, uniform=(a, b), **kwargs)
+        return self._param(name, "uniform", a, b, **kwargs)
 
     def triangular(self, name, low, high, mode, **kwargs):
         """Create a new parameter with the given name modeled by random.triangular(low, high, mode)."""
-        return self._param(name, triangular=(low, high, mode), **kwargs)
+        return self._param(name, "triangular", low, high, mode, **kwargs)
 
     def betavariate(self, name, alpha, beta, **kwargs):
         """Create a new parameter with the given name modeled by random.betavariate(alpha, beta)."""
-        return self._param(name, betavariate=(alpha, beta), **kwargs)
+        return self._param(name, "betavariate", alpha, beta, **kwargs)
 
     def expovariate(self, name, lambd, **kwargs):
         """Create a new parameter with the given name modeled by random.expovariate(lambd)."""
-        return self._param(name, expovariate=(lambd,), **kwargs)
+        return self._param(name, "expovariate", lambd, **kwargs)
 
     def gammavariate(self, name, alpha, beta, **kwargs):
         """Create a new parameter with the given name modeled by random.gammavariate(alpha, beta)."""
-        return self._param(name, gammavariate=(alpha, beta), **kwargs)
+        return self._param(name, "gammavariate", alpha, beta, **kwargs)
 
     def normalvariate(self, name, mu, sigma, **kwargs):
         """Create a new parameter with the given name modeled by random.gauss(mu, sigma)."""
-        return self._param(name, normalvariate=(mu, sigma), **kwargs)
+        return self._param(name, "normalvariate", mu, sigma, **kwargs)
 
     def vonmisesvariate(self, name, kappa, **kwargs):
         """Create a new parameter with the given name modeled by random.vonmisesvariate(kappa)."""
-        return self._param(name, vonmisesvariate=(kappa,), **kwargs)
+        return self._param(name, "vonmisesvariate", kappa, **kwargs)
 
     def paretovariate(self, name, alpha, **kwargs):
         """Create a new parameter with the given name modeled by random.paretovariate(alpha)."""
-        return self._param(name, paretovariate=(alpha,), **kwargs)
+        return self._param(name, "paretovariate", alpha, **kwargs)
 
     def weibullvariate(self, name, alpha, beta, **kwargs):
         """Create a new parameter with the given name modeled by random.weibullvariate(alpha, beta)."""
-        return self._param(name, weibullvariate=(alpha, beta), **kwargs)
+        return self._param(name, "weibullvariate", alpha, beta, **kwargs)
 
 # Derived random functions:
 
