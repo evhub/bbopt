@@ -5,8 +5,13 @@ Constants for use across all of BBopt.
 
 # Installation constants:
 name = "bbopt"
-version = "0.5.2"
+version = "0.5.3"
 description = "The easiest hyperparameter optimization you'll ever do."
+long_description = """
+See BBopt's GitHub_ for more information.
+
+.. _GitHub: https://github.com/evhub/bbopt
+"""
 github_url = "https://github.com/evhub/bbopt"
 author = "Evan Hubinger"
 author_email = "evanjhub@gmail.com"

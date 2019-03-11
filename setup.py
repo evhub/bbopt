@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf4349267
+# __coconut_hash__ = 0x4561bd3e
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -698,6 +698,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "bbo
 from constants import name
 from constants import version
 from constants import description
+from constants import long_description
 from constants import github_url
 from constants import author
 from constants import author_email
@@ -706,4 +707,4 @@ from constants import classifiers
 from constants import extra_requirements
 
 
-setuptools.setup(name=name, version=version, description=description, url=github_url, author=author, author_email=author_email, classifiers=(list)(classifiers), packages=setuptools.find_packages(), install_requires=(list)(requirements), extras_require=fmap(lambda k, v: (k, list(v)), extra_requirements), entry_points={"console_scripts": ["bbopt = bbopt.cli:main",]})
+setuptools.setup(name=name, version=version, description=description, long_description=long_description, url=github_url, author=author, author_email=author_email, classifiers=(list)(classifiers), packages=setuptools.find_packages(), install_requires=(list)(requirements), extras_require=fmap(lambda k, v: (k, list(v)), extra_requirements), entry_points={"console_scripts": ["bbopt = bbopt.cli:main",]})
