@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xab93091e
+# __coconut_hash__ = 0xb07efcf3
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -112,9 +112,9 @@ def _coconut_lambda_4(_=None):
 backend_registry = Registry(obj_name="backend", generators={"serving": (_coconut_lambda_0), "random": (_coconut_lambda_1), "scikit-optimize": (_coconut_lambda_2), "hyperopt": (_coconut_lambda_3), "mixture": (_coconut_lambda_4)}, aliases={None: "serving"})
 
 
-def init_backend(name, examples, params, *args, **kwargs):
+def init_backend(name, examples, params, *args, **options):
     """Create a backend object of the given name with the given data."""
-    return backend_registry[name](examples, params, *args, **kwargs)
+    return backend_registry[name](examples, params, *args, **options)
 
 
 def _coconut_lambda_5(_=None):

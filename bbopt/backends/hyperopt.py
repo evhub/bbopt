@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa82e69e8
+# __coconut_hash__ = 0x7d173927
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -119,7 +119,7 @@ class HyperoptBackend(_coconut.object):
     random_backend = RandomBackend()
     current_values = None
 
-    def __init__(self, examples, params, algo=tpe.suggest, rstate=np.random.RandomState(), show_progressbar=False, **kwargs):
+    def __init__(self, examples, params, algo=tpe.suggest, rstate=np.random.RandomState(), show_progressbar=False, **options):
         if not examples:
             self.current_values = {}
             return
@@ -135,7 +135,7 @@ class HyperoptBackend(_coconut.object):
 
 # run one iteration of hyperparameter optimization, with values saved
 #  to the self.set_current_values callback passed to Domain
-        (next)(FMinIter(algo, domain, trials, rstate, show_progressbar=show_progressbar, **kwargs))
+        (next)(FMinIter(algo, domain, trials, rstate, show_progressbar=show_progressbar, **options))
 
         assert self.current_values is not None, self.current_values
         assert set(self.current_values.keys()) == set(params), self.current_values

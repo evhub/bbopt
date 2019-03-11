@@ -68,9 +68,9 @@ backend_registry = Registry(
 )
 
 
-def init_backend(name, examples, params, *args, **kwargs):
+def init_backend(name, examples, params, *args, **options):
     """Create a backend object of the given name with the given data."""
-    return backend_registry[name](examples, params, *args, **kwargs)
+    return backend_registry[name](examples, params, *args, **options)
 
 
 alg_registry = Registry(

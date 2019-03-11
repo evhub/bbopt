@@ -112,7 +112,7 @@ class HyperoptBackend:
     random_backend = RandomBackend()
     current_values = None
 
-    def __init__(self, examples, params, algo=tpe.suggest, rstate=np.random.RandomState(), show_progressbar=False, **kwargs):
+    def __init__(self, examples, params, algo=tpe.suggest, rstate=np.random.RandomState(), show_progressbar=False, **options):
         if not examples:
             self.current_values = {}
             return
@@ -137,7 +137,7 @@ class HyperoptBackend:
             trials,
             rstate,
             show_progressbar=show_progressbar,
-            **kwargs,
+            **options,
         ) |> next
 
         assert self.current_values is not None, self.current_values

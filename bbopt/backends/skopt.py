@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x2bb85fdb
+# __coconut_hash__ = 0xd2a12720
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -71,7 +71,7 @@ class SkoptBackend(_coconut.object):
     """The scikit-optimize backend uses scikit-optimize for black box optimization."""
     random_backend = RandomBackend()
 
-    def __init__(self, examples, params, base_estimator="gp", **kwargs):
+    def __init__(self, examples, params, base_estimator="gp", **options):
         if not examples:
             self.current_values = {}
             return
@@ -82,7 +82,7 @@ class SkoptBackend(_coconut.object):
         if isinstance(base_estimator, str):
             base_estimator = py_str(base_estimator)
 
-        optimizer = Optimizer(dimensions, base_estimator, **kwargs)
+        optimizer = Optimizer(dimensions, base_estimator, **options)
         optimizer.tell(data_points, losses)
         current_point = optimizer.ask()
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xfb82bb68
+# __coconut_hash__ = 0x99975b18
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -102,9 +102,9 @@ class BlackBoxOptimizer(_coconut.object):
         else:
             return pickle.dumps(unserialized_data, protocol=self._protocol)
 
-    def run_backend(self, backend, *args, **kwargs):
+    def run_backend(self, backend, *args, **options):
         """Optimize parameters using the given backend."""
-        self.backend = init_backend(backend, self._examples, self._old_params, *args, **kwargs)
+        self.backend = init_backend(backend, self._examples, self._old_params, *args, **options)
         self._new_params = {}
         self._current_example = {"values": {}}
 
@@ -116,8 +116,8 @@ class BlackBoxOptimizer(_coconut.object):
     def run(self, alg=default_alg):
         """Optimize parameters using the given algorithm
         (use .algs to get the list of valid algorithms)."""
-        backend, kwargs = alg_registry[alg]
-        self.run_backend(backend, **kwargs)
+        backend, options = alg_registry[alg]
+        self.run_backend(backend, **options)
 
     @property
     def _got_reward(self):

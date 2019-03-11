@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x698ee21a
+# __coconut_hash__ = 0x6e75f5dc
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -57,8 +57,8 @@ class MixtureBackend(_coconut.object):
                 break
 
 # initialize backend
-        self.selected_backend, kwargs = alg_registry[self.selected_alg]
-        self.backend = init_backend(self.selected_backend, examples, params, **kwargs)
+        self.selected_backend, options = alg_registry[self.selected_alg]
+        self.backend = init_backend(self.selected_backend, examples, params, **options)
 
     def param(self, name, func, *args, **kwargs):
         return self.backend.param(name, func, *args, **kwargs)
