@@ -2,12 +2,15 @@
 Utilities for use in BBopt backends.
 """
 
-from bbopt.params import param_processor
+from collections.abc import Iterable
+
 from bbopt.util import sorted_items
+from bbopt.params import param_processor
 
 
 def negate_objective(objective):
-    if isinstance(objective, list):
+    """Take the negative of the given objective (converts a gain into a loss and vice versa)."""
+    if isinstance(objective, Iterable):
         return objective |> map$(negate_objective) |> list
     else:
         return -objective

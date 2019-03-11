@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xbc329350
+# __coconut_hash__ = 0xa35e5b9
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -128,8 +128,10 @@ class TestExamples(unittest.TestCase):
             results = call_test(["bbopt", random_file, "-n", str(NUM_TRIALS)])
             want = max(get_nums(results, numtype=int))
             assert os.path.exists(random_data)
+
             from bbopt.examples import random_example
             assert random_example.x == want
+            assert 1 <= random_example.x <= 10
             assert random_example.bb.num_examples == NUM_TRIALS
 
     def test_skopt(self):
@@ -138,8 +140,10 @@ class TestExamples(unittest.TestCase):
             results = call_test(["bbopt", skopt_file, "-n", str(NUM_TRIALS), "-j", "4"])
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(skopt_data)
+
             from bbopt.examples import skopt_example
             assert skopt_example.y == want
+            assert -9 <= skopt_example.y <= 21
             assert skopt_example.bb.num_examples == NUM_TRIALS
 
     def test_hyperopt(self):
@@ -148,6 +152,7 @@ class TestExamples(unittest.TestCase):
             results = call_test(["bbopt", hyperopt_file, "-n", str(NUM_TRIALS), "-j", "4"])
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(hyperopt_data)
+
             from bbopt.examples import hyperopt_example
             assert hyperopt_example.y == want
             assert hyperopt_example.bb.num_examples == NUM_TRIALS
@@ -158,8 +163,10 @@ class TestExamples(unittest.TestCase):
             results = call_test(["bbopt", conditional_hyperopt_file, "-n", str(NUM_TRIALS), "-j", "4"])
             want = max(get_nums(results, numtype=int))
             assert os.path.exists(conditional_hyperopt_data)
+
             from bbopt.examples import conditional_hyperopt_example
             assert conditional_hyperopt_example.x == want
+            assert 0 <= conditional_hyperopt_example.x <= 20
             assert conditional_hyperopt_example.bb.num_examples == NUM_TRIALS
 
     def test_conditional_skopt(self):
@@ -168,17 +175,22 @@ class TestExamples(unittest.TestCase):
             results = call_test(["bbopt", conditional_skopt_file, "-n", str(NUM_TRIALS), "-j", "4"])
             want = max(get_nums(results, numtype=int))
             assert os.path.exists(conditional_skopt_data)
+
             from bbopt.examples import conditional_skopt_example
             assert conditional_skopt_example.x == want
+            assert 0 <= conditional_skopt_example.x <= 20
+            assert conditional_skopt_example.bb.num_examples == NUM_TRIALS
 
     def test_numpy(self):
         print("\ntest numpy:")
         with using(numpy_data):
             from bbopt.examples import numpy_example
             assert numpy_example.y == 0
+
             results = call_test(["bbopt", numpy_file, "-n", str(NUM_TRIALS), "-j", "4"])
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(numpy_data)
+
             reload(numpy_example)
             assert numpy_example.y == want
             assert numpy_example.bb.num_examples == NUM_TRIALS
@@ -187,12 +199,15 @@ class TestExamples(unittest.TestCase):
         print("\ntest mixture:")
         with using(mixture_data):
             from bbopt.examples import mixture_example
-            assert mixture_example.loss == abs(sum([4, 5, 6, 7, 8]) - 10)
+            assert mixture_example.loss == abs(sum([3, 4, 5, 6, 7]) - 10)
+
             results = call_test(["bbopt", mixture_file, "-n", str(NUM_TRIALS), "-j", "4"])
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(mixture_data)
+
             reload(mixture_example)
             assert mixture_example.loss == want
+            assert 0 <= mixture_example.loss <= 85
             assert mixture_example.bb.num_examples == NUM_TRIALS
 
     def test_json(self):
@@ -200,9 +215,11 @@ class TestExamples(unittest.TestCase):
         with using(json_data):
             from bbopt.examples import json_example
             assert round(json_example.y, 5) == 6
+
             results = call_test(["bbopt", json_file, "-n", str(NUM_TRIALS), "-j", "4"])
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(json_data)
+
             reload(json_example)
             assert json_example.y == want
             assert json_example.bb.num_examples == NUM_TRIALS

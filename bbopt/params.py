@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xe42911fb
+# __coconut_hash__ = 0xa10ab98c
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -47,6 +47,8 @@ def handle_randrange(args):
         start, stop, step = args
     else:
         raise format_err(ValueError, "randrange expects between 1 and 3 arguments, not", args)
+    if start > stop:
+        raise format_err(ValueError, "randrange start must be less than stop")
     return [start, stop, step]
 
 

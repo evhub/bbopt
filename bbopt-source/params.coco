@@ -25,6 +25,8 @@ def handle_randrange(args):
         start, stop, step = args
     else:
         raise format_err(ValueError, "randrange expects between 1 and 3 arguments, not", args)
+    if start > stop:
+        raise format_err(ValueError, "randrange start must be less than stop")
     return [start, stop, step]
 
 

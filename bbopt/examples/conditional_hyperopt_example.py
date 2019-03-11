@@ -17,9 +17,9 @@ if __name__ == "__main__":
 use_high = bb.randbool("use high", guess=False)
 assert isinstance(use_high, bool)
 if use_high:
-    x = bb.randrange("x high", 5, 20)
+    x = bb.randrange("x high", 10, 20)
 else:
-    x = bb.randrange("x low", 5)
+    x = bb.randrange("x low", 10)
 
 
 # We set x as the thing we want to optimize.

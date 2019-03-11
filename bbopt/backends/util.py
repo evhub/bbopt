@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x36af53be
+# __coconut_hash__ = 0xb446176f
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -26,12 +26,18 @@ if _coconut_sys.version_info >= (3,):
 
 
 
-from bbopt.params import param_processor
+if _coconut_sys.version_info < (3, 3):
+    from collections import Iterable
+else:
+    from collections.abc import Iterable
+
 from bbopt.util import sorted_items
+from bbopt.params import param_processor
 
 
 def negate_objective(objective):
-    if isinstance(objective, list):
+    """Take the negative of the given objective (converts a gain into a loss and vice versa)."""
+    if isinstance(objective, Iterable):
         return (list)(map(negate_objective, objective))
     else:
         return -objective

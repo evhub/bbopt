@@ -30,7 +30,7 @@ if isinstance(bb.backend, MixtureBackend):
 
 
 # Set up a parameter from a choice and a random sample.
-xs = bb.sample("xs", range(10), 5, guess=[4,5,6,7,8])
+xs = bb.sample("xs", range(10), 5, guess=[3,4,5,6,7])
 y = bb.choice("y", [1, 10, 100], guess=10)
 
 
