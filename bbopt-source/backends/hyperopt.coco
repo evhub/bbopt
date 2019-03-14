@@ -31,7 +31,7 @@ from bbopt.backends.util import (
 # Utilities:
 
 def create_space(name, func, *args):
-    """Create a hyperopt space for the given param kwargs."""
+    """Create a hyperopt space for the given parameter."""
     case func:
         match "choice":
             return hp.choice(name, *args)

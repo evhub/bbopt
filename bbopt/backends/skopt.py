@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x1e3bbf1c
+# __coconut_hash__ = 0x53b40ec6
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -40,7 +40,7 @@ from bbopt.backends.util import make_values
 # Utilities:
 
 def create_dimension(name, func, *args):
-    """Create a scikit-optimize dimension for the given param kwargs."""
+    """Create a scikit-optimize dimension for the given parameter."""
     _coconut_match_to = func
     _coconut_case_check_0 = False
     if _coconut_match_to == "choice":

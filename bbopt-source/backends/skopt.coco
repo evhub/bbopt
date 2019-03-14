@@ -20,7 +20,7 @@ from bbopt.backends.util import (
 # Utilities:
 
 def create_dimension(name, func, *args):
-    """Create a scikit-optimize dimension for the given param kwargs."""
+    """Create a scikit-optimize dimension for the given parameter."""
     case func:
         match "choice":
             return Categorical(*args)

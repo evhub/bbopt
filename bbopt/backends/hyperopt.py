@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x448255b3
+# __coconut_hash__ = 0x8674fa01
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -49,7 +49,7 @@ from bbopt.backends.util import make_features
 # Utilities:
 
 def create_space(name, func, *args):
-    """Create a hyperopt space for the given param kwargs."""
+    """Create a hyperopt space for the given parameter."""
     _coconut_match_to = func
     _coconut_case_check_0 = False
     if _coconut_match_to == "choice":
