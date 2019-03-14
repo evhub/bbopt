@@ -349,14 +349,17 @@ from bbopt.backends.util import Backend
 
 class MyBackend(Backend):
     backend_name = "my-backend"
-    implemented_funcs = (
-        ...,  # list the random functions you implement here
-    )
+    implemented_funcs = [
+        ...,  # list the random functions you support here
+    ]
 
     def __init__(self, examples, params, **options):
         self.init_fallback_backend()
 
-        # the values you want to use for this run as a dict
+        # the values you want to use for this run as a dict;
+        #  you can use params to get the args for each param
+        #  and examples to get all the past data (to see what
+        #  examples and params look like, use bb.get_data)
         self.current_values = ...
 
 MyBackend.register()
