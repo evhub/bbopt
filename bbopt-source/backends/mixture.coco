@@ -5,12 +5,14 @@ The mixture backend. Lets you specify a distribution over different possible alg
 import random
 
 from bbopt.registry import alg_registry, init_backend
+from bbopt.backends.util import Backend
 
 
-class MixtureBackend:
+class MixtureBackend(Backend):
     """Mixture backend. Takes in a distribution over different possible algorithms
     of the form [(algorithm, weight)]. The properties selected_alg and selected_backend
     can be used to retrieve which alg/backend is currently being used."""
+    backend_name = "mixture"
 
     def __init__(self, examples, params, distribution):
         total_weight = sum(weight for alg, weight in distribution)
@@ -37,3 +39,8 @@ class MixtureBackend:
 
     def param(self, name, func, *args, **kwargs) =
         self.backend.param(name, func, *args, **kwargs)
+
+
+# Registered names
+
+MixtureBackend.register()

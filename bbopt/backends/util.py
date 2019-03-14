@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb446176f
+# __coconut_hash__ = 0xdaaf18f2
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -33,7 +33,11 @@ else:
 
 from bbopt.util import sorted_items
 from bbopt.params import param_processor
+from bbopt.registry import backend_registry
+from bbopt.registry import alg_registry
 
+
+# Utilities:
 
 def negate_objective(objective):
     """Take the negative of the given objective (converts a gain into a loss and vice versa)."""
@@ -177,3 +181,61 @@ def serve_values(name, func, args, kwargs, serving_values, fallback_func, backen
             return guess
         else:
             return fallback_func(name, func, *args, **kwargs)
+
+
+# Backend base class:
+
+class Backend(_coconut.object):
+    """Base class for BBopt backends."""
+# derived classes should always set this
+    backend_name = None
+
+# derived classes can modify these if they want to further
+#  restrict the set of supported funcs and/or kwargs
+    implemented_funcs = None
+    supported_kwargs = ("guess", "placeholder_when_missing",)
+
+# derived classes must set this on each run if they want to
+#  use the default param implementation
+    current_values = None
+
+# derived classes must set this if they want to use the
+#  default fallback_func implementation
+    fallback_backend = None
+
+    def __init__(self, examples=None, params=None, **options):
+        """Call this if you want to set fallback_backend to a random backend."""
+        if options:
+            raise ValueError("Backend {_coconut_format_0} got unsupported options: {_coconut_format_1!r}".format(_coconut_format_0=(self.backend_name), _coconut_format_1=(self.options)))
+
+    def init_fallback_backend(self):
+        """Set fallback_backend to a new random backend instance."""
+        self.fallback_backend = backend_registry["random"]()
+
+    def fallback_func(self, name, func, *args, **kwargs):
+        """Default fallback_func calls self.fallback_backend.param."""
+        assert self.fallback_backend is not None, "Backend subclasses using Backend.fallback_func must set fallback_backend"
+        return self.fallback_backend.param(name, func, *args, **kwargs)
+
+    def param(self, name, func, *args, **kwargs):
+        """Default param calls serve_values with self.current_values and self.fallback_func."""
+        assert self.current_values is not None, "Backend subclasses using Backend.param must set current_values"
+        return serve_values(name, func, args, kwargs, serving_values=self.current_values, fallback_func=self.fallback_func, backend_name=self.backend_name, implemented_funcs=self.implemented_funcs, supported_kwargs=self.supported_kwargs)
+
+    @classmethod
+    def register(cls):
+        """Register this backend to the backend registry."""
+        assert cls.backend_name is not None, "Backend subclasses using Backend.register must set backend_name on the class"
+        backend_registry.register(cls.backend_name, cls)
+
+    @classmethod
+    def register_alg(cls, alg_name, **options):
+        """Register an algorithm under the given name that calls this backend with the given options."""
+        assert cls.backend_name is not None, "Backend subclasses using Backend.register_alg must set backend_name on the class"
+        alg_registry.register(alg_name, (cls.backend_name, options))
+
+    @classmethod
+    def register_alias(cls, alias):
+        """Register an alias for this backend."""
+        assert cls.backend_name is not None, "Backend subclasses using Backend.register_alias must set backend_name on the class"
+        backend_registry.register_alias(cls.backend_name, alias)

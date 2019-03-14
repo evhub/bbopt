@@ -5,13 +5,12 @@ Does not use existing data, simply spits out random valid values.
 
 import random
 
+from bbopt.backends.util import Backend
 
-class RandomBackend:
+
+class RandomBackend(Backend):
     """The random backend chooses parameter values randomly."""
-
-    def __init__(self, examples=None, params=None):
-        pass  # we're choosing randomly, so we ignore everything
-
+    backend_name = "random"
     random_functions = {
         "randrange": random.randrange,
         "choice": random.choice,
@@ -30,3 +29,9 @@ class RandomBackend:
         if func not in self.random_functions:
             raise ValueError(f"unknown random function {name}")
         return self.random_functions[func](*args)
+
+
+# Registered names
+
+RandomBackend.register()
+RandomBackend.register_alg("random")

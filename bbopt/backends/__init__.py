@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3142df2f
+# __coconut_hash__ = 0x9e00fd81
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -23,3 +23,22 @@ if _coconut_sys.version_info >= (3,):
     _coconut_sys.path.pop(0)
 
 # Compiled Coconut: -----------------------------------------------------------
+
+
+
+import traceback
+
+# import all the other backends to register them
+from bbopt.backends.serving import ServingBackend
+from bbopt.backends.random import RandomBackend
+from bbopt.backends.mixture import MixtureBackend
+try:
+    from bbopt.backends.skopt import SkoptBackend
+except ImportError:
+    traceback.print_exc()
+    print("Could not import scikit-optimize backend; backend unavailable (see above error).")
+try:
+    from bbopt.backends.hyperopt import HyperoptBackend
+except ImportError:
+    traceback.print_exc()
+    print("Could not import hyperopt backend; backend unavailable (see above error).")

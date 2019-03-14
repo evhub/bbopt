@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb07efcf3
+# __coconut_hash__ = 0xcc680b16
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -58,12 +58,17 @@ class Registry(_coconut.object):
         """Register value under the given name."""
         self.registered[name] = value
 
+    def register_alias(self, name, alias):
+        """Register an alias for the given name."""
+        self.aliases[alias] = name
+
     def run_gen(self, name):
         """Run the generator for the given name."""
         value = self.generators[name]()
-        self.register(name, value)
+        if value is not None:
+            self.register(name, value)
         del self.generators[name]
-        return value
+        return self.registered[name]
 
     def __iter__(self):
         _coconut_yield_from = self.registered
@@ -94,22 +99,7 @@ class Registry(_coconut.object):
         return self.registered
 
 
-def _coconut_lambda_0(_=None):
-    from bbopt.backends.serving import ServingBackend
-    return ServingBackend
-def _coconut_lambda_1(_=None):
-    from bbopt.backends.random import RandomBackend
-    return RandomBackend
-def _coconut_lambda_2(_=None):
-    from bbopt.backends.skopt import SkoptBackend
-    return SkoptBackend
-def _coconut_lambda_3(_=None):
-    from bbopt.backends.hyperopt import HyperoptBackend
-    return HyperoptBackend
-def _coconut_lambda_4(_=None):
-    from bbopt.backends.mixture import MixtureBackend
-    return MixtureBackend
-backend_registry = Registry(obj_name="backend", generators={"serving": (_coconut_lambda_0), "random": (_coconut_lambda_1), "scikit-optimize": (_coconut_lambda_2), "hyperopt": (_coconut_lambda_3), "mixture": (_coconut_lambda_4)}, aliases={None: "serving"})
+backend_registry = Registry("backend")
 
 
 def init_backend(name, examples, params, *args, **options):
@@ -117,7 +107,4 @@ def init_backend(name, examples, params, *args, **options):
     return backend_registry[name](examples, params, *args, **options)
 
 
-def _coconut_lambda_5(_=None):
-    from hyperopt import anneal
-    return ("hyperopt", dict(algo=anneal.suggest))
-alg_registry = Registry(obj_name="algorithm", defaults={"serving": ("serving", {}), "random": ("random", {}), "gaussian_process": ("scikit-optimize", {}), "random_forest": ("scikit-optimize", dict(base_estimator="RF")), "extra_trees": ("scikit-optimize", dict(base_estimator="ET")), "gradient_boosted_regression_trees": ("scikit-optimize", dict(base_estimator="GBRT")), "tree_structured_parzen_estimator": ("hyperopt", {})}, generators={"annealing": (_coconut_lambda_5)}, aliases={None: "serving"})
+alg_registry = Registry("algorithm")

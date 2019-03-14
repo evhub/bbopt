@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd2a12720
+# __coconut_hash__ = 0x7e0dd76f
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -32,10 +32,9 @@ from skopt.space import Integer
 from skopt.space import Real
 
 from bbopt.util import sorted_items
-from bbopt.backends.random import RandomBackend
+from bbopt.backends.util import Backend
 from bbopt.backends.util import split_examples
 from bbopt.backends.util import make_values
-from bbopt.backends.util import serve_values
 
 
 # Utilities:
@@ -67,11 +66,14 @@ def create_dimension(name, func, *args):
 
 # Backend:
 
-class SkoptBackend(_coconut.object):
+class SkoptBackend(Backend):
     """The scikit-optimize backend uses scikit-optimize for black box optimization."""
-    random_backend = RandomBackend()
+    backend_name = "scikit-optimize"
+    implemented_funcs = ("choice", "randrange", "uniform",)
 
     def __init__(self, examples, params, base_estimator="gp", **options):
+        self.init_fallback_backend()
+
         if not examples:
             self.current_values = {}
             return
@@ -88,5 +90,11 @@ class SkoptBackend(_coconut.object):
 
         self.current_values = make_values(params, current_point)
 
-    def param(self, name, func, *args, **kwargs):
-        return serve_values(name, func, args, kwargs, serving_values=self.current_values, fallback_func=self.random_backend.param, backend_name="scikit-optimize", implemented_funcs=("choice", "randrange", "uniform",), supported_kwargs=("guess", "placeholder_when_missing",))
+
+# Registered names
+
+SkoptBackend.register()
+SkoptBackend.register_alg("gaussian_process", base_estimator="GP")
+SkoptBackend.register_alg("random_forest", base_estimator="RF")
+SkoptBackend.register_alg("extra_trees", base_estimator="ET")
+SkoptBackend.register_alg("gradient_boosted_regression_trees", base_estimator="GBRT")

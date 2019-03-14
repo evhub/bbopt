@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7d173927
+# __coconut_hash__ = 0x270ea071
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -31,6 +31,7 @@ import numpy as np
 from hyperopt import hp
 from hyperopt import tpe
 from hyperopt import FMinIter
+from hyperopt import anneal
 from hyperopt.pyll import as_apply
 from hyperopt.base import Domain
 from hyperopt.base import Trials
@@ -40,15 +41,13 @@ from hyperopt.base import JOB_STATE_DONE
 from hyperopt.base import spec_from_misc
 
 from bbopt.util import sorted_items
-from bbopt.backends.random import RandomBackend
+from bbopt.backends.util import Backend
 from bbopt.backends.util import negate_objective
 from bbopt.backends.util import make_features
-from bbopt.backends.util import serve_values
 
 
 # Utilities:
 
-# decorator to turn kwargs into the random function and its args
 def create_space(name, func, *args):
     """Create a hyperopt space for the given param kwargs."""
     _coconut_match_to = func
@@ -114,12 +113,14 @@ def examples_to_trials(examples, params):
 
 # Backend:
 
-class HyperoptBackend(_coconut.object):
+class HyperoptBackend(Backend):
     """The hyperopt backend uses hyperopt for black box optimization."""
-    random_backend = RandomBackend()
-    current_values = None
+    backend_name = "hyperopt"
+    implemented_funcs = ("choice", "randrange", "uniform", "normalvariate",)
 
     def __init__(self, examples, params, algo=tpe.suggest, rstate=np.random.RandomState(), show_progressbar=False, **options):
+        self.init_fallback_backend()
+
         if not examples:
             self.current_values = {}
             return
@@ -146,5 +147,9 @@ class HyperoptBackend(_coconut.object):
         self.current_values = values
         return {"status": STATUS_RUNNING}
 
-    def param(self, name, func, *args, **kwargs):
-        return serve_values(name, func, args, kwargs, serving_values=self.current_values, fallback_func=self.random_backend.param, backend_name="hyperopt", implemented_funcs=("choice", "randrange", "uniform", "normalvariate",), supported_kwargs=("guess", "placeholder_when_missing",))
+
+# Registered names
+
+HyperoptBackend.register()
+HyperoptBackend.register_alg("tree_structured_parzen_estimator")
+HyperoptBackend.register_alg("annealing", algo=anneal.suggest)

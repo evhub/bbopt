@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x1d595bbd
+# __coconut_hash__ = 0x7d7e6b39
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -27,19 +27,23 @@ if _coconut_sys.version_info >= (3,):
 
 
 from bbopt.util import best_example
-from bbopt.backends.util import serve_values
+from bbopt.backends.util import Backend
 
 
-class ServingBackend(_coconut.object):
+class ServingBackend(Backend):
     """The serving backend uses the parameter values from the best example."""
+    backend_name = "serving"
 
     def __init__(self, examples, params):
 # since we're serving, ignore params and just extract the best example
-        self.serving_values = best_example(examples)["values"]
+        self.current_values = best_example(examples)["values"]
 
-    def param(self, name, func, *args, **kwargs):
-# try to look up name in serving_values,
-#  otherwise use guess, otherwise raise error
-        def _coconut_lambda_0(name, func, *args, **kwargs):
-            raise ValueError("missing data for parameter {_coconut_format_0} while serving and no guess".format(_coconut_format_0=(name)))
-        return serve_values(name, func, args, kwargs, serving_values=self.serving_values, fallback_func=(_coconut_lambda_0))
+    def fallback_func(self, name, func, *args, **kwargs):
+        raise ValueError("missing data for parameter {_coconut_format_0} while serving and no guess".format(_coconut_format_0=(name)))
+
+
+# Registered names
+
+ServingBackend.register()
+ServingBackend.register_alg("serving")
+ServingBackend.register_alias(None)

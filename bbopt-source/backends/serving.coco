@@ -3,29 +3,23 @@ The serving backend. Selects the best existing data point.
 """
 
 from bbopt.util import best_example
-from bbopt.backends.util import (
-    serve_values,
-)
+from bbopt.backends.util import Backend
 
 
-class ServingBackend:
+class ServingBackend(Backend):
     """The serving backend uses the parameter values from the best example."""
+    backend_name = "serving"
 
     def __init__(self, examples, params):
         # since we're serving, ignore params and just extract the best example
-        self.serving_values = best_example(examples)["values"]
+        self.current_values = best_example(examples)["values"]
 
-    def param(self, name, func, *args, **kwargs):
-        # try to look up name in serving_values,
-        #  otherwise use guess, otherwise raise error
-        return serve_values(
-            name,
-            func,
-            args,
-            kwargs,
-            serving_values=self.serving_values,
-            fallback_func=(def (name, func, *args, **kwargs) ->
-                raise ValueError(f"missing data for parameter {name} while serving and no guess")
-            ),
-        )
+    def fallback_func(self, name, func, *args, **kwargs):
+        raise ValueError(f"missing data for parameter {name} while serving and no guess")
 
+
+# Registered names
+
+ServingBackend.register()
+ServingBackend.register_alg("serving")
+ServingBackend.register_alias(None)

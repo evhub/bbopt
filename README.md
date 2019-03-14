@@ -102,6 +102,7 @@ Some examples of BBopt in action:
     1. [`lognormvariate`](#lognormvariate)
     1. [`rand`](#rand)
     1. [`randn`](#randn)
+1. [Writing Your Own Backend](#writing-your-own-backend)
 
 <!-- /MarkdownTOC -->
 
@@ -112,8 +113,6 @@ The `bbopt` command is extremely simple in terms of what it actually does. For t
 Why does this work? If you're using the basic boilerplate, then running `python <file>` will trigger the `if __name__ == "__main__":` clause, which will run a training episode. But when you go to `import` your file, the `if __name__ == "__main__":` clause won't get triggered, and you'll just get served the best parameters found so far. Since the command-line interface is so simple, advanced users who want to use the full API instead of the boilerplate need not use the `bbopt` command at all. If you want more information on the `bbopt` command, just run `bbopt -h`.
 
 ### Black Box Optimization Methods
-
-_Note that BBopt is written in [Coconut](http://coconut-lang.org/) and compiled into Python, not written in Python directly, which means if you want to look at the source for the following methods, you should look at the `.coco` files in [`bbopt-source`](https://github.com/evhub/bbopt/tree/master/bbopt-source) not the `.py` files in [`bbopt`](https://github.com/evhub/bbopt/tree/master/bbopt)._
 
 #### Constructor
 
@@ -341,3 +340,33 @@ BlackBoxOptimizer.**randn**(_name_, *_shape_, **_kwargs_)
 Create a new parameter modeled by [`numpy.random.randn(*shape)`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.randn.html#numpy-random-randn), which creates a `numpy` array of the given shape with entries generated according to a standard normal distribution.
 
 _Backends which support **randn**: `hyperopt`, `random`._
+
+### Writing Your Own Backend
+
+BBopt's backend system is built to be extremely extensible, allowing anyone to write and register their own BBopt backends. The basic template for writing a BBopt backend is as follows:
+```python
+from bbopt.backends.util import Backend
+
+class MyBackend(Backend):
+    backend_name = "my-backend"
+    implemented_funcs = (
+        ...,  # list the random functions you implement here
+    )
+
+    def __init__(self, examples, params, **options):
+        self.init_fallback_backend()
+
+        # the values you want to use for this run as a dict
+        self.current_values = ...
+
+MyBackend.register()
+MyBackend.register_alg("my_alg")
+```
+
+Once you've written a BBopt backend as above, you simply need to import it to trigger the `register` calls and enable it to be used in BBopt. For some example BBopt backends, see BBopt's default backends (written in [Coconut](http://coconut-lang.org/)):
+
+- [`serving.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/backends/serving.coco)
+- [`random.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/backends/random.coco)
+- [`hyperopt.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/backends/hyperopt.coco)
+- [`skopt.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/backends/skopt.coco)
+- [`mixture.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/backends/mixture.coco)

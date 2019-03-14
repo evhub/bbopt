@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x6e75f5dc
+# __coconut_hash__ = 0x3beed8e8
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -30,12 +30,14 @@ import random
 
 from bbopt.registry import alg_registry
 from bbopt.registry import init_backend
+from bbopt.backends.util import Backend
 
 
-class MixtureBackend(_coconut.object):
+class MixtureBackend(Backend):
     """Mixture backend. Takes in a distribution over different possible algorithms
     of the form [(algorithm, weight)]. The properties selected_alg and selected_backend
     can be used to retrieve which alg/backend is currently being used."""
+    backend_name = "mixture"
 
     def __init__(self, examples, params, distribution):
         total_weight = sum((weight for alg, weight in distribution))
@@ -62,3 +64,8 @@ class MixtureBackend(_coconut.object):
 
     def param(self, name, func, *args, **kwargs):
         return self.backend.param(name, func, *args, **kwargs)
+
+
+# Registered names
+
+MixtureBackend.register()

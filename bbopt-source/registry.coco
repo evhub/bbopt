@@ -26,12 +26,17 @@ class Registry:
         """Register value under the given name."""
         self.registered[name] = value
 
+    def register_alias(self, name, alias):
+        """Register an alias for the given name."""
+        self.aliases[alias] = name
+
     def run_gen(self, name):
         """Run the generator for the given name."""
         value = self.generators[name]()
-        self.register(name, value)
+        if value is not None:
+            self.register(name, value)
         del self.generators[name]
-        return value
+        return self.registered[name]
 
     def __iter__(self):
         yield from self.registered
@@ -53,19 +58,7 @@ class Registry:
         return self.registered
 
 
-backend_registry = Registry(
-    obj_name="backend",
-    generators={
-        "serving": (def -> from bbopt.backends.serving import ServingBackend; ServingBackend),
-        "random": (def -> from bbopt.backends.random import RandomBackend; RandomBackend),
-        "scikit-optimize": (def -> from bbopt.backends.skopt import SkoptBackend; SkoptBackend),
-        "hyperopt": (def -> from bbopt.backends.hyperopt import HyperoptBackend; HyperoptBackend),
-        "mixture": (def -> from bbopt.backends.mixture import MixtureBackend; MixtureBackend),
-    },
-    aliases={
-        None: "serving",
-    }
-)
+backend_registry = Registry("backend")
 
 
 def init_backend(name, examples, params, *args, **options):
@@ -73,21 +66,4 @@ def init_backend(name, examples, params, *args, **options):
     return backend_registry[name](examples, params, *args, **options)
 
 
-alg_registry = Registry(
-    obj_name="algorithm",
-    defaults={
-        "serving": ("serving", {}),
-        "random": ("random", {}),
-        "gaussian_process": ("scikit-optimize", {}),
-        "random_forest": ("scikit-optimize", dict(base_estimator="RF")),
-        "extra_trees": ("scikit-optimize", dict(base_estimator="ET")),
-        "gradient_boosted_regression_trees": ("scikit-optimize", dict(base_estimator="GBRT")),
-        "tree_structured_parzen_estimator": ("hyperopt", {}),
-    },
-    generators={
-        "annealing": (def -> from hyperopt import anneal; ("hyperopt", dict(algo=anneal.suggest))),
-    },
-    aliases={
-        None: "serving",
-    }
-)
+alg_registry = Registry("algorithm")

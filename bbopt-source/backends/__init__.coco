@@ -1,3 +1,20 @@
 """
 Backends contains all of bbopt's different backends.
 """
+
+import traceback
+
+# import all the other backends to register them
+from bbopt.backends.serving import ServingBackend
+from bbopt.backends.random import RandomBackend
+from bbopt.backends.mixture import MixtureBackend
+try:
+    from bbopt.backends.skopt import SkoptBackend
+except ImportError:
+    traceback.print_exc()
+    print("Could not import scikit-optimize backend; backend unavailable (see above error).")
+try:
+    from bbopt.backends.hyperopt import HyperoptBackend
+except ImportError:
+    traceback.print_exc()
+    print("Could not import hyperopt backend; backend unavailable (see above error).")

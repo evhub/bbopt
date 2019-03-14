@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xfd82a8fd
+# __coconut_hash__ = 0xc221efd6
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -29,16 +29,21 @@ if _coconut_sys.version_info >= (3,):
 
 import random
 
+from bbopt.backends.util import Backend
 
-class RandomBackend(_coconut.object):
+
+class RandomBackend(Backend):
     """The random backend chooses parameter values randomly."""
-
-    def __init__(self, examples=None, params=None):
-        pass  # we're choosing randomly, so we ignore everything
-
+    backend_name = "random"
     random_functions = {"randrange": random.randrange, "choice": random.choice, "uniform": random.uniform, "triangular": random.triangular, "betavariate": random.betavariate, "expovariate": random.expovariate, "gammavariate": random.gammavariate, "normalvariate": random.gauss, "vonmisesvariate": random.vonmisesvariate, "paretovariate": random.paretovariate, "weibullvariate": random.weibullvariate}
 
     def param(self, name, func, *args, **kwargs):
         if func not in self.random_functions:
             raise ValueError("unknown random function {_coconut_format_0}".format(_coconut_format_0=(name)))
         return self.random_functions[func](*args)
+
+
+# Registered names
+
+RandomBackend.register()
+RandomBackend.register_alg("random")
