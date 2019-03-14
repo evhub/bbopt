@@ -39,6 +39,11 @@ upload: clean install
 test: install
 	pytest --strict --fulltrace -s ./bbopt/tests
 
+.PHONY: test-keras
+test-keras: install
+	-rm ./bbopt/examples/keras_example.bbopt.pickle
+	python ./bbopt/examples/keras_example.py
+
 .PHONY: test-2
 test-2: install-2
 	python2 -m pytest --strict --fulltrace -s ./bbopt/tests
