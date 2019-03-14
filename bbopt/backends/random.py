@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc221efd6
+# __coconut_hash__ = 0x91832a2e
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
 """
-The random backend. Used for testing purposes.
-Does not use existing data, simply spits out random valid values.
+The random backend. Does not use existing data, simply spits out random valid values.
 """
 
 # Coconut Header: -------------------------------------------------------------
@@ -43,7 +42,7 @@ class RandomBackend(Backend):
         return self.random_functions[func](*args)
 
 
-# Registered names
+# Registered names:
 
 RandomBackend.register()
 RandomBackend.register_alg("random")

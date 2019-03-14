@@ -70,7 +70,7 @@ class SkoptBackend(Backend):
         self.current_values = make_values(params, current_point)
 
 
-# Registered names
+# Registered names:
 
 SkoptBackend.register()
 SkoptBackend.register_alg("gaussian_process", base_estimator="GP")

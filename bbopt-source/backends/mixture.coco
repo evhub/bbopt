@@ -41,6 +41,6 @@ class MixtureBackend(Backend):
         self.backend.param(name, func, *args, **kwargs)
 
 
-# Registered names
+# Registered names:
 
 MixtureBackend.register()

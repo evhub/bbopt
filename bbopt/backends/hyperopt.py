@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x270ea071
+# __coconut_hash__ = 0x448255b3
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -148,7 +148,7 @@ class HyperoptBackend(Backend):
         return {"status": STATUS_RUNNING}
 
 
-# Registered names
+# Registered names:
 
 HyperoptBackend.register()
 HyperoptBackend.register_alg("tree_structured_parzen_estimator")

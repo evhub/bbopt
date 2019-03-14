@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7d7e6b39
+# __coconut_hash__ = 0xd760cb4f
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -42,7 +42,7 @@ class ServingBackend(Backend):
         raise ValueError("missing data for parameter {_coconut_format_0} while serving and no guess".format(_coconut_format_0=(name)))
 
 
-# Registered names
+# Registered names:
 
 ServingBackend.register()
 ServingBackend.register_alg("serving")

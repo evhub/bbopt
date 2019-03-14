@@ -159,7 +159,7 @@ class HyperoptBackend(Backend):
         }
 
 
-# Registered names
+# Registered names:
 
 HyperoptBackend.register()
 HyperoptBackend.register_alg("tree_structured_parzen_estimator")

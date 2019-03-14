@@ -18,7 +18,7 @@ class ServingBackend(Backend):
         raise ValueError(f"missing data for parameter {name} while serving and no guess")
 
 
-# Registered names
+# Registered names:
 
 ServingBackend.register()
 ServingBackend.register_alg("serving")

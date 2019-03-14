@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3beed8e8
+# __coconut_hash__ = 0xeee76452
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -66,6 +66,6 @@ class MixtureBackend(Backend):
         return self.backend.param(name, func, *args, **kwargs)
 
 
-# Registered names
+# Registered names:
 
 MixtureBackend.register()

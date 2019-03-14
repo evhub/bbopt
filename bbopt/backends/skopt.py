@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7e0dd76f
+# __coconut_hash__ = 0x1e3bbf1c
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -91,7 +91,7 @@ class SkoptBackend(Backend):
         self.current_values = make_values(params, current_point)
 
 
-# Registered names
+# Registered names:
 
 SkoptBackend.register()
 SkoptBackend.register_alg("gaussian_process", base_estimator="GP")

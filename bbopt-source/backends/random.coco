@@ -1,6 +1,5 @@
 """
-The random backend. Used for testing purposes.
-Does not use existing data, simply spits out random valid values.
+The random backend. Does not use existing data, simply spits out random valid values.
 """
 
 import random
@@ -31,7 +30,7 @@ class RandomBackend(Backend):
         return self.random_functions[func](*args)
 
 
-# Registered names
+# Registered names:
 
 RandomBackend.register()
 RandomBackend.register_alg("random")
