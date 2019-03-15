@@ -2,7 +2,7 @@
 
 BBopt aims to provide the easiest hyperparameter optimization you'll ever do. Think of BBopt like [Keras](https://keras.io/) for black box optimization: one universal interface for working with any black box optimization backend.
 
-In addition to its simple, easy-to-use interface BBopt provides:
+BBopt's features include:
 - a universal API for defining your tunable parameters based on the standard library [`random`](https://docs.python.org/3.4/library/random.html) module (so you don't even have to learn anything new!),
 - tons of state-of-the-art black box optimization algorithms such as Gaussian Processes from [`scikit-optimize`](https://scikit-optimize.github.io/) or Tree Structured Parzen Estimation from [`hyperopt`](http://hyperopt.github.io/hyperopt/) for tuning parameters,
 - the ability to switch algorithms (even across different backends!) while retaining all previous trials,
