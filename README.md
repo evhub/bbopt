@@ -17,7 +17,7 @@ Once you've defined your parameters, training a black box optimization model on 
 ```
 bbopt your_file.py
 ```
-and serving your file with optimized parameters is as simple as
+and serving your file with optimized parameters as easy as
 ```python
 import your_file
 ```
@@ -26,7 +26,7 @@ _Questions? Head over to [BBopt's Gitter](https://gitter.im/evhub/bbopt) if you 
 
 ## Installation
 
-To get going with BBopt, just install it with
+To get going with BBopt, simply install it with
 ```
 pip install bbopt
 ```
