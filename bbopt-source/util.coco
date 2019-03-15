@@ -90,27 +90,45 @@ def sorted_items(params) =
     sorted(params.items())
 
 
-def best_example(examples):
-    """Return the best example seen so far."""
-    selected_example = {"values": {}}
-    max_gain, min_loss = None, None
+def sorted_examples(examples) =
+    """Sort examples by their timestamp."""
+    sorted(examples, key=ex -> ex["timestamp"])
+
+
+def running_best(examples):
+    """Yield running best examples seen at each point."""
+    best_example = max_gain = min_loss = None
     for example in examples:
+
         case example:
             match {"values": values, "gain": gain, **_}:
                 if min_loss is not None:
                     raise ValueError("cannot have examples with maximize and examples with minimize")
                 if max_gain is None or gain >= max_gain:
-                    selected_example = example
+                    best_example = example
                     max_gain = gain
+
             match {"values": values, "loss": loss, **_}:
                 if max_gain is not None:
                     raise ValueError("cannot have examples with maximize and examples with minimize")
                 if min_loss is None or loss <= min_loss:
-                    selected_example = example
+                    best_example = example
                     min_loss = loss
+
         else:
             raise ValueError(f"invalid example {example}")
-    return selected_example
+
+        yield best_example
+
+
+def best_example(examples):
+    """Return the best example seen so far."""
+    best = consume(running_best(examples), keep_last=1)
+    if best:
+        assert len(best) == 1, f"{len(best)} != 1"
+        return best[0]
+    else:
+        return {"values": {}}
 
 
 def all_isinstance(objs, types) =

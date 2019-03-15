@@ -87,6 +87,8 @@ Some examples of BBopt in action:
     1. [`minimize`](#minimize)
     1. [`maximize`](#maximize)
     1. [`remember`](#remember)
+    1. [`plot_convergence`](#plot_convergence)
+    1. [`plot_history`](#plot_history)
     1. [`get_current_run`](#get_current_run)
     1. [`get_optimal_run`](#get_optimal_run)
     1. [`get_data`](#get_data)
@@ -131,7 +133,7 @@ _protocol_ determines how BBopt serializes data. If `None` (the default), BBopt 
 
 #### `run`
 
-BlackBoxOptimizer.**run**(_alg_="tree_structured_parzen_estimator")
+BlackBoxOptimizer.**run**(_alg_=`"tree_structured_parzen_estimator"`)
 
 Start optimizing using the given black box optimization algorithm. Use **algs** to get the valid values for _alg_.
 
@@ -180,6 +182,18 @@ Same as **minimize** but sets the gain instead of the loss.
 BlackBoxOptimizer.**remember**(_info_)
 
 Update the current run's `"memo"` field with the given _info_ dictionary. Useful for saving information about a run that shouldn't actually impact optimization but that you would like to have access to later (using **get_optimal_run**, for example).
+
+#### `plot_convergence`
+
+BlackBoxOptimizer.**plot_convergence**(_ax_=`None`, _yscale_=`None`)
+
+Plot the running best gain/loss over the course of all previous trials. If passed, `ax` should be the [matplotlib axis](https://matplotlib.org/api/axes_api.html) to plot on and `yscale` should be the scale for the y axis.
+
+#### `plot_history`
+
+BlackBoxOptimizer.**plot_history**(_ax_=`None`, _yscale_=`None`)
+
+Plot the gain/loss at each point over the course of all previous trials. If passed, `ax` should be the [matplotlib axis](https://matplotlib.org/api/axes_api.html) to plot on and `yscale` should be the scale for the y axis.
 
 #### `get_current_run`
 

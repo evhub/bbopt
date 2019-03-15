@@ -17,6 +17,7 @@ from argparse import ArgumentParser
 from pprint import pprint
 
 import numpy as np
+from matplotlib import pyplot as plt
 from sklearn import datasets
 from keras.models import Sequential
 from keras.layers import Dense
@@ -131,3 +132,7 @@ if __name__ == "__main__":
 
     print("\nSummary of best run:")
     pprint(bb.get_optimal_run())
+
+    print("Displaying convergence plot...")
+    bb.plot_convergence()
+    plt.show()

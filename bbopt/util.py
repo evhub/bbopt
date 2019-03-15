@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x8d12bacb
+# __coconut_hash__ = 0x65b1085a
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -116,11 +116,16 @@ def sorted_items(params):
     return sorted(params.items())
 
 
-def best_example(examples):
-    """Return the best example seen so far."""
-    selected_example = {"values": {}}
-    max_gain, min_loss = None, None
+def sorted_examples(examples):
+    """Sort examples by their timestamp."""
+    return sorted(examples, key=lambda ex: ex["timestamp"])
+
+
+def running_best(examples):
+    """Yield running best examples seen at each point."""
+    best_example = max_gain = min_loss = None
     for example in examples:
+
         _coconut_match_to = example
         _coconut_case_check_0 = False
         if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
@@ -134,8 +139,9 @@ def best_example(examples):
             if min_loss is not None:
                 raise ValueError("cannot have examples with maximize and examples with minimize")
             if max_gain is None or gain >= max_gain:
-                selected_example = example
+                best_example = example
                 max_gain = gain
+
         if not _coconut_case_check_0:
             if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
                 _coconut_match_temp_0 = _coconut_match_to.get("values", _coconut_sentinel)
@@ -148,11 +154,23 @@ def best_example(examples):
                 if max_gain is not None:
                     raise ValueError("cannot have examples with maximize and examples with minimize")
                 if min_loss is None or loss <= min_loss:
-                    selected_example = example
+                    best_example = example
                     min_loss = loss
+
         if not _coconut_case_check_0:
             raise ValueError("invalid example {_coconut_format_0}".format(_coconut_format_0=(example)))
-    return selected_example
+
+        yield best_example
+
+
+def best_example(examples):
+    """Return the best example seen so far."""
+    best = consume(running_best(examples), keep_last=1)
+    if best:
+        assert len(best) == 1, "{_coconut_format_0} != 1".format(_coconut_format_0=(len(best)))
+        return best[0]
+    else:
+        return {"values": {}}
 
 
 def all_isinstance(objs, types):

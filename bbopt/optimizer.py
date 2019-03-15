@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x99975b18
+# __coconut_hash__ = 0x4dbd8254
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -37,6 +37,7 @@ import itertools
 import time
 
 import numpy as np
+from matplotlib import pyplot as plt
 from portalocker import Lock
 
 from bbopt.registry import backend_registry
@@ -51,6 +52,8 @@ from bbopt.util import sync_file
 from bbopt.util import ensure_file
 from bbopt.util import clear_file
 from bbopt.util import denumpy_all
+from bbopt.util import sorted_examples
+from bbopt.util import running_best
 from bbopt.constants import data_file_ext
 from bbopt.constants import lock_timeout
 from bbopt.constants import default_alg
@@ -244,6 +247,61 @@ class BlackBoxOptimizer(_coconut.object):
     def get_optimal_run(self):
         """Return a dictionary containing the optimal parameters and reward computed so far."""
         return best_example(self._examples)
+
+    @property
+    def _file_name(self):
+        """The base name of the given file."""
+        return os.path.splitext(os.path.basename(self._file))[0]
+
+    @property
+    def _metric(self):
+        """Whether using a gain, a loss, or no examples."""
+        return None if not self._examples else "gain" if "gain" in self._examples[0] else "loss"
+
+    def plot_convergence(self, ax=None, yscale=None):
+        """Plot the best gain/loss over the history of optimization.
+        Based on skopt.plots.plot_convergence."""
+        if not self._examples:
+            raise ValueError("no existing data available to be plotted")
+        if ax is None:
+            ax = plt.gca()
+
+        ax.set_title("Convergence plot for {_coconut_format_0}".format(_coconut_format_0=(self._file_name)))
+        ax.set_xlabel("Number of trials $n$")
+        ax.set_ylabel("Best {_coconut_format_0} after $n$ trials".format(_coconut_format_0=(self._metric)))
+        ax.grid()
+
+        if yscale is not None:
+            ax.set_yscale(yscale)
+
+        iterations = range(1, len(self._examples) + 1)
+        best_metrics = ((list)(map(_coconut.operator.itemgetter(self._metric), (running_best)((sorted_examples)(self._examples)))))
+
+        ax.plot(iterations, best_metrics, marker=".", markersize=12, lw=2)
+
+        return ax
+
+    def plot_history(self, ax=None, yscale=None):
+        """Plot the gain/loss of every point in the order in which they were sampled."""
+        if not self._examples:
+            raise ValueError("no existing data available to be plotted")
+        if ax is None:
+            ax = plt.gca()
+
+        ax.set_title("History plot for {_coconut_format_0}".format(_coconut_format_0=(self._file_name)))
+        ax.set_xlabel("Number of trials $n$")
+        ax.set_ylabel("The {_coconut_format_0} on the $n$th trial".format(_coconut_format_0=(self._metric)))
+        ax.grid()
+
+        if yscale is not None:
+            ax.set_yscale(yscale)
+
+        iterations = range(1, len(self._examples) + 1)
+        metrics = ((list)(map(_coconut.operator.itemgetter(self._metric), (sorted_examples)(self._examples))))
+
+        ax.plot(iterations, metrics, marker=".", markersize=12, lw=2)
+
+        return ax
 
 # Base random functions:
 
