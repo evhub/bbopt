@@ -6,8 +6,8 @@ BBopt's features include:
 - a universal API for defining your tunable parameters based on the standard library [`random`](https://docs.python.org/3.4/library/random.html) module (so you don't even have to learn anything new!),
 - tons of state-of-the-art black box optimization algorithms such as Gaussian Processes from [`scikit-optimize`](https://scikit-optimize.github.io/) or Tree Structured Parzen Estimation from [`hyperopt`](http://hyperopt.github.io/hyperopt/) for tuning parameters,
 - the ability to switch algorithms (even across different backends!) while retaining all previous trials,
-- support for optimizing over conditional parameters that only appear during some runs,
 - multiprocessing-safe data saving to enable running multiple trials in parallel,
+- support for optimizing over conditional parameters that only appear during some runs,
 - support for all major Python versions (`2.7` or `3.4+`), and
 - a straightforward interface for [extending BBopt with your own custom algorithms](#writing-your-own-backend).
 
