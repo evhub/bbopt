@@ -22,6 +22,8 @@ and serving your file with optimized parameters is as simple as
 import your_file
 ```
 
+_Questions? Head over to [BBopt's Gitter](https://gitter.im/evhub/bbopt) if you have any questions/comments/etc. regarding BBopt._
+
 ## Installation
 
 To get going with BBopt, just install it with
