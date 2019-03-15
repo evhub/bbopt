@@ -20,7 +20,7 @@ class Registry:
             return self.run_gen(name)
         else:
             valid_names = ", ".join(repr(name) for name in self)
-            raise ValueError(f"unknown {obj_name}: {name} (valid {obj_name}s: {valid_names})")
+            raise ValueError(f"unknown {self.obj_name}: {name} (valid {self.obj_name}s: {valid_names})")
 
     def register(self, name, value):
         """Register value under the given name."""

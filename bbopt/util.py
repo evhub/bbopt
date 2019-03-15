@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x65b1085a
+# __coconut_hash__ = 0x1b295521
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -38,6 +38,7 @@ else:
     from collections.abc import Iterable
 
 import numpy as np
+from matplotlib import pyplot as plt
 
 
 Num = (int, float)
@@ -206,3 +207,21 @@ def clear_file(file_handle):
     """Empties the contents of the given file."""
     file_handle.seek(0)
     file_handle.truncate()
+
+
+def plot(xs, ys, ax=None, yscale=None, title=None, xlabel=None, ylabel=None, marker=".", markersize=12, linewidth=2, grid=True,):
+    """Construct a matplotlib plot with the given parameters."""
+    if ax is None:
+        ax = plt.gca()
+    if title is not None:
+        ax.set_title(title)
+    if xlabel is not None:
+        ax.set_xlabel(xlabel)
+    if ylabel is not None:
+        ax.set_ylabel(ylabel)
+    if grid:
+        ax.grid()
+    if yscale is not None:
+        ax.set_yscale(yscale)
+    ax.plot(xs, ys, marker=marker, markersize=markersize, linewidth=linewidth)
+    return ax

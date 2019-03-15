@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x53b40ec6
+# __coconut_hash__ = 0x40ae0ce6
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -39,14 +39,14 @@ from bbopt.backends.util import make_values
 
 # Utilities:
 
-def create_dimension(name, func, *args):
-    """Create a scikit-optimize dimension for the given parameter."""
+def create_space(name, func, *args):
+    """Create a scikit-optimize space for the given parameter."""
     _coconut_match_to = func
     _coconut_case_check_0 = False
     if _coconut_match_to == "choice":
         _coconut_case_check_0 = True
     if _coconut_case_check_0:
-        return Categorical(*args)
+        return Categorical(*args, name=name)
     if not _coconut_case_check_0:
         if _coconut_match_to == "randrange":
             _coconut_case_check_0 = True
@@ -55,13 +55,18 @@ def create_dimension(name, func, *args):
             if step != 1:
                 raise ValueError("the scikit-optimize backend only supports a randrange step size of 1")
             stop -= 1  # scikit-optimize ranges are inclusive
-            return Integer(start, stop)
+            return Integer(start, stop, name=name)
     if not _coconut_case_check_0:
         if _coconut_match_to == "uniform":
             _coconut_case_check_0 = True
         if _coconut_case_check_0:
-            return Real(*args)
+            return Real(*args, name=name)
     raise TypeError("insufficiently specified parameter {_coconut_format_0}".format(_coconut_format_0=(name)))
+
+
+def create_dimensions(params):
+    """Construct the full optimization space for the given parameters."""
+    return [create_space(name, func, *args) for name, (func, args, kwargs) in sorted_items(params)]
 
 
 # Backend:
@@ -79,16 +84,26 @@ class SkoptBackend(Backend):
             return
 
         data_points, losses = split_examples(examples, params)
-        dimensions = [create_dimension(name, func, *args) for name, (func, args, kwargs) in sorted_items(params)]
+        dimensions = create_dimensions(params)
 
         if isinstance(base_estimator, str):
             base_estimator = py_str(base_estimator)
 
-        optimizer = Optimizer(dimensions, base_estimator, **options)
-        optimizer.tell(data_points, losses)
-        current_point = optimizer.ask()
+        self.optimizer = Optimizer(dimensions, base_estimator, **options)
+        self.result = self.optimizer.tell(data_points, losses)
+        current_point = self.optimizer.ask()
 
         self.current_values = make_values(params, current_point)
+
+    @property
+    def space(self):
+        """The space over which optimization was performed."""
+        return self.optimizer.space
+
+    @property
+    def model(self):
+        """Get the most recently fit model."""
+        return self.optimizer.models[-1]
 
 
 # Registered names:

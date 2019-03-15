@@ -136,16 +136,18 @@ class HyperoptBackend(Backend):
         trials = Trials()
         trials.insert_trial_docs(trial_list)
 
-        # run one iteration of hyperparameter optimization, with values saved
-        #  to the self.set_current_values callback passed to Domain
-        FMinIter(
+        self.fmin_iter = FMinIter(
             algo,
             domain,
             trials,
             rstate,
             show_progressbar=show_progressbar,
             **options,
-        ) |> next
+        )
+
+        # run one iteration of hyperparameter optimization, with values saved
+        #  to the self.set_current_values callback passed to Domain
+        next(self.fmin_iter)
 
         assert self.current_values is not None, self.current_values
         assert set(self.current_values.keys()) == set(params), self.current_values

@@ -10,7 +10,6 @@ import itertools
 import time
 
 import numpy as np
-from matplotlib import pyplot as plt
 from portalocker import Lock
 
 from bbopt.registry import (
@@ -30,6 +29,7 @@ from bbopt.util import (
     denumpy_all,
     sorted_examples,
     running_best,
+    plot,
 )
 from bbopt.constants import (
     data_file_ext,
@@ -227,21 +227,31 @@ class BlackBoxOptimizer:
         """Whether using a gain, a loss, or no examples."""
         None if not self._examples else "gain" if "gain" in self._examples[0] else "loss"
 
+    _skopt_backend_args = None
+    _skopt_backend = None
+
+    def _get_skopt_backend(self):
+        """Get a scikit-optimize backend regardless of whether currently using one."""
+        from bbopt.backends.skopt import SkoptBackend
+
+        if isinstance(self.backend, SkoptBackend):
+            return self.backend
+
+        skopt_backend_args = (self._examples, self._old_params)
+        if self._skopt_backend_args == skopt_backend_args:
+            return self._skopt_backend
+
+        self._skopt_backend_args = skopt_backend_args
+        self._skopt_backend = SkoptBackend(*skopt_backend_args)
+        return self._skopt_backend
+
+    # Plotting functions:
+
     def plot_convergence(self, ax=None, yscale=None):
         """Plot the best gain/loss over the history of optimization.
         Based on skopt.plots.plot_convergence."""
         if not self._examples:
             raise ValueError("no existing data available to be plotted")
-        if ax is None:
-            ax = plt.gca()
-
-        ax.set_title(f"Convergence plot for {self._file_name}")
-        ax.set_xlabel("Number of trials $n$")
-        ax.set_ylabel(f"Best {self._metric} after $n$ trials")
-        ax.grid()
-
-        if yscale is not None:
-            ax.set_yscale(yscale)
 
         iterations = range(1, len(self._examples) + 1)
         best_metrics = (
@@ -252,24 +262,20 @@ class BlackBoxOptimizer:
             |> list
         )
 
-        ax.plot(iterations, best_metrics, marker=".", markersize=12, lw=2)
-
-        return ax
+        return plot(
+            iterations,
+            best_metrics,
+            ax=ax,
+            yscale=yscale,
+            title=f"Convergence plot for {self._file_name}",
+            xlabel="Number of trials $n$",
+            ylabel=f"Best {self._metric} after $n$ trials",
+        )
 
     def plot_history(self, ax=None, yscale=None):
         """Plot the gain/loss of every point in the order in which they were sampled."""
         if not self._examples:
             raise ValueError("no existing data available to be plotted")
-        if ax is None:
-            ax = plt.gca()
-
-        ax.set_title(f"History plot for {self._file_name}")
-        ax.set_xlabel("Number of trials $n$")
-        ax.set_ylabel(f"The {self._metric} on the $n$th trial")
-        ax.grid()
-
-        if yscale is not None:
-            ax.set_yscale(yscale)
 
         iterations = range(1, len(self._examples) + 1)
         metrics = (
@@ -279,9 +285,80 @@ class BlackBoxOptimizer:
             |> list
         )
 
-        ax.plot(iterations, metrics, marker=".", markersize=12, lw=2)
+        return plot(
+            iterations,
+            metrics,
+            ax=ax,
+            yscale=yscale,
+            title=f"History plot for {self._file_name}",
+            xlabel="Number of trials $n$",
+            ylabel=f"The {self._metric} on the $n$th trial",
+        )
 
-        return ax
+    def partial_dependence(self, i_name, j_name=None, *args, **kwargs):
+        """Calls skopt.plots.partial_dependence where i_name and j_name are parameter names."""
+        if not self._examples:
+            raise ValueError("no existing data available to be plotted")
+
+        from skopt.plots import partial_dependence
+
+        skopt_backend = self._get_skopt_backend()
+
+        sorted_names = list(sorted(self._old_params))
+        i = sorted_names.index(i_name)
+        j = None if j_name is None else sorted_names.index(j_name)
+
+        return partial_dependence(
+            skopt_backend.space,
+            skopt_backend.model,
+            i,
+            j,
+            *args,
+            **kwargs,
+        )
+
+    def plot_partial_dependence_1D(self, i_name, ax=None, yscale=None, **kwargs):
+        """Constructs a 1D partial dependence plot using self.partial_dependence."""
+        xi, yi = self.partial_dependence(i_name, **kwargs)
+        return plot(
+            xi,
+            yi,
+            ax=ax,
+            yscale=yscale,
+            title=f"Partial dependence of {i_name}",
+            xlabel=f"Values of {i_name}",
+            ylabel=f"The loss at each point",
+        )
+
+    def plot_evaluations(self, *args, **kwargs):
+        """Calls skopt.plots.plot_evaluations."""
+        if not self._examples:
+            raise ValueError("no existing data available to be plotted")
+
+        from skopt.plots import plot_evaluations
+
+        skopt_backend = self._get_skopt_backend()
+
+        return plot_evaluations(
+            skopt_backend.result,
+            *args,
+            **kwargs,
+        )
+
+    def plot_objective(self, *args, **kwargs):
+        """Calls skopt.plots.plot_objective."""
+        if not self._examples:
+            raise ValueError("no existing data available to be plotted")
+
+        from skopt.plots import plot_objective
+
+        skopt_backend = self._get_skopt_backend()
+
+        return plot_objective(
+            skopt_backend.result,
+            *args,
+            **kwargs,
+        )
 
     # Base random functions:
 

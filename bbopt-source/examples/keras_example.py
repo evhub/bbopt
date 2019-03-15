@@ -60,7 +60,7 @@ def run_trial():
                 l1=bb.uniform("l1", 0, 0.1, guess=0.005),
                 l2=bb.uniform("l2", 0, 0.1, guess=0.05),
             ),
-            activation=bb.choice("activation", ["relu", "elu"]),
+            activation="relu",
         ),
         Dense(
             units=y.shape[1],
@@ -133,6 +133,18 @@ if __name__ == "__main__":
     print("\nSummary of best run:")
     pprint(bb.get_optimal_run())
 
-    print("Displaying convergence plot...")
-    bb.plot_convergence()
+    print("Displaying plots...")
+
+    fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(10, 10))
+    bb.plot_convergence(ax1)
+    bb.plot_history(ax2)
+    bb.plot_partial_dependence_1D("hidden neurons", ax3)
+    bb.plot_partial_dependence_1D("learning rate", ax4)
+
+    plt.figure(1)
+    bb.plot_evaluations()
+
+    plt.figure(2)
+    bb.plot_objective()
+
     plt.show()

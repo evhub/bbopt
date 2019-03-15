@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4dbd8254
+# __coconut_hash__ = 0x5b226487
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -37,7 +37,6 @@ import itertools
 import time
 
 import numpy as np
-from matplotlib import pyplot as plt
 from portalocker import Lock
 
 from bbopt.registry import backend_registry
@@ -54,6 +53,7 @@ from bbopt.util import clear_file
 from bbopt.util import denumpy_all
 from bbopt.util import sorted_examples
 from bbopt.util import running_best
+from bbopt.util import plot
 from bbopt.constants import data_file_ext
 from bbopt.constants import lock_timeout
 from bbopt.constants import default_alg
@@ -258,53 +258,130 @@ class BlackBoxOptimizer(_coconut.object):
         """Whether using a gain, a loss, or no examples."""
         return None if not self._examples else "gain" if "gain" in self._examples[0] else "loss"
 
+    _skopt_backend_args = None
+    _skopt_backend = None
+
+    def _get_skopt_backend(self):
+        """Get a scikit-optimize backend regardless of whether currently using one."""
+        from bbopt.backends.skopt import SkoptBackend
+
+        if isinstance(self.backend, SkoptBackend):
+            return self.backend
+
+        skopt_backend_args = (self._examples, self._old_params)
+        if self._skopt_backend_args == skopt_backend_args:
+            return self._skopt_backend
+
+        self._skopt_backend_args = skopt_backend_args
+        self._skopt_backend = SkoptBackend(*skopt_backend_args)
+        return self._skopt_backend
+
+# Plotting functions:
+
     def plot_convergence(self, ax=None, yscale=None):
         """Plot the best gain/loss over the history of optimization.
         Based on skopt.plots.plot_convergence."""
         if not self._examples:
             raise ValueError("no existing data available to be plotted")
-        if ax is None:
-            ax = plt.gca()
-
-        ax.set_title("Convergence plot for {_coconut_format_0}".format(_coconut_format_0=(self._file_name)))
-        ax.set_xlabel("Number of trials $n$")
-        ax.set_ylabel("Best {_coconut_format_0} after $n$ trials".format(_coconut_format_0=(self._metric)))
-        ax.grid()
-
-        if yscale is not None:
-            ax.set_yscale(yscale)
 
         iterations = range(1, len(self._examples) + 1)
         best_metrics = ((list)(map(_coconut.operator.itemgetter(self._metric), (running_best)((sorted_examples)(self._examples)))))
 
-        ax.plot(iterations, best_metrics, marker=".", markersize=12, lw=2)
-
-        return ax
+        return plot(iterations, best_metrics, ax=ax, yscale=yscale, title="Convergence plot for {_coconut_format_0}".format(_coconut_format_0=(self._file_name)), xlabel="Number of trials $n$", ylabel="Best {_coconut_format_0} after $n$ trials".format(_coconut_format_0=(self._metric)))
 
     def plot_history(self, ax=None, yscale=None):
         """Plot the gain/loss of every point in the order in which they were sampled."""
         if not self._examples:
             raise ValueError("no existing data available to be plotted")
-        if ax is None:
-            ax = plt.gca()
-
-        ax.set_title("History plot for {_coconut_format_0}".format(_coconut_format_0=(self._file_name)))
-        ax.set_xlabel("Number of trials $n$")
-        ax.set_ylabel("The {_coconut_format_0} on the $n$th trial".format(_coconut_format_0=(self._metric)))
-        ax.grid()
-
-        if yscale is not None:
-            ax.set_yscale(yscale)
 
         iterations = range(1, len(self._examples) + 1)
         metrics = ((list)(map(_coconut.operator.itemgetter(self._metric), (sorted_examples)(self._examples))))
 
-        ax.plot(iterations, metrics, marker=".", markersize=12, lw=2)
+        return plot(iterations, metrics, ax=ax, yscale=yscale, title="History plot for {_coconut_format_0}".format(_coconut_format_0=(self._file_name)), xlabel="Number of trials $n$", ylabel="The {_coconut_format_0} on the $n$th trial".format(_coconut_format_0=(self._metric)))
 
-        return ax
+    def partial_dependence(self, i_name, j_name=None, *args, **kwargs):
+        """Calls skopt.plots.partial_dependence where i_name and j_name are parameter names."""
+        def _coconut_mock_func(self, i_name, j_name=None, *args, **kwargs): return self, i_name, j_name, args, kwargs
+        while True:
+            if not self._examples:
+                raise ValueError("no existing data available to be plotted")
+
+            from skopt.plots import partial_dependence
+
+            skopt_backend = self._get_skopt_backend()
+
+            sorted_names = list(sorted(self._old_params))
+            i = sorted_names.index(i_name)
+            j = None if j_name is None else sorted_names.index(j_name)
+
+            try:
+                _coconut_is_recursive = partial_dependence is _coconut_recursive_func_21
+            except _coconut.NameError:
+                _coconut_is_recursive = False
+            if _coconut_is_recursive:
+                self, i_name, j_name, args, kwargs = _coconut_mock_func(skopt_backend.space, skopt_backend.model, i, j, *args, **kwargs)
+                continue
+            else:
+                return partial_dependence(skopt_backend.space, skopt_backend.model, i, j, *args, **kwargs)
+
+
+            return None
+    _coconut_recursive_func_21 = partial_dependence
+    def plot_partial_dependence_1D(self, i_name, ax=None, yscale=None, **kwargs):
+        """Constructs a 1D partial dependence plot using self.partial_dependence."""
+        xi, yi = self.partial_dependence(i_name, **kwargs)
+        return plot(xi, yi, ax=ax, yscale=yscale, title="Partial dependence of {_coconut_format_0}".format(_coconut_format_0=(i_name)), xlabel="Values of {_coconut_format_0}".format(_coconut_format_0=(i_name)), ylabel="The loss at each point".format())
+
+    def plot_evaluations(self, *args, **kwargs):
+        """Calls skopt.plots.plot_evaluations."""
+        def _coconut_mock_func(self, *args, **kwargs): return self, args, kwargs
+        while True:
+            if not self._examples:
+                raise ValueError("no existing data available to be plotted")
+
+            from skopt.plots import plot_evaluations
+
+            skopt_backend = self._get_skopt_backend()
+
+            try:
+                _coconut_is_recursive = plot_evaluations is _coconut_recursive_func_23
+            except _coconut.NameError:
+                _coconut_is_recursive = False
+            if _coconut_is_recursive:
+                self, args, kwargs = _coconut_mock_func(skopt_backend.result, *args, **kwargs)
+                continue
+            else:
+                return plot_evaluations(skopt_backend.result, *args, **kwargs)
+
+
+            return None
+    _coconut_recursive_func_23 = plot_evaluations
+    def plot_objective(self, *args, **kwargs):
+        """Calls skopt.plots.plot_objective."""
+        def _coconut_mock_func(self, *args, **kwargs): return self, args, kwargs
+        while True:
+            if not self._examples:
+                raise ValueError("no existing data available to be plotted")
+
+            from skopt.plots import plot_objective
+
+            skopt_backend = self._get_skopt_backend()
+
+            try:
+                _coconut_is_recursive = plot_objective is _coconut_recursive_func_24
+            except _coconut.NameError:
+                _coconut_is_recursive = False
+            if _coconut_is_recursive:
+                self, args, kwargs = _coconut_mock_func(skopt_backend.result, *args, **kwargs)
+                continue
+            else:
+                return plot_objective(skopt_backend.result, *args, **kwargs)
+
 
 # Base random functions:
 
+            return None
+    _coconut_recursive_func_24 = plot_objective
     def randrange(self, name, *args, **kwargs):
         """Create a new parameter with the given name modeled by random.randrange(*args)."""
         return self._param(name, "randrange", *args, **kwargs)

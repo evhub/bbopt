@@ -19,20 +19,28 @@ from bbopt.backends.util import (
 
 # Utilities:
 
-def create_dimension(name, func, *args):
-    """Create a scikit-optimize dimension for the given parameter."""
+def create_space(name, func, *args):
+    """Create a scikit-optimize space for the given parameter."""
     case func:
         match "choice":
-            return Categorical(*args)
+            return Categorical(*args, name=name)
         match "randrange":
             start, stop, step = args
             if step != 1:
                 raise ValueError("the scikit-optimize backend only supports a randrange step size of 1")
             stop -= 1  # scikit-optimize ranges are inclusive
-            return Integer(start, stop)
+            return Integer(start, stop, name=name)
         match "uniform":
-            return Real(*args)
+            return Real(*args, name=name)
     raise TypeError(f"insufficiently specified parameter {name}")
+
+
+def create_dimensions(params) =
+    """Construct the full optimization space for the given parameters."""
+    [
+        create_space(name, func, *args)
+        for name, (func, args, kwargs) in sorted_items(params)
+    ]
 
 
 # Backend:
@@ -41,7 +49,7 @@ class SkoptBackend(Backend):
     """The scikit-optimize backend uses scikit-optimize for black box optimization."""
     backend_name = "scikit-optimize"
     implemented_funcs = (
-        # should match create_dimension above
+        # should match create_space above
         "choice",
         "randrange",
         "uniform",
@@ -55,19 +63,26 @@ class SkoptBackend(Backend):
             return
 
         data_points, losses = split_examples(examples, params)
-        dimensions = [
-            create_dimension(name, func, *args)
-            for name, (func, args, kwargs) in sorted_items(params)
-        ]
+        dimensions = create_dimensions(params)
 
         if isinstance(base_estimator, str):
             base_estimator = py_str(base_estimator)
 
-        optimizer = Optimizer(dimensions, base_estimator, **options)
-        optimizer.tell(data_points, losses)
-        current_point = optimizer.ask()
+        self.optimizer = Optimizer(dimensions, base_estimator, **options)
+        self.result = self.optimizer.tell(data_points, losses)
+        current_point = self.optimizer.ask()
 
         self.current_values = make_values(params, current_point)
+
+    @property
+    def space(self) =
+        """The space over which optimization was performed."""
+        self.optimizer.space
+
+    @property
+    def model(self) =
+        """Get the most recently fit model."""
+        self.optimizer.models[-1]
 
 
 # Registered names:

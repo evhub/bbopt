@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x8674fa01
+# __coconut_hash__ = 0x20d8d494
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -134,9 +134,11 @@ class HyperoptBackend(Backend):
         trials = Trials()
         trials.insert_trial_docs(trial_list)
 
+        self.fmin_iter = FMinIter(algo, domain, trials, rstate, show_progressbar=show_progressbar, **options)
+
 # run one iteration of hyperparameter optimization, with values saved
 #  to the self.set_current_values callback passed to Domain
-        (next)(FMinIter(algo, domain, trials, rstate, show_progressbar=show_progressbar, **options))
+        next(self.fmin_iter)
 
         assert self.current_values is not None, self.current_values
         assert set(self.current_values.keys()) == set(params), self.current_values
