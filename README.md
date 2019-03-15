@@ -189,6 +189,10 @@ BlackBoxOptimizer.**plot_convergence**(_ax_=`None`, _yscale_=`None`)
 
 Plot the running best gain/loss over the course of all previous trials. If passed, `ax` should be the [matplotlib axis](https://matplotlib.org/api/axes_api.html) to plot on and `yscale` should be the scale for the y axis.
 
+For example:
+
+![plot_convergence example](https://i.imgur.com/4dbGisY.png)
+
 #### `plot_history`
 
 BlackBoxOptimizer.**plot_history**(_ax_=`None`, _yscale_=`None`)
