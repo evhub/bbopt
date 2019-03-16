@@ -2,6 +2,7 @@
 Handles standardizing param calls to use standard library random functions.
 """
 
+from collections.abc import Iterable
 from math import log as ln
 
 from bbopt.util import (
@@ -31,8 +32,9 @@ def handle_randrange(args):
 
 
 def handle_choice(args):
-    if len(args) != 1 or not isinstance(args[0], list):
+    if len(args) != 1 or not isinstance(args[0], Iterable):
         raise format_err(ValueError, "invalid arguments to choice", args)
+    return (list(args[0]),)
 
 
 def handle_uniform(args):
@@ -83,15 +85,16 @@ def handle_weibullvariate(args):
 # Placeholders:
 
 def placeholder_randrange(start, stop, step) =
-    start
+    rng = range(start, stop, step)
+    rng[len(rng)//2]
 
 
 def placeholder_choice(choices) =
-    choices$[0]
+    choices$[len(choices)//2]
 
 
 def placeholder_uniform(start, stop) =
-    start
+    (start + stop)/2
 
 
 def placeholder_triangular(low, high, mode) =
@@ -99,7 +102,7 @@ def placeholder_triangular(low, high, mode) =
 
 
 def placeholder_betavariate(alpha, beta) =
-    0.5
+    alpha/(alpha + beta)
 
 
 def placeholder_expovariate(lambd) =
@@ -119,12 +122,11 @@ def placeholder_vonmisesvariate(mu, kappa) =
 
 
 def placeholder_paretovariate(alpha) =
-    1
+    1 if alpha <= 1 else alpha/(alpha - 1)
 
 
 def placeholder_weibullvariate(alpha, beta) =
     alpha * ln(2)**(1/beta)
-
 
 
 # Processor:

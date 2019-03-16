@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd760cb4f
+# __coconut_hash__ = 0x123a0ee
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -45,5 +45,6 @@ class ServingBackend(Backend):
 # Registered names:
 
 ServingBackend.register()
-ServingBackend.register_alg("serving")
 ServingBackend.register_alias(None)
+ServingBackend.register_alg("serving")
+ServingBackend.register_alg(None)

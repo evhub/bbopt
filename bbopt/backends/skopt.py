@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x2fd491f8
+# __coconut_hash__ = 0x9572fd95
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -110,6 +110,7 @@ class SkoptBackend(Backend):
 # Registered names:
 
 SkoptBackend.register()
+SkoptBackend.register_alias("skopt")
 SkoptBackend.register_alg("gaussian_process", base_estimator="GP")
 SkoptBackend.register_alg("random_forest", base_estimator="RF")
 SkoptBackend.register_alg("extra_trees", base_estimator="ET")

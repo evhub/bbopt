@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x47308a77
+# __coconut_hash__ = 0x864ebb31
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -30,11 +30,11 @@ if _coconut_sys.version_info >= (3,):
 class Registry(_coconut.object):
     """Registry that keeps track of registered objects."""
 
-    def __init__(self, obj_name="obj", defaults=None, generators={}, aliases={}):
+    def __init__(self, obj_name, defaults=None, generators=None, aliases=None):
         self.obj_name = obj_name
-        self.registered = {} if defaults is None else defaults
-        self.generators = generators
-        self.aliases = aliases
+        self.registered = ({} if defaults is None else defaults)
+        self.generators = ({} if generators is None else generators)
+        self.aliases = ({} if aliases is None else aliases)
 
     def __getitem__(self, name):
         name = self.aliases.get(name, name)
@@ -76,6 +76,10 @@ class Registry(_coconut.object):
             yield _coconut_yield_item
 
         _coconut_yield_from = self.generators
+        for _coconut_yield_item in _coconut_yield_from:
+            yield _coconut_yield_item
+
+        _coconut_yield_from = self.aliases
         for _coconut_yield_item in _coconut_yield_from:
             yield _coconut_yield_item
 

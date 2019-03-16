@@ -11,6 +11,11 @@ import time
 
 import numpy as np
 from portalocker import Lock
+from skopt.plots import (
+    partial_dependence,
+    plot_evaluations,
+    plot_objective,
+)
 
 from bbopt.registry import (
     backend_registry,
@@ -37,6 +42,7 @@ from bbopt.constants import (
     default_alg,
     default_protocol,
 )
+from bbopt.backends.skopt import SkoptBackend
 
 
 class BlackBoxOptimizer:
@@ -167,8 +173,6 @@ class BlackBoxOptimizer:
 
     def _get_skopt_backend(self):
         """Get a scikit-optimize backend regardless of whether currently using one."""
-        from bbopt.backends.skopt import SkoptBackend
-
         if isinstance(self.backend, SkoptBackend):
             return self.backend
 
@@ -331,8 +335,6 @@ class BlackBoxOptimizer:
         if not self._examples:
             raise ValueError("no existing data available to be plotted")
 
-        from skopt.plots import partial_dependence
-
         skopt_backend = self._get_skopt_backend()
 
         sorted_names = list(sorted(self._old_params))
@@ -366,8 +368,6 @@ class BlackBoxOptimizer:
         if not self._examples:
             raise ValueError("no existing data available to be plotted")
 
-        from skopt.plots import plot_evaluations
-
         skopt_backend = self._get_skopt_backend()
 
         return plot_evaluations(
@@ -380,8 +380,6 @@ class BlackBoxOptimizer:
         """Calls skopt.plots.plot_objective."""
         if not self._examples:
             raise ValueError("no existing data available to be plotted")
-
-        from skopt.plots import plot_objective
 
         skopt_backend = self._get_skopt_backend()
 

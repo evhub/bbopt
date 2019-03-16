@@ -89,6 +89,7 @@ class SkoptBackend(Backend):
 # Registered names:
 
 SkoptBackend.register()
+SkoptBackend.register_alias("skopt")
 SkoptBackend.register_alg("gaussian_process", base_estimator="GP")
 SkoptBackend.register_alg("random_forest", base_estimator="RF")
 SkoptBackend.register_alg("extra_trees", base_estimator="ET")

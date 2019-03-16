@@ -6,11 +6,11 @@ The backend and algorithm registries.
 class Registry:
     """Registry that keeps track of registered objects."""
 
-    def __init__(self, obj_name="obj", defaults=None, generators={}, aliases={}):
+    def __init__(self, obj_name, defaults=None, generators=None, aliases=None):
         self.obj_name = obj_name
-        self.registered = {} if defaults is None else defaults
-        self.generators = generators
-        self.aliases = aliases
+        self.registered = defaults ?? {}
+        self.generators = generators ?? {}
+        self.aliases = aliases ?? {}
 
     def __getitem__(self, name):
         name = self.aliases.get(name, name)
@@ -41,6 +41,7 @@ class Registry:
     def __iter__(self):
         yield from self.registered
         yield from self.generators
+        yield from self.aliases
 
     def run_all_gens(self):
         """Run all generators."""

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc77f8372
+# __coconut_hash__ = 0x74d3d614
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -38,6 +38,9 @@ import time
 
 import numpy as np
 from portalocker import Lock
+from skopt.plots import partial_dependence
+from skopt.plots import plot_evaluations
+from skopt.plots import plot_objective
 
 from bbopt.registry import backend_registry
 from bbopt.registry import init_backend
@@ -58,6 +61,7 @@ from bbopt.constants import data_file_ext
 from bbopt.constants import lock_timeout
 from bbopt.constants import default_alg
 from bbopt.constants import default_protocol
+from bbopt.backends.skopt import SkoptBackend
 
 
 class BlackBoxOptimizer(_coconut.object):
@@ -201,8 +205,6 @@ class BlackBoxOptimizer(_coconut.object):
 
     def _get_skopt_backend(self):
         """Get a scikit-optimize backend regardless of whether currently using one."""
-        from bbopt.backends.skopt import SkoptBackend
-
         if isinstance(self.backend, SkoptBackend):
             return self.backend
 
@@ -337,8 +339,6 @@ class BlackBoxOptimizer(_coconut.object):
             if not self._examples:
                 raise ValueError("no existing data available to be plotted")
 
-            from skopt.plots import partial_dependence
-
             skopt_backend = self._get_skopt_backend()
 
             sorted_names = list(sorted(self._old_params))
@@ -370,8 +370,6 @@ class BlackBoxOptimizer(_coconut.object):
             if not self._examples:
                 raise ValueError("no existing data available to be plotted")
 
-            from skopt.plots import plot_evaluations
-
             skopt_backend = self._get_skopt_backend()
 
             try:
@@ -393,8 +391,6 @@ class BlackBoxOptimizer(_coconut.object):
         while True:
             if not self._examples:
                 raise ValueError("no existing data available to be plotted")
-
-            from skopt.plots import plot_objective
 
             skopt_backend = self._get_skopt_backend()
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa10ab98c
+# __coconut_hash__ = 0xd94bab35
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -26,6 +26,10 @@ if _coconut_sys.version_info >= (3,):
 
 
 
+if _coconut_sys.version_info < (3, 3):
+    from collections import Iterable
+else:
+    from collections.abc import Iterable
 from math import log as ln
 
 from bbopt.util import Num
@@ -53,8 +57,9 @@ def handle_randrange(args):
 
 
 def handle_choice(args):
-    if len(args) != 1 or not isinstance(args[0], list):
+    if len(args) != 1 or not isinstance(args[0], Iterable):
         raise format_err(ValueError, "invalid arguments to choice", args)
+    return (list(args[0]),)
 
 
 def handle_uniform(args):
@@ -105,15 +110,16 @@ def handle_weibullvariate(args):
 # Placeholders:
 
 def placeholder_randrange(start, stop, step):
-    return start
+    rng = range(start, stop, step)
+    return rng[len(rng) // 2]
 
 
 def placeholder_choice(choices):
-    return _coconut_igetitem(choices, 0)
+    return _coconut_igetitem(choices, len(choices) // 2)
 
 
 def placeholder_uniform(start, stop):
-    return start
+    return (start + stop) / 2
 
 
 def placeholder_triangular(low, high, mode):
@@ -121,7 +127,7 @@ def placeholder_triangular(low, high, mode):
 
 
 def placeholder_betavariate(alpha, beta):
-    return 0.5
+    return alpha / (alpha + beta)
 
 
 def placeholder_expovariate(lambd):
@@ -141,12 +147,11 @@ def placeholder_vonmisesvariate(mu, kappa):
 
 
 def placeholder_paretovariate(alpha):
-    return 1
+    return 1 if alpha <= 1 else alpha / (alpha - 1)
 
 
 def placeholder_weibullvariate(alpha, beta):
     return alpha * ln(2)**(1 / beta)
-
 
 
 # Processor:
