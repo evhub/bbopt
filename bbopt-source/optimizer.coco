@@ -42,6 +42,7 @@ from bbopt.constants import (
     default_alg,
     default_protocol,
 )
+from bbopt.backends.serving import ServingBackend
 from bbopt.backends.skopt import SkoptBackend
 
 
@@ -239,7 +240,7 @@ class BlackBoxOptimizer:
     @property
     def is_serving(self) =
         """Whether we are currently using the serving backend or not."""
-        isinstance(self.backend, backend_registry[None])
+        isinstance(self.backend, ServingBackend)
 
     @property
     def data_file(self) =

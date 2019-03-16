@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x736c67d9
+# __coconut_hash__ = 0xe0f80301
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -61,6 +61,7 @@ from bbopt.constants import data_file_ext
 from bbopt.constants import lock_timeout
 from bbopt.constants import default_alg
 from bbopt.constants import default_protocol
+from bbopt.backends.serving import ServingBackend
 from bbopt.backends.skopt import SkoptBackend
 
 
@@ -271,7 +272,7 @@ class BlackBoxOptimizer(_coconut.object):
     @property
     def is_serving(self):
         """Whether we are currently using the serving backend or not."""
-        return isinstance(self.backend, backend_registry[None])
+        return isinstance(self.backend, ServingBackend)
 
     @property
     def data_file(self):
