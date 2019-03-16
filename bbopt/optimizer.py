@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x74d3d614
+# __coconut_hash__ = 0x736c67d9
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -505,9 +505,10 @@ class BlackBoxOptimizer(_coconut.object):
                 sample.append(sampling_population.pop(ind))
         return sample
 
-    def shuffle(self, name, x, **kwargs):
-        """Create a new parameter with the given name modeled by random.shuffle(x)."""
-        return self.sample(name, x, len(x), **kwargs)
+    def shuffled(self, name, population, **kwargs):
+        """Create a new parameter with the given name modeled by
+        random.shuffle(population) except returned instead of modified in place."""
+        return self.sample(name, population, len(population), **kwargs)
 
 # Array-based random functions:
 

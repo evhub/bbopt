@@ -10,6 +10,7 @@ BBopt's features include:
 - tons of state-of-the-art black box optimization algorithms such as Gaussian Processes from [`scikit-optimize`](https://scikit-optimize.github.io/) or Tree Structured Parzen Estimation from [`hyperopt`](http://hyperopt.github.io/hyperopt/) for tuning parameters,
 - the ability to switch algorithms (even across different backends!) while retaining all previous trials,
 - multiprocessing-safe data saving to enable running multiple trials in parallel,
+- lots of data visualization methods, including support for everything in [`skopt.plots`](https://scikit-optimize.github.io/plots.m.html),
 - support for optimizing over conditional parameters that only appear during some runs,
 - support for all major Python versions (`2.7` or `3.4+`), and
 - a straightforward interface for [extending BBopt with your own custom algorithms](#writing-your-own-backend).
@@ -106,8 +107,8 @@ Some examples of BBopt in action:
     1. [`getrandbits`](#getrandbits)
     1. [`choice`](#choice)
     1. [`randbool`](#randbool)
-    1. [`shuffle`](#shuffle)
     1. [`sample`](#sample)
+    1. [`shuffled`](#shuffled)
     1. [`random`](#random)
     1. [`uniform`](#uniform)
     1. [`loguniform`](#loguniform)
@@ -330,14 +331,6 @@ Create a new boolean parameter, modeled by the equivalent of `random.choice([Tru
 
 _Backends which support **randbool**: `scikit-optimize`, `hyperopt`, `random`._
 
-#### `shuffle`
-
-BlackBoxOptimizer.**shuffle**(_name_, _x_, **_kwargs_)
-
-Create a new parameter modeled by [`random.shuffle(population, k)`](https://docs.python.org/3/library/random.html#random.shuffle), except that it returns the shuffled list instead of shuffling it in place.
-
-_Backends which support **shuffle**: `scikit-optimize`, `hyperopt`, `random`._
-
 #### `sample`
 
 BlackBoxOptimizer.**sample**(_name_, _population_, _k_, **_kwargs_)
@@ -345,6 +338,14 @@ BlackBoxOptimizer.**sample**(_name_, _population_, _k_, **_kwargs_)
 Create a new parameter modeled by [`random.sample(population, k)`](https://docs.python.org/3/library/random.html#random.sample), which chooses _k_ elements from _population_.
 
 _Backends which support **sample**: `scikit-optimize`, `hyperopt`, `random`._
+
+#### `shuffled`
+
+BlackBoxOptimizer.**shuffled**(_name_, _population_, **_kwargs_)
+
+Create a new parameter modeled by [`random.shuffle(population)`](https://docs.python.org/3/library/random.html#random.shuffle) except that it returns the shuffled list instead of shuffling it in place.
+
+_Backends which support **shuffled**: `scikit-optimize`, `hyperopt`, `random`._
 
 #### `random`
 
