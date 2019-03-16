@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x5b226487
+# __coconut_hash__ = 0xc77f8372
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -79,48 +79,26 @@ class BlackBoxOptimizer(_coconut.object):
 
         self.reload()
 
-    def reload(self):
-        """Completely reload the optimizer."""
-        self._old_params = {}
-        self._examples = []
-        self._load_data()
-        self.run(alg=None)  # backend is set to serving by default
+# Private utilities:
 
     @property
-    def _use_json(self):
+    def _using_json(self):
         """Whether we are currently saving in json or pickle."""
         return self._protocol == "json"
 
     def _loads(self, raw_contents):
         """Load data from the given raw data string."""
-        if self._use_json:
+        if self._using_json:
             return json.loads(str(raw_contents, encoding="utf-8"))
         else:
             return pickle.loads(raw_contents)
 
     def _dumps(self, unserialized_data):
         """Dump data to a raw data string."""
-        if self._use_json:
+        if self._using_json:
             return json.dumps((json_serialize)(unserialized_data)).encode(encoding="utf-8")
         else:
             return pickle.dumps(unserialized_data, protocol=self._protocol)
-
-    def run_backend(self, backend, *args, **options):
-        """Optimize parameters using the given backend."""
-        self.backend = init_backend(backend, self._examples, self._old_params, *args, **options)
-        self._new_params = {}
-        self._current_example = {"values": {}}
-
-    @property
-    def algs(self):
-        """All algorithms supported by run."""
-        return alg_registry.asdict()
-
-    def run(self, alg=default_alg):
-        """Optimize parameters using the given algorithm
-        (use .algs to get the list of valid algorithms)."""
-        backend, options = alg_registry[alg]
-        self.run_backend(backend, **options)
 
     @property
     def _got_reward(self):
@@ -144,25 +122,6 @@ class BlackBoxOptimizer(_coconut.object):
         self._current_example["values"][name] = value
         return value
 
-    def remember(self, info):
-        """Store a dictionary of information about the current run."""
-        if self._got_reward:
-            raise ValueError("remember calls must come before maximize/minimize")
-        self._current_example.setdefault("memo", {}).update(info)
-
-    def minimize(self, value):
-        """Set the loss of the current run."""
-        self._set_reward("loss", value)
-
-    def maximize(self, value):
-        """Set the gain of the current run."""
-        self._set_reward("gain", value)
-
-    @property
-    def is_serving(self):
-        """Whether we are currently using the serving backend or not."""
-        return isinstance(self.backend, backend_registry[None])
-
     def _set_reward(self, reward_type, value):
         """Set the gain or loss to the given value."""
         if self._got_reward:
@@ -173,14 +132,9 @@ class BlackBoxOptimizer(_coconut.object):
             value = tuple(value)
         self._current_example[reward_type] = denumpy_all(value)
         if not self.is_serving:
-            self._save_data()
+            self._save_current_data()
 
-    @property
-    def data_file(self):
-        """The path to the file we are saving data to."""
-        return os.path.splitext(self._file)[0] + data_file_ext + (".json" if self._use_json else ".pickle")
-
-    def tell_examples(self, examples):
+    def _add_examples(self, examples):
         """Load the given examples into memory."""
         for ex in examples:
             if ex not in self._examples:
@@ -207,7 +161,7 @@ class BlackBoxOptimizer(_coconut.object):
                 raise _coconut_match_err
 
             self._old_params = params
-            self.tell_examples(examples)
+            self._add_examples(examples)
 
     def _load_data(self):
         """Load examples from data file."""
@@ -215,38 +169,21 @@ class BlackBoxOptimizer(_coconut.object):
         with Lock(self.data_file, "rb", timeout=lock_timeout) as df:
             self._load_from(df)
 
-    def get_data(self):
-        """Get all currently-loaded data as a dictionary containing params and examples."""
-        self._old_params.update(self._new_params)
-        return {"params": self._old_params, "examples": self._examples}
-
-    @property
-    def num_examples(self):
-        """The number of examples seen so far (current example not counted until maximize/minimize call)."""
-        return len(self._examples)
-
-    def _save_data(self):
+    def _save_current_data(self):
         """Save examples to data file."""
-        assert "timestamp" not in self._current_example, "multiple _save_data calls on _current_example = {_coconut_format_0}".format(_coconut_format_0=(self._current_example))
+        assert "timestamp" not in self._current_example, "multiple _save_current_data calls on _current_example = {_coconut_format_0}".format(_coconut_format_0=(self._current_example))
         with Lock(self.data_file, "rb+", timeout=lock_timeout) as df:
 # we create the timestamp while we have the lock to ensure its uniqueness
             self._current_example["timestamp"] = time.time()
-            self.tell_examples([self._current_example])
-            self._load_from(df)
-            clear_file(df)
-            ((df.write)((self._dumps)(self.get_data())))
-            sync_file(df)
+            self._add_examples([self._current_example])
+            self._save_to(df)
 
-    def get_current_run(self):
-        """Return a dictionary containing the current parameters and reward."""
-        try:
-            return self._current_example
-        except AttributeError:
-            raise ValueError("get_current_run calls must come after run")
-
-    def get_optimal_run(self):
-        """Return a dictionary containing the optimal parameters and reward computed so far."""
-        return best_example(self._examples)
+    def _save_to(self, df):
+        """Save to the given open data file."""
+        self._load_from(df)
+        clear_file(df)
+        ((df.write)((self._dumps)(self.get_data())))
+        sync_file(df)
 
     @property
     def _file_name(self):
@@ -256,7 +193,8 @@ class BlackBoxOptimizer(_coconut.object):
     @property
     def _metric(self):
         """Whether using a gain, a loss, or no examples."""
-        return None if not self._examples else "gain" if "gain" in self._examples[0] else "loss"
+        assert self._examples, "cannot determine metric from empty examples"
+        return "gain" if "gain" in self._examples[0] else "loss"
 
     _skopt_backend_args = None
     _skopt_backend = None
@@ -275,6 +213,99 @@ class BlackBoxOptimizer(_coconut.object):
         self._skopt_backend_args = skopt_backend_args
         self._skopt_backend = SkoptBackend(*skopt_backend_args)
         return self._skopt_backend
+
+    def _array_param(self, func, name, shape, kwargs):
+        """Create a new array parameter for the given name and shape with entries from func."""
+        if not isinstance(name, Str):
+            raise TypeError("name must be string, not {_coconut_format_0}".format(_coconut_format_0=(name)))
+        arr = np.zeros(shape)
+        for indices in itertools.product(*map(range, shape)):
+            index_str = ",".join(map(str, indices))
+            cell_name = "{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(index_str))
+            proc_kwargs = param_processor.modify_kwargs(lambda _=None: _[indices], kwargs)
+            arr[indices] = func(cell_name, **proc_kwargs)
+        return arr
+
+# External API:
+
+    def reload(self):
+        """Completely reload the optimizer."""
+        self._old_params = {}
+        self._examples = []
+        self._load_data()
+        self.run(alg=None)  # backend is set to serving by default
+
+    def run_backend(self, backend, *args, **options):
+        """Optimize parameters using the given backend."""
+        self.backend = init_backend(backend, self._examples, self._old_params, *args, **options)
+        self._new_params = {}
+        self._current_example = {"values": {}}
+
+    @property
+    def algs(self):
+        """All algorithms supported by run."""
+        return alg_registry.asdict()
+
+    def run(self, alg=default_alg):
+        """Optimize parameters using the given algorithm
+        (use .algs to get the list of valid algorithms)."""
+        backend, options = alg_registry[alg]
+        self.run_backend(backend, **options)
+
+    def remember(self, info):
+        """Store a dictionary of information about the current run."""
+        if self._got_reward:
+            raise ValueError("remember calls must come before maximize/minimize")
+        self._current_example.setdefault("memo", {}).update(info)
+
+    def minimize(self, value):
+        """Set the loss of the current run."""
+        self._set_reward("loss", value)
+
+    def maximize(self, value):
+        """Set the gain of the current run."""
+        self._set_reward("gain", value)
+
+    @property
+    def is_serving(self):
+        """Whether we are currently using the serving backend or not."""
+        return isinstance(self.backend, backend_registry[None])
+
+    @property
+    def data_file(self):
+        """The path to the file we are saving data to."""
+        return os.path.splitext(self._file)[0] + data_file_ext + (".json" if self._using_json else ".pickle")
+
+    def get_data(self):
+        """Get all currently-loaded data as a dictionary containing params and examples."""
+        self._old_params.update(self._new_params)
+        return {"params": self._old_params, "examples": self._examples}
+
+    @property
+    def num_examples(self):
+        """The number of examples seen so far (current example not counted until maximize/minimize call)."""
+        return len(self._examples)
+
+    def save_data(self):
+        """Forcibly saves data."""
+        with Lock(self.data_file, "rb+", timeout=lock_timeout) as df:
+            self._save_to(df)
+
+    def tell_examples(self, examples):
+        """Adds the given examples to memory and writes the current memory to disk."""
+        self._add_examples(examples)
+        self.save_data()
+
+    def get_current_run(self):
+        """Return a dictionary containing the current parameters and reward."""
+        try:
+            return self._current_example
+        except AttributeError:
+            raise ValueError("get_current_run calls must come after run")
+
+    def get_optimal_run(self):
+        """Return a dictionary containing the optimal parameters and reward computed so far."""
+        return best_example(self._examples)
 
 # Plotting functions:
 
@@ -315,7 +346,7 @@ class BlackBoxOptimizer(_coconut.object):
             j = None if j_name is None else sorted_names.index(j_name)
 
             try:
-                _coconut_is_recursive = partial_dependence is _coconut_recursive_func_21
+                _coconut_is_recursive = partial_dependence is _coconut_recursive_func_25
             except _coconut.NameError:
                 _coconut_is_recursive = False
             if _coconut_is_recursive:
@@ -326,7 +357,7 @@ class BlackBoxOptimizer(_coconut.object):
 
 
             return None
-    _coconut_recursive_func_21 = partial_dependence
+    _coconut_recursive_func_25 = partial_dependence
     def plot_partial_dependence_1D(self, i_name, ax=None, yscale=None, **kwargs):
         """Constructs a 1D partial dependence plot using self.partial_dependence."""
         xi, yi = self.partial_dependence(i_name, **kwargs)
@@ -344,7 +375,7 @@ class BlackBoxOptimizer(_coconut.object):
             skopt_backend = self._get_skopt_backend()
 
             try:
-                _coconut_is_recursive = plot_evaluations is _coconut_recursive_func_23
+                _coconut_is_recursive = plot_evaluations is _coconut_recursive_func_27
             except _coconut.NameError:
                 _coconut_is_recursive = False
             if _coconut_is_recursive:
@@ -355,7 +386,7 @@ class BlackBoxOptimizer(_coconut.object):
 
 
             return None
-    _coconut_recursive_func_23 = plot_evaluations
+    _coconut_recursive_func_27 = plot_evaluations
     def plot_objective(self, *args, **kwargs):
         """Calls skopt.plots.plot_objective."""
         def _coconut_mock_func(self, *args, **kwargs): return self, args, kwargs
@@ -368,7 +399,7 @@ class BlackBoxOptimizer(_coconut.object):
             skopt_backend = self._get_skopt_backend()
 
             try:
-                _coconut_is_recursive = plot_objective is _coconut_recursive_func_24
+                _coconut_is_recursive = plot_objective is _coconut_recursive_func_28
             except _coconut.NameError:
                 _coconut_is_recursive = False
             if _coconut_is_recursive:
@@ -381,7 +412,7 @@ class BlackBoxOptimizer(_coconut.object):
 # Base random functions:
 
             return None
-    _coconut_recursive_func_24 = plot_objective
+    _coconut_recursive_func_28 = plot_objective
     def randrange(self, name, *args, **kwargs):
         """Create a new parameter with the given name modeled by random.randrange(*args)."""
         return self._param(name, "randrange", *args, **kwargs)
@@ -483,18 +514,6 @@ class BlackBoxOptimizer(_coconut.object):
         return self.sample(name, x, len(x), **kwargs)
 
 # Array-based random functions:
-
-    def _array_param(self, func, name, shape, kwargs):
-        """Create a new array parameter for the given name and shape with entries from func."""
-        if not isinstance(name, Str):
-            raise TypeError("name must be string, not {_coconut_format_0}".format(_coconut_format_0=(name)))
-        arr = np.zeros(shape)
-        for indices in itertools.product(*map(range, shape)):
-            index_str = ",".join(map(str, indices))
-            cell_name = "{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(index_str))
-            proc_kwargs = param_processor.modify_kwargs(lambda _=None: _[indices], kwargs)
-            arr[indices] = func(cell_name, **proc_kwargs)
-        return arr
 
     def rand(self, name, *shape, **kwargs):
         """Create a new array parameter for the given name and shape modeled by np.random.rand."""
