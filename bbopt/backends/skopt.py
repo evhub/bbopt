@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x40ae0ce6
+# __coconut_hash__ = 0x2fd491f8
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -41,6 +41,7 @@ from bbopt.backends.util import make_values
 
 def create_space(name, func, *args):
     """Create a scikit-optimize space for the given parameter."""
+    name = py_str(name)
     _coconut_match_to = func
     _coconut_case_check_0 = False
     if _coconut_match_to == "choice":

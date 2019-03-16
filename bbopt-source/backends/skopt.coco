@@ -21,6 +21,7 @@ from bbopt.backends.util import (
 
 def create_space(name, func, *args):
     """Create a scikit-optimize space for the given parameter."""
+    name = py_str(name)
     case func:
         match "choice":
             return Categorical(*args, name=name)
