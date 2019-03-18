@@ -56,7 +56,7 @@ class SkoptBackend(Backend):
         "uniform",
     )
 
-    def __init__(self, examples, params, base_estimator="gp", **options):
+    def __init__(self, examples, params, base_estimator="GP", **options):
         self.init_fallback_backend()
 
         if not examples:

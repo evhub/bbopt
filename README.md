@@ -416,7 +416,11 @@ from bbopt.backends.util import Backend
 class MyBackend(Backend):
     backend_name = "my-backend"
     implemented_funcs = [
-        ...,  # list the random functions you support here
+        # list the random functions you support here
+        #  (you don't need to include all random functions,
+        #  only the base random functions randrange, choice
+        #  uniform, and normalvariate)
+        ...,
     ]
 
     def __init__(self, examples, params, **options):

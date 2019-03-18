@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x9572fd95
+# __coconut_hash__ = 0x39f31556
 
 # Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
 
@@ -77,7 +77,7 @@ class SkoptBackend(Backend):
     backend_name = "scikit-optimize"
     implemented_funcs = ("choice", "randrange", "uniform",)
 
-    def __init__(self, examples, params, base_estimator="gp", **options):
+    def __init__(self, examples, params, base_estimator="GP", **options):
         self.init_fallback_backend()
 
         if not examples:
