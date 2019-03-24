@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xe0f80301
+# __coconut_hash__ = 0x3cffb3a8
 
-# Compiled with Coconut version 1.4.0-post_dev23 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.0-post_dev25 [Ernest Scribbler]
 
 """
 The main BBopt interface.
@@ -17,7 +17,7 @@ _coconut_cached_module = _coconut_sys.modules.get(str("__coconut__"))
 if _coconut_cached_module is not None and _coconut_os_path.dirname(_coconut_cached_module.__file__) != _coconut_file_path:
     del _coconut_sys.modules[str("__coconut__")]
 _coconut_sys.path.insert(0, _coconut_file_path)
-from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_back_pipe, _coconut_star_pipe, _coconut_back_star_pipe, _coconut_dubstar_pipe, _coconut_back_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_addpattern, _coconut_sentinel
+from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_back_pipe, _coconut_star_pipe, _coconut_back_star_pipe, _coconut_dubstar_pipe, _coconut_back_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_addpattern, _coconut_sentinel, _coconut_assert
 from __coconut__ import *
 if _coconut_sys.version_info >= (3,):
     _coconut_sys.path.pop(0)
@@ -121,6 +121,19 @@ class BlackBoxOptimizer(_coconut.object):
 
         args = param_processor.standardize_args(func, args)
         kwargs = param_processor.standardize_kwargs(kwargs)
+
+        _coconut_match_to = self._old_params
+        _coconut_match_check = False
+        if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
+            _coconut_match_temp_0 = _coconut_match_to.get(name, _coconut_sentinel)
+            if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut.isinstance(_coconut_match_temp_0, _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_temp_0) == 3):
+                old_func = _coconut_match_temp_0[0]
+                old_args = _coconut_match_temp_0[1]
+                old_kwargs = _coconut_match_temp_0[2]
+                _coconut_match_check = True
+        if _coconut_match_check:
+            if (func, args) != (old_func, old_args):
+                print("BBopt Warning: detected change in parameter {_coconut_format_0} ({_coconut_format_1} != {_coconut_format_2}) (you may need to delete your old BBopt data)".format(_coconut_format_0=(name), _coconut_format_1=((func, args)), _coconut_format_2=((old_func, old_args))))
 
         value = self.backend.param(name, func, *args, **kwargs)
         self._new_params[name] = (func, args, kwargs)

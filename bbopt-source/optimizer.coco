@@ -103,6 +103,10 @@ class BlackBoxOptimizer:
         args = param_processor.standardize_args(func, args)
         kwargs = param_processor.standardize_kwargs(kwargs)
 
+        match {=name: (old_func, old_args, old_kwargs), **_} in self._old_params:
+            if (func, args) != (old_func, old_args):
+                print(f"BBopt Warning: detected change in parameter {name} ({(func, args)} != {(old_func, old_args)}) (you may need to delete your old BBopt data)")
+
         value = self.backend.param(name, func, *args, **kwargs)
         self._new_params[name] = (func, args, kwargs)
         self._current_example["values"][name] = value
