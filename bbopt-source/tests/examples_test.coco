@@ -41,6 +41,8 @@ always_ignore_errs = (
         "return f(*args, **kwds)",
     "UserWarning: The objective has been evaluated at this point before.",
         'warnings.warn("The objective has been evaluated',
+    "DeprecationWarning: sklearn.externals.joblib is deprecated",
+        "warnings.warn(msg, category=DeprecationWarning)",
 )
 
 
