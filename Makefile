@@ -12,8 +12,7 @@ force: force-build
 
 .PHONY: setup
 setup:
-	pip install --upgrade setuptools pip pytest
-	pip install --upgrade "coconut-develop[watch,cPyparsing]"
+	pip install -U setuptools pip pytest coconut-develop[watch]
 
 .PHONY: build
 build:
@@ -32,7 +31,7 @@ force-build:
 .PHONY: upload
 upload: clean install
 	python3 setup.py sdist bdist_wheel
-	pip3 install --upgrade --ignore-installed twine
+	pip3 install -U --ignore-installed twine
 	twine upload dist/*
 
 .PHONY: test

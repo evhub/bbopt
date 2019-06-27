@@ -49,11 +49,12 @@ from bbopt.backends.skopt import SkoptBackend
 class BlackBoxOptimizer:
     """Main bbopt optimizer object. See https://github.com/evhub/bbopt for documentation."""
 
-    def __init__(self, file, protocol=None):
+    match def __init__(self, file, *, tag=None, protocol=None):
         """Construct a new BlackBoxOptimizer. It is recommended to pass file=__file__."""
         if not isinstance(file, Str):
             raise TypeError("file must be a string")
         self._file = norm_path(file)
+        self._tag = tag
 
         if protocol is None:
             # auto-detect protocol
@@ -163,11 +164,6 @@ class BlackBoxOptimizer:
         sync_file(df)
 
     @property
-    def _file_name(self) =
-        """The base name of the given file."""
-        os.path.splitext(os.path.basename(self._file))[0]
-
-    @property
     def _metric(self) =
         """Whether using a gain, a loss, or no examples."""
         assert self._examples, "cannot determine metric from empty examples"
@@ -247,9 +243,14 @@ class BlackBoxOptimizer:
         isinstance(self.backend, ServingBackend)
 
     @property
+    def _file_name(self) =
+        """The base name of the given file."""
+        os.path.splitext(os.path.basename(self._file))[0] + ("_" + self._tag if self._tag is not None else "")
+
+    @property
     def data_file(self) =
         """The path to the file we are saving data to."""
-        os.path.splitext(self._file)[0] + data_file_ext + (".json" if self._using_json else ".pickle")
+        os.path.join(os.path.dirname(self._file), self._file_name) + data_file_ext + (".json" if self._using_json else ".pickle")
 
     def get_data(self):
         """Get all currently-loaded data as a dictionary containing params and examples."""

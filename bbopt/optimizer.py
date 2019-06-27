@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3cffb3a8
+# __coconut_hash__ = 0x1096baa3
 
-# Compiled with Coconut version 1.4.0-post_dev25 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.0-post_dev40 [Ernest Scribbler]
 
 """
 The main BBopt interface.
@@ -17,8 +17,8 @@ _coconut_cached_module = _coconut_sys.modules.get(str("__coconut__"))
 if _coconut_cached_module is not None and _coconut_os_path.dirname(_coconut_cached_module.__file__) != _coconut_file_path:
     del _coconut_sys.modules[str("__coconut__")]
 _coconut_sys.path.insert(0, _coconut_file_path)
-from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_back_pipe, _coconut_star_pipe, _coconut_back_star_pipe, _coconut_dubstar_pipe, _coconut_back_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_addpattern, _coconut_sentinel, _coconut_assert
 from __coconut__ import *
+from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_back_pipe, _coconut_star_pipe, _coconut_back_star_pipe, _coconut_dubstar_pipe, _coconut_back_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert
 if _coconut_sys.version_info >= (3,):
     _coconut_sys.path.pop(0)
 
@@ -68,11 +68,32 @@ from bbopt.backends.skopt import SkoptBackend
 class BlackBoxOptimizer(_coconut.object):
     """Main bbopt optimizer object. See https://github.com/evhub/bbopt for documentation."""
 
-    def __init__(self, file, protocol=None):
+    def __init__(*_coconut_match_to_args, **_coconut_match_to_kwargs):
         """Construct a new BlackBoxOptimizer. It is recommended to pass file=__file__."""
+        _coconut_match_check = False
+        _coconut_FunctionMatchError = _coconut_get_function_match_error()
+        if (_coconut.len(_coconut_match_to_args) <= 2) and (_coconut.sum((_coconut.len(_coconut_match_to_args) > 0, "self" in _coconut_match_to_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_to_args) > 1, "file" in _coconut_match_to_kwargs)) == 1):
+            _coconut_match_temp_0 = _coconut_match_to_args[0] if _coconut.len(_coconut_match_to_args) > 0 else _coconut_match_to_kwargs.pop("self")
+            _coconut_match_temp_1 = _coconut_match_to_args[1] if _coconut.len(_coconut_match_to_args) > 1 else _coconut_match_to_kwargs.pop("file")
+            _coconut_match_temp_2 = _coconut_match_to_kwargs.pop("tag") if "tag" in _coconut_match_to_kwargs else None
+            _coconut_match_temp_3 = _coconut_match_to_kwargs.pop("protocol") if "protocol" in _coconut_match_to_kwargs else None
+            if not _coconut_match_to_kwargs:
+                self = _coconut_match_temp_0
+                file = _coconut_match_temp_1
+                tag = _coconut_match_temp_2
+                protocol = _coconut_match_temp_3
+                _coconut_match_check = True
+        if not _coconut_match_check:
+            _coconut_match_val_repr = _coconut.repr(_coconut_match_to_args)
+            _coconut_match_err = _coconut_FunctionMatchError("pattern-matching failed for " "'match def __init__(self, file, *, tag=None, protocol=None):'" " in " + (_coconut_match_val_repr if _coconut.len(_coconut_match_val_repr) <= 500 else _coconut_match_val_repr[:500] + "..."))
+            _coconut_match_err.pattern = 'match def __init__(self, file, *, tag=None, protocol=None):'
+            _coconut_match_err.value = _coconut_match_to_args
+            raise _coconut_match_err
+
         if not isinstance(file, Str):
             raise TypeError("file must be a string")
         self._file = norm_path(file)
+        self._tag = tag
 
         if protocol is None:
 # auto-detect protocol
@@ -204,11 +225,6 @@ class BlackBoxOptimizer(_coconut.object):
         sync_file(df)
 
     @property
-    def _file_name(self):
-        """The base name of the given file."""
-        return os.path.splitext(os.path.basename(self._file))[0]
-
-    @property
     def _metric(self):
         """Whether using a gain, a loss, or no examples."""
         assert self._examples, "cannot determine metric from empty examples"
@@ -288,9 +304,14 @@ class BlackBoxOptimizer(_coconut.object):
         return isinstance(self.backend, ServingBackend)
 
     @property
+    def _file_name(self):
+        """The base name of the given file."""
+        return os.path.splitext(os.path.basename(self._file))[0] + ("_" + self._tag if self._tag is not None else "")
+
+    @property
     def data_file(self):
         """The path to the file we are saving data to."""
-        return os.path.splitext(self._file)[0] + data_file_ext + (".json" if self._using_json else ".pickle")
+        return os.path.join(os.path.dirname(self._file), self._file_name) + data_file_ext + (".json" if self._using_json else ".pickle")
 
     def get_data(self):
         """Get all currently-loaded data as a dictionary containing params and examples."""
