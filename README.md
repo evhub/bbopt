@@ -116,6 +116,7 @@ Some examples of BBopt in action:
     1. [`lognormvariate`](#lognormvariate)
     1. [`rand`](#rand)
     1. [`randn`](#randn)
+    1. [`param`](#param)
 1. [Writing Your Own Backend](#writing-your-own-backend)
 
 <!-- /MarkdownTOC -->
@@ -406,6 +407,12 @@ BlackBoxOptimizer.**randn**(_name_, *_shape_, **_kwargs_)
 Create a new parameter modeled by [`numpy.random.randn(*shape)`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.randn.html#numpy-random-randn), which creates a `numpy` array of the given shape with entries generated according to a standard normal distribution.
 
 _Backends which support **randn**: `hyperopt`, `random`._
+
+#### `param`
+
+BlackBoxOptimizer.**param**(_name_, _func_, *_args_, **_kwargs_)
+
+Create a new parameter modeled by the parameter definition function _func_ with the given arguments. This function is mostly useful if you want to use a custom backend that implements parameter definition functions not included in BBopt by default.
 
 ### Writing Your Own Backend
 

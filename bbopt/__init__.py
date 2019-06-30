@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x75c86a86
+# __coconut_hash__ = 0x754305b2
 
 # Compiled with Coconut version 1.4.0-post_dev40 [Ernest Scribbler]
 
@@ -40,4 +40,4 @@ if _coconut_sys.version_info >= (3,):
 
 
 from bbopt.backends import *  # register backends
-from bbopt.optimizer import BlackBoxOptimizer  # make optimizer available
+from bbopt.optimizer import *  # make optimizer available

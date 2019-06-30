@@ -66,7 +66,7 @@ def split_examples(
             match {"values": values, "loss": loss, **_}:
                 pass
         else:
-            raise ValueError("invalid example {}".format(example))
+            raise ValueError(f"invalid example {example}")
 
         # extract features
         features = make_features(values, params, fallback_func, converters, convert_fallback) |> list
@@ -222,3 +222,8 @@ class Backend:
         """Register an alias for this backend."""
         assert cls.backend_name is not None, "Backend subclasses using Backend.register_alias must set backend_name on the class"
         backend_registry.register_alias(cls.backend_name, alias)
+
+    @staticmethod
+    def register_param_func(func_name, handler, placeholder_generator):
+        """Register a new parameter definition function. See bbopt.params for examples."""
+        param_processor.register(func_name, handler, placeholder_generator)

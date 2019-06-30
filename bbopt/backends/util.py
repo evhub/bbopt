@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x189fad0
+# __coconut_hash__ = 0x80ca3ec7
 
 # Compiled with Coconut version 1.4.0-post_dev40 [Ernest Scribbler]
 
@@ -120,7 +120,7 @@ def split_examples(examples, params, fallback_func=param_processor.choose_defaul
             if _coconut_case_check_0:
                 pass
         if not _coconut_case_check_0:
-            raise ValueError("invalid example {}".format(example))
+            raise ValueError("invalid example {_coconut_format_0}".format(_coconut_format_0=(example)))
 
 # extract features
         features = (list)(make_features(values, params, fallback_func, converters, convert_fallback))
@@ -264,3 +264,8 @@ class Backend(_coconut.object):
         """Register an alias for this backend."""
         assert cls.backend_name is not None, "Backend subclasses using Backend.register_alias must set backend_name on the class"
         backend_registry.register_alias(cls.backend_name, alias)
+
+    @staticmethod
+    def register_param_func(func_name, handler, placeholder_generator):
+        """Register a new parameter definition function. See bbopt.params for examples."""
+        param_processor.register(func_name, handler, placeholder_generator)

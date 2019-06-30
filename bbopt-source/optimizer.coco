@@ -46,6 +46,19 @@ from bbopt.backends.serving import ServingBackend
 from bbopt.backends.skopt import SkoptBackend
 
 
+def array_param(func, name, shape, kwargs):
+    """Create a new array parameter for the given name and shape with entries from func."""
+    if not isinstance(name, Str):
+        raise TypeError(f"name must be string, not {name}")
+    arr = np.zeros(shape)
+    for indices in itertools.product(*map(range, shape)):
+        index_str = ",".join(map(str, indices))
+        cell_name = f"{name}[{index_str}]"
+        proc_kwargs = kwargs |> param_processor.modify_kwargs$(-> _[indices])
+        arr[indices] = func(cell_name, **proc_kwargs)
+    return arr
+
+
 class BlackBoxOptimizer:
     """Main bbopt optimizer object. See https://github.com/evhub/bbopt for documentation."""
     backend = None
@@ -92,27 +105,6 @@ class BlackBoxOptimizer:
     def _got_reward(self) =
         """Whether we have seen a maximize/minimize call yet."""
         "loss" in self._current_example or "gain" in self._current_example
-
-    def _param(self, name, func, *args, **kwargs):
-        """Create a black box parameter and return its value."""
-        if self._got_reward:
-            raise ValueError("all parameter definitions must come before maximize/minimize")
-        if not isinstance(name, Str):
-            raise TypeError(f"name must be a string, not {name}")
-        if name in self._new_params:
-            raise ValueError(f"parameter of name {name} already exists")
-
-        args = param_processor.standardize_args(func, args)
-        kwargs = param_processor.standardize_kwargs(kwargs)
-
-        match {=name: (old_func, old_args, old_kwargs), **_} in self._old_params:
-            if (func, args) != (old_func, old_args):
-                print(f"BBopt Warning: detected change in parameter {name} ({(func, args)} != {(old_func, old_args)}) (you may need to delete your old BBopt data)")
-
-        value = self.backend.param(name, func, *args, **kwargs)
-        self._new_params[name] = (func, args, kwargs)
-        self._current_example["values"][name] = value
-        return value
 
     def _set_reward(self, reward_type, value):
         """Set the gain or loss to the given value."""
@@ -186,19 +178,28 @@ class BlackBoxOptimizer:
         self._skopt_backend = SkoptBackend(*skopt_backend_args)
         return self._skopt_backend
 
-    def _array_param(self, func, name, shape, kwargs):
-        """Create a new array parameter for the given name and shape with entries from func."""
-        if not isinstance(name, Str):
-            raise TypeError(f"name must be string, not {name}")
-        arr = np.zeros(shape)
-        for indices in itertools.product(*map(range, shape)):
-            index_str = ",".join(map(str, indices))
-            cell_name = f"{name}[{index_str}]"
-            proc_kwargs = kwargs |> param_processor.modify_kwargs$(-> _[indices])
-            arr[indices] = func(cell_name, **proc_kwargs)
-        return arr
-
     # External API:
+
+    def param(self, name, func, *args, **kwargs):
+        """Create a black box parameter and return its value."""
+        if self._got_reward:
+            raise ValueError("all parameter definitions must come before maximize/minimize")
+        if not isinstance(name, Str):
+            raise TypeError(f"name must be a string, not {name}")
+        if name in self._new_params:
+            raise ValueError(f"parameter of name {name} already exists")
+
+        args = param_processor.standardize_args(func, args)
+        kwargs = param_processor.standardize_kwargs(kwargs)
+
+        match {=name: (old_func, old_args, old_kwargs), **_} in self._old_params:
+            if (func, args) != (old_func, old_args):
+                print(f"BBopt Warning: detected change in parameter {name} ({(func, args)} != {(old_func, old_args)}) (you may need to delete your old BBopt data)")
+
+        value = self.backend.param(name, func, *args, **kwargs)
+        self._new_params[name] = (func, args, kwargs)
+        self._current_example["values"][name] = value
+        return value
 
     def reload(self):
         """Completely reload the optimizer."""
@@ -400,47 +401,47 @@ class BlackBoxOptimizer:
 
     def randrange(self, name, *args, **kwargs):
         """Create a new parameter with the given name modeled by random.randrange(*args)."""
-        return self._param(name, "randrange", *args, **kwargs)
+        return self.param(name, "randrange", *args, **kwargs)
 
     def choice(self, name, seq, **kwargs):
         """Create a new parameter with the given name modeled by random.choice(seq)."""
-        return self._param(name, "choice", seq, **kwargs)
+        return self.param(name, "choice", seq, **kwargs)
 
     def uniform(self, name, a, b, **kwargs):
         """Create a new parameter with the given name modeled by random.uniform(a, b)."""
-        return self._param(name, "uniform", a, b, **kwargs)
+        return self.param(name, "uniform", a, b, **kwargs)
 
     def triangular(self, name, low, high, mode, **kwargs):
         """Create a new parameter with the given name modeled by random.triangular(low, high, mode)."""
-        return self._param(name, "triangular", low, high, mode, **kwargs)
+        return self.param(name, "triangular", low, high, mode, **kwargs)
 
     def betavariate(self, name, alpha, beta, **kwargs):
         """Create a new parameter with the given name modeled by random.betavariate(alpha, beta)."""
-        return self._param(name, "betavariate", alpha, beta, **kwargs)
+        return self.param(name, "betavariate", alpha, beta, **kwargs)
 
     def expovariate(self, name, lambd, **kwargs):
         """Create a new parameter with the given name modeled by random.expovariate(lambd)."""
-        return self._param(name, "expovariate", lambd, **kwargs)
+        return self.param(name, "expovariate", lambd, **kwargs)
 
     def gammavariate(self, name, alpha, beta, **kwargs):
         """Create a new parameter with the given name modeled by random.gammavariate(alpha, beta)."""
-        return self._param(name, "gammavariate", alpha, beta, **kwargs)
+        return self.param(name, "gammavariate", alpha, beta, **kwargs)
 
     def normalvariate(self, name, mu, sigma, **kwargs):
         """Create a new parameter with the given name modeled by random.gauss(mu, sigma)."""
-        return self._param(name, "normalvariate", mu, sigma, **kwargs)
+        return self.param(name, "normalvariate", mu, sigma, **kwargs)
 
     def vonmisesvariate(self, name, kappa, **kwargs):
         """Create a new parameter with the given name modeled by random.vonmisesvariate(kappa)."""
-        return self._param(name, "vonmisesvariate", kappa, **kwargs)
+        return self.param(name, "vonmisesvariate", kappa, **kwargs)
 
     def paretovariate(self, name, alpha, **kwargs):
         """Create a new parameter with the given name modeled by random.paretovariate(alpha)."""
-        return self._param(name, "paretovariate", alpha, **kwargs)
+        return self.param(name, "paretovariate", alpha, **kwargs)
 
     def weibullvariate(self, name, alpha, beta, **kwargs):
         """Create a new parameter with the given name modeled by random.weibullvariate(alpha, beta)."""
-        return self._param(name, "weibullvariate", alpha, beta, **kwargs)
+        return self.param(name, "weibullvariate", alpha, beta, **kwargs)
 
     # Derived random functions:
 
@@ -504,8 +505,8 @@ class BlackBoxOptimizer:
 
     def rand(self, name, *shape, **kwargs):
         """Create a new array parameter for the given name and shape modeled by np.random.rand."""
-        return self._array_param(self.random, name, shape, kwargs)
+        return array_param(self.random, name, shape, kwargs)
 
     def randn(self, name, *shape, **kwargs):
         """Create a new array parameter for the given name and shape modeled by np.random.randn."""
-        return self._array_param(self.normalvariate$(?, 0, 1), name, shape, kwargs)
+        return array_param(self.normalvariate$(?, 0, 1), name, shape, kwargs)

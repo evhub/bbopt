@@ -160,6 +160,11 @@ class ParamProcessor:
         "weibullvariate": placeholder_weibullvariate,
     }
 
+    def register(func_name, handler, placeholder_generator):
+        """Register a new parameter definition function. See bbopt.params for examples."""
+        self.handlers[func_name] = handler
+        self.placeholder_funcs[func_name] = placeholder_generator
+
     def modify_kwargs(self, func, kwargs):
         """Apply func to all kwargs with values in the random function's domain."""
         new_kwargs = {}
@@ -180,7 +185,7 @@ class ParamProcessor:
 
         # detect invalid funcs
         if func not in self.handlers:
-            raise ValueError(f"unknown parameter definition function {func}")
+            raise ValueError(f"unknown parameter definition function {func} (register with bbopt.params.param_processor.register)")
 
         # run handler
         result = self.handlers[func](args)
@@ -195,7 +200,7 @@ class ParamProcessor:
     def choose_default_placeholder(self, name, func, *args, **kwargs):
         """Choose a default placeholder_when_missing value for the given parameter."""
         if func not in self.placeholder_funcs:
-            raise ValueError(f"unknown parameter definition function {func}")
+            raise ValueError(f"unknown parameter definition function {func} (register with bbopt.params.param_processor.register)")
         return self.placeholder_funcs[func](*args)
 
 

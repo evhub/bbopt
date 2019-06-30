@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x70a0a34f
+# __coconut_hash__ = 0xc8ec1f45
 
 # Compiled with Coconut version 1.4.0-post_dev40 [Ernest Scribbler]
 
@@ -97,7 +97,7 @@ def json_serialize(obj):
         for k, v in obj.items():
             serialized_k = json_serialize(k)
             if not isinstance(serialized_k, str):
-                raise TypeError("dict keys must be strings, not {}".format(k))
+                raise TypeError("dict keys must be strings, not {_coconut_format_0}".format(_coconut_format_0=(k)))
             serialized_dict[k] = json_serialize(v)
         return serialized_dict
     if isinstance(obj, Iterable):
@@ -107,9 +107,9 @@ def json_serialize(obj):
         return serialized_list
     if isnumpy(obj):
         def _coconut_lambda_0(_=None):
-            raise TypeError("cannot JSON serialize numpy dtype {}".format(obj.dtype))
+            raise TypeError("cannot JSON serialize numpy dtype {_coconut_format_0}".format(_coconut_format_0=(obj.dtype)))
         return denumpy(obj, fallback=(_coconut_lambda_0))
-    raise TypeError("cannot JSON serialize {}".format(obj))
+    raise TypeError("cannot JSON serialize {_coconut_format_0}".format(_coconut_format_0=(obj)))
 
 
 def sorted_items(params):
@@ -119,7 +119,7 @@ def sorted_items(params):
 
 def sorted_examples(examples):
     """Sort examples by their timestamp."""
-    return sorted(examples, key=lambda ex: ex["timestamp"])
+    return sorted(examples, key=_coconut.operator.itemgetter("timestamp"))
 
 
 def running_best(examples):

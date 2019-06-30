@@ -73,7 +73,7 @@ def json_serialize(obj):
         for k, v in obj.items():
             serialized_k = json_serialize(k)
             if not isinstance(serialized_k, str):
-                raise TypeError("dict keys must be strings, not {}".format(k))
+                raise TypeError(f"dict keys must be strings, not {k}")
             serialized_dict[k] = json_serialize(v)
         return serialized_dict
     if isinstance(obj, Iterable):
@@ -82,8 +82,8 @@ def json_serialize(obj):
             serialized_list.append(json_serialize(x))
         return serialized_list
     if isnumpy(obj):
-        return denumpy(obj, fallback=(def -> raise TypeError("cannot JSON serialize numpy dtype {}".format(obj.dtype))))
-    raise TypeError("cannot JSON serialize {}".format(obj))
+        return denumpy(obj, fallback=(def -> raise TypeError(f"cannot JSON serialize numpy dtype {obj.dtype}")))
+    raise TypeError(f"cannot JSON serialize {obj}")
 
 
 def sorted_items(params) =
@@ -93,7 +93,7 @@ def sorted_items(params) =
 
 def sorted_examples(examples) =
     """Sort examples by their timestamp."""
-    sorted(examples, key=ex -> ex["timestamp"])
+    sorted(examples, key=.["timestamp"])
 
 
 def running_best(examples):

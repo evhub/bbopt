@@ -16,4 +16,4 @@ limitations under the License.
 """
 
 from bbopt.backends import *  # register backends
-from bbopt.optimizer import BlackBoxOptimizer  # make optimizer available
+from bbopt.optimizer import *  # make optimizer available

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x705fa02f
+# __coconut_hash__ = 0xa71a390
 
 # Compiled with Coconut version 1.4.0-post_dev40 [Ernest Scribbler]
 
@@ -161,6 +161,11 @@ class ParamProcessor(_coconut.object):
     handlers = {"randrange": handle_randrange, "choice": handle_choice, "uniform": handle_uniform, "triangular": handle_triangular, "betavariate": handle_betavariate, "expovariate": handle_expovariate, "gammavariate": handle_gammavariate, "normalvariate": handle_normalvariate, "vonmisesvariate": handle_vonmisesvariate, "paretovariate": handle_paretovariate, "weibullvariate": handle_weibullvariate}
     placeholder_funcs = {"randrange": placeholder_randrange, "choice": placeholder_choice, "uniform": placeholder_uniform, "triangular": placeholder_triangular, "betavariate": placeholder_betavariate, "expovariate": placeholder_expovariate, "gammavariate": placeholder_gammavariate, "normalvariate": placeholder_normalvariate, "vonmisesvariate": placeholder_vonmisesvariate, "paretovariate": placeholder_paretovariate, "weibullvariate": placeholder_weibullvariate}
 
+    def register(func_name, handler, placeholder_generator):
+        """Register a new parameter definition function. See bbopt.params for examples."""
+        self.handlers[func_name] = handler
+        self.placeholder_funcs[func_name] = placeholder_generator
+
     def modify_kwargs(self, func, kwargs):
         """Apply func to all kwargs with values in the random function's domain."""
         new_kwargs = {}
@@ -181,7 +186,7 @@ class ParamProcessor(_coconut.object):
 
 # detect invalid funcs
         if func not in self.handlers:
-            raise ValueError("unknown parameter definition function {_coconut_format_0}".format(_coconut_format_0=(func)))
+            raise ValueError("unknown parameter definition function {_coconut_format_0} (register with bbopt.params.param_processor.register)".format(_coconut_format_0=(func)))
 
 # run handler
         result = self.handlers[func](args)
@@ -196,7 +201,7 @@ class ParamProcessor(_coconut.object):
     def choose_default_placeholder(self, name, func, *args, **kwargs):
         """Choose a default placeholder_when_missing value for the given parameter."""
         if func not in self.placeholder_funcs:
-            raise ValueError("unknown parameter definition function {_coconut_format_0}".format(_coconut_format_0=(func)))
+            raise ValueError("unknown parameter definition function {_coconut_format_0} (register with bbopt.params.param_processor.register)".format(_coconut_format_0=(func)))
         return self.placeholder_funcs[func](*args)
 
 
