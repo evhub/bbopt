@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x6f664d1
+# __coconut_hash__ = 0x189fad0
 
 # Compiled with Coconut version 1.4.0-post_dev40 [Ernest Scribbler]
 
@@ -218,13 +218,16 @@ class Backend(_coconut.object):
     def attempt_update(self, examples=None, params=None, *args, **kwargs):
         """Attempt to update this backend with new arguments. False indicates that the
         update failed while True indicates a successful update."""
-        if (self.tell_examples is NotImplemented or not params or params != self._params or args != self._args or kwargs != self._kwargs):
+        if (self.tell_examples is NotImplemented or not self._params or params != self._params or args != self._args or kwargs != self._kwargs):
             return False
         old_examples, new_examples = examples[:len(self._examples)], examples[len(self._examples):]
         if old_examples != self._examples:
             return False
         if new_examples:
-            self.tell_examples(new_examples, params)
+            try:
+                self.tell_examples(new_examples, params)
+            except NotImplementedError:
+                return False
         return True
 
 # implement tell_examples(new_examples, params) to allow fast updating on new data

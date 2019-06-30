@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x2637c052
+# __coconut_hash__ = 0x18531269
 
 # Compiled with Coconut version 1.4.0-post_dev40 [Ernest Scribbler]
 
@@ -43,28 +43,34 @@ class MixtureBackend(Backend):
         total_weight = sum((weight for alg, weight in distribution))
 
 # generate cutoff points
-        cum_probs = []
+        self.cum_probs = []
         prev_cutoff = 0
         for alg, weight in distribution:
             cutoff = prev_cutoff + weight / total_weight
-            cum_probs.append((alg, cutoff))
+            self.cum_probs.append((alg, cutoff))
             prev_cutoff = cutoff
 
+        self.backend_store = {}
+        self.tell_examples(examples, params)
+
+    def tell_examples(self, examples, params):
+        """Special method that allows fast updating of the backend with new examples."""
 # randomly select algorithm
         rand_val = random.random()
         self.selected_alg = None
-        for alg, cutoff in cum_probs:
+        for alg, cutoff in self.cum_probs:
             if rand_val <= cutoff:
                 self.selected_alg = alg
                 break
 
 # initialize backend
         self.selected_backend, options = alg_registry[self.selected_alg]
-        self.backend = init_backend(self.selected_backend, examples, params, **options)
+        self.current_backend = init_backend(self.selected_backend, examples, params, attempt_to_update_backend=self.backend_store.get(self.selected_alg), **options)
+        self.backend_store[self.selected_alg] = self.current_backend
 
     def param(self, name, func, *args, **kwargs):
         """Defer parameter selection to the selected backend."""
-        return self.backend.param(name, func, *args, **kwargs)
+        return self.current_backend.param(name, func, *args, **kwargs)
 
 
 # Registered names:
