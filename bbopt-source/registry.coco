@@ -62,9 +62,18 @@ class Registry:
 backend_registry = Registry("backend")
 
 
-def init_backend(name, examples, params, *args, **options):
+match def init_backend(name, examples, params, *args, attempt_to_update_backend=None, **options):
     """Create a backend object of the given name with the given data."""
-    return backend_registry[name](examples, params, *args, **options)
+    backend_cls = backend_registry[name]
+    if attempt_to_update_backend is not None and isinstance(attempt_to_update_backend, backend_cls):
+        updated_backend = attempt_to_update_backend.attempt_update(examples, params, *args, **options)
+        if updated_backend is True:
+            return attempt_to_update_backend
+        elif isinstance(updated_backend, backend_cls):
+            return updated_backend
+        else:
+            assert updated_backend is False, f"invalid backend.attempt_update return value {updated_backend} from {backend_cls}"
+    return backend_cls(examples, params, *args, **options)
 
 
 alg_registry = Registry("algorithm")

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xeeb64cc1
+# __coconut_hash__ = 0x294db10a
 
 # Compiled with Coconut version 1.4.0-post_dev40 [Ernest Scribbler]
 
@@ -40,6 +40,9 @@ class RandomBackend(Backend):
         if func not in self.random_functions:
             raise ValueError("unknown random function {_coconut_format_0}".format(_coconut_format_0=(name)))
         return self.random_functions[func](*args)
+
+    def attempt_update(self, examples, params):
+        return True  # nothing to do here
 
 
 # Registered names:

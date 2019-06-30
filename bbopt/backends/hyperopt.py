@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x5a2a78a
+# __coconut_hash__ = 0x65a42b98
 
 # Compiled with Coconut version 1.4.0-post_dev40 [Ernest Scribbler]
 
@@ -121,7 +121,7 @@ class HyperoptBackend(Backend):
     def __init__(self, examples, params, algo=tpe.suggest, rstate=np.random.RandomState(), show_progressbar=False, **options):
         self.init_fallback_backend()
 
-        if not examples:
+        if not params:
             self.current_values = {}
             return
 
@@ -129,12 +129,19 @@ class HyperoptBackend(Backend):
 
         domain = Domain(self.set_current_values, space)
 
-        trial_list = examples_to_trials(examples, params)
+        self.trials = Trials()
 
-        trials = Trials()
-        trials.insert_trial_docs(trial_list)
+        self.fmin_iter = FMinIter(algo, domain, self.trials, rstate, show_progressbar=show_progressbar, **options)
 
-        self.fmin_iter = FMinIter(algo, domain, trials, rstate, show_progressbar=show_progressbar, **options)
+        if examples:
+            self.tell_examples(examples, params)
+        else:
+            self.current_value = {}
+
+    def tell_examples(self, new_examples, params):
+        trial_list = examples_to_trials(new_examples, params)
+        self.trials.insert_trial_docs(trial_list)
+        self.trials.refresh()
 
 # run one iteration of hyperparameter optimization, with values saved
 #  to the self.set_current_values callback passed to Domain

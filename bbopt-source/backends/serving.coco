@@ -17,6 +17,10 @@ class ServingBackend(Backend):
     def fallback_func(self, name, func, *args, **kwargs):
         raise ValueError(f"missing data for parameter {name} while serving and no guess")
 
+    def attempt_update(self, examples, params):
+        self.current_values = best_example(examples)["values"]
+        return True
+
 
 # Registered names:
 

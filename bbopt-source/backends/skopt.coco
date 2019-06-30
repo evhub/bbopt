@@ -59,20 +59,24 @@ class SkoptBackend(Backend):
     def __init__(self, examples, params, base_estimator="GP", **options):
         self.init_fallback_backend()
 
-        if not examples:
+        if not params:
             self.current_values = {}
             return
 
-        data_points, losses = split_examples(examples, params)
-        dimensions = create_dimensions(params)
-
         if isinstance(base_estimator, str):
             base_estimator = py_str(base_estimator)
+        self.optimizer = Optimizer(create_dimensions(params), base_estimator, **options)
 
-        self.optimizer = Optimizer(dimensions, base_estimator, **options)
+        if examples:
+            self.tell_examples(examples, params)
+        else:
+            self.current_values = {}
+
+    def tell_examples(self, new_examples, params):
+        data_points, losses = split_examples(new_examples, params)
         self.result = self.optimizer.tell(data_points, losses)
-        current_point = self.optimizer.ask()
 
+        current_point = self.optimizer.ask()
         self.current_values = make_values(params, current_point)
 
     @property

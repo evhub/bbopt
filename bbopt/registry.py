@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x52f85c37
+# __coconut_hash__ = 0xd017ca80
 
 # Compiled with Coconut version 1.4.0-post_dev40 [Ernest Scribbler]
 
@@ -106,9 +106,39 @@ class Registry(_coconut.object):
 backend_registry = Registry("backend")
 
 
-def init_backend(name, examples, params, *args, **options):
+def init_backend(*_coconut_match_to_args, **_coconut_match_to_kwargs):
     """Create a backend object of the given name with the given data."""
-    return backend_registry[name](examples, params, *args, **options)
+    _coconut_match_check = False
+    _coconut_FunctionMatchError = _coconut_get_function_match_error()
+    if (_coconut.sum((_coconut.len(_coconut_match_to_args) > 0, "name" in _coconut_match_to_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_to_args) > 1, "examples" in _coconut_match_to_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_to_args) > 2, "params" in _coconut_match_to_kwargs)) == 1):
+        _coconut_match_temp_0 = _coconut_match_to_args[0] if _coconut.len(_coconut_match_to_args) > 0 else _coconut_match_to_kwargs.pop("name")
+        _coconut_match_temp_1 = _coconut_match_to_args[1] if _coconut.len(_coconut_match_to_args) > 1 else _coconut_match_to_kwargs.pop("examples")
+        _coconut_match_temp_2 = _coconut_match_to_args[2] if _coconut.len(_coconut_match_to_args) > 2 else _coconut_match_to_kwargs.pop("params")
+        args = _coconut_match_to_args[3:]
+        _coconut_match_temp_3 = _coconut_match_to_kwargs.pop("attempt_to_update_backend") if "attempt_to_update_backend" in _coconut_match_to_kwargs else None
+        name = _coconut_match_temp_0
+        examples = _coconut_match_temp_1
+        params = _coconut_match_temp_2
+        attempt_to_update_backend = _coconut_match_temp_3
+        options = _coconut_match_to_kwargs
+        _coconut_match_check = True
+    if not _coconut_match_check:
+        _coconut_match_val_repr = _coconut.repr(_coconut_match_to_args)
+        _coconut_match_err = _coconut_FunctionMatchError("pattern-matching failed for " "'match def init_backend(name, examples, params, *args, attempt_to_update_backend=None, **options):'" " in " + (_coconut_match_val_repr if _coconut.len(_coconut_match_val_repr) <= 500 else _coconut_match_val_repr[:500] + "..."))
+        _coconut_match_err.pattern = 'match def init_backend(name, examples, params, *args, attempt_to_update_backend=None, **options):'
+        _coconut_match_err.value = _coconut_match_to_args
+        raise _coconut_match_err
+
+    backend_cls = backend_registry[name]
+    if attempt_to_update_backend is not None and isinstance(attempt_to_update_backend, backend_cls):
+        updated_backend = attempt_to_update_backend.attempt_update(examples, params, *args, **options)
+        if updated_backend is True:
+            return attempt_to_update_backend
+        elif isinstance(updated_backend, backend_cls):
+            return updated_backend
+        else:
+            assert updated_backend is False, "invalid backend.attempt_update return value {_coconut_format_0} from {_coconut_format_1}".format(_coconut_format_0=(updated_backend), _coconut_format_1=(backend_cls))
+    return backend_cls(examples, params, *args, **options)
 
 
 alg_registry = Registry("algorithm")

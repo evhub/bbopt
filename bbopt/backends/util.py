@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf1ff84a2
+# __coconut_hash__ = 0x6a79fc93
 
 # Compiled with Coconut version 1.4.0-post_dev40 [Ernest Scribbler]
 
@@ -203,10 +203,31 @@ class Backend(_coconut.object):
 #  default fallback_func implementation
     fallback_backend = None
 
-    def __init__(self, examples=None, params=None, **options):
-        """Call this if you want to set fallback_backend to a random backend."""
-        if options:
-            raise ValueError("Backend {_coconut_format_0} got unsupported options: {_coconut_format_1!r}".format(_coconut_format_0=(self.backend_name), _coconut_format_1=(self.options)))
+    def __new__(cls, examples=None, params=None, *args, **kwargs):
+        self = super(Backend, cls).__new__(cls)
+        if self.tell_examples is not NotImplemented:
+            self._examples = examples
+            self._params = params
+            self._args = args
+            self._kwargs = kwargs
+        return self
+
+    def __init__(self, examples=None, params=None):
+        pass
+
+    def attempt_update(self, examples=None, params=None, *args, **kwargs):
+        """Attempt to update this backend with new arguments. False indicates that the
+        update failed while True indicates a successful update."""
+        if (self.tell_examples is NotImplemented or not params or params != self._params or args != self._args or kwargs != self._kwargs):
+            return False
+        old_examples, new_examples = examples[:len(self._examples)], examples[len(self._examples):]
+        if old_examples != self._examples:
+            return False
+        self.tell_examples(new_examples, params)
+        return True
+
+# implement tell_examples(new_examples, params) to allow fast updating on new data
+    tell_examples = NotImplemented
 
     def init_fallback_backend(self):
         """Set fallback_backend to a new random backend instance."""

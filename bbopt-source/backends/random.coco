@@ -29,6 +29,9 @@ class RandomBackend(Backend):
             raise ValueError(f"unknown random function {name}")
         return self.random_functions[func](*args)
 
+    def attempt_update(self, examples, params):
+        return True  # nothing to do here
+
 
 # Registered names:
 

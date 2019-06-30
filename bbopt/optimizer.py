@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x1096baa3
+# __coconut_hash__ = 0xcd84b373
 
 # Compiled with Coconut version 1.4.0-post_dev40 [Ernest Scribbler]
 
@@ -67,6 +67,7 @@ from bbopt.backends.skopt import SkoptBackend
 
 class BlackBoxOptimizer(_coconut.object):
     """Main bbopt optimizer object. See https://github.com/evhub/bbopt for documentation."""
+    backend = None
 
     def __init__(*_coconut_match_to_args, **_coconut_match_to_kwargs):
         """Construct a new BlackBoxOptimizer. It is recommended to pass file=__file__."""
@@ -269,7 +270,7 @@ class BlackBoxOptimizer(_coconut.object):
 
     def run_backend(self, backend, *args, **options):
         """Optimize parameters using the given backend."""
-        self.backend = init_backend(backend, self._examples, self._old_params, *args, **options)
+        self.backend = init_backend(backend, self._examples, self._old_params, *args, attempt_to_update_backend=self.backend, **options)
         self._new_params = {}
         self._current_example = {"values": {}}
 

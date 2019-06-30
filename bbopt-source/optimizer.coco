@@ -48,6 +48,7 @@ from bbopt.backends.skopt import SkoptBackend
 
 class BlackBoxOptimizer:
     """Main bbopt optimizer object. See https://github.com/evhub/bbopt for documentation."""
+    backend = None
 
     match def __init__(self, file, *, tag=None, protocol=None):
         """Construct a new BlackBoxOptimizer. It is recommended to pass file=__file__."""
@@ -208,7 +209,7 @@ class BlackBoxOptimizer:
 
     def run_backend(self, backend, *args, **options):
         """Optimize parameters using the given backend."""
-        self.backend = init_backend(backend, self._examples, self._old_params, *args, **options)
+        self.backend = init_backend(backend, self._examples, self._old_params, *args, attempt_to_update_backend=self.backend, **options)
         self._new_params = {}
         self._current_example = {"values": {}}
 

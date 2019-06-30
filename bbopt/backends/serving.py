@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xcf45bcba
+# __coconut_hash__ = 0x7c86ca9e
 
 # Compiled with Coconut version 1.4.0-post_dev40 [Ernest Scribbler]
 
@@ -40,6 +40,10 @@ class ServingBackend(Backend):
 
     def fallback_func(self, name, func, *args, **kwargs):
         raise ValueError("missing data for parameter {_coconut_format_0} while serving and no guess".format(_coconut_format_0=(name)))
+
+    def attempt_update(self, examples, params):
+        self.current_values = best_example(examples)["values"]
+        return True
 
 
 # Registered names:
