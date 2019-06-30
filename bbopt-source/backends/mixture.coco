@@ -38,6 +38,7 @@ class MixtureBackend(Backend):
         self.backend = init_backend(self.selected_backend, examples, params, **options)
 
     def param(self, name, func, *args, **kwargs) =
+        """Defer parameter selection to the selected backend."""
         self.backend.param(name, func, *args, **kwargs)
 
 

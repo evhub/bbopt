@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x294db10a
+# __coconut_hash__ = 0xd0fa5eb0
 
 # Compiled with Coconut version 1.4.0-post_dev40 [Ernest Scribbler]
 
@@ -42,7 +42,8 @@ class RandomBackend(Backend):
         return self.random_functions[func](*args)
 
     def attempt_update(self, examples, params):
-        return True  # nothing to do here
+        """The random backend requires no modifications to be updated with new parameters."""
+        return True
 
 
 # Registered names:

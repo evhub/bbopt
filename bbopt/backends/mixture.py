@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x120d62e6
+# __coconut_hash__ = 0x2637c052
 
 # Compiled with Coconut version 1.4.0-post_dev40 [Ernest Scribbler]
 
@@ -63,6 +63,7 @@ class MixtureBackend(Backend):
         self.backend = init_backend(self.selected_backend, examples, params, **options)
 
     def param(self, name, func, *args, **kwargs):
+        """Defer parameter selection to the selected backend."""
         return self.backend.param(name, func, *args, **kwargs)
 
 

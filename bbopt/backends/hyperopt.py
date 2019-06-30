@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x65a42b98
+# __coconut_hash__ = 0x821ae89c
 
 # Compiled with Coconut version 1.4.0-post_dev40 [Ernest Scribbler]
 
@@ -139,6 +139,7 @@ class HyperoptBackend(Backend):
             self.current_value = {}
 
     def tell_examples(self, new_examples, params):
+        """Special method that allows fast updating of the backend with new examples."""
         trial_list = examples_to_trials(new_examples, params)
         self.trials.insert_trial_docs(trial_list)
         self.trials.refresh()

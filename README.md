@@ -418,7 +418,7 @@ class MyBackend(Backend):
     implemented_funcs = [
         # list the random functions you support here
         #  (you don't need to include all random functions,
-        #  only the base random functions randrange, choice
+        #  only the base random functions randrange, choice,
         #  uniform, and normalvariate)
         ...,
     ]

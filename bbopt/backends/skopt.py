@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xfc8b85e2
+# __coconut_hash__ = 0x3b0e5e92
 
 # Compiled with Coconut version 1.4.0-post_dev40 [Ernest Scribbler]
 
@@ -94,6 +94,7 @@ class SkoptBackend(Backend):
             self.current_values = {}
 
     def tell_examples(self, new_examples, params):
+        """Special method that allows fast updating of the backend with new examples."""
         data_points, losses = split_examples(new_examples, params)
         self.result = self.optimizer.tell(data_points, losses)
 

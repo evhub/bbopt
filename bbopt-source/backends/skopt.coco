@@ -73,6 +73,7 @@ class SkoptBackend(Backend):
             self.current_values = {}
 
     def tell_examples(self, new_examples, params):
+        """Special method that allows fast updating of the backend with new examples."""
         data_points, losses = split_examples(new_examples, params)
         self.result = self.optimizer.tell(data_points, losses)
 

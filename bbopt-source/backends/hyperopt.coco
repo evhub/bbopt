@@ -148,6 +148,7 @@ class HyperoptBackend(Backend):
             self.current_value = {}
 
     def tell_examples(self, new_examples, params):
+        """Special method that allows fast updating of the backend with new examples."""
         trial_list = examples_to_trials(new_examples, params)
         self.trials.insert_trial_docs(trial_list)
         self.trials.refresh()

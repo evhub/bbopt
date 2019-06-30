@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7c86ca9e
+# __coconut_hash__ = 0xe8b86f0
 
 # Compiled with Coconut version 1.4.0-post_dev40 [Ernest Scribbler]
 
@@ -35,13 +35,14 @@ class ServingBackend(Backend):
     backend_name = "serving"
 
     def __init__(self, examples, params):
-# since we're serving, ignore params and just extract the best example
-        self.current_values = best_example(examples)["values"]
+        self.attempt_update(examples, params)
 
     def fallback_func(self, name, func, *args, **kwargs):
         raise ValueError("missing data for parameter {_coconut_format_0} while serving and no guess".format(_coconut_format_0=(name)))
 
     def attempt_update(self, examples, params):
+        """Update the serving backend with new parameters."""
+# since we're serving, ignore params and just extract the best example
         self.current_values = best_example(examples)["values"]
         return True
 
