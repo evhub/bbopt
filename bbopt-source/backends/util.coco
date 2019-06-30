@@ -171,7 +171,8 @@ class Backend:
         old_examples, new_examples = examples[:len(self._examples)], examples[len(self._examples):]
         if old_examples != self._examples:
             return False
-        self.tell_examples(new_examples, params)
+        if new_examples:
+            self.tell_examples(new_examples, params)
         return True
 
     # implement tell_examples(new_examples, params) to allow fast updating on new data

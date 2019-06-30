@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x6a79fc93
+# __coconut_hash__ = 0x6f664d1
 
 # Compiled with Coconut version 1.4.0-post_dev40 [Ernest Scribbler]
 
@@ -223,7 +223,8 @@ class Backend(_coconut.object):
         old_examples, new_examples = examples[:len(self._examples)], examples[len(self._examples):]
         if old_examples != self._examples:
             return False
-        self.tell_examples(new_examples, params)
+        if new_examples:
+            self.tell_examples(new_examples, params)
         return True
 
 # implement tell_examples(new_examples, params) to allow fast updating on new data
