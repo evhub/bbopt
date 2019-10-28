@@ -3,7 +3,7 @@
 [![Join the chat at https://gitter.im/evhub/bbopt](https://badges.gitter.im/evhub/bbopt.svg)](https://gitter.im/evhub/bbopt?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![DOI](https://zenodo.org/badge/102327504.svg)](https://zenodo.org/badge/latestdoi/102327504)
 
-BBopt aims to provide the easiest hyperparameter optimization you'll ever do. Think of BBopt like [Keras](https://keras.io/) for black box optimization: one universal interface for working with any black box optimization backend.
+BBopt aims to provide the easiest hyperparameter optimization you'll ever do. Think of BBopt like [Keras](https://keras.io/) (back when Theano was still a thing) for black box optimization: one universal interface for working with any black box optimization backend.
 
 BBopt's features include:
 - a universal API for defining your tunable parameters based on the standard library [`random`](https://docs.python.org/3.5/library/random.html) module (so you don't even have to learn anything new!),
