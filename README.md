@@ -137,7 +137,7 @@ Create a new `bb` object; this should be done at the beginning of your program a
 
 _file_ is used by BBopt to figure out where to load and save data to, and should usually just be set to `__file__`. _tag_ allows additional customization of the BBopt data file for when multiple BBopt instances might be desired for the same file. Specifically, BBopt uses `os.path.splitext(file)[0] + "_" + tag` as the base path for the data file.
 
-_protocol_ determines how BBopt serializes data. If `None` (the default), BBopt will use pickle protocol 2, which is the highest version that works on both Python 2 and Python 3 (unless a `json` file is present, in which case BBopt will use `json`). To use the newest protocol instead, pass `protocol=-1`. If `protocol="json"`, BBopt will use `json` instead of `pickle`, which is occasionally useful for cross-platform compatibility.
+_protocol_ determines how BBopt serializes data. If `None` (the default), BBopt will use pickle protocol 2, which is the highest version that works on both Python 2 and Python 3 (unless a `json` file is present, in which case BBopt will use `json`). To use the newest protocol instead, pass `protocol=-1`. If `protocol="json"`, BBopt will use `json` instead of `pickle`, which is occasionally useful if you want to access your data outside of Python.
 
 #### `run`
 
@@ -288,7 +288,7 @@ where
     + _guess_, which specifies the initial value for the parameter, and
     + _placeholder\_when\_missing_, which specifies what placeholder value a conditional parameter should be given if missing.
 
-_Important note: Once you bind a name to a parameter you cannot change that parameter's options. Thus, if the options defining your parameters can vary from run to run, you must use a different name for each possible combination._
+_Important note: Once you bind a name to a parameter, you cannot change that parameter's options. Thus, if the options defining your parameters can vary from run to run, you must use a different name for each possible combination._
 
 #### `randrange`
 
