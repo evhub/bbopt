@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x30737416
+# __coconut_hash__ = 0x44fe4a95
 
-# Compiled with Coconut version 1.4.0-post_dev40 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.1-post_dev3 [Ernest Scribbler]
 
 """
 Constants for use across all of BBopt.
@@ -29,7 +29,7 @@ if _coconut_sys.version_info >= (3,):
 
 # Installation constants:
 name = "bbopt"
-version = "1.1.6"
+version = "1.1.7"
 description = "The easiest hyperparameter optimization you'll ever do."
 long_description = """
 See BBopt's GitHub_ for more information.
@@ -40,7 +40,7 @@ github_url = "https://github.com/evhub/bbopt"
 author = "Evan Hubinger"
 author_email = "evanjhub@gmail.com"
 classifiers = ("Development Status :: 5 - Production/Stable", "License :: OSI Approved :: Apache Software License", "Topic :: Software Development :: Libraries :: Python Modules", "Operating System :: OS Independent",)
-requirements = ("numpy>=1.0", "matplotlib>=2.0", "portalocker>=1.4", "scikit-optimize>=0.5.2", "hyperopt>=0.1.2", "networkx>=1.0,<2.0",)
+requirements = ("numpy>=1.0", "matplotlib>=2.0", "portalocker>=1.4", "scikit-optimize>=0.5.2", "hyperopt>=0.2.1", "pymongo>=3.9",)
 extra_requirements = {":python_version<'3'": ("futures>=3.2",), "examples": ("keras", "scikit-learn",)}
 extra_requirements["dev"] = (extra_requirements["examples"] + ("coconut-develop", "pytest>=3.0",))
 

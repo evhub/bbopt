@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3b0e5e92
+# __coconut_hash__ = 0x4abda7fe
 
-# Compiled with Coconut version 1.4.0-post_dev40 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.1-post_dev3 [Ernest Scribbler]
 
 """
 The scikit-optimize backend. Does black box optimization using scikit-optimize.

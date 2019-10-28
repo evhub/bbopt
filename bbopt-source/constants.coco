@@ -5,7 +5,7 @@ Constants for use across all of BBopt.
 
 # Installation constants:
 name = "bbopt"
-version = "1.1.6"
+version = "1.1.7"
 description = "The easiest hyperparameter optimization you'll ever do."
 long_description = """
 See BBopt's GitHub_ for more information.
@@ -26,9 +26,9 @@ requirements = (
     "matplotlib>=2.0",
     "portalocker>=1.4",
     "scikit-optimize>=0.5.2",
-    "hyperopt>=0.1.2",
-    # fixes an error in hyperopt 0.1 with networkx>=2.0
-    "networkx>=1.0,<2.0",
+    "hyperopt>=0.2.1",
+    # fixes an issue with bson which is used by hyperopt
+    "pymongo>=3.9",
 )
 extra_requirements = {
     ":python_version<'3'": (
