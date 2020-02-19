@@ -5,7 +5,7 @@ Constants for use across all of BBopt.
 
 # Installation constants:
 name = "bbopt"
-version = "1.1.8"
+version = "1.1.9"
 description = "The easiest hyperparameter optimization you'll ever do."
 long_description = """
 See BBopt's GitHub_ for more information.
@@ -35,7 +35,8 @@ extra_requirements = {
         "networkx>=1.0,<2.0",
     ),
     ":python_version>='3'": (
-        "hyperopt>=0.2.1",
+        "hyperopt>=0.2.3",
+        "networkx>=2.2",
         # fixes an issue with bson which is used by hyperopt
         "pymongo>=3.9",
         # fixes an issue with hyperopt on Python < 3.6

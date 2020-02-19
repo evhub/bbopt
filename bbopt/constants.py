@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3a53393f
+# __coconut_hash__ = 0x390877b7
 
 # Compiled with Coconut version 1.4.3-post_dev11 [Ernest Scribbler]
 
@@ -29,7 +29,7 @@ if _coconut_sys.version_info >= (3,):
 
 # Installation constants:
 name = "bbopt"
-version = "1.1.8"
+version = "1.1.9"
 description = "The easiest hyperparameter optimization you'll ever do."
 long_description = """
 See BBopt's GitHub_ for more information.
@@ -41,7 +41,7 @@ author = "Evan Hubinger"
 author_email = "evanjhub@gmail.com"
 classifiers = ("Development Status :: 5 - Production/Stable", "License :: OSI Approved :: Apache Software License", "Topic :: Software Development :: Libraries :: Python Modules", "Operating System :: OS Independent",)
 requirements = ("numpy>=1.0", "matplotlib>=2.0", "portalocker>=1.5.1", "scikit-optimize>=0.5.2",)
-extra_requirements = {":python_version<'3'": ("futures>=3.2", "hyperopt>=0.1.2,<0.2", "networkx>=1.0,<2.0",), ":python_version>='3'": ("hyperopt>=0.2.1", "pymongo>=3.9", "pyspark>=2.4",), "examples": ("keras", "scikit-learn",)}
+extra_requirements = {":python_version<'3'": ("futures>=3.2", "hyperopt>=0.1.2,<0.2", "networkx>=1.0,<2.0",), ":python_version>='3'": ("hyperopt>=0.2.3", "networkx>=2.2", "pymongo>=3.9", "pyspark>=2.4",), "examples": ("keras", "scikit-learn",)}
 extra_requirements["dev"] = (extra_requirements["examples"] + ("coconut-develop", "pytest>=3.0",))
 
 
