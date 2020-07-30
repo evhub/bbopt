@@ -7,7 +7,6 @@ import sys
 from collections.abc import Mapping, Iterable
 
 import numpy as np
-from matplotlib import pyplot as plt
 
 
 Num = (int, float)
@@ -182,6 +181,7 @@ def plot(
 ):
     """Construct a matplotlib plot with the given parameters."""
     if ax is None:
+        from matplotlib import pyplot as plt
         ax = plt.gca()
     if title is not None:
         ax.set_title(title)

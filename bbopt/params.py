@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x32d64b2f
+# __coconut_hash__ = 0x7304b021
 
-# Compiled with Coconut version 1.4.3-post_dev38 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.3-post_dev39 [Ernest Scribbler]
 
 """
 Handles standardizing param calls to use standard library random functions.

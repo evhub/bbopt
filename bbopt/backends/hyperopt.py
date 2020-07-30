@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa798bdce
+# __coconut_hash__ = 0x5e83c7f3
 
-# Compiled with Coconut version 1.4.3-post_dev38 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.3-post_dev39 [Ernest Scribbler]
 
 """
 The hyperopt backend. Does black box optimization using hyperopt.

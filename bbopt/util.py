@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7ba9fb86
+# __coconut_hash__ = 0x65fbf0f1
 
-# Compiled with Coconut version 1.4.3-post_dev38 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.3-post_dev39 [Ernest Scribbler]
 
 """
 Utilities for use across all of bbopt.
@@ -38,7 +38,6 @@ else:
     from collections.abc import Iterable
 
 import numpy as np
-from matplotlib import pyplot as plt
 
 
 Num = (int, float)
@@ -212,6 +211,7 @@ def clear_file(file_handle):
 def plot(xs, ys, ax=None, yscale=None, title=None, xlabel=None, ylabel=None, marker=".", markersize=12, linewidth=2, grid=True,):
     """Construct a matplotlib plot with the given parameters."""
     if ax is None:
+        from matplotlib import pyplot as plt
         ax = plt.gca()
     if title is not None:
         ax.set_title(title)
