@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3f7bbfa
+# __coconut_hash__ = 0x7ba9fb86
 
-# Compiled with Coconut version 1.4.3-post_dev11 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.3-post_dev38 [Ernest Scribbler]
 
 """
 Utilities for use across all of bbopt.
@@ -18,7 +18,7 @@ if _coconut_cached_module is not None and _coconut_os_path.dirname(_coconut_cach
     del _coconut_sys.modules[str("__coconut__")]
 _coconut_sys.path.insert(0, _coconut_file_path)
 from __coconut__ import *
-from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_back_pipe, _coconut_star_pipe, _coconut_back_star_pipe, _coconut_dubstar_pipe, _coconut_back_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match
+from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match
 if _coconut_sys.version_info >= (3,):
     _coconut_sys.path.pop(0)
 
@@ -77,7 +77,7 @@ def denumpy(obj, fallback=None):
 def denumpy_all(obj):
     """Recursively apply denumpy to the given obj."""
     if isinstance(obj, (list, tuple)):
-        return fmap(denumpy_all, obj)
+        return (fmap)(denumpy_all, obj)
     elif isinstance(obj, dict):
         return dict(((denumpy_all(k)), (denumpy_all(v))) for k, v in obj.items())
     elif isnumpy(obj):
@@ -119,7 +119,7 @@ def sorted_items(params):
 
 def sorted_examples(examples):
     """Sort examples by their timestamp."""
-    return sorted(examples, key=_coconut.operator.itemgetter("timestamp"))
+    return sorted(examples, key=_coconut.operator.itemgetter(("timestamp")))
 
 
 def running_best(examples):
@@ -176,7 +176,7 @@ def best_example(examples):
 
 def all_isinstance(objs, types):
     """Return whether all the objects have the desired type(s)."""
-    return (all)(map(_coconut_partial(isinstance, {1: types}, 2), objs))
+    return (all)((map)(_coconut_partial(isinstance, {1: types}, 2), objs))
 
 
 def format_err(Error, message, obj):

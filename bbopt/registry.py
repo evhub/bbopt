@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xe1a7cadc
+# __coconut_hash__ = 0xb7d74b9d
 
-# Compiled with Coconut version 1.4.3-post_dev11 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.3-post_dev38 [Ernest Scribbler]
 
 """
 The backend and algorithm registries.
@@ -18,7 +18,7 @@ if _coconut_cached_module is not None and _coconut_os_path.dirname(_coconut_cach
     del _coconut_sys.modules[str("__coconut__")]
 _coconut_sys.path.insert(0, _coconut_file_path)
 from __coconut__ import *
-from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_back_pipe, _coconut_star_pipe, _coconut_back_star_pipe, _coconut_dubstar_pipe, _coconut_back_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match
+from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match
 if _coconut_sys.version_info >= (3,):
     _coconut_sys.path.pop(0)
 
@@ -71,18 +71,33 @@ class Registry(_coconut.object):
         return self.registered[name]
 
     def __iter__(self):
-        _coconut_yield_from = self.registered
-        for _coconut_yield_item in _coconut_yield_from:
-            yield _coconut_yield_item
+        _coconut_yield_from = _coconut.iter(self.registered)
+        while True:
+            try:
+                yield _coconut.next(_coconut_yield_from)
+            except _coconut.StopIteration as _coconut_yield_err:
+                _coconut_yield_from_0 = _coconut_yield_err.args[0] if _coconut.len(_coconut_yield_err.args) > 0 else None
+                break
 
-        _coconut_yield_from = self.generators
-        for _coconut_yield_item in _coconut_yield_from:
-            yield _coconut_yield_item
+        _coconut_yield_from_0
+        _coconut_yield_from = _coconut.iter(self.generators)
+        while True:
+            try:
+                yield _coconut.next(_coconut_yield_from)
+            except _coconut.StopIteration as _coconut_yield_err:
+                _coconut_yield_from_1 = _coconut_yield_err.args[0] if _coconut.len(_coconut_yield_err.args) > 0 else None
+                break
 
-        _coconut_yield_from = self.aliases
-        for _coconut_yield_item in _coconut_yield_from:
-            yield _coconut_yield_item
+        _coconut_yield_from_1
+        _coconut_yield_from = _coconut.iter(self.aliases)
+        while True:
+            try:
+                yield _coconut.next(_coconut_yield_from)
+            except _coconut.StopIteration as _coconut_yield_err:
+                _coconut_yield_from_2 = _coconut_yield_err.args[0] if _coconut.len(_coconut_yield_err.args) > 0 else None
+                break
 
+        _coconut_yield_from_2
 
     def run_all_gens(self):
         """Run all generators."""
@@ -92,10 +107,15 @@ class Registry(_coconut.object):
     def items(self):
         """Get all items in the registry as (name, value) pairs."""
         self.run_all_gens()
-        _coconut_yield_from = self.registered.items()
-        for _coconut_yield_item in _coconut_yield_from:
-            yield _coconut_yield_item
+        _coconut_yield_from = _coconut.iter(self.registered.items())
+        while True:
+            try:
+                yield _coconut.next(_coconut_yield_from)
+            except _coconut.StopIteration as _coconut_yield_err:
+                _coconut_yield_from_3 = _coconut_yield_err.args[0] if _coconut.len(_coconut_yield_err.args) > 0 else None
+                break
 
+        _coconut_yield_from_3
 
     def asdict(self):
         """Convert registry to dictionary."""
@@ -124,11 +144,7 @@ def init_backend(*_coconut_match_to_args, **_coconut_match_to_kwargs):
         options = _coconut_match_to_kwargs
         _coconut_match_check = True
     if not _coconut_match_check:
-        _coconut_match_val_repr = _coconut.repr(_coconut_match_to_args)
-        _coconut_match_err = _coconut_FunctionMatchError("pattern-matching failed for " "'match def init_backend(name, examples, params, *args, attempt_to_update_backend=None, **options):'" " in " + (_coconut_match_val_repr if _coconut.len(_coconut_match_val_repr) <= 500 else _coconut_match_val_repr[:500] + "..."))
-        _coconut_match_err.pattern = 'match def init_backend(name, examples, params, *args, attempt_to_update_backend=None, **options):'
-        _coconut_match_err.value = _coconut_match_to_args
-        raise _coconut_match_err
+        raise _coconut_FunctionMatchError('match def init_backend(name, examples, params, *args, attempt_to_update_backend=None, **options):', _coconut_match_to_args)
 
     backend_cls = backend_registry[name]
     if attempt_to_update_backend is not None and isinstance(attempt_to_update_backend, backend_cls):

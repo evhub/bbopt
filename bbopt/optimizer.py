@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xdf05bc61
+# __coconut_hash__ = 0xa78edf88
 
-# Compiled with Coconut version 1.4.3-post_dev11 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.3-post_dev38 [Ernest Scribbler]
 
 """
 The main BBopt interface.
@@ -18,7 +18,7 @@ if _coconut_cached_module is not None and _coconut_os_path.dirname(_coconut_cach
     del _coconut_sys.modules[str("__coconut__")]
 _coconut_sys.path.insert(0, _coconut_file_path)
 from __coconut__ import *
-from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_back_pipe, _coconut_star_pipe, _coconut_back_star_pipe, _coconut_dubstar_pipe, _coconut_back_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match
+from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match
 if _coconut_sys.version_info >= (3,):
     _coconut_sys.path.pop(0)
 
@@ -73,7 +73,7 @@ def array_param(func, name, shape, kwargs):
     for indices in itertools.product(*map(range, shape)):
         index_str = ",".join(map(str, indices))
         cell_name = "{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(index_str))
-        proc_kwargs = param_processor.modify_kwargs(lambda _=None: _[indices], kwargs)
+        proc_kwargs = (param_processor.modify_kwargs)(lambda _=None: _[indices], kwargs)
         arr[indices] = func(cell_name, **proc_kwargs)
     return arr
 
@@ -99,11 +99,7 @@ class BlackBoxOptimizer(_coconut.object):
                 protocol = _coconut_match_temp_3
                 _coconut_match_check = True
         if not _coconut_match_check:
-            _coconut_match_val_repr = _coconut.repr(_coconut_match_to_args)
-            _coconut_match_err = _coconut_FunctionMatchError("pattern-matching failed for " "'match def __init__(self, file, *, tag=None, protocol=None):'" " in " + (_coconut_match_val_repr if _coconut.len(_coconut_match_val_repr) <= 500 else _coconut_match_val_repr[:500] + "..."))
-            _coconut_match_err.pattern = 'match def __init__(self, file, *, tag=None, protocol=None):'
-            _coconut_match_err.value = _coconut_match_to_args
-            raise _coconut_match_err
+            raise _coconut_FunctionMatchError('match def __init__(self, file, *, tag=None, protocol=None):', _coconut_match_to_args)
 
         if not isinstance(file, Str):
             raise TypeError("file must be a string")
@@ -178,11 +174,7 @@ class BlackBoxOptimizer(_coconut.object):
                     examples = _coconut_match_temp_1
                     _coconut_match_check = True
             if not _coconut_match_check:
-                _coconut_match_val_repr = _coconut.repr(_coconut_match_to)
-                _coconut_match_err = _coconut_MatchError("pattern-matching failed for " '\'{"params": params, "examples": examples} = self._loads(contents)\'' " in " + (_coconut_match_val_repr if _coconut.len(_coconut_match_val_repr) <= 500 else _coconut_match_val_repr[:500] + "..."))
-                _coconut_match_err.pattern = '{"params": params, "examples": examples} = self._loads(contents)'
-                _coconut_match_err.value = _coconut_match_to
-                raise _coconut_match_err
+                raise _coconut_MatchError('{"params": params, "examples": examples} = self._loads(contents)', _coconut_match_to)
 
             self._old_params = params
             self._add_examples(examples)
@@ -356,7 +348,7 @@ class BlackBoxOptimizer(_coconut.object):
             raise ValueError("no existing data available to be plotted")
 
         iterations = range(1, len(self._examples) + 1)
-        best_metrics = ((list)(map(_coconut.operator.itemgetter(self._metric), (running_best)((sorted_examples)(self._examples)))))
+        best_metrics = ((list)((map)(_coconut.operator.itemgetter((self._metric)), (running_best)((sorted_examples)(self._examples)))))
 
         return plot(iterations, best_metrics, ax=ax, yscale=yscale, title="Convergence plot for {_coconut_format_0}".format(_coconut_format_0=(self._file_name)), xlabel="Number of trials $n$", ylabel="Best {_coconut_format_0} after $n$ trials".format(_coconut_format_0=(self._metric)))
 
@@ -366,7 +358,7 @@ class BlackBoxOptimizer(_coconut.object):
             raise ValueError("no existing data available to be plotted")
 
         iterations = range(1, len(self._examples) + 1)
-        metrics = ((list)(map(_coconut.operator.itemgetter(self._metric), (sorted_examples)(self._examples))))
+        metrics = ((list)((map)(_coconut.operator.itemgetter((self._metric)), (sorted_examples)(self._examples))))
 
         return plot(iterations, metrics, ax=ax, yscale=yscale, title="History plot for {_coconut_format_0}".format(_coconut_format_0=(self._file_name)), xlabel="Number of trials $n$", ylabel="The {_coconut_format_0} on the $n$th trial".format(_coconut_format_0=(self._metric)))
 
@@ -538,7 +530,7 @@ class BlackBoxOptimizer(_coconut.object):
                 def _coconut_lambda_0(val):
                     elem = _coconut_igetitem(val, i)
                     return sampling_population.index(elem) if elem in sampling_population else 0
-                proc_kwargs = param_processor.modify_kwargs(_coconut_lambda_0, kwargs)
+                proc_kwargs = (param_processor.modify_kwargs)(_coconut_lambda_0, kwargs)
                 ind = self.randrange("{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(i)), len(sampling_population), **proc_kwargs)
                 sample.append(sampling_population.pop(ind))
         return sample

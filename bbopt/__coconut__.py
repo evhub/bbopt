@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # type: ignore
 
-# Compiled with Coconut version 1.4.3-post_dev11 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.3-post_dev38 [Ernest Scribbler]
 
 """Built-in Coconut utilities."""
 
@@ -13,7 +13,7 @@ import sys as _coconut_sys
 if _coconut_sys.version_info < (3,):
     from __builtin__ import chr, filter, hex, input, int, map, object, oct, open, print, range, str, zip, filter, reversed, enumerate, raw_input, xrange
     py_chr, py_hex, py_input, py_int, py_map, py_object, py_oct, py_open, py_print, py_range, py_str, py_zip, py_filter, py_reversed, py_enumerate, py_raw_input, py_xrange, py_repr = chr, hex, input, int, map, object, oct, open, print, range, str, zip, filter, reversed, enumerate, raw_input, xrange, repr
-    _coconut_NotImplemented, _coconut_raw_input, _coconut_xrange, _coconut_int, _coconut_long, _coconut_print, _coconut_str, _coconut_unicode, _coconut_repr = NotImplemented, raw_input, xrange, int, long, print, str, unicode, repr
+    _coconut_py_raw_input, _coconut_py_xrange, _coconut_py_int, _coconut_py_long, _coconut_py_print, _coconut_py_str, _coconut_py_unicode, _coconut_py_repr = raw_input, xrange, int, long, print, str, unicode, repr
     from future_builtins import *
     chr, str = unichr, unicode
     from io import open
@@ -21,24 +21,24 @@ if _coconut_sys.version_info < (3,):
         __slots__ = ()
         def __ne__(self, other):
             eq = self == other
-            if eq is _coconut_NotImplemented:
+            if eq is _coconut.NotImplemented:
                 return eq
             return not eq
-    class int(_coconut_int):
+    class int(_coconut_py_int):
         __slots__ = ()
-        if hasattr(_coconut_int, "__doc__"):
-            __doc__ = _coconut_int.__doc__
+        if hasattr(_coconut_py_int, "__doc__"):
+            __doc__ = _coconut_py_int.__doc__
         class __metaclass__(type):
             def __instancecheck__(cls, inst):
-                return _coconut.isinstance(inst, (_coconut_int, _coconut_long))
+                return _coconut.isinstance(inst, (_coconut_py_int, _coconut_py_long))
             def __subclasscheck__(cls, subcls):
-                return _coconut.issubclass(subcls, (_coconut_int, _coconut_long))
+                return _coconut.issubclass(subcls, (_coconut_py_int, _coconut_py_long))
     class range(object):
         __slots__ = ("_xrange",)
-        if hasattr(_coconut_xrange, "__doc__"):
-            __doc__ = _coconut_xrange.__doc__
+        if hasattr(_coconut_py_xrange, "__doc__"):
+            __doc__ = _coconut_py_xrange.__doc__
         def __init__(self, *args):
-            self._xrange = _coconut_xrange(*args)
+            self._xrange = _coconut_py_xrange(*args)
         def __iter__(self):
             return _coconut.iter(self._xrange)
         def __reversed__(self):
@@ -56,7 +56,7 @@ if _coconut_sys.version_info < (3,):
                 return self._xrange[index]
         def count(self, elem):
             """Count the number of times elem appears in the range."""
-            return _coconut_int(elem in self._xrange)
+            return _coconut_py_int(elem in self._xrange)
         def index(self, elem):
             """Find the index of elem in the range."""
             if elem not in self._xrange: raise _coconut.ValueError(_coconut.repr(elem) + " is not in range")
@@ -80,31 +80,36 @@ if _coconut_sys.version_info < (3,):
     from collections import Sequence as _coconut_Sequence
     _coconut_Sequence.register(range)
     from functools import wraps as _coconut_wraps
-    @_coconut_wraps(_coconut_print)
+    @_coconut_wraps(_coconut_py_print)
     def print(*args, **kwargs):
         file = kwargs.get("file", _coconut_sys.stdout)
         flush = kwargs.get("flush", False)
         if "flush" in kwargs:
             del kwargs["flush"]
         if _coconut.hasattr(file, "encoding") and file.encoding is not None:
-            _coconut_print(*(_coconut_unicode(x).encode(file.encoding) for x in args), **kwargs)
+            _coconut_py_print(*(_coconut_py_unicode(x).encode(file.encoding) for x in args), **kwargs)
         else:
-            _coconut_print(*(_coconut_unicode(x).encode() for x in args), **kwargs)
+            _coconut_py_print(*(_coconut_py_unicode(x).encode() for x in args), **kwargs)
         if flush:
             file.flush()
-    @_coconut_wraps(_coconut_raw_input)
+    @_coconut_wraps(_coconut_py_raw_input)
     def input(*args, **kwargs):
         if _coconut.hasattr(_coconut_sys.stdout, "encoding") and _coconut_sys.stdout.encoding is not None:
-            return _coconut_raw_input(*args, **kwargs).decode(_coconut_sys.stdout.encoding)
-        return _coconut_raw_input(*args, **kwargs).decode()
-    @_coconut_wraps(_coconut_repr)
+            return _coconut_py_raw_input(*args, **kwargs).decode(_coconut_sys.stdout.encoding)
+        return _coconut_py_raw_input(*args, **kwargs).decode()
+    @_coconut_wraps(_coconut_py_repr)
     def repr(obj):
-        if isinstance(obj, _coconut_unicode):
-            return _coconut_unicode(_coconut_repr(obj)[1:])
-        if isinstance(obj, _coconut_str):
-            return "b" + _coconut_unicode(_coconut_repr(obj))
-        return _coconut_unicode(_coconut_repr(obj))
-    ascii = repr
+        import __builtin__
+        try:
+            __builtin__.repr = _coconut_repr
+            if isinstance(obj, _coconut_py_unicode):
+                return _coconut_py_unicode(_coconut_py_repr(obj)[1:])
+            if isinstance(obj, _coconut_py_str):
+                return "b" + _coconut_py_unicode(_coconut_py_repr(obj))
+            return _coconut_py_unicode(_coconut_py_repr(obj))
+        finally:
+            __builtin__.repr = _coconut_py_repr
+    ascii = _coconut_repr = repr
     def raw_input(*args):
         """Coconut uses Python 3 "input" instead of Python 2 "raw_input"."""
         raise _coconut.NameError('Coconut uses Python 3 "input" instead of Python 2 "raw_input"')
@@ -122,7 +127,7 @@ if _coconut_sys.version_info < (3,):
 else:
     from builtins import chr, filter, hex, input, int, map, object, oct, open, print, range, str, zip, filter, reversed, enumerate
     py_chr, py_hex, py_input, py_int, py_map, py_object, py_oct, py_open, py_print, py_range, py_str, py_zip, py_filter, py_reversed, py_enumerate, py_repr = chr, hex, input, int, map, object, oct, open, print, range, str, zip, filter, reversed, enumerate, repr
-    _coconut_str = str
+    _coconut_py_str = str
 class _coconut(object):
     import collections, copy, functools, types, itertools, operator, threading, weakref, os, warnings
     if _coconut_sys.version_info < (3, 2):
@@ -146,13 +151,36 @@ class _coconut(object):
         @staticmethod
         def NamedTuple(name, fields):
             return _coconut.collections.namedtuple(name, [x for x, t in fields])
-    Ellipsis, Exception, AttributeError, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, classmethod, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, locals, map, min, max, next, object, property, range, reversed, set, slice, str, sum, super, tuple, type, zip, repr, bytearray = Ellipsis, Exception, AttributeError, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, classmethod, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, locals, map, min, max, next, object, property, range, reversed, set, slice, str, sum, super, tuple, type, zip, staticmethod(repr), bytearray
+    Ellipsis, NotImplemented, Exception, AttributeError, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, classmethod, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, locals, map, min, max, next, object, property, range, reversed, set, slice, str, sum, super, tuple, type, zip, repr, bytearray = Ellipsis, NotImplemented, Exception, AttributeError, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, classmethod, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, locals, map, min, max, next, object, property, range, reversed, set, slice, str, sum, super, tuple, type, zip, staticmethod(repr), bytearray
 _coconut_sentinel = _coconut.object()
 class MatchError(Exception):
-    """Pattern-matching error. Has attributes .pattern and .value."""
-    __slots__ = ("pattern", "value")
+    """Pattern-matching error. Has attributes .pattern, .value, and .message."""
+    __slots__ = ("pattern", "value", "_message")
+    max_val_repr_len = 500
+    def __init__(self, pattern, value):
+        self.pattern = pattern
+        self.value = value
+        self._message = None
+    @property
+    def message(self):
+        if self._message is None:
+            value_repr = _coconut.repr(self.value)
+            self._message = "pattern-matching failed for %s in %s" % (_coconut.repr(self.pattern), value_repr if _coconut.len(value_repr) <= self.max_val_repr_len else value_repr[:self.max_val_repr_len] + "...")
+            super(MatchError, self).__init__(self._message)
+        return self._message
+    def __repr__(self):
+        self.message
+        return super(MatchError, self).__repr__()
+    def __str__(self):
+        self.message
+        return super(MatchError, self).__str__()
+    def __unicode__(self):
+        self.message
+        return super(MatchError, self).__unicode__()
+    def __reduce__(self):
+        return (self.__class__, (self.pattern, self.value))
 def _coconut_igetitem(iterable, index):
-    if isinstance(iterable, (_coconut_reversed, _coconut_map, _coconut.zip, _coconut_enumerate, _coconut_count, _coconut.abc.Sequence)):
+    if _coconut.isinstance(iterable, (_coconut_reversed, _coconut_map, _coconut.zip, _coconut_enumerate, _coconut_count, _coconut.abc.Sequence)):
         return iterable[index]
     if not _coconut.isinstance(index, _coconut.slice):
         if index < 0:
@@ -207,6 +235,9 @@ def _coconut_dubstar_pipe(kws, f): return f(**kws)
 def _coconut_back_pipe(f, x): return f(x)
 def _coconut_back_star_pipe(f, xs): return f(*xs)
 def _coconut_back_dubstar_pipe(f, kws): return f(**kws)
+def _coconut_none_pipe(x, f): return None if x is None else f(x)
+def _coconut_none_star_pipe(xs, f): return None if xs is None else f(*xs)
+def _coconut_none_dubstar_pipe(kws, f): return None if kws is None else f(**kws)
 def _coconut_assert(cond, msg=None): assert cond, msg if msg is not None else "(assert) got falsey value " + _coconut.repr(cond)
 def _coconut_bool_and(a, b): return a and b
 def _coconut_bool_or(a, b): return a or b
@@ -341,6 +372,8 @@ class map(_coconut.map):
         return (self.__class__, (self.func,) + self.iters)
     def __reduce_ex__(self, _):
         return self.__reduce__()
+    def __iter__(self):
+        return _coconut.iter(_coconut.map(self.func, *self.iters))
     def __copy__(self):
         return self.__class__(self.func, *_coconut.map(_coconut.copy.copy, self.iters))
     def __fmap__(self, func):
@@ -382,6 +415,8 @@ class filter(_coconut.filter):
         return (self.__class__, (self.func, self.iter))
     def __reduce_ex__(self, _):
         return self.__reduce__()
+    def __iter__(self):
+        return _coconut.iter(_coconut.filter(self.func, self.iter))
     def __copy__(self):
         return self.__class__(self.func, _coconut.copy.copy(self.iter))
     def __fmap__(self, func):
@@ -408,6 +443,8 @@ class zip(_coconut.zip):
         return (self.__class__, self.iters)
     def __reduce_ex__(self, _):
         return self.__reduce__()
+    def __iter__(self):
+        return _coconut.iter(_coconut.zip(*self.iters))
     def __copy__(self):
         return self.__class__(*_coconut.map(_coconut.copy.copy, self.iters))
     def __fmap__(self, func):
@@ -433,6 +470,8 @@ class enumerate(_coconut.enumerate):
         return (self.__class__, (self.iter, self.start))
     def __reduce_ex__(self, _):
         return self.__reduce__()
+    def __iter__(self):
+        return _coconut.iter(_coconut.enumerate(self.iter, self.start))
     def __copy__(self):
         return self.__class__(_coconut.copy.copy(self.iter), self.start)
     def __fmap__(self, func):
@@ -598,7 +637,7 @@ class _coconut_base_pattern_func(object):
     __slots__ = ("FunctionMatchError", "__doc__", "patterns")
     _coconut_is_match = True
     def __init__(self, *funcs):
-        self.FunctionMatchError = _coconut.type(_coconut_str("MatchError"), (_coconut_MatchError,), {})
+        self.FunctionMatchError = _coconut.type(_coconut_py_str("MatchError"), (_coconut_MatchError,), {})
         self.__doc__ = None
         self.patterns = []
         for func in funcs:
@@ -714,6 +753,8 @@ class starmap(_coconut.itertools.starmap):
         return (self.__class__, (self.func, self.iter))
     def __reduce_ex__(self, _):
         return self.__reduce__()
+    def __iter__(self):
+        return _coconut.iter(_coconut.itertools.starmap(self.func, self.iter))
     def __copy__(self):
         return self.__class__(self.func, _coconut.copy.copy(self.iter))
     def __fmap__(self, func):
@@ -740,4 +781,4 @@ def memoize(maxsize=None, *args, **kwargs):
     """Decorator that memoizes a function,
     preventing it from being recomputed if it is called multiple times with the same arguments."""
     return _coconut.functools.lru_cache(maxsize, *args, **kwargs)
-_coconut_MatchError, _coconut_count, _coconut_enumerate, _coconut_makedata, _coconut_map, _coconut_reversed, _coconut_starmap, _coconut_tee, _coconut_zip, TYPE_CHECKING, reduce, takewhile, dropwhile = MatchError, count, enumerate, makedata, map, reversed, starmap, tee, zip, False, _coconut.functools.reduce, _coconut.itertools.takewhile, _coconut.itertools.dropwhile
+_coconut_MatchError, _coconut_count, _coconut_enumerate, _coconut_filter, _coconut_makedata, _coconut_map, _coconut_reversed, _coconut_starmap, _coconut_tee, _coconut_zip, TYPE_CHECKING, reduce, takewhile, dropwhile = MatchError, count, enumerate, filter, makedata, map, reversed, starmap, tee, zip, False, _coconut.functools.reduce, _coconut.itertools.takewhile, _coconut.itertools.dropwhile

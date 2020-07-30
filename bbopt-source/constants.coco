@@ -23,7 +23,7 @@ classifiers = (
 )
 requirements = (
     "numpy>=1.0",
-    "matplotlib>=2.0",
+    "matplotlib>=2.2",
     "portalocker>=1.5.1",
     "scikit-optimize>=0.5.2",
 )
