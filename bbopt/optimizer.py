@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x203f9b90
+# __coconut_hash__ = 0x9df6a162
 
-# Compiled with Coconut version 1.4.3-post_dev39 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.3-post_dev46 [Ernest Scribbler]
 
 """
 The main BBopt interface.
