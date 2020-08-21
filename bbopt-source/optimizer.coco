@@ -10,11 +10,6 @@ import itertools
 import time
 
 import numpy as np
-from skopt.plots import (
-    partial_dependence,
-    plot_evaluations,
-    plot_objective,
-)
 
 from bbopt.registry import (
     backend_registry,
@@ -34,7 +29,7 @@ from bbopt.util import (
     sorted_examples,
     running_best,
     plot,
-    OpenWithLock,
+    open_with_lock,
 )
 from bbopt.constants import (
     data_file_ext,
@@ -134,13 +129,13 @@ class BlackBoxOptimizer:
     def _load_data(self):
         """Load examples from data file."""
         ensure_file(self.data_file)
-        with OpenWithLock(self.data_file) as df:
+        with open_with_lock(self.data_file) as df:
             self._load_from(df)
 
     def _save_current_data(self):
         """Save examples to data file."""
         assert "timestamp" not in self._current_example, f"multiple _save_current_data calls on _current_example = {self._current_example}"
-        with OpenWithLock(self.data_file) as df:
+        with open_with_lock(self.data_file) as df:
             # we create the timestamp while we have the lock to ensure its uniqueness
             self._current_example["timestamp"] = time.time()
             self._add_examples([self._current_example])
@@ -268,7 +263,7 @@ class BlackBoxOptimizer:
 
     def save_data(self):
         """Forcibly saves data."""
-        with OpenWithLock(self.data_file) as df:
+        with open_with_lock(self.data_file) as df:
             self._save_to(df)
 
     def tell_examples(self, examples):
@@ -339,6 +334,7 @@ class BlackBoxOptimizer:
 
     def partial_dependence(self, i_name, j_name=None, *args, **kwargs):
         """Calls skopt.plots.partial_dependence where i_name and j_name are parameter names."""
+        from skopt.plots import partial_dependence
         if not self._examples:
             raise ValueError("no existing data available to be plotted")
 
@@ -370,31 +366,33 @@ class BlackBoxOptimizer:
             ylabel=f"The loss at each point",
         )
 
-    def plot_evaluations(self, *args, **kwargs):
-        """Calls skopt.plots.plot_evaluations."""
+    def _call_skopt_plot_func(self, skopt_plot_func, *args, **kwargs):
+        """Call the given skopt.plots function."""
         if not self._examples:
             raise ValueError("no existing data available to be plotted")
 
         skopt_backend = self._get_skopt_backend()
 
-        return plot_evaluations(
+        return skopt_plot_func(
             skopt_backend.result,
             *args,
             **kwargs,
         )
+
+    def plot_evaluations(self, *args, **kwargs):
+        """Calls skopt.plots.plot_evaluations."""
+        from skopt.plots import plot_evaluations
+        return self._call_skopt_plot_func(plot_evaluations, *args, **kwargs)
 
     def plot_objective(self, *args, **kwargs):
         """Calls skopt.plots.plot_objective."""
-        if not self._examples:
-            raise ValueError("no existing data available to be plotted")
+        from skopt.plots import plot_objective
+        return self._call_skopt_plot_func(plot_objective, *args, **kwargs)
 
-        skopt_backend = self._get_skopt_backend()
-
-        return plot_objective(
-            skopt_backend.result,
-            *args,
-            **kwargs,
-        )
+    def plot_regret(self, *args, **kwargs):
+        """Calls skopt.plots.plot_regret."""
+        from skopt.plots import plot_regret
+        return self._call_skopt_plot_func(plot_regret, *args, **kwargs)
 
     # Base random functions:
 

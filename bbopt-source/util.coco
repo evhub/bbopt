@@ -202,7 +202,7 @@ def plot(
 
 
 @contextmanager
-def OpenWithLock(fpath, mode="rb+", timeout=lock_timeout, **kwargs):
+def open_with_lock(fpath, mode="rb+", timeout=lock_timeout, **kwargs):
     with Lock(fpath, mode, timeout=timeout, **kwargs) as file_handle:
         try:
             yield file_handle

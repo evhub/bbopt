@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x722e1d9e
+# __coconut_hash__ = 0x98524974
 
 # Compiled with Coconut version 1.4.3-post_dev46 [Ernest Scribbler]
 
@@ -232,7 +232,7 @@ def plot(xs, ys, ax=None, yscale=None, title=None, xlabel=None, ylabel=None, mar
 
 
 @contextmanager
-def OpenWithLock(fpath, mode="rb+", timeout=lock_timeout, **kwargs):
+def open_with_lock(fpath, mode="rb+", timeout=lock_timeout, **kwargs):
     with Lock(fpath, mode, timeout=timeout, **kwargs) as file_handle:
         try:
             yield file_handle

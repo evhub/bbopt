@@ -147,4 +147,7 @@ if __name__ == "__main__":
     plt.figure(2)
     bb.plot_objective()
 
+    plt.figure(3)
+    bb.plot_regret()
+
     plt.show()

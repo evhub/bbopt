@@ -95,6 +95,7 @@ Some examples of BBopt in action:
     1. [`plot_partial_dependence_1D`](#plot_partial_dependence_1d)
     1. [`plot_evaluations`](#plot_evaluations)
     1. [`plot_objective`](#plot_objective)
+    1. [`plot_regret`](#plot_regret)
     1. [`get_current_run`](#get_current_run)
     1. [`get_optimal_run`](#get_optimal_run)
     1. [`get_data`](#get_data)
@@ -211,7 +212,7 @@ Run BBopt's [`keras` example](https://github.com/evhub/bbopt/blob/master/bbopt-s
 
 BlackBoxOptimizer.**partial_dependence**(_i\_name_, _j\_name_=`None`, _sample\_points_=`None`, _n\_samples_=`250`, _n\_points_=`40`)
 
-Calls [`skopt.plots.partial_dependence`](https://scikit-optimize.github.io/plots.m.html) using previous trial data. The parameters _i\_name_ and _j\_name_ should be set to names of the parameters you want for the _i_ and _j_ arguments to `skopt.plots.partial_dependence`.
+Calls [`skopt.plots.partial_dependence`](https://scikit-optimize.github.io/stable/modules/generated/skopt.plots.partial_dependence.html) using previous trial data. The parameters _i\_name_ and _j\_name_ should be set to names of the parameters you want for the _i_ and _j_ arguments to `skopt.plots.partial_dependence`.
 
 #### `plot_partial_dependence_1D`
 
@@ -225,7 +226,7 @@ Run BBopt's [`keras` example](https://github.com/evhub/bbopt/blob/master/bbopt-s
 
 BlackBoxOptimizer.**plot_evaluations**(_bins_=`20`)
 
-Calls [`skopt.plots.plot_evaluations`](https://scikit-optimize.github.io/plots.m.html) using previous trial data.
+Calls [`skopt.plots.plot_evaluations`](https://scikit-optimize.github.io/stable/modules/generated/skopt.plots.plot_evaluations.html) using previous trial data.
 
 Run BBopt's [`keras` example](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.py) to generate an example plot.
 
@@ -233,7 +234,15 @@ Run BBopt's [`keras` example](https://github.com/evhub/bbopt/blob/master/bbopt-s
 
 BlackBoxOptimizer.**plot_objective**(_levels_=`10`, _n\_points_=`40`, _n\_samples_=`250`, _size_=`2`, _zscale_=`"linear"`)
 
-Calls [`skopt.plots.plot_objective`](https://scikit-optimize.github.io/plots.m.html) using previous trial data.
+Calls [`skopt.plots.plot_objective`](https://scikit-optimize.github.io/stable/modules/generated/skopt.plots.plot_objective.html) using previous trial data.
+
+Run BBopt's [`keras` example](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.py) to generate an example plot.
+
+#### `plot_regret`
+
+BlackBoxOptimizer.**plot_regret**([_ax_, [_true\_minimum_, [_yscale_]]])
+
+Calls [`skopt.plots.plot_regret`](https://scikit-optimize.github.io/stable/modules/generated/skopt.plots.plot_regret.html) using previous trial data.
 
 Run BBopt's [`keras` example](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.py) to generate an example plot.
 

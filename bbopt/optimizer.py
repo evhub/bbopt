@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf0478702
+# __coconut_hash__ = 0xf7afb2cd
 
 # Compiled with Coconut version 1.4.3-post_dev46 [Ernest Scribbler]
 
@@ -37,9 +37,6 @@ import itertools
 import time
 
 import numpy as np
-from skopt.plots import partial_dependence
-from skopt.plots import plot_evaluations
-from skopt.plots import plot_objective
 
 from bbopt.registry import backend_registry
 from bbopt.registry import init_backend
@@ -56,7 +53,7 @@ from bbopt.util import denumpy_all
 from bbopt.util import sorted_examples
 from bbopt.util import running_best
 from bbopt.util import plot
-from bbopt.util import OpenWithLock
+from bbopt.util import open_with_lock
 from bbopt.constants import data_file_ext
 from bbopt.constants import default_alg
 from bbopt.constants import default_protocol
@@ -181,13 +178,13 @@ class BlackBoxOptimizer(_coconut.object):
     def _load_data(self):
         """Load examples from data file."""
         ensure_file(self.data_file)
-        with OpenWithLock(self.data_file) as df:
+        with open_with_lock(self.data_file) as df:
             self._load_from(df)
 
     def _save_current_data(self):
         """Save examples to data file."""
         assert "timestamp" not in self._current_example, "multiple _save_current_data calls on _current_example = {_coconut_format_0}".format(_coconut_format_0=(self._current_example))
-        with OpenWithLock(self.data_file) as df:
+        with open_with_lock(self.data_file) as df:
 # we create the timestamp while we have the lock to ensure its uniqueness
             self._current_example["timestamp"] = time.time()
             self._add_examples([self._current_example])
@@ -319,7 +316,7 @@ class BlackBoxOptimizer(_coconut.object):
 
     def save_data(self):
         """Forcibly saves data."""
-        with OpenWithLock(self.data_file) as df:
+        with open_with_lock(self.data_file) as df:
             self._save_to(df)
 
     def tell_examples(self, examples):
@@ -365,6 +362,7 @@ class BlackBoxOptimizer(_coconut.object):
         """Calls skopt.plots.partial_dependence where i_name and j_name are parameter names."""
         def _coconut_mock_func(self, i_name, j_name=None, *args, **kwargs): return self, i_name, j_name, args, kwargs
         while True:
+            from skopt.plots import partial_dependence
             if not self._examples:
                 raise ValueError("no existing data available to be plotted")
 
@@ -392,52 +390,32 @@ class BlackBoxOptimizer(_coconut.object):
         xi, yi = self.partial_dependence(i_name, **kwargs)
         return plot(xi, yi, ax=ax, yscale=yscale, title="Partial dependence of {_coconut_format_0}".format(_coconut_format_0=(i_name)), xlabel="Values of {_coconut_format_0}".format(_coconut_format_0=(i_name)), ylabel="The loss at each point".format())
 
+    def _call_skopt_plot_func(self, skopt_plot_func, *args, **kwargs):
+        """Call the given skopt.plots function."""
+        if not self._examples:
+            raise ValueError("no existing data available to be plotted")
+
+        skopt_backend = self._get_skopt_backend()
+
+        return skopt_plot_func(skopt_backend.result, *args, **kwargs)
+
     def plot_evaluations(self, *args, **kwargs):
         """Calls skopt.plots.plot_evaluations."""
-        def _coconut_mock_func(self, *args, **kwargs): return self, args, kwargs
-        while True:
-            if not self._examples:
-                raise ValueError("no existing data available to be plotted")
+        from skopt.plots import plot_evaluations
+        return self._call_skopt_plot_func(plot_evaluations, *args, **kwargs)
 
-            skopt_backend = self._get_skopt_backend()
-
-            try:
-                _coconut_is_recursive = plot_evaluations is _coconut_recursive_func_27
-            except _coconut.NameError:
-                _coconut_is_recursive = False
-            if _coconut_is_recursive:
-                self, args, kwargs = _coconut_mock_func(skopt_backend.result, *args, **kwargs)
-                continue
-            else:
-                return plot_evaluations(skopt_backend.result, *args, **kwargs)
-
-
-            return None
-    _coconut_recursive_func_27 = plot_evaluations
     def plot_objective(self, *args, **kwargs):
         """Calls skopt.plots.plot_objective."""
-        def _coconut_mock_func(self, *args, **kwargs): return self, args, kwargs
-        while True:
-            if not self._examples:
-                raise ValueError("no existing data available to be plotted")
+        from skopt.plots import plot_objective
+        return self._call_skopt_plot_func(plot_objective, *args, **kwargs)
 
-            skopt_backend = self._get_skopt_backend()
-
-            try:
-                _coconut_is_recursive = plot_objective is _coconut_recursive_func_28
-            except _coconut.NameError:
-                _coconut_is_recursive = False
-            if _coconut_is_recursive:
-                self, args, kwargs = _coconut_mock_func(skopt_backend.result, *args, **kwargs)
-                continue
-            else:
-                return plot_objective(skopt_backend.result, *args, **kwargs)
-
+    def plot_regret(self, *args, **kwargs):
+        """Calls skopt.plots.plot_regret."""
+        from skopt.plots import plot_regret
+        return self._call_skopt_plot_func(plot_regret, *args, **kwargs)
 
 # Base random functions:
 
-            return None
-    _coconut_recursive_func_28 = plot_objective
     def randrange(self, name, *args, **kwargs):
         """Create a new parameter with the given name modeled by random.randrange(*args)."""
         return self.param(name, "randrange", *args, **kwargs)
