@@ -24,18 +24,20 @@ classifiers = (
 requirements = (
     "numpy>=1.0",
     "matplotlib>=2.2",
-    "portalocker>=1.5.1",
-    "scikit-optimize>=0.5.2",
+    "portalocker>=2.0",
+    "scikit-optimize>=0.7.4",
 )
 extra_requirements = {
     ":python_version<'3'": (
-        "futures>=3.2",
+        "futures>=3.3",
+        # fixes an issue with hyperopt on Python 2
         "hyperopt>=0.1.2,<0.2",
         # fixes an issue with hyperopt with networkx>=2.0
         "networkx>=1.0,<2.0",
     ),
     ":python_version>='3'": (
-        "hyperopt>=0.2.3",
+        "hyperopt>=0.2.4",
+        # fixes an issue with networkx which is used by hyperopt
         "networkx>=2.2",
         # fixes an issue with bson which is used by hyperopt
         "pymongo>=3.9",

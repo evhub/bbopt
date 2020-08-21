@@ -44,7 +44,7 @@ bb = BlackBoxOptimizer(file=__file__)
 if __name__ == "__main__":
     bb.run()
 ```
-to the top of your file, then call
+to the top of your file, then call a [`random`](https://docs.python.org/3.5/library/random.html) method like
 ```python
 x = bb.uniform("x", 0, 1)
 ```
