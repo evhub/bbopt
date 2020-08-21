@@ -10,7 +10,6 @@ import itertools
 import time
 
 import numpy as np
-from portalocker import Lock
 from skopt.plots import (
     partial_dependence,
     plot_evaluations,
@@ -35,10 +34,10 @@ from bbopt.util import (
     sorted_examples,
     running_best,
     plot,
+    OpenWithLock,
 )
 from bbopt.constants import (
     data_file_ext,
-    lock_timeout,
     default_alg,
     default_protocol,
 )
@@ -135,13 +134,13 @@ class BlackBoxOptimizer:
     def _load_data(self):
         """Load examples from data file."""
         ensure_file(self.data_file)
-        with Lock(self.data_file, "rb", timeout=lock_timeout) as df:
+        with OpenWithLock(self.data_file) as df:
             self._load_from(df)
 
     def _save_current_data(self):
         """Save examples to data file."""
         assert "timestamp" not in self._current_example, f"multiple _save_current_data calls on _current_example = {self._current_example}"
-        with Lock(self.data_file, "rb+", timeout=lock_timeout) as df:
+        with OpenWithLock(self.data_file) as df:
             # we create the timestamp while we have the lock to ensure its uniqueness
             self._current_example["timestamp"] = time.time()
             self._add_examples([self._current_example])
@@ -269,7 +268,7 @@ class BlackBoxOptimizer:
 
     def save_data(self):
         """Forcibly saves data."""
-        with Lock(self.data_file, "rb+", timeout=lock_timeout) as df:
+        with OpenWithLock(self.data_file) as df:
             self._save_to(df)
 
     def tell_examples(self, examples):

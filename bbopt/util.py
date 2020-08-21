@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4b6c1ab2
+# __coconut_hash__ = 0x722e1d9e
 
 # Compiled with Coconut version 1.4.3-post_dev46 [Ernest Scribbler]
 
@@ -36,8 +36,12 @@ if _coconut_sys.version_info < (3, 3):
     from collections import Iterable
 else:
     from collections.abc import Iterable
+from contextlib import contextmanager
 
 import numpy as np
+from portalocker import Lock
+
+from bbopt.constants import lock_timeout
 
 
 Num = (int, float)
@@ -225,3 +229,17 @@ def plot(xs, ys, ax=None, yscale=None, title=None, xlabel=None, ylabel=None, mar
         ax.set_yscale(yscale)
     ax.plot(xs, ys, marker=marker, markersize=markersize, linewidth=linewidth)
     return ax
+
+
+@contextmanager
+def OpenWithLock(fpath, mode="rb+", timeout=lock_timeout, **kwargs):
+    with Lock(fpath, mode, timeout=timeout, **kwargs) as file_handle:
+        try:
+            yield file_handle
+        finally:
+            file_handle.flush()
+            if "w" in mode or "+" in mode or "a" in mode:
+                try:
+                    os.fsync(file_handle.fileno())
+                except OSError:
+                    pass

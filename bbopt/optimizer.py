@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x9df6a162
+# __coconut_hash__ = 0xf0478702
 
 # Compiled with Coconut version 1.4.3-post_dev46 [Ernest Scribbler]
 
@@ -37,7 +37,6 @@ import itertools
 import time
 
 import numpy as np
-from portalocker import Lock
 from skopt.plots import partial_dependence
 from skopt.plots import plot_evaluations
 from skopt.plots import plot_objective
@@ -57,8 +56,8 @@ from bbopt.util import denumpy_all
 from bbopt.util import sorted_examples
 from bbopt.util import running_best
 from bbopt.util import plot
+from bbopt.util import OpenWithLock
 from bbopt.constants import data_file_ext
-from bbopt.constants import lock_timeout
 from bbopt.constants import default_alg
 from bbopt.constants import default_protocol
 from bbopt.backends.serving import ServingBackend
@@ -182,13 +181,13 @@ class BlackBoxOptimizer(_coconut.object):
     def _load_data(self):
         """Load examples from data file."""
         ensure_file(self.data_file)
-        with Lock(self.data_file, "rb", timeout=lock_timeout) as df:
+        with OpenWithLock(self.data_file) as df:
             self._load_from(df)
 
     def _save_current_data(self):
         """Save examples to data file."""
         assert "timestamp" not in self._current_example, "multiple _save_current_data calls on _current_example = {_coconut_format_0}".format(_coconut_format_0=(self._current_example))
-        with Lock(self.data_file, "rb+", timeout=lock_timeout) as df:
+        with OpenWithLock(self.data_file) as df:
 # we create the timestamp while we have the lock to ensure its uniqueness
             self._current_example["timestamp"] = time.time()
             self._add_examples([self._current_example])
@@ -320,7 +319,7 @@ class BlackBoxOptimizer(_coconut.object):
 
     def save_data(self):
         """Forcibly saves data."""
-        with Lock(self.data_file, "rb+", timeout=lock_timeout) as df:
+        with OpenWithLock(self.data_file) as df:
             self._save_to(df)
 
     def tell_examples(self, examples):

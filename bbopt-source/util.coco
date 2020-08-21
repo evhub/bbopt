@@ -5,8 +5,12 @@ Utilities for use across all of bbopt.
 import os
 import sys
 from collections.abc import Mapping, Iterable
+from contextlib import contextmanager
 
 import numpy as np
+from portalocker import Lock
+
+from bbopt.constants import lock_timeout
 
 
 Num = (int, float)
@@ -195,3 +199,17 @@ def plot(
         ax.set_yscale(yscale)
     ax.plot(xs, ys, marker=marker, markersize=markersize, linewidth=linewidth)
     return ax
+
+
+@contextmanager
+def OpenWithLock(fpath, mode="rb+", timeout=lock_timeout, **kwargs):
+    with Lock(fpath, mode, timeout=timeout, **kwargs) as file_handle:
+        try:
+            yield file_handle
+        finally:
+            file_handle.flush()
+            if "w" in mode or "+" in mode or "a" in mode:
+                try:
+                    os.fsync(file_handle.fileno())
+                except OSError:
+                    pass
