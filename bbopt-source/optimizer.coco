@@ -37,7 +37,6 @@ from bbopt.constants import (
     default_protocol,
 )
 from bbopt.backends.serving import ServingBackend
-from bbopt.backends.skopt import SkoptBackend
 
 
 def array_param(func, name, shape, kwargs):
@@ -161,6 +160,7 @@ class BlackBoxOptimizer:
 
     def _get_skopt_backend(self):
         """Get a scikit-optimize backend regardless of whether currently using one."""
+        from bbopt.backends.skopt import SkoptBackend
         if isinstance(self.backend, SkoptBackend):
             return self.backend
 

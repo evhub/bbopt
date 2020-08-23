@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf7afb2cd
+# __coconut_hash__ = 0x38d91f3
 
 # Compiled with Coconut version 1.4.3-post_dev46 [Ernest Scribbler]
 
@@ -58,7 +58,6 @@ from bbopt.constants import data_file_ext
 from bbopt.constants import default_alg
 from bbopt.constants import default_protocol
 from bbopt.backends.serving import ServingBackend
-from bbopt.backends.skopt import SkoptBackend
 
 
 def array_param(func, name, shape, kwargs):
@@ -208,6 +207,7 @@ class BlackBoxOptimizer(_coconut.object):
 
     def _get_skopt_backend(self):
         """Get a scikit-optimize backend regardless of whether currently using one."""
+        from bbopt.backends.skopt import SkoptBackend
         if isinstance(self.backend, SkoptBackend):
             return self.backend
 

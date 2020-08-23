@@ -5,7 +5,7 @@ Constants for use across all of BBopt.
 
 # Installation constants:
 name = "bbopt"
-version = "1.1.10"
+version = "1.1.11"
 description = "The easiest hyperparameter optimization you'll ever do."
 long_description = """
 See BBopt's GitHub_ for more information.
@@ -65,7 +65,7 @@ extra_requirements["dev"] = (
 
 # Optimizer constants:
 data_file_ext = ".bbopt"
-lock_timeout = 5
+lock_timeout = 6
 default_alg = "tree_structured_parzen_estimator"
 default_protocol = 2
 
