@@ -17,6 +17,27 @@ from bbopt.backends.util import (
 )
 
 
+# attempt to fix skopt bug by patching sklearn
+try:
+    import sklearn
+    sklearn.utils.fixes.sp_version < (1,)
+except ImportError:
+    pass
+except TypeError:
+    Version = type(sklearn.utils.fixes.sp_version)
+    try:
+        def Version.__lt__(self, other) =
+            self.release < other
+        def Version.__le__(self, other) =
+            self.release <= other
+        def Version.__gt__(self, other) =
+            self.release > other
+        def Version.__ge__(self, other) =
+            self.release >= other
+    except TypeError:
+        pass
+
+
 # Utilities:
 
 def create_space(name, func, *args):

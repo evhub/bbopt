@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x96fe352d
+# __coconut_hash__ = 0x27b97e1f
 
 # Compiled with Coconut version 1.4.3-post_dev46 [Ernest Scribbler]
 
@@ -35,6 +35,55 @@ from bbopt.util import sorted_items
 from bbopt.backends.util import Backend
 from bbopt.backends.util import split_examples
 from bbopt.backends.util import make_values
+
+
+# attempt to fix skopt bug by patching sklearn
+try:
+    import sklearn
+    sklearn.utils.fixes.sp_version < (1,)
+except ImportError:
+    pass
+except TypeError:
+    Version = type(sklearn.utils.fixes.sp_version)
+    try:
+        try:
+            _coconut_dotted_func_name_store_0 = __lt__
+        except _coconut.NameError:
+            _coconut_dotted_func_name_store_0 = _coconut_sentinel
+        def __lt__(self, other):
+            return self.release < other
+        Version.__lt__ = __lt__
+        if _coconut_dotted_func_name_store_0 is not _coconut_sentinel:
+            __lt__ = _coconut_dotted_func_name_store_0
+        try:
+            _coconut_dotted_func_name_store_1 = __le__
+        except _coconut.NameError:
+            _coconut_dotted_func_name_store_1 = _coconut_sentinel
+        def __le__(self, other):
+            return self.release <= other
+        Version.__le__ = __le__
+        if _coconut_dotted_func_name_store_1 is not _coconut_sentinel:
+            __le__ = _coconut_dotted_func_name_store_1
+        try:
+            _coconut_dotted_func_name_store_2 = __gt__
+        except _coconut.NameError:
+            _coconut_dotted_func_name_store_2 = _coconut_sentinel
+        def __gt__(self, other):
+            return self.release > other
+        Version.__gt__ = __gt__
+        if _coconut_dotted_func_name_store_2 is not _coconut_sentinel:
+            __gt__ = _coconut_dotted_func_name_store_2
+        try:
+            _coconut_dotted_func_name_store_3 = __ge__
+        except _coconut.NameError:
+            _coconut_dotted_func_name_store_3 = _coconut_sentinel
+        def __ge__(self, other):
+            return self.release >= other
+        Version.__ge__ = __ge__
+        if _coconut_dotted_func_name_store_3 is not _coconut_sentinel:
+            __ge__ = _coconut_dotted_func_name_store_3
+    except TypeError:
+        pass
 
 
 # Utilities:
