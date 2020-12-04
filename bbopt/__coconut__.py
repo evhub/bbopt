@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # type: ignore
 
-# Compiled with Coconut version 1.4.3-post_dev46 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.3-post_dev57 [Ernest Scribbler]
 
 """Built-in Coconut utilities."""
 
@@ -107,15 +107,15 @@ if _coconut_sys.version_info < (3,):
         flush = kwargs.get("flush", False)
         if "flush" in kwargs:
             del kwargs["flush"]
-        if _coconut.hasattr(file, "encoding") and file.encoding is not None:
+        if _coconut.getattr(file, "encoding", None) is not None:
             _coconut_py_print(*(_coconut_py_unicode(x).encode(file.encoding) for x in args), **kwargs)
         else:
-            _coconut_py_print(*(_coconut_py_unicode(x).encode() for x in args), **kwargs)
+            _coconut_py_print(*args, **kwargs)
         if flush:
             file.flush()
     @_coconut_wraps(_coconut_py_raw_input)
     def input(*args, **kwargs):
-        if _coconut.hasattr(_coconut_sys.stdout, "encoding") and _coconut_sys.stdout.encoding is not None:
+        if _coconut.getattr(_coconut_sys.stdout, "encoding", None) is not None:
             return _coconut_py_raw_input(*args, **kwargs).decode(_coconut_sys.stdout.encoding)
         return _coconut_py_raw_input(*args, **kwargs).decode()
     @_coconut_wraps(_coconut_py_repr)
@@ -137,6 +137,26 @@ if _coconut_sys.version_info < (3,):
     def xrange(*args):
         """Coconut uses Python 3 "range" instead of Python 2 "xrange"."""
         raise _coconut.NameError('Coconut uses Python 3 "range" instead of Python 2 "xrange"')
+    def _coconut_default_breakpointhook(*args, **kwargs):
+        hookname = _coconut.os.getenv("PYTHONBREAKPOINT")
+        if hookname != "0":
+            if not hookname:
+                hookname = "pdb.set_trace"
+            modname, dot, funcname = hookname.rpartition(".")
+            if not dot:
+                modname = "builtins" if _coconut_sys.version_info >= (3,) else "__builtin__"
+            if _coconut_sys.version_info >= (2, 7):
+                import importlib
+                module = importlib.import_module(modname)
+            else:
+                import imp
+                module = imp.load_module(modname, *imp.find_module(modname))
+            hook = _coconut.getattr(module, funcname)
+            return hook(*args, **kwargs)
+    if not hasattr(_coconut_sys, "__breakpointhook__"):
+        _coconut_sys.__breakpointhook__ = _coconut_default_breakpointhook
+    def breakpoint(*args, **kwargs):
+        return _coconut.getattr(_coconut_sys, "breakpointhook", _coconut_default_breakpointhook)(*args, **kwargs)
     if _coconut_sys.version_info < (2, 7):
         import functools as _coconut_functools, copy_reg as _coconut_copy_reg
         def _coconut_new_partial(func, args, keywords):
@@ -149,6 +169,29 @@ else:
     from builtins import chr, filter, hex, input, int, map, object, oct, open, print, range, str, zip, filter, reversed, enumerate
     py_chr, py_hex, py_input, py_int, py_map, py_object, py_oct, py_open, py_print, py_range, py_str, py_zip, py_filter, py_reversed, py_enumerate, py_repr = chr, hex, input, int, map, object, oct, open, print, range, str, zip, filter, reversed, enumerate, repr
     _coconut_py_str = str
+    if _coconut_sys.version_info < (3, 7):
+        def _coconut_default_breakpointhook(*args, **kwargs):
+            hookname = _coconut.os.getenv("PYTHONBREAKPOINT")
+            if hookname != "0":
+                if not hookname:
+                    hookname = "pdb.set_trace"
+                modname, dot, funcname = hookname.rpartition(".")
+                if not dot:
+                    modname = "builtins" if _coconut_sys.version_info >= (3,) else "__builtin__"
+                if _coconut_sys.version_info >= (2, 7):
+                    import importlib
+                    module = importlib.import_module(modname)
+                else:
+                    import imp
+                    module = imp.load_module(modname, *imp.find_module(modname))
+                hook = _coconut.getattr(module, funcname)
+                return hook(*args, **kwargs)
+        if not hasattr(_coconut_sys, "__breakpointhook__"):
+            _coconut_sys.__breakpointhook__ = _coconut_default_breakpointhook
+        def breakpoint(*args, **kwargs):
+            return _coconut.getattr(_coconut_sys, "breakpointhook", _coconut_default_breakpointhook)(*args, **kwargs)
+    else:
+        py_breakpoint = breakpoint
 class _coconut(object):
     import collections, copy, functools, types, itertools, operator, threading, weakref, os, warnings, contextlib, traceback
     if _coconut_sys.version_info < (3, 2):

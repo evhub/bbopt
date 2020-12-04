@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x38d91f3
+# __coconut_hash__ = 0xe6b9f632
 
-# Compiled with Coconut version 1.4.3-post_dev46 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.3-post_dev57 [Ernest Scribbler]
 
 """
 The main BBopt interface.
@@ -35,6 +35,7 @@ else:
 import math
 import itertools
 import time
+from pprint import pprint
 
 import numpy as np
 
@@ -304,10 +305,13 @@ class BlackBoxOptimizer(_coconut.object):
         """The path to the file we are saving data to."""
         return os.path.join(os.path.dirname(self._file), self._file_name) + data_file_ext + (".json" if self._using_json else ".pickle")
 
-    def get_data(self):
+    def get_data(self, print_data=False):
         """Get all currently-loaded data as a dictionary containing params and examples."""
         self._old_params.update(self._new_params)
-        return {"params": self._old_params, "examples": self._examples}
+        data_dict = {"params": self._old_params, "examples": self._examples}
+        if print_data:
+            pprint(data_dict)
+        return data_dict
 
     @property
     def num_examples(self):

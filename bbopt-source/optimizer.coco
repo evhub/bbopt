@@ -8,6 +8,7 @@ import pickle
 import math
 import itertools
 import time
+from pprint import pprint
 
 import numpy as np
 
@@ -248,13 +249,16 @@ class BlackBoxOptimizer:
         """The path to the file we are saving data to."""
         os.path.join(os.path.dirname(self._file), self._file_name) + data_file_ext + (".json" if self._using_json else ".pickle")
 
-    def get_data(self):
+    def get_data(self, print_data=False):
         """Get all currently-loaded data as a dictionary containing params and examples."""
         self._old_params.update(self._new_params)
-        return {
+        data_dict = {
             "params": self._old_params,
             "examples": self._examples,
         }
+        if print_data:
+            pprint(data_dict)
+        return data_dict
 
     @property
     def num_examples(self) =

@@ -260,9 +260,9 @@ Get information on the best run so far. These are the parameters that will be us
 
 #### `get_data`
 
-BlackBoxOptimizer.**get_data**()
+BlackBoxOptimizer.**get_data**(_print\_data_=`False`)
 
-Dump a dictionary containing `"params"`, the parameters BBopt knows about and what random function and arguments they were initialized with, and `"examples"`, all the previous data BBopt has collected.
+Dump a dictionary containing `"params"`, the parameters BBopt knows about and what random function and arguments they were initialized with, and `"examples"`, all the previous data BBopt has collected. If _print\_data_, pretty prints the data in addition to returning it.
 
 #### `data_file`
 
