@@ -16,7 +16,7 @@ if __name__ == "__main__":
 
 # We set the x parameter conditional on the use_high parameter.
 use_high = bb.randbool("use high", guess=False)
-assert isinstance(use_high, bool)
+assert isinstance(use_high, bool), repr(use_high)
 if use_high:
     x = bb.randrange("x high", 10, 20)
 else:
