@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xe6b9f632
+# __coconut_hash__ = 0x90dbc597
 
 # Compiled with Coconut version 1.4.3-post_dev57 [Ernest Scribbler]
 
@@ -55,6 +55,7 @@ from bbopt.util import sorted_examples
 from bbopt.util import running_best
 from bbopt.util import plot
 from bbopt.util import open_with_lock
+from bbopt.util import printerr
 from bbopt.constants import data_file_ext
 from bbopt.constants import default_alg
 from bbopt.constants import default_protocol
@@ -245,7 +246,7 @@ class BlackBoxOptimizer(_coconut.object):
                 _coconut_match_check = True
         if _coconut_match_check:
             if (func, args) != (old_func, old_args):
-                print("BBopt Warning: detected change in parameter {_coconut_format_0} ({_coconut_format_1} != {_coconut_format_2}) (you may need to delete your old BBopt data)".format(_coconut_format_0=(name), _coconut_format_1=((func, args)), _coconut_format_2=((old_func, old_args))))
+                printerr("BBopt Warning: detected change in parameter {_coconut_format_0} ({_coconut_format_1} != {_coconut_format_2}) (you may need to delete your old BBopt data)".format(_coconut_format_0=(name), _coconut_format_1=((func, args)), _coconut_format_2=((old_func, old_args))))
 
         value = self.backend.param(name, func, *args, **kwargs)
         self._new_params[name] = (func, args, kwargs)

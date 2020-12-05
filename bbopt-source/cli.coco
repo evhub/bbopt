@@ -9,6 +9,11 @@ import subprocess
 from concurrent.futures import ProcessPoolExecutor
 from pprint import pprint
 
+if sys.version_info >= (3, 3):
+    from concurrent.futures.process import BrokenProcessPool
+else:
+    BrokenProcessPool = KeyboardInterrupt
+
 from bbopt.optimizer import BlackBoxOptimizer
 from bbopt.constants import (
     description,
@@ -75,14 +80,17 @@ def base_show(quiet, msg):
 
 def run_trial(args, cmd, i):
     """Pickleable function for running trials in parallel."""
-    show = base_show$(args.quiet)
-    show(f"{i+1}/{args.num_trials} starting...")
-    subprocess.check_call(cmd)
-    show(f"{i+1}/{args.num_trials} finished.")
+    try:
+        show = base_show$(args.quiet)
+        show(f"{i+1}/{args.num_trials} starting...")
+        subprocess.check_call(cmd)
+        show(f"{i+1}/{args.num_trials} finished.")
+    except BrokenProcessPool:
+        raise KeyboardInterrupt()
 
 
-def main():
-    args = parser.parse_args()
+def main(*args, **kwargs):
+    args = parser.parse_args(*args, **kwargs)
     if not os.path.isfile(args.file):
         raise ValueError(f"could not find file {args.file}")
 

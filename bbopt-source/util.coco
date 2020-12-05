@@ -203,6 +203,7 @@ def plot(
 
 @contextmanager
 def open_with_lock(fpath, mode="rb+", timeout=lock_timeout, **kwargs):
+    """Open file with lock."""
     with Lock(fpath, mode, timeout=timeout, **kwargs) as file_handle:
         try:
             yield file_handle
@@ -213,3 +214,8 @@ def open_with_lock(fpath, mode="rb+", timeout=lock_timeout, **kwargs):
                     os.fsync(file_handle.fileno())
                 except OSError:
                     pass
+
+
+def printerr(*args):
+    """Print to stderr."""
+    print(*args, file=sys.stderr)

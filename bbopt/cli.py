@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf8d18980
+# __coconut_hash__ = 0xdfb659ea
 
 # Compiled with Coconut version 1.4.3-post_dev57 [Ernest Scribbler]
 
@@ -33,6 +33,11 @@ import subprocess
 from concurrent.futures import ProcessPoolExecutor
 from pprint import pprint
 
+if sys.version_info >= (3, 3):
+    from concurrent.futures.process import BrokenProcessPool
+else:
+    BrokenProcessPool = KeyboardInterrupt
+
 from bbopt.optimizer import BlackBoxOptimizer
 from bbopt.constants import description
 from bbopt.constants import default_trials
@@ -62,14 +67,17 @@ def base_show(quiet, msg):
 
 def run_trial(args, cmd, i):
     """Pickleable function for running trials in parallel."""
-    show = _coconut.functools.partial(base_show, args.quiet)
-    show("{_coconut_format_0}/{_coconut_format_1} starting...".format(_coconut_format_0=(i + 1), _coconut_format_1=(args.num_trials)))
-    subprocess.check_call(cmd)
-    show("{_coconut_format_0}/{_coconut_format_1} finished.".format(_coconut_format_0=(i + 1), _coconut_format_1=(args.num_trials)))
+    try:
+        show = _coconut.functools.partial(base_show, args.quiet)
+        show("{_coconut_format_0}/{_coconut_format_1} starting...".format(_coconut_format_0=(i + 1), _coconut_format_1=(args.num_trials)))
+        subprocess.check_call(cmd)
+        show("{_coconut_format_0}/{_coconut_format_1} finished.".format(_coconut_format_0=(i + 1), _coconut_format_1=(args.num_trials)))
+    except BrokenProcessPool:
+        raise KeyboardInterrupt()
 
 
-def main():
-    args = parser.parse_args()
+def main(*args, **kwargs):
+    args = parser.parse_args(*args, **kwargs)
     if not os.path.isfile(args.file):
         raise ValueError("could not find file {_coconut_format_0}".format(_coconut_format_0=(args.file)))
 

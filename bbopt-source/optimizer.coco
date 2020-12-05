@@ -31,6 +31,7 @@ from bbopt.util import (
     running_best,
     plot,
     open_with_lock,
+    printerr,
 )
 from bbopt.constants import (
     data_file_ext,
@@ -189,7 +190,7 @@ class BlackBoxOptimizer:
 
         match {=name: (old_func, old_args, old_kwargs), **_} in self._old_params:
             if (func, args) != (old_func, old_args):
-                print(f"BBopt Warning: detected change in parameter {name} ({(func, args)} != {(old_func, old_args)}) (you may need to delete your old BBopt data)")
+                printerr(f"BBopt Warning: detected change in parameter {name} ({(func, args)} != {(old_func, old_args)}) (you may need to delete your old BBopt data)")
 
         value = self.backend.param(name, func, *args, **kwargs)
         self._new_params[name] = (func, args, kwargs)

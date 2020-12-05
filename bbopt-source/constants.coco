@@ -22,8 +22,8 @@ classifiers = (
     "Operating System :: OS Independent",
 )
 requirements = (
-    "numpy>=1.0",
-    "matplotlib>=2.2",
+    "numpy>=1.15.1",
+    "matplotlib>=2.2.5",
     "scikit-optimize>=0.7.4",
 )
 extra_requirements = {
