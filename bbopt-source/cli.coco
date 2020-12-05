@@ -14,17 +14,13 @@ if sys.version_info >= (3, 3):
 else:
     BrokenProcessPool = KeyboardInterrupt
 
+from bbopt import constants
 from bbopt.optimizer import BlackBoxOptimizer
-from bbopt.constants import (
-    description,
-    default_trials,
-    default_jobs,
-)
 
 
 parser = argparse.ArgumentParser(
     prog="bbopt",
-    description=description,
+    description=constants.description,
 )
 
 parser.add_argument(
@@ -38,16 +34,16 @@ parser.add_argument(
     "-n", "--num-trials",
     metavar="trials",
     type=int,
-    default=default_trials,
-    help=f"number of trials to run (defaults to {default_trials})",
+    default=constants.default_trials,
+    help=f"number of trials to run (defaults to {constants.default_trials})",
 )
 
 parser.add_argument(
     "-j", "--jobs",
     metavar="processes",
     type=int,
-    default=default_jobs,
-    help=f"number of processes to use (defaults to {default_jobs})",
+    default=constants.default_jobs,
+    help=f"number of processes to use (defaults to {constants.default_jobs})",
 )
 
 parser.add_argument(

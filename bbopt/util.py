@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa0589ccc
+# __coconut_hash__ = 0x238ef25a
 
 # Compiled with Coconut version 1.4.3-post_dev57 [Ernest Scribbler]
 
@@ -41,7 +41,7 @@ from contextlib import contextmanager
 import numpy as np
 from portalocker import Lock
 
-from bbopt.constants import lock_timeout
+from bbopt import constants
 
 
 Num = (int, float)
@@ -232,8 +232,10 @@ def plot(xs, ys, ax=None, yscale=None, title=None, xlabel=None, ylabel=None, mar
 
 
 @contextmanager
-def open_with_lock(fpath, mode="rb+", timeout=lock_timeout, **kwargs):
+def open_with_lock(fpath, mode="rb+", timeout=None, **kwargs):
     """Open file with lock."""
+    if timeout is None:
+        timeout = constants.lock_timeout
     with Lock(fpath, mode, timeout=timeout, **kwargs) as file_handle:
         try:
             yield file_handle

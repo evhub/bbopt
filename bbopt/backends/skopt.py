@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb8076df2
+# __coconut_hash__ = 0xf7a6ba5
 
 # Compiled with Coconut version 1.4.3-post_dev57 [Ernest Scribbler]
 
@@ -45,13 +45,20 @@ except ImportError:
     pass
 except TypeError:
     Version = type(sklearn.utils.fixes.sp_version)
+    old_lt = Version.__lt__
+    old_le = Version.__le__
+    old_gt = Version.__gt__
+    old_ge = Version.__ge__
     try:
         try:
             _coconut_dotted_func_name_store_0 = __lt__
         except _coconut.NameError:
             _coconut_dotted_func_name_store_0 = _coconut_sentinel
         def __lt__(self, other):
-            return self.release < other
+            try:
+                return old_lt(self, other)
+            except TypeError:
+                return self.release < other
         Version.__lt__ = __lt__
         if _coconut_dotted_func_name_store_0 is not _coconut_sentinel:
             __lt__ = _coconut_dotted_func_name_store_0
@@ -60,7 +67,10 @@ except TypeError:
         except _coconut.NameError:
             _coconut_dotted_func_name_store_1 = _coconut_sentinel
         def __le__(self, other):
-            return self.release <= other
+            try:
+                return old_le(self, other)
+            except TypeError:
+                return self.release <= other
         Version.__le__ = __le__
         if _coconut_dotted_func_name_store_1 is not _coconut_sentinel:
             __le__ = _coconut_dotted_func_name_store_1
@@ -69,7 +79,10 @@ except TypeError:
         except _coconut.NameError:
             _coconut_dotted_func_name_store_2 = _coconut_sentinel
         def __gt__(self, other):
-            return self.release > other
+            try:
+                return old_gt(self, other)
+            except TypeError:
+                return self.release > other
         Version.__gt__ = __gt__
         if _coconut_dotted_func_name_store_2 is not _coconut_sentinel:
             __gt__ = _coconut_dotted_func_name_store_2
@@ -78,7 +91,10 @@ except TypeError:
         except _coconut.NameError:
             _coconut_dotted_func_name_store_3 = _coconut_sentinel
         def __ge__(self, other):
-            return self.release >= other
+            try:
+                return old_ge(self, other)
+            except TypeError:
+                return self.release >= other
         Version.__ge__ = __ge__
         if _coconut_dotted_func_name_store_3 is not _coconut_sentinel:
             __ge__ = _coconut_dotted_func_name_store_3

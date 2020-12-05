@@ -10,7 +10,7 @@ from contextlib import contextmanager
 import numpy as np
 from portalocker import Lock
 
-from bbopt.constants import lock_timeout
+from bbopt import constants
 
 
 Num = (int, float)
@@ -202,8 +202,10 @@ def plot(
 
 
 @contextmanager
-def open_with_lock(fpath, mode="rb+", timeout=lock_timeout, **kwargs):
+def open_with_lock(fpath, mode="rb+", timeout=None, **kwargs):
     """Open file with lock."""
+    if timeout is None:
+        timeout = constants.lock_timeout
     with Lock(fpath, mode, timeout=timeout, **kwargs) as file_handle:
         try:
             yield file_handle

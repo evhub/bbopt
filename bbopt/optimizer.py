@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x90dbc597
+# __coconut_hash__ = 0x8591efa5
 
 # Compiled with Coconut version 1.4.3-post_dev57 [Ernest Scribbler]
 
@@ -39,6 +39,7 @@ from pprint import pprint
 
 import numpy as np
 
+from bbopt import constants
 from bbopt.registry import backend_registry
 from bbopt.registry import init_backend
 from bbopt.registry import alg_registry
@@ -56,9 +57,6 @@ from bbopt.util import running_best
 from bbopt.util import plot
 from bbopt.util import open_with_lock
 from bbopt.util import printerr
-from bbopt.constants import data_file_ext
-from bbopt.constants import default_alg
-from bbopt.constants import default_protocol
 from bbopt.backends.serving import ServingBackend
 
 
@@ -107,7 +105,7 @@ class BlackBoxOptimizer(_coconut.object):
 # auto-detect protocol
             self._protocol = "json"
             if not os.path.exists(self.data_file):
-                self._protocol = default_protocol
+                self._protocol = constants.default_protocol
         else:
             self._protocol = protocol
 
@@ -271,9 +269,11 @@ class BlackBoxOptimizer(_coconut.object):
         """All algorithms supported by run."""
         return alg_registry.asdict()
 
-    def run(self, alg=default_alg):
+    def run(self, alg=None):
         """Optimize parameters using the given algorithm
         (use .algs to get the list of valid algorithms)."""
+        if alg is None:
+            alg = constants.default_alg
         backend, options = alg_registry[alg]
         self.run_backend(backend, **options)
 
@@ -304,7 +304,7 @@ class BlackBoxOptimizer(_coconut.object):
     @property
     def data_file(self):
         """The path to the file we are saving data to."""
-        return os.path.join(os.path.dirname(self._file), self._file_name) + data_file_ext + (".json" if self._using_json else ".pickle")
+        return os.path.join(os.path.dirname(self._file), self._file_name) + constants.data_file_ext + (".json" if self._using_json else ".pickle")
 
     def get_data(self, print_data=False):
         """Get all currently-loaded data as a dictionary containing params and examples."""
@@ -425,10 +425,6 @@ class BlackBoxOptimizer(_coconut.object):
         """Create a new parameter with the given name modeled by random.randrange(*args)."""
         return self.param(name, "randrange", *args, **kwargs)
 
-    def choice(self, name, seq, **kwargs):
-        """Create a new parameter with the given name modeled by random.choice(seq)."""
-        return self.param(name, "choice", seq, **kwargs)
-
     def uniform(self, name, a, b, **kwargs):
         """Create a new parameter with the given name modeled by random.uniform(a, b)."""
         return self.param(name, "uniform", a, b, **kwargs)
@@ -465,6 +461,22 @@ class BlackBoxOptimizer(_coconut.object):
         """Create a new parameter with the given name modeled by random.weibullvariate(alpha, beta)."""
         return self.param(name, "weibullvariate", alpha, beta, **kwargs)
 
+# Choice functions:
+
+    def _categorical(self, name, num_categories, **kwargs):
+        """Create a new parameter with the given name modeled by random.choice(range(num_categories))."""
+        if constants.use_randrange_for_categorical_data:
+            return self.randrange(name, num_categories, **kwargs)
+        else:
+            return self.param(name, "choice", range(num_categories), **kwargs)
+
+    def choice(self, name, seq, **kwargs):
+        """Create a new parameter with the given name modeled by random.choice(seq)."""
+        if constants.use_generic_categories_for_categorical_data:
+            return seq[self._categorical(name, len(seq), **kwargs)]
+        else:
+            return self.param(name, "choice", seq, **kwargs)
+
 # Derived random functions:
 
     def randint(self, name, a, b, **kwargs):
@@ -497,7 +509,7 @@ class BlackBoxOptimizer(_coconut.object):
 
     def randbool(self, name, **kwargs):
         """Create a new boolean parameter with the given name."""
-        return self.choice(name, [False, True], **kwargs)
+        return bool(self.choice(name, [False, True], **kwargs))
 
     def sample(self, name, population, k, **kwargs):
         """Create a new parameter with the given name modeled by random.sample(population, k)."""
@@ -513,7 +525,7 @@ class BlackBoxOptimizer(_coconut.object):
                     elem = _coconut_igetitem(val, i)
                     return sampling_population.index(elem) if elem in sampling_population else 0
                 proc_kwargs = (param_processor.modify_kwargs)(_coconut_lambda_0, kwargs)
-                ind = self.randrange("{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(i)), len(sampling_population), **proc_kwargs)
+                ind = self._categorical("{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(i)), len(sampling_population), **proc_kwargs)
                 sample.append(sampling_population.pop(ind))
         return sample
 

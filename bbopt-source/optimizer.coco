@@ -12,6 +12,7 @@ from pprint import pprint
 
 import numpy as np
 
+from bbopt import constants
 from bbopt.registry import (
     backend_registry,
     init_backend,
@@ -32,11 +33,6 @@ from bbopt.util import (
     plot,
     open_with_lock,
     printerr,
-)
-from bbopt.constants import (
-    data_file_ext,
-    default_alg,
-    default_protocol,
 )
 from bbopt.backends.serving import ServingBackend
 
@@ -69,7 +65,7 @@ class BlackBoxOptimizer:
             # auto-detect protocol
             self._protocol = "json"
             if not os.path.exists(self.data_file):
-                self._protocol = default_protocol
+                self._protocol = constants.default_protocol
         else:
             self._protocol = protocol
 
@@ -215,9 +211,11 @@ class BlackBoxOptimizer:
         """All algorithms supported by run."""
         alg_registry.asdict()
 
-    def run(self, alg=default_alg):
+    def run(self, alg=None):
         """Optimize parameters using the given algorithm
         (use .algs to get the list of valid algorithms)."""
+        if alg is None:
+            alg = constants.default_alg
         backend, options = alg_registry[alg]
         self.run_backend(backend, **options)
 
@@ -248,7 +246,7 @@ class BlackBoxOptimizer:
     @property
     def data_file(self) =
         """The path to the file we are saving data to."""
-        os.path.join(os.path.dirname(self._file), self._file_name) + data_file_ext + (".json" if self._using_json else ".pickle")
+        os.path.join(os.path.dirname(self._file), self._file_name) + constants.data_file_ext + (".json" if self._using_json else ".pickle")
 
     def get_data(self, print_data=False):
         """Get all currently-loaded data as a dictionary containing params and examples."""
@@ -405,10 +403,6 @@ class BlackBoxOptimizer:
         """Create a new parameter with the given name modeled by random.randrange(*args)."""
         return self.param(name, "randrange", *args, **kwargs)
 
-    def choice(self, name, seq, **kwargs):
-        """Create a new parameter with the given name modeled by random.choice(seq)."""
-        return self.param(name, "choice", seq, **kwargs)
-
     def uniform(self, name, a, b, **kwargs):
         """Create a new parameter with the given name modeled by random.uniform(a, b)."""
         return self.param(name, "uniform", a, b, **kwargs)
@@ -445,6 +439,22 @@ class BlackBoxOptimizer:
         """Create a new parameter with the given name modeled by random.weibullvariate(alpha, beta)."""
         return self.param(name, "weibullvariate", alpha, beta, **kwargs)
 
+    # Choice functions:
+
+    def _categorical(self, name, num_categories, **kwargs):
+        """Create a new parameter with the given name modeled by random.choice(range(num_categories))."""
+        if constants.use_randrange_for_categorical_data:
+            return self.randrange(name, num_categories, **kwargs)
+        else:
+            return self.param(name, "choice", range(num_categories), **kwargs)
+
+    def choice(self, name, seq, **kwargs):
+        """Create a new parameter with the given name modeled by random.choice(seq)."""
+        if constants.use_generic_categories_for_categorical_data:
+            return seq[self._categorical(name, len(seq), **kwargs)]
+        else:
+            return self.param(name, "choice", seq, **kwargs)
+
     # Derived random functions:
 
     def randint(self, name, a, b, **kwargs):
@@ -477,7 +487,7 @@ class BlackBoxOptimizer:
 
     def randbool(self, name, **kwargs):
         """Create a new boolean parameter with the given name."""
-        return self.choice(name, [False, True], **kwargs)
+        return bool(self.choice(name, [False, True], **kwargs))
 
     def sample(self, name, population, k, **kwargs):
         """Create a new parameter with the given name modeled by random.sample(population, k)."""
@@ -494,7 +504,7 @@ class BlackBoxOptimizer:
                         elem = val$[i];
                         sampling_population.index(elem) if elem in sampling_population else 0
                 )
-                ind = self.randrange(f"{name}[{i}]", len(sampling_population), **proc_kwargs)
+                ind = self._categorical(f"{name}[{i}]", len(sampling_population), **proc_kwargs)
                 sample.append(sampling_population.pop(ind))
         return sample
 

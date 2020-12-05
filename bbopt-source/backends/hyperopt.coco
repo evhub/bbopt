@@ -38,7 +38,7 @@ def create_space(name, func, *args):
         match "randrange":
             start, stop, step = args
             if step != 1:
-                raise ValueError("the hyperopt backend only supports a randrange step size of 1")
+                raise ValueError("the hyperopt backend only supports a randrange step size of 1 (use bb.choice(name, range(start, stop, step)) instead)")
             # despite being called randint, hp.randint is exclusive
             return start + hp.randint(name, stop - start)
         match "uniform":

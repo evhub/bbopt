@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xdfb659ea
+# __coconut_hash__ = 0x564ce5ce
 
 # Compiled with Coconut version 1.4.3-post_dev57 [Ernest Scribbler]
 
@@ -38,19 +38,17 @@ if sys.version_info >= (3, 3):
 else:
     BrokenProcessPool = KeyboardInterrupt
 
+from bbopt import constants
 from bbopt.optimizer import BlackBoxOptimizer
-from bbopt.constants import description
-from bbopt.constants import default_trials
-from bbopt.constants import default_jobs
 
 
-parser = argparse.ArgumentParser(prog="bbopt", description=description)
+parser = argparse.ArgumentParser(prog="bbopt", description=constants.description)
 
 parser.add_argument("file", metavar="file", type=str, help="path to the Python file to run")
 
-parser.add_argument("-n", "--num-trials", metavar="trials", type=int, default=default_trials, help="number of trials to run (defaults to {_coconut_format_0})".format(_coconut_format_0=(default_trials)))
+parser.add_argument("-n", "--num-trials", metavar="trials", type=int, default=constants.default_trials, help="number of trials to run (defaults to {_coconut_format_0})".format(_coconut_format_0=(constants.default_trials)))
 
-parser.add_argument("-j", "--jobs", metavar="processes", type=int, default=default_jobs, help="number of processes to use (defaults to {_coconut_format_0})".format(_coconut_format_0=(default_jobs)))
+parser.add_argument("-j", "--jobs", metavar="processes", type=int, default=constants.default_jobs, help="number of processes to use (defaults to {_coconut_format_0})".format(_coconut_format_0=(constants.default_jobs)))
 
 parser.add_argument("-q", "--quiet", action="store_true", help="suppress all informational output")
 

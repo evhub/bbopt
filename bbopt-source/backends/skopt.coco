@@ -25,15 +25,31 @@ except ImportError:
     pass
 except TypeError:
     Version = type(sklearn.utils.fixes.sp_version)
+    old_lt = Version.__lt__
+    old_le = Version.__le__
+    old_gt = Version.__gt__
+    old_ge = Version.__ge__
     try:
-        def Version.__lt__(self, other) =
-            self.release < other
-        def Version.__le__(self, other) =
-            self.release <= other
-        def Version.__gt__(self, other) =
-            self.release > other
-        def Version.__ge__(self, other) =
-            self.release >= other
+        def Version.__lt__(self, other):
+            try:
+                return old_lt(self, other)
+            except TypeError:
+                return self.release < other
+        def Version.__le__(self, other):
+            try:
+                return old_le(self, other)
+            except TypeError:
+                return self.release <= other
+        def Version.__gt__(self, other):
+            try:
+                return old_gt(self, other)
+            except TypeError:
+                return self.release > other
+        def Version.__ge__(self, other):
+            try:
+                return old_ge(self, other)
+            except TypeError:
+                return self.release >= other
     except TypeError:
         pass
 

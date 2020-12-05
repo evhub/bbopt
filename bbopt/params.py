@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7218743c
+# __coconut_hash__ = 0x68611aa3
 
 # Compiled with Coconut version 1.4.3-post_dev57 [Ernest Scribbler]
 
@@ -115,7 +115,7 @@ def placeholder_randrange(start, stop, step):
 
 
 def placeholder_choice(choices):
-    return _coconut_igetitem(choices, len(choices) // 2)
+    return choices[len(choices) // 2]
 
 
 def placeholder_uniform(start, stop):

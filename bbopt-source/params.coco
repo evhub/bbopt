@@ -90,7 +90,7 @@ def placeholder_randrange(start, stop, step) =
 
 
 def placeholder_choice(choices) =
-    choices$[len(choices)//2]
+    choices[len(choices)//2]
 
 
 def placeholder_uniform(start, stop) =

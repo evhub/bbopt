@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x8842ec69
+# __coconut_hash__ = 0xa2f44949
 
 # Compiled with Coconut version 1.4.3-post_dev57 [Ernest Scribbler]
 
@@ -62,7 +62,7 @@ def create_space(name, func, *args):
         if _coconut_case_check_0:
             start, stop, step = args
             if step != 1:
-                raise ValueError("the hyperopt backend only supports a randrange step size of 1")
+                raise ValueError("the hyperopt backend only supports a randrange step size of 1 (use bb.choice(name, range(start, stop, step)) instead)")
 # despite being called randint, hp.randint is exclusive
             return start + hp.randint(name, stop - start)
     if not _coconut_case_check_0:

@@ -4,32 +4,21 @@ import sys
 import os.path
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "bbopt"))
 
-from constants import (
-    name,
-    version,
-    description,
-    long_description,
-    github_url,
-    author,
-    author_email,
-    requirements,
-    classifiers,
-    extra_requirements,
-)
+from bbopt import constants
 
 
 setuptools.setup(
-    name=name,
-    version=version,
-    description=description,
-    long_description=long_description,
-    url=github_url,
-    author=author,
-    author_email=author_email,
-    classifiers=classifiers |> list,
+    name=constants.name,
+    version=constants.version,
+    description=constants.description,
+    long_description=constants.long_description,
+    url=constants.github_url,
+    author=constants.author,
+    author_email=constants.author_email,
+    classifiers=constants.classifiers |> list,
     packages=setuptools.find_packages(),
-    install_requires=requirements |> list,
-    extras_require=extra_requirements |> fmap$((k, v) -> (k, list(v))),
+    install_requires=constants.requirements |> list,
+    extras_require=constants.extra_requirements |> fmap$((k, v) -> (k, list(v))),
     entry_points={
         "console_scripts": [
             "bbopt = bbopt.cli:main",
