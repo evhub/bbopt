@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x8591efa5
+# __coconut_hash__ = 0xce5d68a5
 
 # Compiled with Coconut version 1.4.3-post_dev57 [Ernest Scribbler]
 
@@ -73,9 +73,14 @@ def array_param(func, name, shape, kwargs):
     return arr
 
 
+DEFAULT_ALG_SENTINEL = object()
+
+
 class BlackBoxOptimizer(_coconut.object):
     """Main bbopt optimizer object. See https://github.com/evhub/bbopt for documentation."""
     backend = None
+    _new_params = None
+    _current_example = None
 
     @_coconut_mark_as_match
     def __init__(*_coconut_match_to_args, **_coconut_match_to_kwargs):
@@ -153,6 +158,9 @@ class BlackBoxOptimizer(_coconut.object):
         """Load the given examples into memory."""
         for ex in examples:
             if ex not in self._examples:
+                for name, val in (list)(ex["values"].items()):
+                    func, args, kwargs = (lambda _coconut_x: self._old_params[name] if _coconut_x is None else _coconut_x)((lambda _coconut_x: None if _coconut_x is None else _coconut_x.get(name))(self._new_params))
+                    ex["values"][name] = param_processor.verify_support(name, val, func, *args, **kwargs)
                 self._examples.append(ex)
 
     def _load_from(self, df):
@@ -269,10 +277,10 @@ class BlackBoxOptimizer(_coconut.object):
         """All algorithms supported by run."""
         return alg_registry.asdict()
 
-    def run(self, alg=None):
+    def run(self, alg=DEFAULT_ALG_SENTINEL):
         """Optimize parameters using the given algorithm
         (use .algs to get the list of valid algorithms)."""
-        if alg is None:
+        if alg is DEFAULT_ALG_SENTINEL:
             alg = constants.default_alg
         backend, options = alg_registry[alg]
         self.run_backend(backend, **options)
@@ -331,10 +339,9 @@ class BlackBoxOptimizer(_coconut.object):
 
     def get_current_run(self):
         """Return a dictionary containing the current parameters and reward."""
-        try:
-            return self._current_example
-        except AttributeError:
+        if self._current_example is None:
             raise ValueError("get_current_run calls must come after run")
+        return self._current_example
 
     def get_optimal_run(self):
         """Return a dictionary containing the optimal parameters and reward computed so far."""

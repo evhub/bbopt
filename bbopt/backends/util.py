@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3a345b0f
+# __coconut_hash__ = 0x961c17b8
 
 # Compiled with Coconut version 1.4.3-post_dev57 [Ernest Scribbler]
 
@@ -266,6 +266,6 @@ class Backend(_coconut.object):
         backend_registry.register_alias(cls.backend_name, alias)
 
     @staticmethod
-    def register_param_func(func_name, handler, placeholder_generator):
+    def register_param_func(func_name, handler, placeholder_generator, support_check_func):
         """Register a new parameter definition function. See bbopt.params for examples."""
-        param_processor.register(func_name, handler, placeholder_generator)
+        param_processor.register(func_name, handler, placeholder_generator, support_check_func)

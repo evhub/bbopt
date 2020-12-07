@@ -224,6 +224,6 @@ class Backend:
         backend_registry.register_alias(cls.backend_name, alias)
 
     @staticmethod
-    def register_param_func(func_name, handler, placeholder_generator):
+    def register_param_func(func_name, handler, placeholder_generator, support_check_func):
         """Register a new parameter definition function. See bbopt.params for examples."""
-        param_processor.register(func_name, handler, placeholder_generator)
+        param_processor.register(func_name, handler, placeholder_generator, support_check_func)

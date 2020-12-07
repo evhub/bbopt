@@ -32,24 +32,40 @@ except TypeError:
     try:
         def Version.__lt__(self, other):
             try:
-                return old_lt(self, other)
-            except TypeError:
+                result = old_lt(self, other)
+            except TypeError, NotImplementedError:
+                result = NotImplemented
+            if result is NotImplemented:
                 return self.release < other
+            else:
+                return result
         def Version.__le__(self, other):
             try:
-                return old_le(self, other)
-            except TypeError:
+                result = old_le(self, other)
+            except TypeError, NotImplementedError:
+                result = NotImplemented
+            if result is NotImplemented:
                 return self.release <= other
+            else:
+                return result
         def Version.__gt__(self, other):
             try:
-                return old_gt(self, other)
-            except TypeError:
+                result = old_gt(self, other)
+            except TypeError, NotImplementedError:
+                result = NotImplemented
+            if result is NotImplemented:
                 return self.release > other
+            else:
+                return result
         def Version.__ge__(self, other):
             try:
-                return old_ge(self, other)
-            except TypeError:
+                result = old_ge(self, other)
+            except TypeError, NotImplementedError:
+                result = NotImplemented
+            if result is NotImplemented:
                 return self.release >= other
+            else:
+                return result
     except TypeError:
         pass
 

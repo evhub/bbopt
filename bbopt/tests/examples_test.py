@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x56c62b73
+# __coconut_hash__ = 0xfdb677c2
 
 # Compiled with Coconut version 1.4.3-post_dev57 [Ernest Scribbler]
 
@@ -130,6 +130,7 @@ class TestExamples(unittest.TestCase):
             assert os.path.exists(random_data)
 
             from bbopt.examples import random_example
+            random_example.bb.get_data(print_data=True)
             assert random_example.x == want
             assert 1 <= random_example.x <= 10
             assert random_example.bb.num_examples == NUM_TRIALS
@@ -223,3 +224,7 @@ class TestExamples(unittest.TestCase):
             reload(json_example)
             assert json_example.y == want
             assert json_example.bb.num_examples == NUM_TRIALS
+
+
+if __name__ == "__main__":
+    unittest.main()

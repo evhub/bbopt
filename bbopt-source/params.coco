@@ -3,13 +3,15 @@ Handles standardizing param calls to use standard library random functions.
 """
 
 from collections.abc import Iterable
-from math import log as ln
+from math import pi, log as ln
 
+from bbopt import constants
 from bbopt.util import (
     Num,
     format_err,
     all_isinstance,
     denumpy_all,
+    printerr,
 )
 
 
@@ -129,41 +131,77 @@ def placeholder_weibullvariate(alpha, beta) =
     alpha * ln(2)**(1/beta)
 
 
+# Support checkers:
+
+
+def support_check_randrange(val, start, stop, step) =
+    val in range(start, stop, step)
+
+
+def support_check_choice(val, choices) =
+    val in choices
+
+
+def support_check_uniform(val, start, stop) =
+    start <= val <= stop or stop <= val <= start
+
+
+def support_check_triangular(val, low, high, mode) =
+    low <= val <= high
+
+
+def support_check_betavariate(val, alpha, beta) =
+    0 <= val <= 1
+
+
+def support_check_expovariate(val, lambd) =
+    val >= 0 if lambd >= 0 else val <= 0
+
+
+def support_check_gammavariate(val, alpha, beta) =
+    val > 0
+
+
+def support_check_normalvariate(val, mu, sigma) =
+    True
+
+
+def support_check_vonmisesvariate(val, mu, kappa) =
+    0 <= val <= 2*pi
+
+
+def support_check_paretovariate(val, alpha) =
+    val >= 1
+
+
+def support_check_weibullvariate(val, alpha, beta) =
+    val >= 0
+
+
 # Processor:
 
 class ParamProcessor:
     """Processes param keyword arguments."""
-    handlers = {
-        "randrange": handle_randrange,
-        "choice": handle_choice,
-        "uniform": handle_uniform,
-        "triangular": handle_triangular,
-        "betavariate": handle_betavariate,
-        "expovariate": handle_expovariate,
-        "gammavariate": handle_gammavariate,
-        "normalvariate": handle_normalvariate,
-        "vonmisesvariate": handle_vonmisesvariate,
-        "paretovariate": handle_paretovariate,
-        "weibullvariate": handle_weibullvariate,
-    }
-    placeholder_funcs = {
-        "randrange": placeholder_randrange,
-        "choice": placeholder_choice,
-        "uniform": placeholder_uniform,
-        "triangular": placeholder_triangular,
-        "betavariate": placeholder_betavariate,
-        "expovariate": placeholder_expovariate,
-        "gammavariate": placeholder_gammavariate,
-        "normalvariate": placeholder_normalvariate,
-        "vonmisesvariate": placeholder_vonmisesvariate,
-        "paretovariate": placeholder_paretovariate,
-        "weibullvariate": placeholder_weibullvariate,
-    }
 
-    def register(func_name, handler, placeholder_generator):
+    def __init__(self):
+        self.handlers = {}
+        self.placeholder_funcs = {}
+        self.support_checkers = {}
+
+    def register(self, func, handler, placeholder_generator, support_check_func):
         """Register a new parameter definition function. See bbopt.params for examples."""
-        self.handlers[func_name] = handler
-        self.placeholder_funcs[func_name] = placeholder_generator
+        self.handlers[func] = handler
+        self.placeholder_funcs[func] = placeholder_generator
+        self.support_checkers[func] = support_check_func
+
+    def verify_support(self, name, val, func, *args, **kwargs):
+        if func not in self.support_checkers:
+            raise ValueError(f"unknown parameter definition function {func} (register with bbopt.params.param_processor.register)")
+        if not self.support_checkers[func](val, *args):
+            printerr(f"BBopt Warning: {val} not in support of {func}(*{args}) for parameter {name} (adjust parameter definition to ensure support is always maximally broad)")
+            if constants.use_placeholder_when_outside_support:
+                val = kwargs.get("placeholder_when_missing", self.choose_default_placeholder(name, func, *args, **kwargs))
+        return val
 
     def modify_kwargs(self, func, kwargs):
         """Apply func to all kwargs with values in the random function's domain."""
@@ -204,4 +242,18 @@ class ParamProcessor:
         return self.placeholder_funcs[func](*args)
 
 
+# Registration:
+
 param_processor = ParamProcessor()
+
+param_processor.register("randrange", handle_randrange, placeholder_randrange, support_check_randrange)
+param_processor.register("choice", handle_choice, placeholder_choice, support_check_choice)
+param_processor.register("uniform", handle_uniform, placeholder_uniform, support_check_uniform)
+param_processor.register("triangular", handle_triangular, placeholder_triangular, support_check_triangular)
+param_processor.register("betavariate", handle_betavariate, placeholder_betavariate, support_check_betavariate)
+param_processor.register("expovariate", handle_expovariate, placeholder_expovariate, support_check_expovariate)
+param_processor.register("gammavariate", handle_gammavariate, placeholder_gammavariate, support_check_gammavariate)
+param_processor.register("normalvariate", handle_normalvariate, placeholder_normalvariate, support_check_normalvariate)
+param_processor.register("vonmisesvariate", handle_vonmisesvariate, placeholder_vonmisesvariate, support_check_vonmisesvariate)
+param_processor.register("paretovariate", handle_paretovariate, placeholder_paretovariate, support_check_paretovariate)
+param_processor.register("weibullvariate", handle_weibullvariate, placeholder_weibullvariate, support_check_weibullvariate)
