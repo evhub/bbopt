@@ -6,8 +6,8 @@ install: build
 install-2: build
 	python2 -m pip install -Ue .[dev]
 
-.PHONY: force
-force: force-build
+.PHONY: force-install
+force-install: force-build
 	pip install -Ue .[dev]
 
 .PHONY: setup
