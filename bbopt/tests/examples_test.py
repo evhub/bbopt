@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xfdb677c2
+# __coconut_hash__ = 0x5b967f0f
 
-# Compiled with Coconut version 1.4.3-post_dev57 [Ernest Scribbler]
+# Compiled with Coconut version 1.4.3-post_dev58 [Ernest Scribbler]
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -209,6 +209,7 @@ class TestExamples(unittest.TestCase):
             reload(mixture_example)
             assert mixture_example.loss == want
             assert 0 <= mixture_example.loss <= 85
+            assert (len)((set)((map)(_coconut_base_compose(_coconut.operator.itemgetter(("memo")), (_coconut.operator.itemgetter(("alg")), 0)), mixture_example.bb.get_data()["examples"]))) > 1
             assert mixture_example.bb.num_examples == NUM_TRIALS
 
     def test_json(self):

@@ -193,6 +193,7 @@ class TestExamples(unittest.TestCase):
             reload(mixture_example)
             assert mixture_example.loss == want
             assert 0 <= mixture_example.loss <= 85
+            assert mixture_example.bb.get_data()["examples"] |> map$(.["memo"] ..> .["alg"]) |> set |> len > 1
             assert mixture_example.bb.num_examples == NUM_TRIALS
 
     def test_json(self):
