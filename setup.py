@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x421bc147
+# __coconut_hash__ = 0x93ac62b1
 
-# Compiled with Coconut version 1.4.3-post_dev58 [Ernest Scribbler]
+# Compiled with Coconut version 1.5.0-post_dev6 [Fish License]
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -321,8 +321,12 @@ def tee(iterable, n=2):
 class reiterable(object):
     """Allows an iterator to be iterated over multiple times."""
     __slots__ = ("iter",)
-    def __init__(self, iterable):
+    def __new__(cls, iterable):
+        if _coconut.isinstance(iterable, _coconut_reiterable):
+            return iterable
+        self = _coconut.object.__new__(cls)
         self.iter = iterable
+        return self
     def get_new_iter(self):
         self.iter, new_iter = _coconut_tee(self.iter)
         return new_iter
@@ -939,7 +943,7 @@ def memoize(maxsize=None, *args, **kwargs):
     """Decorator that memoizes a function,
     preventing it from being recomputed if it is called multiple times with the same arguments."""
     return _coconut.functools.lru_cache(maxsize, *args, **kwargs)
-_coconut_MatchError, _coconut_count, _coconut_enumerate, _coconut_filter, _coconut_makedata, _coconut_map, _coconut_reversed, _coconut_starmap, _coconut_tee, _coconut_zip, TYPE_CHECKING, reduce, takewhile, dropwhile = MatchError, count, enumerate, filter, makedata, map, reversed, starmap, tee, zip, False, _coconut.functools.reduce, _coconut.itertools.takewhile, _coconut.itertools.dropwhile
+_coconut_MatchError, _coconut_count, _coconut_enumerate, _coconut_filter, _coconut_makedata, _coconut_map, _coconut_reiterable, _coconut_reversed, _coconut_starmap, _coconut_tee, _coconut_zip, TYPE_CHECKING, reduce, takewhile, dropwhile = MatchError, count, enumerate, filter, makedata, map, reiterable, reversed, starmap, tee, zip, False, _coconut.functools.reduce, _coconut.itertools.takewhile, _coconut.itertools.dropwhile
 
 # Compiled Coconut: -----------------------------------------------------------
 

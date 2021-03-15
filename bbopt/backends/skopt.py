@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x242daccc
+# __coconut_hash__ = 0xa463b319
 
-# Compiled with Coconut version 1.4.3-post_dev58 [Ernest Scribbler]
+# Compiled with Coconut version 1.5.0-post_dev6 [Fish License]
 
 """
 The scikit-optimize backend. Does black box optimization using scikit-optimize.
@@ -18,7 +18,7 @@ if _coconut_cached_module is not None and _coconut_os_path.dirname(_coconut_cach
     del _coconut_sys.modules[str("__coconut__")]
 _coconut_sys.path.insert(0, _coconut_file_path)
 from __coconut__ import *
-from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match
+from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
 if _coconut_sys.version_info >= (3,):
     _coconut_sys.path.pop(0)
 
@@ -143,7 +143,7 @@ def create_space(name, func, *args):
             _coconut_case_check_0 = True
         if _coconut_case_check_0:
             return Real(*args, name=name)
-    raise TypeError("insufficiently specified parameter {_coconut_format_0}".format(_coconut_format_0=(name)))
+    raise TypeError("invalid parameter {_coconut_format_0}".format(_coconut_format_0=(name)))
 
 
 def create_dimensions(params):
@@ -160,6 +160,7 @@ class SkoptBackend(Backend):
 
     def __init__(self, examples, params, base_estimator="GP", **options):
         self.init_fallback_backend()
+        self.params = params
 
         if not params:
             self.current_values = {}
@@ -170,17 +171,17 @@ class SkoptBackend(Backend):
         self.optimizer = Optimizer(create_dimensions(params), base_estimator, **options)
 
         if examples:
-            self.tell_examples(examples, params)
+            self.tell_examples(examples)
         else:
             self.current_values = {}
 
-    def tell_examples(self, new_examples, params):
+    def tell_examples(self, new_examples):
         """Special method that allows fast updating of the backend with new examples."""
-        data_points, losses = split_examples(new_examples, params)
+        data_points, losses = split_examples(new_examples, self.params)
         self.result = self.optimizer.tell(data_points, losses)
 
         current_point = self.optimizer.ask()
-        self.current_values = make_values(params, current_point)
+        self.current_values = make_values(self.params, current_point)
 
     @property
     def space(self):

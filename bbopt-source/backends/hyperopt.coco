@@ -24,7 +24,7 @@ from bbopt.util import sorted_items
 from bbopt.backends.util import (
     Backend,
     negate_objective,
-    make_features,
+    get_names_and_features,
 )
 
 
@@ -45,7 +45,7 @@ def create_space(name, func, *args):
             return hp.uniform(name, *args)
         match "normalvariate":
             return hp.normal(name, *args)
-    raise TypeError(f"insufficiently specified parameter {name}")
+    raise TypeError(f"invalid parameter {name}")
 
 
 def examples_to_trials(examples, params):
@@ -66,18 +66,15 @@ def examples_to_trials(examples, params):
 
         vals = {}
         idxs = {}
-        for k, v in zip(
-            sorted(params),
-            make_features(
-                ex["values"],
-                params,
-                fallback_func=(name, func, *args, **kwargs) -> NA,
-                converters={
-                    "choice": (val, choices) -> choices.index(val),
-                    "randrange": (val, start, stop, step) -> val - start,
-                },
-                convert_fallback=False,
-            ),
+        for k, v in get_names_and_features(
+            ex["values"],
+            params,
+            fallback_func=(name, func, *args, **kwargs) -> NA,
+            converters={
+                "choice": (val, choices) -> choices.index(val),
+                "randrange": (val, start, stop, step) -> val - start,
+            },
+            convert_fallback=False,
         ):
             vals[k] = [v] if v is not NA else []
             idxs[k] = [tid] if v is not NA else []
@@ -119,6 +116,7 @@ class HyperoptBackend(Backend):
 
     def __init__(self, examples, params, algo=tpe.suggest, rstate=np.random.RandomState(), show_progressbar=False, **options):
         self.init_fallback_backend()
+        self.params = params
 
         if not params:
             self.current_values = {}
@@ -143,13 +141,13 @@ class HyperoptBackend(Backend):
         )
 
         if examples:
-            self.tell_examples(examples, params)
+            self.tell_examples(examples)
         else:
             self.current_value = {}
 
-    def tell_examples(self, new_examples, params):
+    def tell_examples(self, new_examples):
         """Special method that allows fast updating of the backend with new examples."""
-        trial_list = examples_to_trials(new_examples, params)
+        trial_list = examples_to_trials(new_examples, self.params)
         self.trials.insert_trial_docs(trial_list)
         self.trials.refresh()
 
@@ -158,7 +156,7 @@ class HyperoptBackend(Backend):
         next(self.fmin_iter)
 
         assert self.current_values is not None, self.current_values
-        assert set(self.current_values.keys()) == set(params), self.current_values
+        assert set(self.current_values.keys()) == set(self.params), self.current_values
 
     def set_current_values(self, values):
         """Callback to set the values for this run."""
@@ -172,5 +170,5 @@ class HyperoptBackend(Backend):
 # Registered names:
 
 HyperoptBackend.register()
-HyperoptBackend.register_alg("tree_structured_parzen_estimator")
+HyperoptBackend.register_alg("tree_structured_parzen_estimator", algo=tpe.suggest)
 HyperoptBackend.register_alg("annealing", algo=anneal.suggest)

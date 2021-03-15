@@ -1,0 +1,220 @@
+"""
+The pySOT backend. Does black box optimization using pySOT.
+"""
+
+import numpy as np
+
+from poap.controller import SerialController
+from pySOT.optimization_problems.optimization_problem import OptimizationProblem
+from pySOT.experimental_design import (
+    ExperimentalDesign,
+    SymmetricLatinHypercube,
+    LatinHypercube,
+    TwoFactorial,
+)
+from pySOT.surrogate import (
+    RBFInterpolant,
+    GPRegressor,
+)
+from pySOT.strategy import (
+    SRBFStrategy,
+    EIStrategy,
+    DYCORSStrategy,
+    LCBStrategy,
+)
+
+from bbopt.util import sorted_items
+from bbopt.backends.util import StandardBackend
+
+
+# Utilities:
+
+class GotValuesException(BaseException)
+
+class BBoptOptimizationProblem(OptimizationProblem):
+    def __init__(self, params):
+        self.params = params
+        self.dim = len(params)
+        self.got_values = None
+
+        # lower and upper bounds; len must match self.dim
+        self.lb = []
+        self.ub = []
+
+        # lists of indices that are discrete vs. continuous
+        self.int_var = []
+        self.cont_var = []
+
+        self.names = []
+        self.choices = {}
+        for i, (name, (func, args, kwargs)) in enumerate(sorted_items(params)):
+            self.names.append(name)
+            case func, args:
+                match "choice", (choices,):
+                    self.lb.append(0)
+                    self.ub.append(len(choices) - 1)
+                    self.int_var.append(i)
+                    self.choices[name] = choices
+                match "randrange", (start, stop, step):
+                    rng = range(start, stop, step)
+                    self.lb.append(0)
+                    self.ub.append(len(rng) - 1)
+                    self.int_var.append(i)
+                    self.choices[name] = rng
+                match "uniform", (start, stop):
+                    self.lb.append(start)
+                    self.ub.append(stop)
+                    self.cont_var.append(i)
+            else:
+                raise TypeError(f"insufficiently specified parameter {name}")
+
+        self.lb |>= np.array
+        self.ub |>= np.array
+        self.int_var |>= np.array
+        self.cont_var |>= np.array
+
+    def eval(self, xs):
+        self.__check_input__(xs)
+        assert self.got_values is None, (xs, self.got_values)
+        self.got_values = {}
+        for i in range(self.dim):
+            name = self.names[i]
+            val = xs[i]
+            match {=name: choices, **_} in self.choices:
+                assert val == int(val), val
+                val = choices[int(val)]
+            self.got_values[name] = val
+        raise GotValuesException()
+
+    def get_points_values(self, all_data, all_losses):
+        """Convert examples into pySOT-compatible points and values."""
+        points = []
+        values = []
+        for ex_dict, loss in zip(all_data, all_losses):
+            pt = []
+            for name, val in ex_dict.items():
+                match {=name: choices, **_} in self.choices:
+                    chosen_ind = choices.index(val)
+                    pt.append(chosen_ind)
+                else:
+                    pt.append(val)
+            points.append(pt)
+            values.append(loss)
+        return np.array(points), np.array(values)
+
+
+# Backend:
+
+class PySOTBackend(StandardBackend):
+    """The pySOT backend uses pySOT for black box optimization."""
+    backend_name = "pySOT"
+    implemented_funcs = (
+        "choice",
+        "randrange",
+        "uniform",
+    )
+
+    def setup_backend(
+        self,
+        params,
+        strategy="SRBF",
+        surrogate="RBF",
+        design="symmetric_latin_hypercube",
+    ):
+        self.all_data = []
+        self.all_losses = []
+
+        self.opt_problem = BBoptOptimizationProblem(params)
+
+        design_kwargs = dict(
+            dim=self.opt_problem.dim,
+        )
+        case design:
+            match "latin_hypercube":
+                self.exp_design = LatinHypercube(
+                    num_pts=2 * (self.opt_problem.dim + 1),
+                    **design_kwargs,
+                )
+            match "symmetric_latin_hypercube":
+                self.exp_design = SymmetricLatinHypercube(
+                    num_pts=2 * (self.opt_problem.dim + 1),
+                    **design_kwargs,
+                )
+            match "two_factorial":
+                self.exp_design = TwoFactorial(**design_kwargs)
+            match design_cls if callable(design_cls):
+                self.exp_design = design_cls(**design_kwargs)
+        else:
+            raise TypeError(f"unknown experimental design {design!r}")
+
+        surrogate_kwargs = dict(
+            dim=self.opt_problem.dim,
+            lb=self.opt_problem.lb,
+            ub=self.opt_problem.ub,
+        )
+        case surrogate:
+            match "RBF":
+                self.surrogate = RBFInterpolant(**surrogate_kwargs)
+            match "GP":
+                self.surrogate = GPRegressor(**surrogate_kwargs)
+            match surrogate_cls if callable(surrogate_cls):
+                self.surrogate = surrogate_cls(**surrogate_kwargs)
+        else:
+            raise TypeError(f"unknown surrogate {surrogate!r}")
+
+        case strategy:
+            match "SRBF":
+                self.strategy_cls = SRBFStrategy
+            match "EI":
+                self.strategy_cls = EIStrategy
+            match "DYCORS":
+                self.strategy_cls = DYCORSStrategy
+            match "LCB":
+                self.strategy_cls = LCBStrategy
+            match strategy_cls if callable(strategy_cls):
+                self.strategy_cls = strategy_cls
+        else:
+            raise TypeError(f"unknown strategy {strategy!r}")
+
+        self.controller = SerialController(self.opt_problem.eval)
+
+    def tell_data(self, new_data, new_losses):
+        """Special method that allows fast updating of the backend with new examples."""
+        self.all_data += new_data
+        self.all_losses += new_losses
+
+        points, values = self.opt_problem.get_points_values(self.all_data, self.all_losses)
+        strategy_kwargs = dict(
+            max_evals=1,
+            opt_prob=self.opt_problem,
+            exp_design=self.exp_design,
+            surrogate=self.surrogate,
+            asynchronous=False,
+            batch_size=1,
+            extra_points=points,
+            extra_vals=values,
+        )
+        self.strategy = self.strategy_cls(**strategy_kwargs)
+        self.controller.strategy = self.strategy
+
+    def get_next_values(self):
+        """Special method to get the next set of values to evaluate."""
+        try:
+            result = self.controller.run()
+        except GotValuesException:
+            pass
+        else:
+            assert False, f"pySOT optimization produced no values; got result: {self.result}"
+
+        assert self.opt_problem.got_values is not None
+        return self.opt_problem.got_values
+
+
+# Registered names:
+
+PySOTBackend.register()
+PySOTBackend.register_alias("pysot")
+PySOTBackend.register_alg("stochastic_radial_basis_function", strategy="SRBF", surrogate="RBF")
+PySOTBackend.register_alg("expected_improvement", strategy="EI", surrogate="GP")
+PySOTBackend.register_alg("DYCORS", strategy="DYCORS", surrogate="RBF")
+PySOTBackend.register_alg("lower_confidence_bound", strategy="LCB", surrogate="GP")

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf035630e
+# __coconut_hash__ = 0x451b937b
 
-# Compiled with Coconut version 1.4.3-post_dev58 [Ernest Scribbler]
+# Compiled with Coconut version 1.5.0-post_dev6 [Fish License]
 
 """
 The hyperopt backend. Does black box optimization using hyperopt.
@@ -18,7 +18,7 @@ if _coconut_cached_module is not None and _coconut_os_path.dirname(_coconut_cach
     del _coconut_sys.modules[str("__coconut__")]
 _coconut_sys.path.insert(0, _coconut_file_path)
 from __coconut__ import *
-from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match
+from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
 if _coconut_sys.version_info >= (3,):
     _coconut_sys.path.pop(0)
 
@@ -43,7 +43,7 @@ from hyperopt.base import spec_from_misc
 from bbopt.util import sorted_items
 from bbopt.backends.util import Backend
 from bbopt.backends.util import negate_objective
-from bbopt.backends.util import make_features
+from bbopt.backends.util import get_names_and_features
 
 
 # Utilities:
@@ -75,7 +75,7 @@ def create_space(name, func, *args):
             _coconut_case_check_0 = True
         if _coconut_case_check_0:
             return hp.normal(name, *args)
-    raise TypeError("insufficiently specified parameter {_coconut_format_0}".format(_coconut_format_0=(name)))
+    raise TypeError("invalid parameter {_coconut_format_0}".format(_coconut_format_0=(name)))
 
 
 def examples_to_trials(examples, params):
@@ -100,7 +100,7 @@ def examples_to_trials(examples, params):
 
         vals = {}
         idxs = {}
-        for k, v in zip(sorted(params), make_features(ex["values"], params, fallback_func=lambda name, func, *args, **kwargs: NA, converters={"choice": lambda val, choices: choices.index(val), "randrange": lambda val, start, stop, step: val - start}, convert_fallback=False)):
+        for k, v in get_names_and_features(ex["values"], params, fallback_func=lambda name, func, *args, **kwargs: NA, converters={"choice": lambda val, choices: choices.index(val), "randrange": lambda val, start, stop, step: val - start}, convert_fallback=False):
             vals[k] = [v] if v is not NA else []
             idxs[k] = [tid] if v is not NA else []
 
@@ -120,6 +120,7 @@ class HyperoptBackend(Backend):
 
     def __init__(self, examples, params, algo=tpe.suggest, rstate=np.random.RandomState(), show_progressbar=False, **options):
         self.init_fallback_backend()
+        self.params = params
 
         if not params:
             self.current_values = {}
@@ -134,13 +135,13 @@ class HyperoptBackend(Backend):
         self.fmin_iter = FMinIter(algo, domain, self.trials, rstate, show_progressbar=show_progressbar, **options)
 
         if examples:
-            self.tell_examples(examples, params)
+            self.tell_examples(examples)
         else:
             self.current_value = {}
 
-    def tell_examples(self, new_examples, params):
+    def tell_examples(self, new_examples):
         """Special method that allows fast updating of the backend with new examples."""
-        trial_list = examples_to_trials(new_examples, params)
+        trial_list = examples_to_trials(new_examples, self.params)
         self.trials.insert_trial_docs(trial_list)
         self.trials.refresh()
 
@@ -149,7 +150,7 @@ class HyperoptBackend(Backend):
         next(self.fmin_iter)
 
         assert self.current_values is not None, self.current_values
-        assert set(self.current_values.keys()) == set(params), self.current_values
+        assert set(self.current_values.keys()) == set(self.params), self.current_values
 
     def set_current_values(self, values):
         """Callback to set the values for this run."""
@@ -161,5 +162,5 @@ class HyperoptBackend(Backend):
 # Registered names:
 
 HyperoptBackend.register()
-HyperoptBackend.register_alg("tree_structured_parzen_estimator")
+HyperoptBackend.register_alg("tree_structured_parzen_estimator", algo=tpe.suggest)
 HyperoptBackend.register_alg("annealing", algo=anneal.suggest)

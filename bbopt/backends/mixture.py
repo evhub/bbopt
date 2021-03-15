@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb67584f
+# __coconut_hash__ = 0x4ffc6b86
 
-# Compiled with Coconut version 1.4.3-post_dev58 [Ernest Scribbler]
+# Compiled with Coconut version 1.5.0-post_dev6 [Fish License]
 
 """
 The mixture backend. Lets you specify a distribution over different possible algorithms.
@@ -18,7 +18,7 @@ if _coconut_cached_module is not None and _coconut_os_path.dirname(_coconut_cach
     del _coconut_sys.modules[str("__coconut__")]
 _coconut_sys.path.insert(0, _coconut_file_path)
 from __coconut__ import *
-from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match
+from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
 if _coconut_sys.version_info >= (3,):
     _coconut_sys.path.pop(0)
 
@@ -40,6 +40,7 @@ class MixtureBackend(Backend):
     backend_name = "mixture"
 
     def __init__(self, examples, params, distribution):
+        self.params = params
         total_weight = sum((weight for alg, weight in distribution))
 
 # generate cutoff points
@@ -51,9 +52,9 @@ class MixtureBackend(Backend):
             prev_cutoff = cutoff
 
         self.backend_store = {}
-        self.tell_examples(examples, params)
+        self.tell_examples(examples)
 
-    def tell_examples(self, examples, params):
+    def tell_examples(self, examples):
         """Special method that allows fast updating of the backend with new examples."""
 # randomly select algorithm
         rand_val = random.random()
@@ -65,7 +66,7 @@ class MixtureBackend(Backend):
 
 # initialize backend
         self.selected_backend, options = alg_registry[self.selected_alg]
-        self.current_backend = init_backend(self.selected_backend, examples, params, attempt_to_update_backend=self.backend_store.get(self.selected_alg), **options)
+        self.current_backend = init_backend(self.selected_backend, examples, self.params, attempt_to_update_backend=self.backend_store.get(self.selected_alg), **options)
         self.backend_store[self.selected_alg] = self.current_backend
 
     def param(self, name, func, *args, **kwargs):

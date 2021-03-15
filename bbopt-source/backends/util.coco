@@ -48,6 +48,11 @@ def make_features(
         yield feature
 
 
+def get_names_and_features(values, params, *args, **kwargs):
+    """Same as make_features but yields (name, feature) instead of just feature."""
+    yield from zip(sorted(params), make_features(values, params, *args, **kwargs))
+
+
 def split_examples(
         examples,
         params,
@@ -76,6 +81,19 @@ def split_examples(
         loss |> losses.append
 
     return data_points, losses
+
+
+def get_named_data_points_and_losses(examples, params, *args, **kwargs):
+    """Same as split_examples but returns named_data_points instead of data_points."""
+    sorted_names = list(sorted(params))
+    data_points, losses = split_examples(examples, params, *args, **kwargs)
+    named_data_points = []
+    for point in data_points:
+        pt_val = {}
+        for name, item in zip(sorted_names, point):
+            pt_val[name] = item
+        named_data_points.append(pt_val)
+    return named_data_points, losses
 
 
 def make_values(params, point):
@@ -124,10 +142,10 @@ def serve_values(
         return fallback_func(name, func, *args, **kwargs)
 
 
-# Backend base class:
+# Backend base classes:
 
 class Backend:
-    """Base class for BBopt backends."""
+    """Base class for all BBopt backends."""
     # derived classes should always set this
     backend_name = None
 
@@ -173,12 +191,12 @@ class Backend:
             return False
         if new_examples:
             try:
-                self.tell_examples(new_examples, params)
+                self.tell_examples(new_examples)
             except NotImplementedError:
                 return False
         return True
 
-    # implement tell_examples(new_examples, params) to allow fast updating on new data
+    # implement tell_examples(new_examples) to allow fast updating on new data
     tell_examples = NotImplemented
 
     def init_fallback_backend(self):
@@ -227,3 +245,39 @@ class Backend:
     def register_param_func(func_name, handler, placeholder_generator, support_check_func):
         """Register a new parameter definition function. See bbopt.params for examples."""
         param_processor.register(func_name, handler, placeholder_generator, support_check_func)
+
+
+class StandardBackend(Backend):
+    """Base class for standard BBopt backends."""
+
+    def __init__(self, examples, params, *args, **kwargs):
+        self.init_fallback_backend()
+
+        if not params:
+            self.current_values = {}
+            return
+
+        self.setup_backend(params, *args, **kwargs)
+
+        if examples:
+            self.tell_examples(examples)
+        else:
+            self.current_values = {}
+
+    def tell_examples(self, new_examples):
+        """Implements tell_examples by calling tell_data."""
+        new_data, new_losses = get_named_data_points_and_losses(new_examples, self._params)
+        self.tell_data(new_data, new_losses)
+        self.current_values = self.get_next_values()
+
+    def setup_backend(self, params, *args, **kwargs):
+        """Override setup_backend with any setup work that needs to be done."""
+        raise NotImplementedError("StandardBackend subclasses using StandardBackend.__init__ must define a setup_backend(params, *args, **kwargs) method")
+
+    def tell_data(self, new_data, new_losses):
+        """Override tell_data with any work that needs to be done to add the given data and losses."""
+        raise NotImplementedError("StandardBackend subclasses using StandardBackend.tell_examples must define a tell_data(new_data, new_losses) method")
+
+    def get_next_values(self):
+        """Override get_next_values to produce the next set of values that should be evaluated."""
+        raise NotImplementedError("StandardBackend subclasses using StandardBackend.tell_examples must define a get_next_values() method")

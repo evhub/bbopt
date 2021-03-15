@@ -25,6 +25,7 @@ requirements = (
     "numpy>=1.15.1",
     "matplotlib>=2.2.5",
     "scikit-optimize>=0.7.4",
+    "pysot>=0.3.3",
 )
 extra_requirements = {
     ":python_version<'3'": (

@@ -86,7 +86,7 @@ def create_space(name, func, *args):
             return Integer(start, stop, name=name)
         match "uniform":
             return Real(*args, name=name)
-    raise TypeError(f"insufficiently specified parameter {name}")
+    raise TypeError(f"invalid parameter {name}")
 
 
 def create_dimensions(params) =
@@ -111,6 +111,7 @@ class SkoptBackend(Backend):
 
     def __init__(self, examples, params, base_estimator="GP", **options):
         self.init_fallback_backend()
+        self.params = params
 
         if not params:
             self.current_values = {}
@@ -121,17 +122,17 @@ class SkoptBackend(Backend):
         self.optimizer = Optimizer(create_dimensions(params), base_estimator, **options)
 
         if examples:
-            self.tell_examples(examples, params)
+            self.tell_examples(examples)
         else:
             self.current_values = {}
 
-    def tell_examples(self, new_examples, params):
+    def tell_examples(self, new_examples):
         """Special method that allows fast updating of the backend with new examples."""
-        data_points, losses = split_examples(new_examples, params)
+        data_points, losses = split_examples(new_examples, self.params)
         self.result = self.optimizer.tell(data_points, losses)
 
         current_point = self.optimizer.ask()
-        self.current_values = make_values(params, current_point)
+        self.current_values = make_values(self.params, current_point)
 
     @property
     def space(self) =

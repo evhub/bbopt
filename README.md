@@ -427,9 +427,9 @@ Create a new parameter modeled by the parameter definition function _func_ with 
 
 BBopt's backend system is built to be extremely extensible, allowing anyone to write and register their own BBopt backends. The basic template for writing a BBopt backend is as follows:
 ```python
-from bbopt.backends.util import Backend
+from bbopt.backends.util import StandardBackend
 
-class MyBackend(Backend):
+class MyBackend(StandardBackend):
     backend_name = "my-backend"
     implemented_funcs = [
         # list the random functions you support here
@@ -439,14 +439,17 @@ class MyBackend(Backend):
         ...,
     ]
 
-    def __init__(self, examples, params, **options):
-        self.init_fallback_backend()
+    def setup_backend(self, params, **options):
+        # initialize your backend; you can use params
+        #  to get the args for each param
 
-        # the values you want to use for this run as a dict;
-        #  you can use params to get the args for each param
-        #  and examples to get all the past data (to see what
-        #  examples and params look like, use bb.get_data)
-        self.current_values = ...
+    def tell_data(self, new_data, new_losses):
+        # load new data points into your backend; new_data is
+        #  a list of dictionaries containing data and new_losses
+        #  is a list with losses for each of those data points
+
+    def get_next_values(self):
+        # return the values you want to use for this run as a dict
 
 MyBackend.register()
 MyBackend.register_alg("my_alg")

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa84522d3
+# __coconut_hash__ = 0x2823b8a4
 
-# Compiled with Coconut version 1.4.3-post_dev58 [Ernest Scribbler]
+# Compiled with Coconut version 1.5.0-post_dev6 [Fish License]
 
 """
 Utilities for use in BBopt backends.
@@ -18,7 +18,7 @@ if _coconut_cached_module is not None and _coconut_os_path.dirname(_coconut_cach
     del _coconut_sys.modules[str("__coconut__")]
 _coconut_sys.path.insert(0, _coconut_file_path)
 from __coconut__ import *
-from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match
+from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
 if _coconut_sys.version_info >= (3,):
     _coconut_sys.path.pop(0)
 
@@ -92,6 +92,19 @@ def make_features(values, params, fallback_func=param_processor.choose_default_p
         yield feature
 
 
+def get_names_and_features(values, params, *args, **kwargs):
+    """Same as make_features but yields (name, feature) instead of just feature."""
+    _coconut_yield_from = _coconut.iter(zip(sorted(params), make_features(values, params, *args, **kwargs)))
+    while True:
+        try:
+            yield _coconut.next(_coconut_yield_from)
+        except _coconut.StopIteration as _coconut_yield_err:
+            _coconut_yield_from_0 = _coconut_yield_err.args[0] if _coconut.len(_coconut_yield_err.args) > 0 else None
+            break
+
+    _coconut_yield_from_0
+
+
 def split_examples(examples, params, fallback_func=param_processor.choose_default_placeholder, converters={}, convert_fallback=True,):
     """Split examples into a list of data points and a list of losses with the given fallback function."""
     data_points, losses = [], []
@@ -130,6 +143,19 @@ def split_examples(examples, params, fallback_func=param_processor.choose_defaul
         (losses.append)(loss)
 
     return data_points, losses
+
+
+def get_named_data_points_and_losses(examples, params, *args, **kwargs):
+    """Same as split_examples but returns named_data_points instead of data_points."""
+    sorted_names = list(sorted(params))
+    data_points, losses = split_examples(examples, params, *args, **kwargs)
+    named_data_points = []
+    for point in data_points:
+        pt_val = {}
+        for name, item in zip(sorted_names, point):
+            pt_val[name] = item
+        named_data_points.append(pt_val)
+    return named_data_points, losses
 
 
 def make_values(params, point):
@@ -183,10 +209,10 @@ def serve_values(name, func, args, kwargs, serving_values, fallback_func, backen
             return fallback_func(name, func, *args, **kwargs)
 
 
-# Backend base class:
+# Backend base classes:
 
 class Backend(_coconut.object):
-    """Base class for BBopt backends."""
+    """Base class for all BBopt backends."""
 # derived classes should always set this
     backend_name = None
 
@@ -225,12 +251,12 @@ class Backend(_coconut.object):
             return False
         if new_examples:
             try:
-                self.tell_examples(new_examples, params)
+                self.tell_examples(new_examples)
             except NotImplementedError:
                 return False
         return True
 
-# implement tell_examples(new_examples, params) to allow fast updating on new data
+# implement tell_examples(new_examples) to allow fast updating on new data
     tell_examples = NotImplemented
 
     def init_fallback_backend(self):
@@ -269,3 +295,39 @@ class Backend(_coconut.object):
     def register_param_func(func_name, handler, placeholder_generator, support_check_func):
         """Register a new parameter definition function. See bbopt.params for examples."""
         param_processor.register(func_name, handler, placeholder_generator, support_check_func)
+
+
+class StandardBackend(Backend):
+    """Base class for standard BBopt backends."""
+
+    def __init__(self, examples, params, *args, **kwargs):
+        self.init_fallback_backend()
+
+        if not params:
+            self.current_values = {}
+            return
+
+        self.setup_backend(params, *args, **kwargs)
+
+        if examples:
+            self.tell_examples(examples)
+        else:
+            self.current_values = {}
+
+    def tell_examples(self, new_examples):
+        """Implements tell_examples by calling tell_data."""
+        new_data, new_losses = get_named_data_points_and_losses(new_examples, self._params)
+        self.tell_data(new_data, new_losses)
+        self.current_values = self.get_next_values()
+
+    def setup_backend(self, params, *args, **kwargs):
+        """Override setup_backend with any setup work that needs to be done."""
+        raise NotImplementedError("StandardBackend subclasses using StandardBackend.__init__ must define a setup_backend(params, *args, **kwargs) method")
+
+    def tell_data(self, new_data, new_losses):
+        """Override tell_data with any work that needs to be done to add the given data and losses."""
+        raise NotImplementedError("StandardBackend subclasses using StandardBackend.tell_examples must define a tell_data(new_data, new_losses) method")
+
+    def get_next_values(self):
+        """Override get_next_values to produce the next set of values that should be evaluated."""
+        raise NotImplementedError("StandardBackend subclasses using StandardBackend.tell_examples must define a get_next_values() method")

@@ -18,3 +18,8 @@ try:
 except ImportError:
     traceback.print_exc()
     print("Could not import hyperopt backend; backend unavailable (see above error).")
+try:
+    from bbopt.backends.pysot import PySOTBackend
+except ImportError:
+    traceback.print_exc()
+    print("Could not import pySOT backend; backend unavailable (see above error).")

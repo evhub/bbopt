@@ -15,6 +15,7 @@ class MixtureBackend(Backend):
     backend_name = "mixture"
 
     def __init__(self, examples, params, distribution):
+        self.params = params
         total_weight = sum(weight for alg, weight in distribution)
 
         # generate cutoff points
@@ -26,9 +27,9 @@ class MixtureBackend(Backend):
             prev_cutoff = cutoff
 
         self.backend_store = {}
-        self.tell_examples(examples, params)
+        self.tell_examples(examples)
 
-    def tell_examples(self, examples, params):
+    def tell_examples(self, examples):
         """Special method that allows fast updating of the backend with new examples."""
         # randomly select algorithm
         rand_val = random.random()
@@ -43,7 +44,7 @@ class MixtureBackend(Backend):
         self.current_backend = init_backend(
             self.selected_backend,
             examples,
-            params,
+            self.params,
             attempt_to_update_backend=self.backend_store.get(self.selected_alg),
             **options,
         )
