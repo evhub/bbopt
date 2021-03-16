@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3cc1f82f
+# __coconut_hash__ = 0x57430af2
 
-# Compiled with Coconut version 1.5.0-post_dev6 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev7 [Fish License]
 
 """
 The backend and algorithm registries.
@@ -54,12 +54,20 @@ class Registry(_coconut.object):
                 valid_names = ", ".join((repr(name) for name in self))
                 raise ValueError("unknown {_coconut_format_0}: {_coconut_format_1} (valid {_coconut_format_2}s: {_coconut_format_3})".format(_coconut_format_0=(self.obj_name), _coconut_format_1=(name), _coconut_format_2=(self.obj_name), _coconut_format_3=(valid_names)))
 
-    def register(self, name, value):
+    def register(self, name, value, replace=False):
         """Register value under the given name."""
+        if not replace and name in self.registered:
+            raise ValueError("cannot register already existing name {_coconut_format_0!r}".format(_coconut_format_0=(name)))
+        if name in self.aliases:
+            raise ValueError("cannot register name with existing alias {_coconut_format_0!r}".format(_coconut_format_0=(name)))
         self.registered[name] = value
 
-    def register_alias(self, name, alias):
+    def register_alias(self, name, alias, replace=False):
         """Register an alias for the given name."""
+        if not replace and alias in self.aliases:
+            raise ValueError("cannot register already existing alias {_coconut_format_0!r}".format(_coconut_format_0=(alias)))
+        if alias in self.registered:
+            raise ValueError("cannot register overlapping alias {_coconut_format_0!r}".format(_coconut_format_0=(alias)))
         self.aliases[alias] = name
 
     def run_gen(self, name):

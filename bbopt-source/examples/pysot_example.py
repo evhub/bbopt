@@ -13,7 +13,7 @@ bb = BlackBoxOptimizer(file=__file__)
 def run_trial(serving=False):
     """Run one trial of black box optimization."""
     if serving:
-        bb.run()
+        bb.run(alg="serving")
     else:
         bb.run(alg="stochastic_radial_basis_function")
 
@@ -36,8 +36,8 @@ def main(num_trials=10):
     return bb.get_optimal_run()["loss"]
 
 
-best_y = run_trial(serving=True)
-
-
 if __name__ == "__main__":
     print(main())
+
+
+best_y = run_trial(serving=True)

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x251477a5
+# __coconut_hash__ = 0xe28c5b02
 
-# Compiled with Coconut version 1.5.0-post_dev6 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev7 [Fish License]
 
 """
 The pySOT backend. Does black box optimization using pySOT.
@@ -26,16 +26,21 @@ if _coconut_sys.version_info >= (3,):
 
 
 
+sys = _coconut_sys
+
 import numpy as np
 
-from poap.controller import SerialController
 from pySOT.optimization_problems.optimization_problem import OptimizationProblem
 from pySOT.experimental_design import ExperimentalDesign
-from pySOT.experimental_design import SymmetricLatinHypercube
 from pySOT.experimental_design import LatinHypercube
+from pySOT.experimental_design import SymmetricLatinHypercube
 from pySOT.experimental_design import TwoFactorial
 from pySOT.surrogate import RBFInterpolant
 from pySOT.surrogate import GPRegressor
+from pySOT.surrogate.kernels import CubicKernel
+from pySOT.surrogate.kernels import LinearKernel
+from pySOT.surrogate.tails import ConstantTail
+from pySOT.surrogate.tails import LinearTail
 from pySOT.strategy import SRBFStrategy
 from pySOT.strategy import EIStrategy
 from pySOT.strategy import DYCORSStrategy
@@ -47,7 +52,16 @@ from bbopt.backends.util import StandardBackend
 
 # Utilities:
 
-class GotValuesException(BaseException): pass
+class EmptyExperimentalDesign(ExperimentalDesign):
+    num_pts = 0
+
+    def __init__(self, dim):
+        self.dim = dim
+
+    def generate_points(self, lb=None, ub=None, int_var=None):
+        return np.empty((0, self.dim))
+
+class GotValuesException(Exception): pass
 
 class BBoptOptimizationProblem(OptimizationProblem):
     def __init__(self, params):
@@ -107,8 +121,8 @@ class BBoptOptimizationProblem(OptimizationProblem):
         self.cont_var = (np.array)(self.cont_var)
 
     def eval(self, xs):
+        """Set got_values to the given values."""
         self.__check_input__(xs)
-        assert self.got_values is None, (xs, self.got_values)
         self.got_values = {}
         for i in range(self.dim):
             name = self.names[i]
@@ -124,13 +138,12 @@ class BBoptOptimizationProblem(OptimizationProblem):
                 assert val == int(val), val
                 val = choices[int(val)]
             self.got_values[name] = val
-        raise GotValuesException()
 
-    def get_points_values(self, all_data, all_losses):
-        """Convert examples into pySOT-compatible points and values."""
+    def get_points_values(self, new_data, new_losses):
+        """Convert data and losses into pySOT-compatible points and values."""
         points = []
         values = []
-        for ex_dict, loss in zip(all_data, all_losses):
+        for ex_dict, loss in zip(new_data, new_losses):
             pt = []
             for name, val in ex_dict.items():
                 _coconut_match_to = self.choices
@@ -157,19 +170,23 @@ class PySOTBackend(StandardBackend):
     backend_name = "pySOT"
     implemented_funcs = ("choice", "randrange", "uniform",)
 
-    def setup_backend(self, params, strategy="SRBF", surrogate="RBF", design="symmetric_latin_hypercube",):
-        self.all_data = []
-        self.all_losses = []
+    strategy = None
 
+    def setup_backend(self, params, strategy="SRBF", surrogate="RBF", design="symmetric_latin_hypercube",):
         self.opt_problem = BBoptOptimizationProblem(params)
 
         design_kwargs = dict(dim=self.opt_problem.dim)
         _coconut_match_to = design
         _coconut_case_check_1 = False
-        if _coconut_match_to == "latin_hypercube":
+        if _coconut_match_to is None:
             _coconut_case_check_1 = True
         if _coconut_case_check_1:
-            self.exp_design = LatinHypercube(num_pts=2 * (self.opt_problem.dim + 1), **design_kwargs)
+            self.exp_design = EmptyExperimentalDesign(**design_kwargs)
+        if not _coconut_case_check_1:
+            if _coconut_match_to == "latin_hypercube":
+                _coconut_case_check_1 = True
+            if _coconut_case_check_1:
+                self.exp_design = LatinHypercube(num_pts=2 * (self.opt_problem.dim + 1), **design_kwargs)
         if not _coconut_case_check_1:
             if _coconut_match_to == "symmetric_latin_hypercube":
                 _coconut_case_check_1 = True
@@ -196,7 +213,7 @@ class PySOTBackend(StandardBackend):
         if _coconut_match_to == "RBF":
             _coconut_case_check_2 = True
         if _coconut_case_check_2:
-            self.surrogate = RBFInterpolant(**surrogate_kwargs)
+            self.surrogate = RBFInterpolant(kernel=LinearKernel() if design is None else CubicKernel(), tail=ConstantTail(self.opt_problem.dim) if design is None else LinearTail(self.opt_problem.dim), **surrogate_kwargs)
         if not _coconut_case_check_2:
             if _coconut_match_to == "GP":
                 _coconut_case_check_2 = True
@@ -212,59 +229,69 @@ class PySOTBackend(StandardBackend):
         if not _coconut_case_check_2:
             raise TypeError("unknown surrogate {_coconut_format_0!r}".format(_coconut_format_0=(surrogate)))
 
+        strategy_kwargs = dict(max_evals=sys.maxsize, opt_prob=self.opt_problem, exp_design=self.exp_design, surrogate=self.surrogate, asynchronous=True, batch_size=1)
         _coconut_match_to = strategy
         _coconut_case_check_3 = False
         if _coconut_match_to == "SRBF":
             _coconut_case_check_3 = True
         if _coconut_case_check_3:
-            self.strategy_cls = SRBFStrategy
+            self.strategy = SRBFStrategy(**strategy_kwargs)
         if not _coconut_case_check_3:
             if _coconut_match_to == "EI":
                 _coconut_case_check_3 = True
             if _coconut_case_check_3:
-                self.strategy_cls = EIStrategy
+                self.strategy = EIStrategy(**strategy_kwargs)
         if not _coconut_case_check_3:
             if _coconut_match_to == "DYCORS":
                 _coconut_case_check_3 = True
             if _coconut_case_check_3:
-                self.strategy_cls = DYCORSStrategy
+                self.strategy = DYCORSStrategy(**strategy_kwargs)
         if not _coconut_case_check_3:
             if _coconut_match_to == "LCB":
                 _coconut_case_check_3 = True
             if _coconut_case_check_3:
-                self.strategy_cls = LCBStrategy
+                self.strategy = LCBStrategy(**strategy_kwargs)
         if not _coconut_case_check_3:
             strategy_cls = _coconut_match_to
             _coconut_case_check_3 = True
             if _coconut_case_check_3 and not (callable(strategy_cls)):
                 _coconut_case_check_3 = False
             if _coconut_case_check_3:
-                self.strategy_cls = strategy_cls
+                self.strategy = strategy_cls(**strategy_kwargs)
         if not _coconut_case_check_3:
             raise TypeError("unknown strategy {_coconut_format_0!r}".format(_coconut_format_0=(strategy)))
 
-        self.controller = SerialController(self.opt_problem.eval)
-
     def tell_data(self, new_data, new_losses):
         """Special method that allows fast updating of the backend with new examples."""
-        self.all_data += new_data
-        self.all_losses += new_losses
-
-        points, values = self.opt_problem.get_points_values(self.all_data, self.all_losses)
-        strategy_kwargs = dict(max_evals=1, opt_prob=self.opt_problem, exp_design=self.exp_design, surrogate=self.surrogate, asynchronous=False, batch_size=1, extra_points=points, extra_vals=values)
-        self.strategy = self.strategy_cls(**strategy_kwargs)
-        self.controller.strategy = self.strategy
+        points, values = self.opt_problem.get_points_values(new_data, new_losses)
+        for i in range(points.shape[0]):
+            X = np.copy(points[i, :])
+            self.strategy.X = np.vstack((self.strategy.X, X))
+            self.strategy._X = np.vstack((self.strategy._X, X))
+            self.strategy.fX = np.vstack((self.strategy.fX, values[i]))
+            self.strategy._fX = np.vstack((self.strategy._fX, values[i]))
+            assert self.surrogate is self.strategy.surrogate, (self.surrogate, self.strategy.surrogate)
+            self.surrogate.add_points(X, values[i])
 
     def get_next_values(self):
         """Special method to get the next set of values to evaluate."""
-        try:
-            result = self.controller.run()
-        except GotValuesException:
-            pass
-        else:
-            assert False, "pySOT optimization produced no values; got result: {_coconut_format_0}".format(_coconut_format_0=(self.result))
+        assert self.strategy._X.shape[0] > 0, self.strategy._X
+        assert self.surrogate.num_pts > 0, self.surrogate.num_pts
 
-        assert self.opt_problem.got_values is not None
+        while True:
+            proposal = self.strategy.propose_action()
+            assert proposal, proposal
+            if proposal.action == "terminate":
+                proposal.accept()
+            elif proposal.action == "eval":
+                self.opt_problem.eval(*proposal.args)
+                self.strategy.pending_evals -= 1
+                self.strategy.remove_pending(proposal.args[0])
+                break
+            else:
+                proposal.reject()
+
+        assert self.opt_problem.got_values is not None, "pySOT optimization produced no values"
         return self.opt_problem.got_values
 
 

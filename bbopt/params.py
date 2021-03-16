@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x24f97fcf
+# __coconut_hash__ = 0x203e2d57
 
-# Compiled with Coconut version 1.5.0-post_dev6 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev7 [Fish License]
 
 """
 Handles standardizing param calls to use standard library random functions.
@@ -214,8 +214,10 @@ class ParamProcessor(_coconut.object):
         self.placeholder_funcs = {}
         self.support_checkers = {}
 
-    def register(self, func, handler, placeholder_generator, support_check_func):
+    def register(self, func, handler, placeholder_generator, support_check_func, replace=False):
         """Register a new parameter definition function. See bbopt.params for examples."""
+        if not replace and func in self.handlers:
+            raise ValueError("cannot register already existing parameter definition function {_coconut_format_0!r}".format(_coconut_format_0=(func)))
         self.handlers[func] = handler
         self.placeholder_funcs[func] = placeholder_generator
         self.support_checkers[func] = support_check_func

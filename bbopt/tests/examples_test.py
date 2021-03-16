@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd0b70b98
+# __coconut_hash__ = 0xc66f345d
 
-# Compiled with Coconut version 1.5.0-post_dev6 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev7 [Fish License]
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -146,6 +146,7 @@ class TestExamples(unittest.TestCase):
             assert os.path.exists(skopt_data)
 
             from bbopt.examples import skopt_example
+            skopt_example.bb.get_data(print_data=True)
             assert skopt_example.y == want
             assert -9 <= skopt_example.y <= 21
             assert skopt_example.bb.num_examples == NUM_TRIALS
@@ -153,11 +154,12 @@ class TestExamples(unittest.TestCase):
     def test_pysot(self):
         print("\ntest pysot:")
         with using(pysot_data):
-            results = call_test(["bbopt", pysot_file, "-n", "2", "-j", "4"])
+            results = call_test(["bbopt", pysot_file, "-n", "2", "-j", "2"])
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(pysot_data)
 
             from bbopt.examples import pysot_example
+            pysot_example.bb.get_data(print_data=True)
             assert pysot_example.best_y == want
             assert -9 <= pysot_example.best_y <= 21
             assert pysot_example.bb.num_examples == 20
@@ -170,6 +172,7 @@ class TestExamples(unittest.TestCase):
             assert os.path.exists(hyperopt_data)
 
             from bbopt.examples import hyperopt_example
+            hyperopt_example.bb.get_data(print_data=True)
             assert hyperopt_example.y == want
             assert hyperopt_example.bb.num_examples == NUM_TRIALS
 
@@ -181,6 +184,7 @@ class TestExamples(unittest.TestCase):
             assert os.path.exists(conditional_hyperopt_data)
 
             from bbopt.examples import conditional_hyperopt_example
+            conditional_hyperopt_example.bb.get_data(print_data=True)
             assert conditional_hyperopt_example.x == want
             assert 0 <= conditional_hyperopt_example.x <= 20
             assert conditional_hyperopt_example.bb.num_examples == NUM_TRIALS
@@ -193,6 +197,7 @@ class TestExamples(unittest.TestCase):
             assert os.path.exists(conditional_skopt_data)
 
             from bbopt.examples import conditional_skopt_example
+            conditional_skopt_example.bb.get_data(print_data=True)
             assert conditional_skopt_example.x == want
             assert 0 <= conditional_skopt_example.x <= 20
             assert conditional_skopt_example.bb.num_examples == NUM_TRIALS

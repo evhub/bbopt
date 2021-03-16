@@ -22,12 +22,20 @@ class Registry:
             valid_names = ", ".join(repr(name) for name in self)
             raise ValueError(f"unknown {self.obj_name}: {name} (valid {self.obj_name}s: {valid_names})")
 
-    def register(self, name, value):
+    def register(self, name, value, replace=False):
         """Register value under the given name."""
+        if not replace and name in self.registered:
+            raise ValueError(f"cannot register already existing name {name!r}")
+        if name in self.aliases:
+            raise ValueError(f"cannot register name with existing alias {name!r}")
         self.registered[name] = value
 
-    def register_alias(self, name, alias):
+    def register_alias(self, name, alias, replace=False):
         """Register an alias for the given name."""
+        if not replace and alias in self.aliases:
+            raise ValueError(f"cannot register already existing alias {alias!r}")
+        if alias in self.registered:
+            raise ValueError(f"cannot register overlapping alias {alias!r}")
         self.aliases[alias] = name
 
     def run_gen(self, name):

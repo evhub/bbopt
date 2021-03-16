@@ -168,8 +168,8 @@ class Backend:
     def __new__(cls, examples=None, params=None, *args, **kwargs):
         self = super(Backend, cls).__new__(cls)
         if self.tell_examples is not NotImplemented:
-            self._examples = examples
-            self._params = params
+            self._examples = examples[:]
+            self._params = params.copy()
             self._args = args
             self._kwargs = kwargs
         return self

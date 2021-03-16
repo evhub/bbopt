@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x2823b8a4
+# __coconut_hash__ = 0xaf978286
 
-# Compiled with Coconut version 1.5.0-post_dev6 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev7 [Fish License]
 
 """
 Utilities for use in BBopt backends.
@@ -232,8 +232,8 @@ class Backend(_coconut.object):
     def __new__(cls, examples=None, params=None, *args, **kwargs):
         self = super(Backend, cls).__new__(cls)
         if self.tell_examples is not NotImplemented:
-            self._examples = examples
-            self._params = params
+            self._examples = examples[:]
+            self._params = params.copy()
             self._args = args
             self._kwargs = kwargs
         return self

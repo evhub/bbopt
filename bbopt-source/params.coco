@@ -188,8 +188,10 @@ class ParamProcessor:
         self.placeholder_funcs = {}
         self.support_checkers = {}
 
-    def register(self, func, handler, placeholder_generator, support_check_func):
+    def register(self, func, handler, placeholder_generator, support_check_func, replace=False):
         """Register a new parameter definition function. See bbopt.params for examples."""
+        if not replace and func in self.handlers:
+            raise ValueError(f"cannot register already existing parameter definition function {func!r}")
         self.handlers[func] = handler
         self.placeholder_funcs[func] = placeholder_generator
         self.support_checkers[func] = support_check_func
