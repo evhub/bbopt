@@ -11,6 +11,7 @@ import numpy as np
 from portalocker import Lock
 
 from bbopt import constants
+from bbopt.registry import backend_registry
 
 
 Num = (int, float)
@@ -221,3 +222,19 @@ def open_with_lock(fpath, mode="rb+", timeout=None, **kwargs):
 def printerr(*args):
     """Print to stderr."""
     print(*args, file=sys.stderr)
+
+
+match def init_backend(name, examples, params, *args, attempt_to_update_backend=None, **options):
+    """Create a backend object of the given name with the given data."""
+    backend_cls = backend_registry[name]
+    backend_examples = examples[:]
+    backend_params = params.copy()
+    if attempt_to_update_backend is not None and isinstance(attempt_to_update_backend, backend_cls):
+        updated_backend = attempt_to_update_backend.attempt_update(backend_examples, backend_params, *args, **options)
+        if updated_backend is True:
+            return attempt_to_update_backend
+        elif isinstance(updated_backend, backend_cls):
+            return updated_backend
+        else:
+            assert updated_backend is False, f"invalid backend.attempt_update return value {updated_backend} from {backend_cls}"
+    return backend_cls(backend_examples, backend_params, *args, **options)

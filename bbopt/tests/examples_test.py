@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc66f345d
+# __coconut_hash__ = 0x7350fbb8
 
 # Compiled with Coconut version 1.5.0-post_dev7 [Fish License]
 
@@ -135,7 +135,7 @@ class TestExamples(unittest.TestCase):
             from bbopt.examples import random_example
             random_example.bb.get_data(print_data=True)
             assert random_example.x == want
-            assert 1 <= random_example.x <= 10
+            assert 1 < random_example.x <= 10
             assert random_example.bb.num_examples == NUM_TRIALS
 
     def test_skopt(self):
@@ -148,7 +148,7 @@ class TestExamples(unittest.TestCase):
             from bbopt.examples import skopt_example
             skopt_example.bb.get_data(print_data=True)
             assert skopt_example.y == want
-            assert -9 <= skopt_example.y <= 21
+            assert -9 <= skopt_example.y < 21
             assert skopt_example.bb.num_examples == NUM_TRIALS
 
     def test_pysot(self):
@@ -161,7 +161,7 @@ class TestExamples(unittest.TestCase):
             from bbopt.examples import pysot_example
             pysot_example.bb.get_data(print_data=True)
             assert pysot_example.best_y == want
-            assert -9 <= pysot_example.best_y <= 21
+            assert -9 <= pysot_example.best_y < 21
             assert pysot_example.bb.num_examples == 20
 
     def test_hyperopt(self):
@@ -186,7 +186,7 @@ class TestExamples(unittest.TestCase):
             from bbopt.examples import conditional_hyperopt_example
             conditional_hyperopt_example.bb.get_data(print_data=True)
             assert conditional_hyperopt_example.x == want
-            assert 0 <= conditional_hyperopt_example.x <= 20
+            assert 0 < conditional_hyperopt_example.x <= 20
             assert conditional_hyperopt_example.bb.num_examples == NUM_TRIALS
 
     def test_conditional_skopt(self):
@@ -199,7 +199,7 @@ class TestExamples(unittest.TestCase):
             from bbopt.examples import conditional_skopt_example
             conditional_skopt_example.bb.get_data(print_data=True)
             assert conditional_skopt_example.x == want
-            assert 0 <= conditional_skopt_example.x <= 20
+            assert 0 < conditional_skopt_example.x <= 20
             assert conditional_skopt_example.bb.num_examples == NUM_TRIALS
 
     def test_numpy(self):
@@ -228,7 +228,7 @@ class TestExamples(unittest.TestCase):
 
             reload(mixture_example)
             assert mixture_example.loss == want
-            assert 0 <= mixture_example.loss <= 85
+            assert 0 <= mixture_example.loss < 85
             assert (len)((set)((map)(_coconut_base_compose(_coconut.operator.itemgetter(("memo")), (_coconut.operator.itemgetter(("alg")), 0)), mixture_example.bb.get_data()["examples"]))) > 1
             assert mixture_example.bb.num_examples == NUM_TRIALS
 

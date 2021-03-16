@@ -72,6 +72,7 @@ Some examples of BBopt in action:
 - [`numpy_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/numpy_example.py): Example which showcases how to have numpy array parameters.
 - [`conditional_skopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_skopt_example.py): Example of having black box parameters that are dependent on other black box parameters using the `gaussian_process` algorithm from the `scikit-optimize` backend.
 - [`conditional_hyperopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_hyperopt_example.py): Example of doing conditional parameters with the `tree_structured_parzen_estimator` algorithm from the `hyperopt` backend.
+- [`pysot_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/pysot_example.py): Example of using the full API to implement an optimization loop and avoid the overhead of running the entire file multiple times while making use of the `pySOT` backend.
 - [`keras_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.py): Complete example of using BBopt to optimize a neural network built with [Keras](https://keras.io/). Uses the full API to implement its own optimization loop and thus avoid the overhead of running the entire file multiple times.
 - [`mixture_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/mixture_example.py): Example of using the `mixture` backend to randomly switch between different algorithms.
 - [`json_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/json_example.py): Example of using `json` instead of `pickle` to save parameters.
@@ -155,14 +156,18 @@ BlackBoxOptimizer.**algs**
 A dictionary mapping the valid algorithms for use in **run** to the pair `(backend, kwargs)` of the backend and arguments to that backend that the algorithm corresponds to.
 
 Supported algorithms are:
-- `"serving"` (or `None`) (`serving` backend),
-- `"random"` (`random` backend),
-- `"tree_structured_parzen_estimator"` (`hyperopt` backend) (the default),
-- `"annealing"` (`hyperopt` backend),
-- `"gaussian_process"` (`scikit-optimize` backend),
-- `"random_forest"` (`scikit-optimize` backend),
-- `"extra_trees"` (`scikit-optimize` backend), and
-- `"gradient_boosted_regression_trees"` (`scikit-optimize` backend).
+- `"serving"` (or `None`) (`serving` backend)
+- `"random"` (`random` backend)
+- `"tree_structured_parzen_estimator"` (`hyperopt` backend) (the default)
+- `"annealing"` (`hyperopt` backend)
+- `"gaussian_process"` (`scikit-optimize` backend)
+- `"random_forest"` (`scikit-optimize` backend)
+- `"extra_trees"` (`scikit-optimize` backend)
+- `"gradient_boosted_regression_trees"` (`scikit-optimize` backend)
+- `"stochastic_radial_basis_function"` (`pySOT` backend)
+- `"expected_improvement"` (`pySOT` backend)
+- `"DYCORS"` (`pySOT` backend)
+- `"lower_confidence_bound"` (`pySOT` backend)
 
 #### `run_backend`
 
@@ -171,8 +176,9 @@ BlackBoxOptimizer.**run_backend**(_backend_, *_args_, **_kwargs_)
 The base function behind **run**. Instead of specifying an algorithm, **run_backend** lets you specify the specific backend you want to call and the parameters you want to call it with. Different backends do different things with the remaining arguments:
 
 - `scikit-optimize` passes the arguments to [`skopt.Optimizer`](https://scikit-optimize.github.io/#skopt.Optimizer),
-- `hyperopt` passes the arguments to [`fmin`](https://github.com/hyperopt/hyperopt/wiki/FMin), and
-- `mixture` expects a `distribution` argument to specify the mixture of different algorithms to use, specifically a list of `(alg, weight)` tuples.
+- `hyperopt` passes the arguments to [`fmin`](https://github.com/hyperopt/hyperopt/wiki/FMin),
+- `mixture` expects a `distribution` argument to specify the mixture of different algorithms to use, specifically a list of `(alg, weight)` tuples, and
+- `pySOT` expects a `strategy` (either a strategy class or one of `"SRBF", "EI", "DYCORS", "LCB"`), surrogate (either a surrogate class or one of `"RBF", "GP"`), and `design` (either an experimental design class or one of `None, "latin_hypercube", "symmetric_latin_hypercube", "two_factorial"`).
 
 #### `minimize`
 
@@ -307,7 +313,7 @@ BlackBoxOptimizer.**randrange**(_name_, _start_, _stop_, _step_=`1`, **_kwargs_)
 
 Create a new parameter modeled by [`random.randrange(start, stop, step)`](https://docs.python.org/3/library/random.html#random.randrange), which is equivalent to `random.choice(range(start, stop, step))`, but can be much more efficient.
 
-_Backends which support **randrange**: `scikit-optimize`, `hyperopt`, `random`._
+_Backends which support **randrange**: `scikit-optimize`, `hyperopt`, `pySOT`, `random`._
 
 #### `randint`
 
@@ -315,7 +321,7 @@ BlackBoxOptimizer.**randint**(_name_, _a_, _b_, **_kwargs_)
 
 Create a new parameter modeled by [`random.randint(a, b)`](https://docs.python.org/3/library/random.html#random.randint), which is equivalent to `random.randrange(a, b-1)`.
 
-_Backends which support **randint**: `scikit-optimize`, `hyperopt`, `random`._
+_Backends which support **randint**: `scikit-optimize`, `hyperopt`, `pySOT`, `random`._
 
 #### `getrandbits`
 
@@ -323,7 +329,7 @@ BlackBoxOptimizer.**getrandbits**(_name_, _k_, **_kwargs_)
 
 Create a new parameter modeled by [`random.getrandbits(k)`](https://docs.python.org/3/library/random.html#random.getrandbits), which is equivalent to `random.randrange(0, 2**k)`.
 
-_Backends which support **getrandbits**: `scikit-optimize`, `hyperopt`, `random`._
+_Backends which support **getrandbits**: `scikit-optimize`, `hyperopt`, `pySOT`, `random`._
 
 #### `choice`
 
@@ -331,7 +337,7 @@ BlackBoxOptimizer.**choice**(_name_, _seq_, **_kwargs_)
 
 Create a new parameter modeled by [`random.choice(seq)`](https://docs.python.org/3/library/random.html#random.choice), which chooses an element from _seq_.
 
-_Backends which support **choice**: `scikit-optimize`, `hyperopt`, `random`._
+_Backends which support **choice**: `scikit-optimize`, `hyperopt`, `pySOT`, `random`._
 
 #### `randbool`
 
@@ -339,7 +345,7 @@ BlackBoxOptimizer.**randbool**(_name_, **_kwargs_)
 
 Create a new boolean parameter, modeled by the equivalent of `random.choice([True, False])`.
 
-_Backends which support **randbool**: `scikit-optimize`, `hyperopt`, `random`._
+_Backends which support **randbool**: `scikit-optimize`, `hyperopt`, `pySOT`, `random`._
 
 #### `sample`
 
@@ -347,7 +353,7 @@ BlackBoxOptimizer.**sample**(_name_, _population_, _k_, **_kwargs_)
 
 Create a new parameter modeled by [`random.sample(population, k)`](https://docs.python.org/3/library/random.html#random.sample), which chooses _k_ elements from _population_.
 
-_Backends which support **sample**: `scikit-optimize`, `hyperopt`, `random`._
+_Backends which support **sample**: `scikit-optimize`, `hyperopt`, `pySOT`, `random`._
 
 #### `shuffled`
 
@@ -355,7 +361,7 @@ BlackBoxOptimizer.**shuffled**(_name_, _population_, **_kwargs_)
 
 Create a new parameter modeled by [`random.shuffle(population)`](https://docs.python.org/3/library/random.html#random.shuffle) except that it returns the shuffled list instead of shuffling it in place.
 
-_Backends which support **shuffled**: `scikit-optimize`, `hyperopt`, `random`._
+_Backends which support **shuffled**: `scikit-optimize`, `hyperopt`, `pySOT`, `random`._
 
 #### `random`
 
@@ -363,7 +369,7 @@ BlackBoxOptimizer.**random**(_name_, **_kwargs_)
 
 Create a new parameter modeled by [`random.random()`](https://docs.python.org/3/library/random.html#random.random), which is equivalent to `random.uniform(0, 1)`.
 
-_Backends which support **random**: `scikit-optimize`, `hyperopt`, `random`._
+_Backends which support **random**: `scikit-optimize`, `hyperopt`, `pySOT`, `random`._
 
 #### `uniform`
 
@@ -371,7 +377,7 @@ BlackBoxOptimizer.**uniform**(_name_, _a_, _b_, **_kwargs_)
 
 Create a new parameter modeled by [`random.uniform(a, b)`](https://docs.python.org/3/library/random.html#random.uniform), which uniformly selects a float between _a_ and _b_.
 
-_Backends which support **uniform**: `scikit-optimize`, `hyperopt`, `random`._
+_Backends which support **uniform**: `scikit-optimize`, `hyperopt`, `pySOT`, `random`._
 
 #### `loguniform`
 
@@ -383,7 +389,7 @@ math.exp(random.uniform(math.log(min_val), math.log(max_val)))
 ```
 which logarithmically selects a float between _min\_val_ and _max\_val_.
 
-_Backends which support **loguniform**: `scikit-optimize`, `hyperopt`, `random`._
+_Backends which support **loguniform**: `scikit-optimize`, `hyperopt`, `pySOT`, `random`._
 
 #### `normalvariate`
 
@@ -407,7 +413,7 @@ BlackBoxOptimizer.**rand**(_name_, *_shape_, **_kwargs_)
 
 Create a new parameter modeled by [`numpy.random.rand(*shape)`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.rand.html#numpy.random.rand), which creates a `numpy` array of the given shape with entries generated uniformly in `[0, 1)`.
 
-_Backends which support **rand**: `scikit-optimize`, `hyperopt`, `random`._
+_Backends which support **rand**: `scikit-optimize`, `hyperopt`, `pySOT`, `random`._
 
 #### `randn`
 

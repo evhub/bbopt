@@ -15,12 +15,12 @@ import numpy as np
 from bbopt import constants
 from bbopt.registry import (
     backend_registry,
-    init_backend,
     alg_registry,
 )
 from bbopt.params import param_processor
 from bbopt.util import (
     Str,
+    init_backend,
     norm_path,
     json_serialize,
     best_example,

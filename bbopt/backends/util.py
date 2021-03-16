@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xaf978286
+# __coconut_hash__ = 0x4744b6d5
 
 # Compiled with Coconut version 1.5.0-post_dev7 [Fish License]
 
@@ -232,8 +232,8 @@ class Backend(_coconut.object):
     def __new__(cls, examples=None, params=None, *args, **kwargs):
         self = super(Backend, cls).__new__(cls)
         if self.tell_examples is not NotImplemented:
-            self._examples = examples[:]
-            self._params = params.copy()
+            self._examples = examples
+            self._params = params
             self._args = args
             self._kwargs = kwargs
         return self

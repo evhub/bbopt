@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf52df5b5
+# __coconut_hash__ = 0xcca9b015
 
 # Compiled with Coconut version 1.5.0-post_dev7 [Fish License]
 
@@ -41,10 +41,10 @@ import numpy as np
 
 from bbopt import constants
 from bbopt.registry import backend_registry
-from bbopt.registry import init_backend
 from bbopt.registry import alg_registry
 from bbopt.params import param_processor
 from bbopt.util import Str
+from bbopt.util import init_backend
 from bbopt.util import norm_path
 from bbopt.util import json_serialize
 from bbopt.util import best_example

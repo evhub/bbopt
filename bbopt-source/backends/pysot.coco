@@ -138,7 +138,7 @@ class PySOTBackend(StandardBackend):
         params,
         strategy="SRBF",
         surrogate="RBF",
-        design="symmetric_latin_hypercube",
+        design=None,
     ):
         self.opt_problem = BBoptOptimizationProblem(params)
 

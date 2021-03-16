@@ -4,7 +4,8 @@ The mixture backend. Lets you specify a distribution over different possible alg
 
 import random
 
-from bbopt.registry import alg_registry, init_backend
+from bbopt.registry import alg_registry
+from bbopt.util import init_backend
 from bbopt.backends.util import Backend
 
 

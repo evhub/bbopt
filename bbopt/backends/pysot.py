@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xe28c5b02
+# __coconut_hash__ = 0x1a333f3f
 
 # Compiled with Coconut version 1.5.0-post_dev7 [Fish License]
 
@@ -172,7 +172,7 @@ class PySOTBackend(StandardBackend):
 
     strategy = None
 
-    def setup_backend(self, params, strategy="SRBF", surrogate="RBF", design="symmetric_latin_hypercube",):
+    def setup_backend(self, params, strategy="SRBF", surrogate="RBF", design=None,):
         self.opt_problem = BBoptOptimizationProblem(params)
 
         design_kwargs = dict(dim=self.opt_problem.dim)

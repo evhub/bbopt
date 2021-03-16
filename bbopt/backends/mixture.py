@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x32c355cc
+# __coconut_hash__ = 0xf991611f
 
 # Compiled with Coconut version 1.5.0-post_dev7 [Fish License]
 
@@ -29,7 +29,7 @@ if _coconut_sys.version_info >= (3,):
 import random
 
 from bbopt.registry import alg_registry
-from bbopt.registry import init_backend
+from bbopt.util import init_backend
 from bbopt.backends.util import Backend
 
 
