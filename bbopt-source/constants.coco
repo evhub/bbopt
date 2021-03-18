@@ -69,7 +69,7 @@ data_file_ext = ".bbopt"
 lock_timeout = 6
 default_alg = "tree_structured_parzen_estimator"
 default_protocol = 2
-use_generic_categories_for_categorical_data = False  # should be changed to True with next minor release
+use_generic_categories_for_categorical_data = False
 use_placeholder_when_outside_support = False
 
 

@@ -22,7 +22,7 @@ from hyperopt.base import (
 
 from bbopt.util import sorted_items
 from bbopt.backends.util import (
-    Backend,
+    StandardBackend,
     negate_objective,
     get_names_and_features,
 )
@@ -103,7 +103,7 @@ def examples_to_trials(examples, params):
 
 # Backend:
 
-class HyperoptBackend(Backend):
+class HyperoptBackend(StandardBackend):
     """The hyperopt backend uses hyperopt for black box optimization."""
     backend_name = "hyperopt"
     implemented_funcs = (
@@ -114,13 +114,9 @@ class HyperoptBackend(Backend):
         "normalvariate",
     )
 
-    def __init__(self, examples, params, algo=tpe.suggest, rstate=np.random.RandomState(), show_progressbar=False, **options):
-        self.init_fallback_backend()
+    def setup_backend(self, params, algo=tpe.suggest, rstate=np.random.RandomState(), show_progressbar=False, **options):
+        """Special method to initialize the backend from params."""
         self.params = params
-
-        if not params:
-            self.current_values = {}
-            return
 
         space = {
             name: create_space(name, func, *args)
@@ -139,11 +135,6 @@ class HyperoptBackend(Backend):
             show_progressbar=show_progressbar,
             **options,
         )
-
-        if examples:
-            self.tell_examples(examples)
-        else:
-            self.current_value = {}
 
     def tell_examples(self, new_examples):
         """Special method that allows fast updating of the backend with new examples."""

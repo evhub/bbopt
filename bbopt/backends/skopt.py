@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x11e5b2fc
+# __coconut_hash__ = 0x3d11a5bc
 
 # Compiled with Coconut version 1.5.0-post_dev12 [Fish License]
 
@@ -32,7 +32,7 @@ from skopt.space import Integer
 from skopt.space import Real
 
 from bbopt.util import sorted_items
-from bbopt.backends.util import Backend
+from bbopt.backends.util import StandardBackend
 from bbopt.backends.util import split_examples
 from bbopt.backends.util import make_values
 
@@ -153,27 +153,17 @@ def create_dimensions(params):
 
 # Backend:
 
-class SkoptBackend(Backend):
+class SkoptBackend(StandardBackend):
     """The scikit-optimize backend uses scikit-optimize for black box optimization."""
     backend_name = "scikit-optimize"
     implemented_funcs = ("choice", "randrange", "uniform",)
 
-    def __init__(self, examples, params, base_estimator="GP", **options):
-        self.init_fallback_backend()
+    def setup_backend(self, params, base_estimator="GP", **options):
+        """Special method to initialize the backend from params."""
         self.params = params
-
-        if not params:
-            self.current_values = {}
-            return
-
         if isinstance(base_estimator, str):
             base_estimator = py_str(base_estimator)
         self.optimizer = Optimizer(create_dimensions(params), base_estimator, **options)
-
-        if examples:
-            self.tell_examples(examples)
-        else:
-            self.current_values = {}
 
     def tell_examples(self, new_examples):
         """Special method that allows fast updating of the backend with new examples."""

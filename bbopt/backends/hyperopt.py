@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x176d8215
+# __coconut_hash__ = 0x3f3408ab
 
 # Compiled with Coconut version 1.5.0-post_dev12 [Fish License]
 
@@ -41,7 +41,7 @@ from hyperopt.base import JOB_STATE_DONE
 from hyperopt.base import spec_from_misc
 
 from bbopt.util import sorted_items
-from bbopt.backends.util import Backend
+from bbopt.backends.util import StandardBackend
 from bbopt.backends.util import negate_objective
 from bbopt.backends.util import get_names_and_features
 
@@ -113,18 +113,14 @@ def examples_to_trials(examples, params):
 
 # Backend:
 
-class HyperoptBackend(Backend):
+class HyperoptBackend(StandardBackend):
     """The hyperopt backend uses hyperopt for black box optimization."""
     backend_name = "hyperopt"
     implemented_funcs = ("choice", "randrange", "uniform", "normalvariate",)
 
-    def __init__(self, examples, params, algo=tpe.suggest, rstate=np.random.RandomState(), show_progressbar=False, **options):
-        self.init_fallback_backend()
+    def setup_backend(self, params, algo=tpe.suggest, rstate=np.random.RandomState(), show_progressbar=False, **options):
+        """Special method to initialize the backend from params."""
         self.params = params
-
-        if not params:
-            self.current_values = {}
-            return
 
         space = (as_apply)(dict(((name), (create_space(name, func, *args))) for name, (func, args, kwargs) in sorted_items(params)))
 
@@ -133,11 +129,6 @@ class HyperoptBackend(Backend):
         self.trials = Trials()
 
         self.fmin_iter = FMinIter(algo, domain, self.trials, rstate, show_progressbar=show_progressbar, **options)
-
-        if examples:
-            self.tell_examples(examples)
-        else:
-            self.current_value = {}
 
     def tell_examples(self, new_examples):
         """Special method that allows fast updating of the backend with new examples."""
