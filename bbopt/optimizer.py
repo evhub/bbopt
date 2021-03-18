@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x82a5a2e1
+# __coconut_hash__ = 0xa688f5a8
 
 # Compiled with Coconut version 1.5.0-post_dev12 [Fish License]
 
@@ -57,6 +57,7 @@ from bbopt.util import running_best
 from bbopt.util import plot
 from bbopt.util import open_with_lock
 from bbopt.util import printerr
+from bbopt.util import convert_match_errors
 from bbopt.backends.serving import ServingBackend
 
 
@@ -73,15 +74,14 @@ def array_param(func, name, shape, kwargs):
     return arr
 
 
-DEFAULT_ALG_SENTINEL = object()
-
-
 class BlackBoxOptimizer(_coconut.object):
     """Main bbopt optimizer object. See https://github.com/evhub/bbopt for documentation."""
+    DEFAULT_ALG_SENTINEL = object()
     backend = None
     _new_params = None
     _current_example = None
 
+    @convert_match_errors("BlackBoxOptimizer.__init__")
     @_coconut_mark_as_match
     def __init__(*_coconut_match_to_args, **_coconut_match_to_kwargs):
         """Construct a new BlackBoxOptimizer. It is recommended to pass file=__file__."""
@@ -92,17 +92,15 @@ class BlackBoxOptimizer(_coconut.object):
             _coconut_match_temp_1 = _coconut_match_to_args[1] if _coconut.len(_coconut_match_to_args) > 1 else _coconut_match_to_kwargs.pop("file")
             _coconut_match_temp_2 = _coconut_match_to_kwargs.pop("tag") if "tag" in _coconut_match_to_kwargs else None
             _coconut_match_temp_3 = _coconut_match_to_kwargs.pop("protocol") if "protocol" in _coconut_match_to_kwargs else None
-            if not _coconut_match_to_kwargs:
+            if (_coconut.isinstance(_coconut_match_temp_1, Str)) and (not _coconut_match_to_kwargs):
                 self = _coconut_match_temp_0
                 file = _coconut_match_temp_1
                 tag = _coconut_match_temp_2
                 protocol = _coconut_match_temp_3
                 _coconut_match_check = True
         if not _coconut_match_check:
-            raise _coconut_FunctionMatchError('match def __init__(self, file, *, tag=None, protocol=None):', _coconut_match_to_args)
+            raise _coconut_FunctionMatchError('match def __init__(self, file is Str, *, tag=None, protocol=None):', _coconut_match_to_args)
 
-        if not isinstance(file, Str):
-            raise TypeError("file must be a string")
         self._file = norm_path(file)
         self._tag = tag
 
@@ -206,7 +204,7 @@ class BlackBoxOptimizer(_coconut.object):
 
     @property
     def _metric(self):
-        """Whether using a gain, a loss, or no examples."""
+        """Whether using a gain or a loss."""
         assert self._examples, "cannot determine metric from empty examples"
         return "gain" if "gain" in self._examples[0] else "loss"
 
@@ -280,7 +278,7 @@ class BlackBoxOptimizer(_coconut.object):
     def run(self, alg=DEFAULT_ALG_SENTINEL):
         """Optimize parameters using the given algorithm
         (use .algs to get the list of valid algorithms)."""
-        if alg is DEFAULT_ALG_SENTINEL:
+        if alg is self.DEFAULT_ALG_SENTINEL:
             alg = constants.default_alg
         backend, options = alg_registry[alg]
         self.run_backend(backend, **options)
@@ -343,9 +341,11 @@ class BlackBoxOptimizer(_coconut.object):
             raise ValueError("get_current_run calls must come after run")
         return self._current_example
 
-    def get_optimal_run(self):
-        """Return a dictionary containing the optimal parameters and reward computed so far."""
+    def get_best_run(self):
+        """Return a dictionary containing the best parameters and reward computed so far."""
         return best_example(self._examples)
+
+    get_optimal_run = get_best_run
 
 # Plotting functions:
 
@@ -385,7 +385,7 @@ class BlackBoxOptimizer(_coconut.object):
             j = None if j_name is None else sorted_names.index(j_name)
 
             try:
-                _coconut_is_recursive = partial_dependence is _coconut_recursive_func_25
+                _coconut_is_recursive = partial_dependence is _coconut_recursive_func_24
             except _coconut.NameError:
                 _coconut_is_recursive = False
             if _coconut_is_recursive:
@@ -396,7 +396,7 @@ class BlackBoxOptimizer(_coconut.object):
 
 
             return None
-    _coconut_recursive_func_25 = partial_dependence
+    _coconut_recursive_func_24 = partial_dependence
     def plot_partial_dependence_1D(self, i_name, ax=None, yscale=None, **kwargs):
         """Constructs a 1D partial dependence plot using self.partial_dependence."""
         xi, yi = self.partial_dependence(i_name, **kwargs)

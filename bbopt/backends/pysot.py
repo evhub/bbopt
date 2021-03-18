@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xeef452ce
+# __coconut_hash__ = 0xcd95d47e
 
 # Compiled with Coconut version 1.5.0-post_dev12 [Fish License]
 
@@ -67,8 +67,6 @@ class EmptyExperimentalDesign(ExperimentalDesign):
 
     def generate_points(self, lb=None, ub=None, int_var=None):
         return np.empty((0, self.dim))
-
-class GotValuesException(Exception): pass
 
 class BBoptOptimizationProblem(OptimizationProblem):
     def __init__(self, params):

@@ -33,7 +33,7 @@ def main(num_trials=10):
     for i in range(num_trials):
         run_trial(serving=False)
     # Return the loss of the best run
-    return bb.get_optimal_run()["loss"]
+    return bb.get_best_run()["loss"]
 
 
 if __name__ == "__main__":

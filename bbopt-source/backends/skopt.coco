@@ -75,17 +75,16 @@ except TypeError:
 def create_space(name, func, *args):
     """Create a scikit-optimize space for the given parameter."""
     name = py_str(name)
-    case func:
-        match "choice":
-            return Categorical(*args, name=name)
-        match "randrange":
-            start, stop, step = args
+    case func, args:
+        match "choice", (choices,):
+            return Categorical(choices, name=name)
+        match "randrange", (start, stop, step):
             if step != 1:
                 raise ValueError("the scikit-optimize backend only supports a randrange step size of 1")
             stop -= 1  # scikit-optimize ranges are inclusive
             return Integer(start, stop, name=name)
-        match "uniform":
-            return Real(*args, name=name)
+        match "uniform", (a, b):
+            return Real(a, b, name=name)
     raise TypeError(f"invalid parameter {name}")
 
 

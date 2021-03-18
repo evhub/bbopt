@@ -131,7 +131,7 @@ if __name__ == "__main__":
         print()
 
     print("\nSummary of best run:")
-    pprint(bb.get_optimal_run())
+    pprint(bb.get_best_run())
 
     print("Displaying plots...")
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3d11a5bc
+# __coconut_hash__ = 0x5afc1d49
 
 # Compiled with Coconut version 1.5.0-post_dev12 [Fish License]
 
@@ -123,26 +123,31 @@ except TypeError:
 def create_space(name, func, *args):
     """Create a scikit-optimize space for the given parameter."""
     name = py_str(name)
-    _coconut_match_to = func
+    _coconut_match_to = func, args
     _coconut_case_check_0 = False
-    if _coconut_match_to == "choice":
+    if (_coconut.isinstance(_coconut_match_to, _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_to) == 2) and (_coconut_match_to[0] == "choice") and (_coconut.isinstance(_coconut_match_to[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_to[1]) == 1):
+        choices = _coconut_match_to[1][0]
         _coconut_case_check_0 = True
     if _coconut_case_check_0:
-        return Categorical(*args, name=name)
+        return Categorical(choices, name=name)
     if not _coconut_case_check_0:
-        if _coconut_match_to == "randrange":
+        if (_coconut.isinstance(_coconut_match_to, _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_to) == 2) and (_coconut_match_to[0] == "randrange") and (_coconut.isinstance(_coconut_match_to[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_to[1]) == 3):
+            start = _coconut_match_to[1][0]
+            stop = _coconut_match_to[1][1]
+            step = _coconut_match_to[1][2]
             _coconut_case_check_0 = True
         if _coconut_case_check_0:
-            start, stop, step = args
             if step != 1:
                 raise ValueError("the scikit-optimize backend only supports a randrange step size of 1")
             stop -= 1  # scikit-optimize ranges are inclusive
             return Integer(start, stop, name=name)
     if not _coconut_case_check_0:
-        if _coconut_match_to == "uniform":
+        if (_coconut.isinstance(_coconut_match_to, _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_to) == 2) and (_coconut_match_to[0] == "uniform") and (_coconut.isinstance(_coconut_match_to[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_to[1]) == 2):
+            a = _coconut_match_to[1][0]
+            b = _coconut_match_to[1][1]
             _coconut_case_check_0 = True
         if _coconut_case_check_0:
-            return Real(*args, name=name)
+            return Real(a, b, name=name)
     raise TypeError("invalid parameter {_coconut_format_0}".format(_coconut_format_0=(name)))
 
 

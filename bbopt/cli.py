@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd52f5a76
+# __coconut_hash__ = 0xb03ce73a
 
 # Compiled with Coconut version 1.5.0-post_dev12 [Fish License]
 
@@ -98,6 +98,6 @@ def main(*args, **kwargs):
         rel_data_file = os.path.relpath(bb.data_file)
         show("Black box optimization finished; data saved to {_coconut_format_0}.".format(_coconut_format_0=(rel_data_file)))
 
-        best_example = bb.get_optimal_run()
+        best_example = bb.get_best_run()
         show("Summary of best run:")
-        pprint(bb.get_optimal_run())
+        pprint(bb.get_best_run())

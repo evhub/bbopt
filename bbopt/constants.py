@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x9755d19c
+# __coconut_hash__ = 0x37d96861
 
 # Compiled with Coconut version 1.5.0-post_dev12 [Fish License]
 
@@ -29,7 +29,7 @@ if _coconut_sys.version_info >= (3,):
 
 # Installation constants:
 name = "bbopt"
-version = "1.1.17"
+version = "1.1.18"
 description = "The easiest hyperparameter optimization you'll ever do."
 long_description = """
 See BBopt's GitHub_ for more information.

@@ -33,6 +33,7 @@ from bbopt.util import (
     plot,
     open_with_lock,
     printerr,
+    convert_match_errors,
 )
 from bbopt.backends.serving import ServingBackend
 
@@ -50,19 +51,16 @@ def array_param(func, name, shape, kwargs):
     return arr
 
 
-DEFAULT_ALG_SENTINEL = object()
-
-
 class BlackBoxOptimizer:
     """Main bbopt optimizer object. See https://github.com/evhub/bbopt for documentation."""
+    DEFAULT_ALG_SENTINEL = object()
     backend = None
     _new_params = None
     _current_example = None
 
-    match def __init__(self, file, *, tag=None, protocol=None):
+    @convert_match_errors("BlackBoxOptimizer.__init__")
+    match def __init__(self, file is Str, *, tag=None, protocol=None):
         """Construct a new BlackBoxOptimizer. It is recommended to pass file=__file__."""
-        if not isinstance(file, Str):
-            raise TypeError("file must be a string")
         self._file = norm_path(file)
         self._tag = tag
 
@@ -157,7 +155,7 @@ class BlackBoxOptimizer:
 
     @property
     def _metric(self) =
-        """Whether using a gain, a loss, or no examples."""
+        """Whether using a gain or a loss."""
         assert self._examples, "cannot determine metric from empty examples"
         "gain" if "gain" in self._examples[0] else "loss"
 
@@ -222,7 +220,7 @@ class BlackBoxOptimizer:
     def run(self, alg=DEFAULT_ALG_SENTINEL):
         """Optimize parameters using the given algorithm
         (use .algs to get the list of valid algorithms)."""
-        if alg is DEFAULT_ALG_SENTINEL:
+        if alg is self.DEFAULT_ALG_SENTINEL:
             alg = constants.default_alg
         backend, options = alg_registry[alg]
         self.run_backend(backend, **options)
@@ -288,9 +286,11 @@ class BlackBoxOptimizer:
             raise ValueError("get_current_run calls must come after run")
         return self._current_example
 
-    def get_optimal_run(self):
-        """Return a dictionary containing the optimal parameters and reward computed so far."""
+    def get_best_run(self):
+        """Return a dictionary containing the best parameters and reward computed so far."""
         return best_example(self._examples)
+
+    get_optimal_run = get_best_run
 
     # Plotting functions:
 

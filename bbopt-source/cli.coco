@@ -109,6 +109,6 @@ def main(*args, **kwargs):
         rel_data_file = os.path.relpath(bb.data_file)
         show(f"Black box optimization finished; data saved to {rel_data_file}.")
 
-        best_example = bb.get_optimal_run()
+        best_example = bb.get_best_run()
         show("Summary of best run:")
-        pprint(bb.get_optimal_run())
+        pprint(bb.get_best_run())

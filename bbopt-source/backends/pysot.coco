@@ -54,8 +54,6 @@ class EmptyExperimentalDesign(ExperimentalDesign):
     def generate_points(self, lb=None, ub=None, int_var=None):
         return np.empty((0, self.dim))
 
-class GotValuesException(Exception)
-
 class BBoptOptimizationProblem(OptimizationProblem):
     def __init__(self, params):
         self.params = params

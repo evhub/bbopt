@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3f3408ab
+# __coconut_hash__ = 0xd37f2fde
 
 # Compiled with Coconut version 1.5.0-post_dev12 [Fish License]
 
@@ -50,31 +50,38 @@ from bbopt.backends.util import get_names_and_features
 
 def create_space(name, func, *args):
     """Create a hyperopt space for the given parameter."""
-    _coconut_match_to = func
+    _coconut_match_to = func, args
     _coconut_case_check_0 = False
-    if _coconut_match_to == "choice":
+    if (_coconut.isinstance(_coconut_match_to, _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_to) == 2) and (_coconut_match_to[0] == "choice") and (_coconut.isinstance(_coconut_match_to[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_to[1]) == 1):
+        choices = _coconut_match_to[1][0]
         _coconut_case_check_0 = True
     if _coconut_case_check_0:
-        return hp.choice(name, *args)
+        return hp.choice(name, choices)
     if not _coconut_case_check_0:
-        if _coconut_match_to == "randrange":
+        if (_coconut.isinstance(_coconut_match_to, _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_to) == 2) and (_coconut_match_to[0] == "randrange") and (_coconut.isinstance(_coconut_match_to[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_to[1]) == 3):
+            start = _coconut_match_to[1][0]
+            stop = _coconut_match_to[1][1]
+            step = _coconut_match_to[1][2]
             _coconut_case_check_0 = True
         if _coconut_case_check_0:
-            start, stop, step = args
             if step != 1:
                 raise ValueError("the hyperopt backend only supports a randrange step size of 1 (use bb.choice(name, range(start, stop, step)) instead)")
 # despite being called randint, hp.randint is exclusive
             return start + hp.randint(name, stop - start)
     if not _coconut_case_check_0:
-        if _coconut_match_to == "uniform":
+        if (_coconut.isinstance(_coconut_match_to, _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_to) == 2) and (_coconut_match_to[0] == "uniform") and (_coconut.isinstance(_coconut_match_to[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_to[1]) == 2):
+            a = _coconut_match_to[1][0]
+            b = _coconut_match_to[1][1]
             _coconut_case_check_0 = True
         if _coconut_case_check_0:
-            return hp.uniform(name, *args)
+            return hp.uniform(name, a, b)
     if not _coconut_case_check_0:
-        if _coconut_match_to == "normalvariate":
+        if (_coconut.isinstance(_coconut_match_to, _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_to) == 2) and (_coconut_match_to[0] == "normalvariate") and (_coconut.isinstance(_coconut_match_to[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_to[1]) == 2):
+            mu = _coconut_match_to[1][0]
+            sigma = _coconut_match_to[1][1]
             _coconut_case_check_0 = True
         if _coconut_case_check_0:
-            return hp.normal(name, *args)
+            return hp.normal(name, mu, sigma)
     raise TypeError("invalid parameter {_coconut_format_0}".format(_coconut_format_0=(name)))
 
 

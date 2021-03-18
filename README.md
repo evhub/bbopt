@@ -98,7 +98,7 @@ Some examples of BBopt in action:
     1. [`plot_objective`](#plot_objective)
     1. [`plot_regret`](#plot_regret)
     1. [`get_current_run`](#get_current_run)
-    1. [`get_optimal_run`](#get_optimal_run)
+    1. [`get_best_run`](#get_best_run)
     1. [`get_data`](#get_data)
     1. [`data_file`](#data_file)
     1. [`tell_examples`](#tell_examples)
@@ -203,7 +203,7 @@ Same as **minimize** but sets the gain instead of the loss.
 
 BlackBoxOptimizer.**remember**(_info_)
 
-Update the current run's `"memo"` field with the given _info_ dictionary. Useful for saving information about a run that shouldn't actually impact optimization but that you would like to have access to later (using **get_optimal_run**, for example).
+Update the current run's `"memo"` field with the given _info_ dictionary. Useful for saving information about a run that shouldn't actually impact optimization but that you would like to have access to later (using **get_best_run**, for example).
 
 #### `plot_convergence`
 
@@ -265,9 +265,9 @@ BlackBoxOptimizer.**get_current_run**()
 
 Get information on the current run, including the values of all parameters encountered so far and the loss/gain of the run if specified yet.
 
-#### `get_optimal_run`
+#### `get_best_run`
 
-BlackBoxOptimizer.**get_optimal_run**()
+BlackBoxOptimizer.**get_best_run**()
 
 Get information on the best run so far. These are the parameters that will be used if **run** is not called.
 
@@ -318,7 +318,7 @@ BlackBoxOptimizer.**randrange**(_name_, _stop_, **_kwargs_)
 
 BlackBoxOptimizer.**randrange**(_name_, _start_, _stop_, _step_=`1`, **_kwargs_)
 
-Create a new parameter modeled by [`random.randrange(start, stop, step)`](https://docs.python.org/3/library/random.html#random.randrange), which is equivalent to `random.choice(range(start, stop, step))`, but can be much more efficient.
+Create a new parameter modeled by [`random.randrange(start, stop, step)`](https://docs.python.org/3/library/random.html#random.randrange).
 
 _Backends which support **randrange**: `scikit-optimize`, `hyperopt`, `pySOT`, `random`._
 
@@ -447,8 +447,8 @@ class MyBackend(StandardBackend):
     implemented_funcs = [
         # list the random functions you support here
         #  (you don't need to include all random functions,
-        #  only the base random functions randrange, choice,
-        #  uniform, and normalvariate)
+        #  only base random functions, primarily randrange,
+        #  choice, uniform, and normalvariate)
         ...,
     ]
 
@@ -459,7 +459,7 @@ class MyBackend(StandardBackend):
     def tell_data(self, new_data, new_losses):
         # load new data points into your backend; new_data is
         #  a list of dictionaries containing data and new_losses
-        #  is a list with losses for each of those data points
+        #  is a list of losses for each of those data points
 
     def get_next_values(self):
         # return the values you want to use for this run as a dict
@@ -474,4 +474,5 @@ Once you've written a BBopt backend as above, you simply need to import it to tr
 - [`random.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/backends/random.coco)
 - [`skopt.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/backends/skopt.coco)
 - [`hyperopt.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/backends/hyperopt.coco)
+- [`pysot.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/backends/pysot.coco)
 - [`mixture.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/backends/mixture.coco)
