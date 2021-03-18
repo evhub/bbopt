@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x45e32617
+# __coconut_hash__ = 0xc40bc0c2
 
-# Compiled with Coconut version 1.5.0-post_dev7 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev11 [Fish License]
 
 """
 Endpoint for the BBopt CLI.

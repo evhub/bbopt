@@ -168,6 +168,9 @@ Supported algorithms are:
 - `"expected_improvement"` (`pySOT` backend)
 - `"DYCORS"` (`pySOT` backend)
 - `"lower_confidence_bound"` (`pySOT` backend)
+- `"latin_hypercube"` (`pySOT` backend)
+- `"symmetric_latin_hypercube"` (`pySOT` backend)
+- `"two_factorial"` (`pySOT` backend)
 
 #### `run_backend`
 

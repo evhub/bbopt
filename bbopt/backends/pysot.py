@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x1a333f3f
+# __coconut_hash__ = 0x8b181f23
 
-# Compiled with Coconut version 1.5.0-post_dev7 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev11 [Fish License]
 
 """
 The pySOT backend. Does black box optimization using pySOT.
@@ -29,6 +29,13 @@ if _coconut_sys.version_info >= (3,):
 sys = _coconut_sys
 
 import numpy as np
+
+# patch in abc.ABC if it doesn't already exist
+import abc
+if not hasattr(abc, "ABC"):
+    class ABC(_coconut.object):
+        __metaclass__ = abc.ABCMeta
+    abc.ABC = ABC
 
 from pySOT.optimization_problems.optimization_problem import OptimizationProblem
 from pySOT.experimental_design import ExperimentalDesign
@@ -299,7 +306,14 @@ class PySOTBackend(StandardBackend):
 
 PySOTBackend.register()
 PySOTBackend.register_alias("pysot")
+
+# strategy-based, default design algs
 PySOTBackend.register_alg("stochastic_radial_basis_function", strategy="SRBF", surrogate="RBF")
 PySOTBackend.register_alg("expected_improvement", strategy="EI", surrogate="GP")
 PySOTBackend.register_alg("DYCORS", strategy="DYCORS", surrogate="RBF")
 PySOTBackend.register_alg("lower_confidence_bound", strategy="LCB", surrogate="GP")
+
+# design-based, default strategy algs
+PySOTBackend.register_alg("latin_hypercube", design="latin_hypercube")
+PySOTBackend.register_alg("symmetric_latin_hypercube", design="symmetric_latin_hypercube")
+PySOTBackend.register_alg("two_factorial", design="two_factorial")
