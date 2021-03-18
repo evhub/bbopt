@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x32b7a42
+# __coconut_hash__ = 0x82a5a2e1
 
-# Compiled with Coconut version 1.5.0-post_dev11 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev12 [Fish License]
 
 """
 The main BBopt interface.
@@ -472,10 +472,7 @@ class BlackBoxOptimizer(_coconut.object):
 
     def _categorical(self, name, num_categories, **kwargs):
         """Create a new parameter with the given name modeled by random.choice(range(num_categories))."""
-        if constants.use_randrange_for_categorical_data:
-            return self.randrange(name, num_categories, **kwargs)
-        else:
-            return self.param(name, "choice", range(num_categories), **kwargs)
+        return self.param(name, "choice", range(num_categories), **kwargs)
 
     def choice(self, name, seq, **kwargs):
         """Create a new parameter with the given name modeled by random.choice(seq)."""
@@ -532,7 +529,7 @@ class BlackBoxOptimizer(_coconut.object):
                     elem = _coconut_igetitem(val, i)
                     return sampling_population.index(elem) if elem in sampling_population else 0
                 proc_kwargs = (param_processor.modify_kwargs)(_coconut_lambda_0, kwargs)
-                ind = self._categorical("{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(i)), len(sampling_population), **proc_kwargs)
+                ind = self.randrange("{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(i)), len(sampling_population), **proc_kwargs)
                 sample.append(sampling_population.pop(ind))
         return sample
 

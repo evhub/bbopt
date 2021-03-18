@@ -450,10 +450,7 @@ class BlackBoxOptimizer:
 
     def _categorical(self, name, num_categories, **kwargs):
         """Create a new parameter with the given name modeled by random.choice(range(num_categories))."""
-        if constants.use_randrange_for_categorical_data:
-            return self.randrange(name, num_categories, **kwargs)
-        else:
-            return self.param(name, "choice", range(num_categories), **kwargs)
+        return self.param(name, "choice", range(num_categories), **kwargs)
 
     def choice(self, name, seq, **kwargs):
         """Create a new parameter with the given name modeled by random.choice(seq)."""
@@ -511,7 +508,7 @@ class BlackBoxOptimizer:
                         elem = val$[i];
                         sampling_population.index(elem) if elem in sampling_population else 0
                 )
-                ind = self._categorical(f"{name}[{i}]", len(sampling_population), **proc_kwargs)
+                ind = self.randrange(f"{name}[{i}]", len(sampling_population), **proc_kwargs)
                 sample.append(sampling_population.pop(ind))
         return sample
 

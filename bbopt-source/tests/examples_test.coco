@@ -135,18 +135,19 @@ class TestExamples(unittest.TestCase):
             assert -9 <= skopt_example.y < 21
             assert skopt_example.bb.num_examples == NUM_TRIALS
 
-    def test_pysot(self):
-        print("\ntest pysot:")
-        with using(pysot_data):
-            results = call_test(["bbopt", pysot_file, "-n", "2", "-j", "2"])
-            want = min(get_nums(results, numtype=float))
-            assert os.path.exists(pysot_data)
+    if sys.version_info >= (3,):
+        def test_pysot(self):
+            print("\ntest pysot:")
+            with using(pysot_data):
+                results = call_test(["bbopt", pysot_file, "-n", "2", "-j", "2"])
+                want = min(get_nums(results, numtype=float))
+                assert os.path.exists(pysot_data)
 
-            from bbopt.examples import pysot_example
-            pysot_example.bb.get_data(print_data=True)
-            assert pysot_example.best_y == want
-            assert -9 <= pysot_example.best_y < 21
-            assert pysot_example.bb.num_examples == 20
+                from bbopt.examples import pysot_example
+                pysot_example.bb.get_data(print_data=True)
+                assert pysot_example.best_y == want
+                assert -9 <= pysot_example.best_y < 21
+                assert pysot_example.bb.num_examples == 20
 
     def test_hyperopt(self):
         print("\ntest hyperopt:")

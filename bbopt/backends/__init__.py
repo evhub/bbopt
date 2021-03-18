@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xbb5337bd
+# __coconut_hash__ = 0x96b73122
 
-# Compiled with Coconut version 1.5.0-post_dev11 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev12 [Fish License]
 
 """
 Backends contains all of bbopt's different backends.
@@ -26,6 +26,7 @@ if _coconut_sys.version_info >= (3,):
 
 
 
+sys = _coconut_sys
 import traceback
 
 # import all the other backends to register them
@@ -42,8 +43,9 @@ try:
 except ImportError:
     traceback.print_exc()
     print("Could not import hyperopt backend; backend unavailable (see above error).")
-try:
-    from bbopt.backends.pysot import PySOTBackend
-except ImportError:
-    traceback.print_exc()
-    print("Could not import pySOT backend; backend unavailable (see above error).")
+if sys.version_info >= (3,):
+    try:
+        from bbopt.backends.pysot import PySOTBackend
+    except ImportError:
+        traceback.print_exc()
+        print("Could not import pySOT backend; backend unavailable (see above error).")

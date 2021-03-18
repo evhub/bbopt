@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x138216c9
+# __coconut_hash__ = 0xf7ec6230
 
-# Compiled with Coconut version 1.5.0-post_dev11 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev12 [Fish License]
 
 """
 Constants for use across all of BBopt.
@@ -40,8 +40,8 @@ github_url = "https://github.com/evhub/bbopt"
 author = "Evan Hubinger"
 author_email = "evanjhub@gmail.com"
 classifiers = ("Development Status :: 5 - Production/Stable", "License :: OSI Approved :: Apache Software License", "Topic :: Software Development :: Libraries :: Python Modules", "Operating System :: OS Independent",)
-requirements = ("numpy>=1.15.1", "matplotlib>=2.2.5", "scikit-optimize>=0.7.4", "pysot>=0.3.3",)
-extra_requirements = {":python_version<'3'": ("futures>=3.3", "scikit-learn>=0.20.4", "portalocker>=1.7.1,<2.0", "hyperopt>=0.1.2,<0.2", "networkx>=1.0,<2.0",), ":python_version>='3'": ("hyperopt>=0.2.4", "scikit-learn>=0.22.2", "portalocker>=1.7.1", "networkx>=2.2", "pymongo>=3.9", "pyspark>=2.4",), "examples": ("keras",)}
+requirements = ("numpy>=1.15.1", "matplotlib>=2.2.5", "scikit-optimize>=0.7.4",)
+extra_requirements = {":python_version>='3'": ("hyperopt>=0.2.4", "pysot>=0.3.3", "scikit-learn>=0.22.2", "portalocker>=1.7.1", "networkx>=2.2", "pymongo>=3.9", "pyspark>=2.4",), ":python_version<'3'": ("futures>=3.3", "scikit-learn>=0.20.4", "portalocker>=1.7.1,<2.0", "hyperopt>=0.1.2,<0.2", "networkx>=1.0,<2.0",), "examples": ("keras",)}
 extra_requirements["dev"] = (extra_requirements["examples"] + ("coconut-develop", "pytest>=3.0",))
 
 
@@ -50,8 +50,7 @@ data_file_ext = ".bbopt"
 lock_timeout = 6
 default_alg = "tree_structured_parzen_estimator"
 default_protocol = 2
-use_randrange_for_categorical_data = False
-use_generic_categories_for_categorical_data = False
+use_generic_categories_for_categorical_data = False  # should be changed to True with next minor release
 use_placeholder_when_outside_support = False
 
 

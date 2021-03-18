@@ -25,21 +25,11 @@ requirements = (
     "numpy>=1.15.1",
     "matplotlib>=2.2.5",
     "scikit-optimize>=0.7.4",
-    "pysot>=0.3.3",
 )
 extra_requirements = {
-    ":python_version<'3'": (
-        "futures>=3.3",
-        "scikit-learn>=0.20.4",
-        # fixes an issue with portalocker 2 on Python 2
-        "portalocker>=1.7.1,<2.0",
-        # fixes an issue with hyperopt on Python 2
-        "hyperopt>=0.1.2,<0.2",
-        # fixes an issue with hyperopt with networkx>=2.0
-        "networkx>=1.0,<2.0",
-    ),
     ":python_version>='3'": (
         "hyperopt>=0.2.4",
+        "pysot>=0.3.3",
         # fixes an issue with scikit-learn on Python 3.5
         "scikit-learn>=0.22.2",
         # fixes an issue with portalocker on Python 3.6+
@@ -50,6 +40,16 @@ extra_requirements = {
         "pymongo>=3.9",
         # fixes an issue with hyperopt on Python < 3.6
         "pyspark>=2.4",
+    ),
+    ":python_version<'3'": (
+        "futures>=3.3",
+        "scikit-learn>=0.20.4",
+        # fixes an issue with portalocker 2 on Python 2
+        "portalocker>=1.7.1,<2.0",
+        # fixes an issue with hyperopt on Python 2
+        "hyperopt>=0.1.2,<0.2",
+        # fixes an issue with hyperopt with networkx>=2.0
+        "networkx>=1.0,<2.0",
     ),
     "examples": (
         "keras",
@@ -69,8 +69,7 @@ data_file_ext = ".bbopt"
 lock_timeout = 6
 default_alg = "tree_structured_parzen_estimator"
 default_protocol = 2
-use_randrange_for_categorical_data = False
-use_generic_categories_for_categorical_data = False
+use_generic_categories_for_categorical_data = False  # should be changed to True with next minor release
 use_placeholder_when_outside_support = False
 
 

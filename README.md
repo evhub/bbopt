@@ -172,6 +172,8 @@ Supported algorithms are:
 - `"symmetric_latin_hypercube"` (`pySOT` backend)
 - `"two_factorial"` (`pySOT` backend)
 
+_Note: The `pySOT` backend is only available on Python 3+._
+
 #### `run_backend`
 
 BlackBoxOptimizer.**run_backend**(_backend_, *_args_, **_kwargs_)
@@ -182,6 +184,8 @@ The base function behind **run**. Instead of specifying an algorithm, **run_back
 - `hyperopt` passes the arguments to [`fmin`](https://github.com/hyperopt/hyperopt/wiki/FMin),
 - `mixture` expects a `distribution` argument to specify the mixture of different algorithms to use, specifically a list of `(alg, weight)` tuples, and
 - `pySOT` expects a `strategy` (either a strategy class or one of `"SRBF", "EI", "DYCORS", "LCB"`), surrogate (either a surrogate class or one of `"RBF", "GP"`), and `design` (either an experimental design class or one of `None, "latin_hypercube", "symmetric_latin_hypercube", "two_factorial"`).
+
+_Note: The `pySOT` backend is only available on Python 3+._
 
 #### `minimize`
 
