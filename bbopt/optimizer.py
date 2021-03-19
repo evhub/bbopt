@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa688f5a8
+# __coconut_hash__ = 0x2016e4b4
 
 # Compiled with Coconut version 1.5.0-post_dev12 [Fish License]
 
@@ -81,7 +81,8 @@ class BlackBoxOptimizer(_coconut.object):
     _new_params = None
     _current_example = None
 
-    @convert_match_errors("BlackBoxOptimizer.__init__")
+    _coconut_decorator_0 = _coconut.functools.partial(convert_match_errors, "BlackBoxOptimizer.__init__")
+    @_coconut_decorator_0
     @_coconut_mark_as_match
     def __init__(*_coconut_match_to_args, **_coconut_match_to_kwargs):
         """Construct a new BlackBoxOptimizer. It is recommended to pass file=__file__."""

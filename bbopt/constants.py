@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x37d96861
+# __coconut_hash__ = 0xdbe9b76d
 
 # Compiled with Coconut version 1.5.0-post_dev12 [Fish License]
 
@@ -29,7 +29,7 @@ if _coconut_sys.version_info >= (3,):
 
 # Installation constants:
 name = "bbopt"
-version = "1.1.18"
+version = "1.1.19"
 description = "The easiest hyperparameter optimization you'll ever do."
 long_description = """
 See BBopt's GitHub_ for more information.
@@ -41,7 +41,7 @@ author = "Evan Hubinger"
 author_email = "evanjhub@gmail.com"
 classifiers = ("Development Status :: 5 - Production/Stable", "License :: OSI Approved :: Apache Software License", "Topic :: Software Development :: Libraries :: Python Modules", "Operating System :: OS Independent",)
 requirements = ("numpy>=1.15.1", "matplotlib>=2.2.5", "scikit-optimize>=0.7.4",)
-extra_requirements = {":python_version>='3'": ("hyperopt>=0.2.4", "pysot>=0.3.3", "scikit-learn>=0.22.2", "portalocker>=1.7.1", "networkx>=2.2", "pymongo>=3.9", "pyspark>=2.4",), ":python_version<'3'": ("futures>=3.3", "scikit-learn>=0.20.4", "portalocker>=1.7.1,<2.0", "hyperopt>=0.1.2,<0.2", "networkx>=1.0,<2.0",), "examples": ("keras",)}
+extra_requirements = {":python_version>='3'": ("pysot>=0.3.3", "scikit-learn>=0.22.2", "portalocker>=2.2.1", "hyperopt>=0.2.4", "networkx>=2.2", "pymongo>=3.9", "pyspark>=2.4",), ":python_version<'3'": ("futures>=3.3", "scikit-learn>=0.20.4", "portalocker>=1.7.1,<2.0", "hyperopt>=0.1.2,<0.2", "networkx>=1.0,<2.0",), "examples": ("keras",)}
 extra_requirements["dev"] = (extra_requirements["examples"] + ("coconut-develop", "pytest>=3.0",))
 
 

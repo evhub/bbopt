@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x984f7e22
+# __coconut_hash__ = 0xcc043f44
 
 # Compiled with Coconut version 1.5.0-post_dev12 [Fish License]
 
@@ -249,13 +249,14 @@ def open_with_lock(fpath, mode="rb+", timeout=None, **kwargs):
                     pass
 
 
-@contextmanager
-def convert_match_errors(name):
+def convert_match_errors(name, func):
     """Re-raise MatchErrors as TypeErrors."""
-    try:
-        yield
-    except MatchError as err:
-        raise TypeError("arguments did not match call signature for function {_coconut_format_0}".format(_coconut_format_0=(name)))
+    def match_errors_converted_func(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except MatchError as err:
+            raise TypeError("arguments did not match call signature for function {_coconut_format_0}".format(_coconut_format_0=(name)))
+    return match_errors_converted_func
 
 
 def printerr(*args):

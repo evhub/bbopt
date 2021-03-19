@@ -58,7 +58,7 @@ class BlackBoxOptimizer:
     _new_params = None
     _current_example = None
 
-    @convert_match_errors("BlackBoxOptimizer.__init__")
+    @convert_match_errors$("BlackBoxOptimizer.__init__")
     match def __init__(self, file is Str, *, tag=None, protocol=None):
         """Construct a new BlackBoxOptimizer. It is recommended to pass file=__file__."""
         self._file = norm_path(file)
