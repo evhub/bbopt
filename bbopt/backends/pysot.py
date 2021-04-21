@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xcd95d47e
+# __coconut_hash__ = 0x32d2a1d1
 
-# Compiled with Coconut version 1.5.0-post_dev12 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev23 [Fish License]
 
 """
 The pySOT backend. Does black box optimization using pySOT.
@@ -18,7 +18,7 @@ if _coconut_cached_module is not None and _coconut_os_path.dirname(_coconut_cach
     del _coconut_sys.modules[str("__coconut__")]
 _coconut_sys.path.insert(0, _coconut_file_path)
 from __coconut__ import *
-from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
+from __coconut__ import _coconut_call_set_names, _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
 if _coconut_sys.version_info >= (3,):
     _coconut_sys.path.pop(0)
 
@@ -35,6 +35,7 @@ import abc
 if not hasattr(abc, "ABC"):
     class ABC(_coconut.object):
         __metaclass__ = abc.ABCMeta
+    _coconut_call_set_names(ABC)
     abc.ABC = ABC
 
 from pySOT.optimization_problems.optimization_problem import OptimizationProblem
@@ -68,6 +69,7 @@ class EmptyExperimentalDesign(ExperimentalDesign):
     def generate_points(self, lb=None, ub=None, int_var=None):
         return np.empty((0, self.dim))
 
+_coconut_call_set_names(EmptyExperimentalDesign)
 class BBoptOptimizationProblem(OptimizationProblem):
     def __init__(self, params):
         self.params = params
@@ -170,6 +172,7 @@ class BBoptOptimizationProblem(OptimizationProblem):
 
 # Backend:
 
+_coconut_call_set_names(BBoptOptimizationProblem)
 class PySOTBackend(StandardBackend):
     """The pySOT backend uses pySOT for black box optimization."""
     backend_name = "pySOT"
@@ -177,6 +180,7 @@ class PySOTBackend(StandardBackend):
 
     strategy = None
 
+    @override
     def setup_backend(self, params, strategy="SRBF", surrogate="RBF", design=None,):
         self.opt_problem = BBoptOptimizationProblem(params)
 
@@ -266,6 +270,7 @@ class PySOTBackend(StandardBackend):
         if not _coconut_case_check_3:
             raise TypeError("unknown strategy {_coconut_format_0!r}".format(_coconut_format_0=(strategy)))
 
+    @override
     def tell_data(self, new_data, new_losses):
         """Special method that allows fast updating of the backend with new examples."""
         points, values = self.opt_problem.get_points_values(new_data, new_losses)
@@ -278,6 +283,7 @@ class PySOTBackend(StandardBackend):
             assert self.surrogate is self.strategy.surrogate, (self.surrogate, self.strategy.surrogate)
             self.surrogate.add_points(X, values[i])
 
+    @override
     def get_next_values(self):
         """Special method to get the next set of values to evaluate."""
         assert self.strategy._X.shape[0] > 0, self.strategy._X
@@ -302,6 +308,7 @@ class PySOTBackend(StandardBackend):
 
 # Registered names:
 
+_coconut_call_set_names(PySOTBackend)
 PySOTBackend.register()
 PySOTBackend.register_alias("pysot")
 

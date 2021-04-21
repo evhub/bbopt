@@ -138,6 +138,7 @@ class PySOTBackend(StandardBackend):
 
     strategy = None
 
+    @override
     def setup_backend(
         self,
         params,
@@ -211,6 +212,7 @@ class PySOTBackend(StandardBackend):
         else:
             raise TypeError(f"unknown strategy {strategy!r}")
 
+    @override
     def tell_data(self, new_data, new_losses):
         """Special method that allows fast updating of the backend with new examples."""
         points, values = self.opt_problem.get_points_values(new_data, new_losses)
@@ -223,6 +225,7 @@ class PySOTBackend(StandardBackend):
             assert self.surrogate is self.strategy.surrogate, (self.surrogate, self.strategy.surrogate)
             self.surrogate.add_points(X, values[i])
 
+    @override
     def get_next_values(self):
         """Special method to get the next set of values to evaluate."""
         assert self.strategy._X.shape[0] > 0, self.strategy._X

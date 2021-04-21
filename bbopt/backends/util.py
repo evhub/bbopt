@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x53ec2627
+# __coconut_hash__ = 0xda0ed9c
 
-# Compiled with Coconut version 1.5.0-post_dev12 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev23 [Fish License]
 
 """
 Utilities for use in BBopt backends.
@@ -18,7 +18,7 @@ if _coconut_cached_module is not None and _coconut_os_path.dirname(_coconut_cach
     del _coconut_sys.modules[str("__coconut__")]
 _coconut_sys.path.insert(0, _coconut_file_path)
 from __coconut__ import *
-from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
+from __coconut__ import _coconut_call_set_names, _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
 if _coconut_sys.version_info >= (3,):
     _coconut_sys.path.pop(0)
 
@@ -231,7 +231,7 @@ class Backend(_coconut.object):
 
     def __new__(cls, examples=None, params=None, *args, **kwargs):
         self = super(Backend, cls).__new__(cls)
-        if self.tell_examples is not NotImplemented:
+        if self.tell_examples is not None:
             self._examples = examples
             self._params = params
             self._args = args
@@ -244,7 +244,7 @@ class Backend(_coconut.object):
     def attempt_update(self, examples=None, params=None, *args, **kwargs):
         """Attempt to update this backend with new arguments. False indicates that the
         update failed while True indicates a successful update."""
-        if (self.tell_examples is NotImplemented or not self._params or params != self._params or args != self._args or kwargs != self._kwargs):
+        if (self.tell_examples is None or not self._params or params != self._params or args != self._args or kwargs != self._kwargs):
             return False
         old_examples, new_examples = examples[:len(self._examples)], examples[len(self._examples):]
         if old_examples != self._examples:
@@ -257,7 +257,7 @@ class Backend(_coconut.object):
         return True
 
 # implement tell_examples(new_examples) to allow fast updating on new data
-    tell_examples = NotImplemented
+    tell_examples = None
 
     def init_fallback_backend(self):
         """Set fallback_backend to a new random backend instance."""
@@ -297,6 +297,7 @@ class Backend(_coconut.object):
         param_processor.register(func_name, handler, placeholder_generator, support_check_func)
 
 
+_coconut_call_set_names(Backend)
 class StandardBackend(Backend):
     """Base class for standard BBopt backends."""
 
@@ -331,3 +332,5 @@ class StandardBackend(Backend):
     def get_next_values(self):
         """Override get_next_values to produce the next set of values that should be evaluated."""
         raise NotImplementedError("StandardBackend subclasses using StandardBackend.tell_examples must define a get_next_values() method")
+
+_coconut_call_set_names(StandardBackend)

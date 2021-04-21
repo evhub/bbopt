@@ -108,6 +108,7 @@ class SkoptBackend(StandardBackend):
         "uniform",
     )
 
+    @override
     def setup_backend(self, params, base_estimator="GP", **options):
         """Special method to initialize the backend from params."""
         self.params = params
@@ -115,6 +116,7 @@ class SkoptBackend(StandardBackend):
             base_estimator = py_str(base_estimator)
         self.optimizer = Optimizer(create_dimensions(params), base_estimator, **options)
 
+    @override
     def tell_examples(self, new_examples):
         """Special method that allows fast updating of the backend with new examples."""
         data_points, losses = split_examples(new_examples, self.params)

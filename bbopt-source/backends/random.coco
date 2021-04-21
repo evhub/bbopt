@@ -24,11 +24,13 @@ class RandomBackend(Backend):
         "weibullvariate": random.weibullvariate,
     }
 
+    @override
     def param(self, name, func, *args, **kwargs):
         if func not in self.random_functions:
             raise ValueError(f"unknown random function {name}")
         return self.random_functions[func](*args)
 
+    @override
     def attempt_update(self, examples, params) =
         """The random backend requires no modifications to be updated with new parameters."""
         True

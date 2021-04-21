@@ -5,7 +5,7 @@ Constants for use across all of BBopt.
 
 # Installation constants:
 name = "bbopt"
-version = "1.1.19"
+version = "1.1.20"
 description = "The easiest hyperparameter optimization you'll ever do."
 long_description = """
 See BBopt's GitHub_ for more information.

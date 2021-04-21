@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd37f2fde
+# __coconut_hash__ = 0xf7843b6a
 
-# Compiled with Coconut version 1.5.0-post_dev12 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev23 [Fish License]
 
 """
 The hyperopt backend. Does black box optimization using hyperopt.
@@ -18,7 +18,7 @@ if _coconut_cached_module is not None and _coconut_os_path.dirname(_coconut_cach
     del _coconut_sys.modules[str("__coconut__")]
 _coconut_sys.path.insert(0, _coconut_file_path)
 from __coconut__ import *
-from __coconut__ import _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
+from __coconut__ import _coconut_call_set_names, _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
 if _coconut_sys.version_info >= (3,):
     _coconut_sys.path.pop(0)
 
@@ -125,6 +125,7 @@ class HyperoptBackend(StandardBackend):
     backend_name = "hyperopt"
     implemented_funcs = ("choice", "randrange", "uniform", "normalvariate",)
 
+    @override
     def setup_backend(self, params, algo=tpe.suggest, rstate=np.random.RandomState(), show_progressbar=False, **options):
         """Special method to initialize the backend from params."""
         self.params = params
@@ -137,6 +138,7 @@ class HyperoptBackend(StandardBackend):
 
         self.fmin_iter = FMinIter(algo, domain, self.trials, rstate, show_progressbar=show_progressbar, **options)
 
+    @override
     def tell_examples(self, new_examples):
         """Special method that allows fast updating of the backend with new examples."""
         trial_list = examples_to_trials(new_examples, self.params)
@@ -159,6 +161,7 @@ class HyperoptBackend(StandardBackend):
 
 # Registered names:
 
+_coconut_call_set_names(HyperoptBackend)
 HyperoptBackend.register()
 HyperoptBackend.register_alg("tree_structured_parzen_estimator", algo=tpe.suggest)
 HyperoptBackend.register_alg("annealing", algo=anneal.suggest)

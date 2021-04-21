@@ -113,6 +113,7 @@ class HyperoptBackend(StandardBackend):
         "normalvariate",
     )
 
+    @override
     def setup_backend(self, params, algo=tpe.suggest, rstate=np.random.RandomState(), show_progressbar=False, **options):
         """Special method to initialize the backend from params."""
         self.params = params
@@ -135,6 +136,7 @@ class HyperoptBackend(StandardBackend):
             **options,
         )
 
+    @override
     def tell_examples(self, new_examples):
         """Special method that allows fast updating of the backend with new examples."""
         trial_list = examples_to_trials(new_examples, self.params)

@@ -13,9 +13,11 @@ class ServingBackend(Backend):
     def __init__(self, examples, params):
         self.attempt_update(examples, params)
 
+    @override
     def fallback_func(self, name, func, *args, **kwargs):
         raise ValueError(f"missing data for parameter {name} while serving and no guess")
 
+    @override
     def attempt_update(self, examples, params):
         """Update the serving backend with new parameters."""
         # since we're serving, ignore params and just extract the best example

@@ -30,6 +30,7 @@ class MixtureBackend(Backend):
         self.backend_store = {}
         self.tell_examples(examples)
 
+    @override
     def tell_examples(self, examples):
         """Special method that allows fast updating of the backend with new examples."""
         # randomly select algorithm
@@ -51,6 +52,7 @@ class MixtureBackend(Backend):
         )
         self.backend_store[self.selected_alg] = self.current_backend
 
+    @override
     def param(self, name, func, *args, **kwargs) =
         """Defer parameter selection to the selected backend."""
         self.current_backend.param(name, func, *args, **kwargs)
