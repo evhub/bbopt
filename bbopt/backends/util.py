@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd6c451af
+# __coconut_hash__ = 0xa6fa8b51
 
 # Compiled with Coconut version 1.5.0-post_dev24 [Fish License]
 
@@ -229,8 +229,8 @@ class Backend(_coconut.object):
 #  default fallback_func implementation
     fallback_backend = None
 
-# derived class can implement tell_examples(new_examples) to
-#  allow fast updating on new data
+# derived classes can implement tell_examples(new_examples)
+#  to allow fast updating on new data
     tell_examples = None
 
     def __new__(cls, examples=None, params=None, *args, **kwargs):

@@ -165,8 +165,8 @@ class Backend:
     #  default fallback_func implementation
     fallback_backend = None
 
-    # derived class can implement tell_examples(new_examples) to
-    #  allow fast updating on new data
+    # derived classes can implement tell_examples(new_examples)
+    #  to allow fast updating on new data
     tell_examples = None
 
     def __new__(cls, examples=None, params=None, *args, **kwargs):
