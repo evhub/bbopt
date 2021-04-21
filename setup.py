@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc0e139e1
+# __coconut_hash__ = 0xb53d4de3
 
-# Compiled with Coconut version 1.5.0-post_dev23 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev24 [Fish License]
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -949,6 +949,8 @@ class override(object):
     def __init__(self, func):
         self.func = func
     def __get__(self, obj, objtype=None):
+        if obj is None:
+            return self.func
         if _coconut_sys.version_info >= (3,):
             return _coconut.types.MethodType(self.func, obj)
         else:

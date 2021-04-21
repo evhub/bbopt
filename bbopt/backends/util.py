@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xda0ed9c
+# __coconut_hash__ = 0xd6c451af
 
-# Compiled with Coconut version 1.5.0-post_dev23 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev24 [Fish License]
 
 """
 Utilities for use in BBopt backends.
@@ -229,6 +229,10 @@ class Backend(_coconut.object):
 #  default fallback_func implementation
     fallback_backend = None
 
+# derived class can implement tell_examples(new_examples) to
+#  allow fast updating on new data
+    tell_examples = None
+
     def __new__(cls, examples=None, params=None, *args, **kwargs):
         self = super(Backend, cls).__new__(cls)
         if self.tell_examples is not None:
@@ -255,9 +259,6 @@ class Backend(_coconut.object):
             except NotImplementedError:
                 return False
         return True
-
-# implement tell_examples(new_examples) to allow fast updating on new data
-    tell_examples = None
 
     def init_fallback_backend(self):
         """Set fallback_backend to a new random backend instance."""
@@ -315,6 +316,7 @@ class StandardBackend(Backend):
         else:
             self.current_values = {}
 
+    @override
     def tell_examples(self, new_examples):
         """Implements tell_examples by calling tell_data."""
         new_data, new_losses = get_named_data_points_and_losses(new_examples, self._params)
