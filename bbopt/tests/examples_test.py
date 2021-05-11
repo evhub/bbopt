@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x8f53ff66
+# __coconut_hash__ = 0xcbee387e
 
-# Compiled with Coconut version 1.5.0-post_dev24 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev38 [Fish License]
 
 # Coconut Header: -------------------------------------------------------------
 
