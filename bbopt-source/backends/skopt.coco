@@ -2,6 +2,8 @@
 The scikit-optimize backend. Does black box optimization using scikit-optimize.
 """
 
+from functools import wraps
+
 from skopt import Optimizer
 from skopt.space import (
     Categorical,
@@ -17,57 +19,72 @@ from bbopt.backends.util import (
 )
 
 
-# attempt to fix skopt bug by patching sklearn
+# attempt to fix skopt errors by patching sklearn
 try:
     import sklearn
-    sklearn.utils.fixes.sp_version < (1,)
 except ImportError:
     pass
-except TypeError:
-    Version = type(sklearn.utils.fixes.sp_version)
-    old_lt = Version.__lt__
-    old_le = Version.__le__
-    old_gt = Version.__gt__
-    old_ge = Version.__ge__
+else:
+
+    # patch sklearn.utils.optimize._check_optimize_result
+    old_check_optimize_result = sklearn.utils.optimize._check_optimize_result
     try:
-        def Version.__lt__(self, other):
-            try:
-                result = old_lt(self, other)
-            except TypeError, NotImplementedError:
-                result = NotImplemented
-            if result is NotImplemented:
-                return self.release < other
-            else:
-                return result
-        def Version.__le__(self, other):
-            try:
-                result = old_le(self, other)
-            except TypeError, NotImplementedError:
-                result = NotImplemented
-            if result is NotImplemented:
-                return self.release <= other
-            else:
-                return result
-        def Version.__gt__(self, other):
-            try:
-                result = old_gt(self, other)
-            except TypeError, NotImplementedError:
-                result = NotImplemented
-            if result is NotImplemented:
-                return self.release > other
-            else:
-                return result
-        def Version.__ge__(self, other):
-            try:
-                result = old_ge(self, other)
-            except TypeError, NotImplementedError:
-                result = NotImplemented
-            if result is NotImplemented:
-                return self.release >= other
-            else:
-                return result
+        @wraps(old_check_optimize_result)
+        def sklearn.utils.optimize._check_optimize_result(solver, result, *args, **kwargs):
+            if not isinstance(result.message, bytes):
+                result.message = result.message.encode("latin1")
+            return old_check_optimize_result(solver, result, *args, **kwargs)
     except TypeError:
         pass
+
+    # patch sklearn.utils.fixes.sp_version
+    try:
+        sklearn.utils.fixes.sp_version < (1,)
+    except TypeError:
+        Version = type(sklearn.utils.fixes.sp_version)
+        old_lt = Version.__lt__
+        old_le = Version.__le__
+        old_gt = Version.__gt__
+        old_ge = Version.__ge__
+        try:
+            def Version.__lt__(self, other):
+                try:
+                    result = old_lt(self, other)
+                except TypeError, NotImplementedError:
+                    result = NotImplemented
+                if result is NotImplemented:
+                    return self.release < other
+                else:
+                    return result
+            def Version.__le__(self, other):
+                try:
+                    result = old_le(self, other)
+                except TypeError, NotImplementedError:
+                    result = NotImplemented
+                if result is NotImplemented:
+                    return self.release <= other
+                else:
+                    return result
+            def Version.__gt__(self, other):
+                try:
+                    result = old_gt(self, other)
+                except TypeError, NotImplementedError:
+                    result = NotImplemented
+                if result is NotImplemented:
+                    return self.release > other
+                else:
+                    return result
+            def Version.__ge__(self, other):
+                try:
+                    result = old_ge(self, other)
+                except TypeError, NotImplementedError:
+                    result = NotImplemented
+                if result is NotImplemented:
+                    return self.release >= other
+                else:
+                    return result
+        except TypeError:
+            pass
 
 
 # Utilities:

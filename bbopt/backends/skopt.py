@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x185e863a
+# __coconut_hash__ = 0xef916eb6
 
 # Compiled with Coconut version 1.5.0-post_dev43 [Fish License]
 
@@ -26,6 +26,8 @@ if _coconut_sys.version_info >= (3,):
 
 
 
+from functools import wraps
+
 from skopt import Optimizer
 from skopt.space import Categorical
 from skopt.space import Integer
@@ -37,85 +39,107 @@ from bbopt.backends.util import split_examples
 from bbopt.backends.util import make_values
 
 
-# attempt to fix skopt bug by patching sklearn
+# attempt to fix skopt errors by patching sklearn
 try:
     import sklearn
-    sklearn.utils.fixes.sp_version < (1,)
 except ImportError:
     pass
-except TypeError:
-    Version = type(sklearn.utils.fixes.sp_version)
-    old_lt = Version.__lt__
-    old_le = Version.__le__
-    old_gt = Version.__gt__
-    old_ge = Version.__ge__
+else:
+
+# patch sklearn.utils.optimize._check_optimize_result
+    old_check_optimize_result = sklearn.utils.optimize._check_optimize_result
     try:
         try:
-            _coconut_dotted_func_name_store_0 = __lt__
+            _coconut_dotted_func_name_store_0 = _check_optimize_result
         except _coconut.NameError:
             _coconut_dotted_func_name_store_0 = _coconut_sentinel
-        def __lt__(self, other):
-            try:
-                result = old_lt(self, other)
-            except (TypeError, NotImplementedError):
-                result = NotImplemented
-            if result is NotImplemented:
-                return self.release < other
-            else:
-                return result
-        Version.__lt__ = __lt__
+        @wraps(old_check_optimize_result)
+        def _check_optimize_result(solver, result, *args, **kwargs):
+            if not isinstance(result.message, bytes):
+                result.message = result.message.encode("latin1")
+            return old_check_optimize_result(solver, result, *args, **kwargs)
+        sklearn.utils.optimize._check_optimize_result = _check_optimize_result
         if _coconut_dotted_func_name_store_0 is not _coconut_sentinel:
-            __lt__ = _coconut_dotted_func_name_store_0
-        try:
-            _coconut_dotted_func_name_store_1 = __le__
-        except _coconut.NameError:
-            _coconut_dotted_func_name_store_1 = _coconut_sentinel
-        def __le__(self, other):
-            try:
-                result = old_le(self, other)
-            except (TypeError, NotImplementedError):
-                result = NotImplemented
-            if result is NotImplemented:
-                return self.release <= other
-            else:
-                return result
-        Version.__le__ = __le__
-        if _coconut_dotted_func_name_store_1 is not _coconut_sentinel:
-            __le__ = _coconut_dotted_func_name_store_1
-        try:
-            _coconut_dotted_func_name_store_2 = __gt__
-        except _coconut.NameError:
-            _coconut_dotted_func_name_store_2 = _coconut_sentinel
-        def __gt__(self, other):
-            try:
-                result = old_gt(self, other)
-            except (TypeError, NotImplementedError):
-                result = NotImplemented
-            if result is NotImplemented:
-                return self.release > other
-            else:
-                return result
-        Version.__gt__ = __gt__
-        if _coconut_dotted_func_name_store_2 is not _coconut_sentinel:
-            __gt__ = _coconut_dotted_func_name_store_2
-        try:
-            _coconut_dotted_func_name_store_3 = __ge__
-        except _coconut.NameError:
-            _coconut_dotted_func_name_store_3 = _coconut_sentinel
-        def __ge__(self, other):
-            try:
-                result = old_ge(self, other)
-            except (TypeError, NotImplementedError):
-                result = NotImplemented
-            if result is NotImplemented:
-                return self.release >= other
-            else:
-                return result
-        Version.__ge__ = __ge__
-        if _coconut_dotted_func_name_store_3 is not _coconut_sentinel:
-            __ge__ = _coconut_dotted_func_name_store_3
+            _check_optimize_result = _coconut_dotted_func_name_store_0
     except TypeError:
         pass
+
+# patch sklearn.utils.fixes.sp_version
+    try:
+        sklearn.utils.fixes.sp_version < (1,)
+    except TypeError:
+        Version = type(sklearn.utils.fixes.sp_version)
+        old_lt = Version.__lt__
+        old_le = Version.__le__
+        old_gt = Version.__gt__
+        old_ge = Version.__ge__
+        try:
+            try:
+                _coconut_dotted_func_name_store_1 = __lt__
+            except _coconut.NameError:
+                _coconut_dotted_func_name_store_1 = _coconut_sentinel
+            def __lt__(self, other):
+                try:
+                    result = old_lt(self, other)
+                except (TypeError, NotImplementedError):
+                    result = NotImplemented
+                if result is NotImplemented:
+                    return self.release < other
+                else:
+                    return result
+            Version.__lt__ = __lt__
+            if _coconut_dotted_func_name_store_1 is not _coconut_sentinel:
+                __lt__ = _coconut_dotted_func_name_store_1
+            try:
+                _coconut_dotted_func_name_store_2 = __le__
+            except _coconut.NameError:
+                _coconut_dotted_func_name_store_2 = _coconut_sentinel
+            def __le__(self, other):
+                try:
+                    result = old_le(self, other)
+                except (TypeError, NotImplementedError):
+                    result = NotImplemented
+                if result is NotImplemented:
+                    return self.release <= other
+                else:
+                    return result
+            Version.__le__ = __le__
+            if _coconut_dotted_func_name_store_2 is not _coconut_sentinel:
+                __le__ = _coconut_dotted_func_name_store_2
+            try:
+                _coconut_dotted_func_name_store_3 = __gt__
+            except _coconut.NameError:
+                _coconut_dotted_func_name_store_3 = _coconut_sentinel
+            def __gt__(self, other):
+                try:
+                    result = old_gt(self, other)
+                except (TypeError, NotImplementedError):
+                    result = NotImplemented
+                if result is NotImplemented:
+                    return self.release > other
+                else:
+                    return result
+            Version.__gt__ = __gt__
+            if _coconut_dotted_func_name_store_3 is not _coconut_sentinel:
+                __gt__ = _coconut_dotted_func_name_store_3
+            try:
+                _coconut_dotted_func_name_store_4 = __ge__
+            except _coconut.NameError:
+                _coconut_dotted_func_name_store_4 = _coconut_sentinel
+            def __ge__(self, other):
+                try:
+                    result = old_ge(self, other)
+                except (TypeError, NotImplementedError):
+                    result = NotImplemented
+                if result is NotImplemented:
+                    return self.release >= other
+                else:
+                    return result
+            Version.__ge__ = __ge__
+            if _coconut_dotted_func_name_store_4 is not _coconut_sentinel:
+                __ge__ = _coconut_dotted_func_name_store_4
+        except TypeError:
+            pass
 
 
 # Utilities:

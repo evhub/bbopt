@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xdf0ba7a6
+# __coconut_hash__ = 0xaf53136b
 
 # Compiled with Coconut version 1.5.0-post_dev43 [Fish License]
 
@@ -173,6 +173,33 @@ class TestExamples(unittest.TestCase):
             assert -9 <= skopt_example.y < 21
             assert skopt_example.bb.num_examples == NUM_TRIALS
 
+    def test_conditional_skopt(self):
+        print("\ntest conditional_skopt:")
+        with using(conditional_skopt_data):
+            results = call_test(["bbopt", conditional_skopt_file, "-n", str(NUM_TRIALS), "-j", "2"])
+            want = max(get_nums(results, numtype=int))
+            assert os.path.exists(conditional_skopt_data)
+
+            from bbopt.examples import conditional_skopt_example
+            assert_improving(conditional_skopt_example.bb.get_data(print_data=True))
+            assert conditional_skopt_example.x == want
+            assert 0 < conditional_skopt_example.x <= 20
+            assert conditional_skopt_example.bb.num_examples == NUM_TRIALS
+
+    if sys.version_info >= (3, 7):
+        def test_bask(self):
+            print("\ntest bask:")
+            with using(bask_data):
+                results = call_test(["bbopt", bask_file, "-n", str(NUM_TRIALS), "-j", "2"])
+                want = max(get_nums(results, numtype=float))
+                assert os.path.exists(bask_data)
+
+                from bbopt.examples import bask_example
+                assert_improving(bask_example.bb.get_data(print_data=True))
+                assert 0 < want <= 20
+                assert 0 < bask_example.x <= 20
+                assert bask_example.bb.num_examples == NUM_TRIALS
+
     if sys.version_info >= (3,):
         def test_pysot(self):
             print("\ntest pysot:")
@@ -211,33 +238,6 @@ class TestExamples(unittest.TestCase):
             assert conditional_hyperopt_example.x == want
             assert 0 < conditional_hyperopt_example.x <= 20
             assert conditional_hyperopt_example.bb.num_examples == NUM_TRIALS
-
-    def test_conditional_skopt(self):
-        print("\ntest conditional_skopt:")
-        with using(conditional_skopt_data):
-            results = call_test(["bbopt", conditional_skopt_file, "-n", str(NUM_TRIALS), "-j", "2"])
-            want = max(get_nums(results, numtype=int))
-            assert os.path.exists(conditional_skopt_data)
-
-            from bbopt.examples import conditional_skopt_example
-            assert_improving(conditional_skopt_example.bb.get_data(print_data=True))
-            assert conditional_skopt_example.x == want
-            assert 0 < conditional_skopt_example.x <= 20
-            assert conditional_skopt_example.bb.num_examples == NUM_TRIALS
-
-    if sys.version_info >= (3, 7):
-        def test_bask(self):
-            print("\ntest bask:")
-            with using(bask_data):
-                results = call_test(["bbopt", bask_file, "-n", str(NUM_TRIALS), "-j", "2"])
-                want = max(get_nums(results, numtype=float))
-                assert os.path.exists(bask_data)
-
-                from bbopt.examples import bask_example
-                assert_improving(bask_example.bb.get_data(print_data=True))
-                assert 0 < want <= 20
-                assert 0 < bask_example.x <= 20
-                assert bask_example.bb.num_examples == NUM_TRIALS
 
     def test_numpy(self):
         print("\ntest numpy:")

@@ -186,7 +186,7 @@ The base function behind **run**. Instead of specifying an algorithm, **run_back
 - `hyperopt` passes the arguments to [`fmin`](https://github.com/hyperopt/hyperopt/wiki/FMin),
 - `mixture` expects a `distribution` argument to specify the mixture of different algorithms to use, specifically a list of `(alg, weight)` tuples,
 - `bayes-skopt` passes the arguments to [`bask.Optimizer`](https://github.com/kiudee/bayes-skopt/blob/master/bask/optimizer.py#L35), and
-- `pySOT` expects a `strategy` (either a strategy class or one of `"SRBF", "EI", "DYCORS", "LCB"`), surrogate (either a surrogate class or one of `"RBF", "GP"`), and `design` (either an experimental design class or one of `None, "latin_hypercube", "symmetric_latin_hypercube", "two_factorial"`).
+- `pySOT` expects a `strategy` (either a strategy class or one of `"SRBF", "EI", "DYCORS", "LCB"`), a `surrogate` (either a surrogate class or one of `"RBF", "GP"`), and a `design` (either an experimental design class or one of `None, "latin_hypercube", "symmetric_latin_hypercube", "two_factorial"`).
 
 _Note: The `bayes-skopt` backend is only available on Python 3.7+ and the `pySOT` backend is only available on Python 3+._
 
@@ -278,7 +278,7 @@ Get information on the best run so far. These are the parameters that will be us
 
 BlackBoxOptimizer.**get_data**(_print\_data_=`False`)
 
-Dump a dictionary containing `"params"`, the parameters BBopt knows about and what random function and arguments they were initialized with, and `"examples"`, all the previous data BBopt has collected. If _print\_data_, pretty prints the data in addition to returning it.
+Dump a dictionary containing `"params"`—the parameters BBopt knows about and what random function and arguments they were initialized with—and `"examples"`—all the previous data BBopt has collected. If _print\_data_, pretty prints the data in addition to returning it.
 
 #### `data_file`
 
