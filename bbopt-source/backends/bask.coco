@@ -6,6 +6,7 @@ from bask import Optimizer
 from bbopt.backends.skopt import (
     SkoptBackend,
     create_dimensions,
+    guess_n_initial_points,
 )
 
 
@@ -20,7 +21,7 @@ class BaskBackend(SkoptBackend):
         """Special method to initialize the backend from params."""
         self.params = params
         if n_initial_points is None:
-            n_initial_points = len(params)
+            n_initial_points = guess_n_initial_points(params)
         self.optimizer = Optimizer(
             create_dimensions(params),
             n_initial_points=n_initial_points,

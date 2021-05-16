@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd900d85a
+# __coconut_hash__ = 0xcb95feb4
 
-# Compiled with Coconut version 1.5.0-post_dev42 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev43 [Fish License]
 
 """
 The bayes-skopt backend. Does black-box optimization with the bask fork of scikit-optimize.
@@ -29,6 +29,7 @@ if _coconut_sys.version_info >= (3,):
 from bask import Optimizer
 from bbopt.backends.skopt import SkoptBackend
 from bbopt.backends.skopt import create_dimensions
+from bbopt.backends.skopt import guess_n_initial_points
 
 
 # Backend:
@@ -42,7 +43,7 @@ class BaskBackend(SkoptBackend):
         """Special method to initialize the backend from params."""
         self.params = params
         if n_initial_points is None:
-            n_initial_points = len(params)
+            n_initial_points = guess_n_initial_points(params)
         self.optimizer = Optimizer(create_dimensions(params), n_initial_points=n_initial_points, **options)
 
 

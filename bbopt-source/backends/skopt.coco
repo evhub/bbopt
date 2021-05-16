@@ -72,6 +72,14 @@ except TypeError:
 
 # Utilities:
 
+def guess_n_initial_points(params) =
+    """Guess a good value for n_initial_points given params."""
+    max(
+        len(params),
+        min(len(params) * 2, 10),
+    )
+
+
 def create_space(name, func, *args):
     """Create a scikit-optimize space for the given parameter."""
     name = py_str(name)
@@ -115,7 +123,7 @@ class SkoptBackend(StandardBackend):
         if isinstance(base_estimator, str):
             base_estimator = py_str(base_estimator)
         if n_initial_points is None:
-            n_initial_points = len(params)
+            n_initial_points = guess_n_initial_points(params)
         self.optimizer = Optimizer(
             create_dimensions(params),
             base_estimator,

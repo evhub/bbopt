@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # type: ignore
 
-# Compiled with Coconut version 1.5.0-post_dev42 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev43 [Fish License]
 
 """Built-in Coconut utilities."""
 
@@ -199,6 +199,14 @@ class _coconut(object):
             from backports.functools_lru_cache import lru_cache
             functools.lru_cache = lru_cache
         except ImportError: pass
+    if _coconut_sys.version_info < (3, 4):
+        try:
+            import trollius as asyncio
+        except ImportError:
+            class you_need_to_install_trollius: pass
+            asyncio = you_need_to_install_trollius()
+    else:
+        import asyncio
     if _coconut_sys.version_info < (3,):
         import cPickle as pickle
     else:
@@ -208,13 +216,13 @@ class _coconut(object):
         abc = collections
     else:
         import collections.abc as abc
-    if _coconut_sys.version_info >= (3, 6):
-        import typing
-    else:
+    if _coconut_sys.version_info < (3, 6):
         class typing(object):
             @staticmethod
             def NamedTuple(name, fields):
                 return _coconut.collections.namedtuple(name, [x for x, t in fields])
+    else:
+        import typing
     zip_longest = itertools.zip_longest if _coconut_sys.version_info >= (3,) else itertools.izip_longest
     Ellipsis, NotImplemented, NotImplementedError, Exception, AttributeError, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, RuntimeError, any, bytes, classmethod, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, locals, map, min, max, next, object, print, property, range, reversed, set, slice, str, sum, super, tuple, type, vars, zip, repr, bytearray = Ellipsis, NotImplemented, NotImplementedError, Exception, AttributeError, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, RuntimeError, any, bytes, classmethod, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, locals, map, min, max, next, object, print, property, range, reversed, set, slice, str, sum, super, tuple, type, vars, zip, staticmethod(repr), bytearray
 _coconut_sentinel = _coconut.object()
@@ -989,10 +997,10 @@ class override(object):
     def __get__(self, obj, objtype=None):
         if obj is None:
             return self.func
-        if _coconut_sys.version_info >= (3,):
-            return _coconut.types.MethodType(self.func, obj)
-        else:
+        if _coconut_sys.version_info < (3,):
             return _coconut.types.MethodType(self.func, obj, objtype)
+        else:
+            return _coconut.types.MethodType(self.func, obj)
     def __set_name__(self, obj, name):
         if not _coconut.hasattr(_coconut.super(obj, obj), name):
             raise _coconut.RuntimeError(obj.__name__ + "." + name + " marked with @override but not overriding anything")

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x360a623b
+# __coconut_hash__ = 0x185e863a
 
-# Compiled with Coconut version 1.5.0-post_dev42 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev43 [Fish License]
 
 """
 The scikit-optimize backend. Does black box optimization using scikit-optimize.
@@ -120,6 +120,11 @@ except TypeError:
 
 # Utilities:
 
+def guess_n_initial_points(params):
+    """Guess a good value for n_initial_points given params."""
+    return max(len(params), min(len(params) * 2, 10))
+
+
 def create_space(name, func, *args):
     """Create a scikit-optimize space for the given parameter."""
     name = py_str(name)
@@ -170,7 +175,7 @@ class SkoptBackend(StandardBackend):
         if isinstance(base_estimator, str):
             base_estimator = py_str(base_estimator)
         if n_initial_points is None:
-            n_initial_points = len(params)
+            n_initial_points = guess_n_initial_points(params)
         self.optimizer = Optimizer(create_dimensions(params), base_estimator, n_initial_points=n_initial_points, **options)
 
     @override
