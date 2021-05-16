@@ -1,0 +1,35 @@
+"""
+The bayes-skopt backend. Does black-box optimization with the bask fork of scikit-optimize.
+"""
+
+from bask import Optimizer
+from bbopt.backends.skopt import (
+    SkoptBackend,
+    create_dimensions,
+)
+
+
+# Backend:
+
+class BaskBackend(SkoptBackend):
+    """The bask backend uses bayes-skopt for black box optimization."""
+    backend_name = "bayes-skopt"
+
+    @override
+    def setup_backend(self, params, n_initial_points=None, **options):
+        """Special method to initialize the backend from params."""
+        self.params = params
+        if n_initial_points is None:
+            n_initial_points = len(params)
+        self.optimizer = Optimizer(
+            create_dimensions(params),
+            n_initial_points=n_initial_points,
+            **options,
+        )
+
+
+# Registered names:
+
+BaskBackend.register()
+BaskBackend.register_alias("bask")
+BaskBackend.register_alg("bayes_gaussian_process")

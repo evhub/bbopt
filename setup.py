@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x5f73d423
+# __coconut_hash__ = 0x975b7391
 
-# Compiled with Coconut version 1.5.0-post_dev38 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev42 [Fish License]
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -346,15 +346,17 @@ def tee(iterable, n=2):
     return _coconut.itertools.tee(iterable, n)
 class reiterable(object):
     """Allows an iterator to be iterated over multiple times."""
-    __slots__ = ("iter",)
+    __slots__ = ("lock", "iter")
     def __new__(cls, iterable):
         if _coconut.isinstance(iterable, _coconut_reiterable):
             return iterable
         self = _coconut.object.__new__(cls)
+        self.lock = _coconut.threading.Lock()
         self.iter = iterable
         return self
     def get_new_iter(self):
-        self.iter, new_iter = _coconut_tee(self.iter)
+        with self.lock:
+            self.iter, new_iter = _coconut_tee(self.iter)
         return new_iter
     def __iter__(self):
         return _coconut.iter(self.get_new_iter())
@@ -992,6 +994,14 @@ class override(object):
     def __set_name__(self, obj, name):
         if not _coconut.hasattr(_coconut.super(obj, obj), name):
             raise _coconut.RuntimeError(obj.__name__ + "." + name + " marked with @override but not overriding anything")
+def reveal_type(obj):
+    """Special function to get MyPy to print the type of the given expression.
+    At runtime, reveal_type is the identity function."""
+    return obj
+def reveal_locals():
+    """Special function to get MyPy to print the type of the current locals.
+    At runtime, reveal_locals always returns None."""
+    pass
 _coconut_MatchError, _coconut_count, _coconut_enumerate, _coconut_filter, _coconut_makedata, _coconut_map, _coconut_reiterable, _coconut_reversed, _coconut_starmap, _coconut_tee, _coconut_zip, TYPE_CHECKING, reduce, takewhile, dropwhile = MatchError, count, enumerate, filter, makedata, map, reiterable, reversed, starmap, tee, zip, False, _coconut.functools.reduce, _coconut.itertools.takewhile, _coconut.itertools.dropwhile
 
 # Compiled Coconut: -----------------------------------------------------------

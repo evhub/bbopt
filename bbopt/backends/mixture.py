@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xef47be7b
+# __coconut_hash__ = 0x5cc3e096
 
-# Compiled with Coconut version 1.5.0-post_dev38 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev42 [Fish License]
 
 """
 The mixture backend. Lets you specify a distribution over different possible algorithms.

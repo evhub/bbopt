@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb918b6e6
+# __coconut_hash__ = 0xd900d85a
 
 # Compiled with Coconut version 1.5.0-post_dev42 [Fish License]
 
 """
-The random backend. Does not use existing data, simply spits out random valid values.
+The bayes-skopt backend. Does black-box optimization with the bask fork of scikit-optimize.
 """
 
 # Coconut Header: -------------------------------------------------------------
@@ -26,30 +26,29 @@ if _coconut_sys.version_info >= (3,):
 
 
 
-import random
+from bask import Optimizer
+from bbopt.backends.skopt import SkoptBackend
+from bbopt.backends.skopt import create_dimensions
 
-from bbopt.backends.util import Backend
 
+# Backend:
 
-class RandomBackend(Backend):
-    """The random backend chooses parameter values randomly."""
-    backend_name = "random"
-    random_functions = {"randrange": random.randrange, "choice": random.choice, "uniform": random.uniform, "triangular": random.triangular, "betavariate": random.betavariate, "expovariate": random.expovariate, "gammavariate": random.gammavariate, "normalvariate": random.gauss, "vonmisesvariate": random.vonmisesvariate, "paretovariate": random.paretovariate, "weibullvariate": random.weibullvariate}
-
-    @override
-    def param(self, name, func, *args, **kwargs):
-        if func not in self.random_functions:
-            raise ValueError("unknown random function {_coconut_format_0}".format(_coconut_format_0=(name)))
-        return self.random_functions[func](*args)
+class BaskBackend(SkoptBackend):
+    """The bask backend uses bayes-skopt for black box optimization."""
+    backend_name = "bayes-skopt"
 
     @override
-    def attempt_update(self, examples, params):
-        """The random backend requires no modifications to be updated with new parameters."""
-        return True
+    def setup_backend(self, params, n_initial_points=None, **options):
+        """Special method to initialize the backend from params."""
+        self.params = params
+        if n_initial_points is None:
+            n_initial_points = len(params)
+        self.optimizer = Optimizer(create_dimensions(params), n_initial_points=n_initial_points, **options)
 
 
 # Registered names:
 
-_coconut_call_set_names(RandomBackend)
-RandomBackend.register()
-RandomBackend.register_alg("random")
+_coconut_call_set_names(BaskBackend)
+BaskBackend.register()
+BaskBackend.register_alias("bask")
+BaskBackend.register_alg("bayes_gaussian_process")

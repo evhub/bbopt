@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3ccd41f8
+# __coconut_hash__ = 0x360a623b
 
-# Compiled with Coconut version 1.5.0-post_dev38 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev42 [Fish License]
 
 """
 The scikit-optimize backend. Does black box optimization using scikit-optimize.
@@ -164,12 +164,14 @@ class SkoptBackend(StandardBackend):
     implemented_funcs = ("choice", "randrange", "uniform",)
 
     @override
-    def setup_backend(self, params, base_estimator="GP", **options):
+    def setup_backend(self, params, base_estimator="GP", n_initial_points=None, **options):
         """Special method to initialize the backend from params."""
         self.params = params
         if isinstance(base_estimator, str):
             base_estimator = py_str(base_estimator)
-        self.optimizer = Optimizer(create_dimensions(params), base_estimator, **options)
+        if n_initial_points is None:
+            n_initial_points = len(params)
+        self.optimizer = Optimizer(create_dimensions(params), base_estimator, n_initial_points=n_initial_points, **options)
 
     @override
     def tell_examples(self, new_examples):

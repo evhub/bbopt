@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xccb3778d
+# __coconut_hash__ = 0x807e1881
 
-# Compiled with Coconut version 1.5.0-post_dev38 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev42 [Fish License]
 
 """
 Backends contains all of bbopt's different backends.
@@ -49,3 +49,9 @@ if sys.version_info >= (3,):
     except ImportError:
         traceback.print_exc()
         print("Could not import pySOT backend; backend unavailable (see above error).")
+if sys.version_info >= (3, 7):
+    try:
+        from bbopt.backends.bask import BaskBackend
+    except ImportError:
+        traceback.print_exc()
+        print("Could not import bayes-skopt backend; backend unavailable (see above error).")

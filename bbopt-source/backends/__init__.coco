@@ -25,3 +25,9 @@ if sys.version_info >= (3,):
     except ImportError:
         traceback.print_exc()
         print("Could not import pySOT backend; backend unavailable (see above error).")
+if sys.version_info >= (3, 7):
+    try:
+        from bbopt.backends.bask import BaskBackend
+    except ImportError:
+        traceback.print_exc()
+        print("Could not import bayes-skopt backend; backend unavailable (see above error).")
