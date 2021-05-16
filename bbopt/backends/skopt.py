@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xef916eb6
+# __coconut_hash__ = 0x7bdfcc52
 
 # Compiled with Coconut version 1.5.0-post_dev43 [Fish License]
 
@@ -47,8 +47,8 @@ except ImportError:
 else:
 
 # patch sklearn.utils.optimize._check_optimize_result
-    old_check_optimize_result = sklearn.utils.optimize._check_optimize_result
     try:
+        old_check_optimize_result = sklearn.utils.optimize._check_optimize_result
         try:
             _coconut_dotted_func_name_store_0 = _check_optimize_result
         except _coconut.NameError:
@@ -61,7 +61,7 @@ else:
         sklearn.utils.optimize._check_optimize_result = _check_optimize_result
         if _coconut_dotted_func_name_store_0 is not _coconut_sentinel:
             _check_optimize_result = _coconut_dotted_func_name_store_0
-    except TypeError:
+    except AttributeError:
         pass
 
 # patch sklearn.utils.fixes.sp_version
