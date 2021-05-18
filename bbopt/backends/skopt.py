@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7bdfcc52
+# __coconut_hash__ = 0x88c6149e
 
 # Compiled with Coconut version 1.5.0-post_dev43 [Fish License]
 
@@ -49,18 +49,15 @@ else:
 # patch sklearn.utils.optimize._check_optimize_result
     try:
         old_check_optimize_result = sklearn.utils.optimize._check_optimize_result
-        try:
-            _coconut_dotted_func_name_store_0 = _check_optimize_result
-        except _coconut.NameError:
-            _coconut_dotted_func_name_store_0 = _coconut_sentinel
+
         @wraps(old_check_optimize_result)
-        def _check_optimize_result(solver, result, *args, **kwargs):
+        def new_check_optimize_result(solver, result, *args, **kwargs):
             if not isinstance(result.message, bytes):
                 result.message = result.message.encode("latin1")
             return old_check_optimize_result(solver, result, *args, **kwargs)
-        sklearn.utils.optimize._check_optimize_result = _check_optimize_result
-        if _coconut_dotted_func_name_store_0 is not _coconut_sentinel:
-            _check_optimize_result = _coconut_dotted_func_name_store_0
+
+        sklearn.utils.optimize._check_optimize_result = new_check_optimize_result
+        sklearn.gaussian_process._gpr._check_optimize_result = new_check_optimize_result
     except AttributeError:
         pass
 
@@ -75,9 +72,9 @@ else:
         old_ge = Version.__ge__
         try:
             try:
-                _coconut_dotted_func_name_store_1 = __lt__
+                _coconut_dotted_func_name_store_0 = __lt__
             except _coconut.NameError:
-                _coconut_dotted_func_name_store_1 = _coconut_sentinel
+                _coconut_dotted_func_name_store_0 = _coconut_sentinel
             def __lt__(self, other):
                 try:
                     result = old_lt(self, other)
@@ -88,12 +85,12 @@ else:
                 else:
                     return result
             Version.__lt__ = __lt__
-            if _coconut_dotted_func_name_store_1 is not _coconut_sentinel:
-                __lt__ = _coconut_dotted_func_name_store_1
+            if _coconut_dotted_func_name_store_0 is not _coconut_sentinel:
+                __lt__ = _coconut_dotted_func_name_store_0
             try:
-                _coconut_dotted_func_name_store_2 = __le__
+                _coconut_dotted_func_name_store_1 = __le__
             except _coconut.NameError:
-                _coconut_dotted_func_name_store_2 = _coconut_sentinel
+                _coconut_dotted_func_name_store_1 = _coconut_sentinel
             def __le__(self, other):
                 try:
                     result = old_le(self, other)
@@ -104,12 +101,12 @@ else:
                 else:
                     return result
             Version.__le__ = __le__
-            if _coconut_dotted_func_name_store_2 is not _coconut_sentinel:
-                __le__ = _coconut_dotted_func_name_store_2
+            if _coconut_dotted_func_name_store_1 is not _coconut_sentinel:
+                __le__ = _coconut_dotted_func_name_store_1
             try:
-                _coconut_dotted_func_name_store_3 = __gt__
+                _coconut_dotted_func_name_store_2 = __gt__
             except _coconut.NameError:
-                _coconut_dotted_func_name_store_3 = _coconut_sentinel
+                _coconut_dotted_func_name_store_2 = _coconut_sentinel
             def __gt__(self, other):
                 try:
                     result = old_gt(self, other)
@@ -120,12 +117,12 @@ else:
                 else:
                     return result
             Version.__gt__ = __gt__
-            if _coconut_dotted_func_name_store_3 is not _coconut_sentinel:
-                __gt__ = _coconut_dotted_func_name_store_3
+            if _coconut_dotted_func_name_store_2 is not _coconut_sentinel:
+                __gt__ = _coconut_dotted_func_name_store_2
             try:
-                _coconut_dotted_func_name_store_4 = __ge__
+                _coconut_dotted_func_name_store_3 = __ge__
             except _coconut.NameError:
-                _coconut_dotted_func_name_store_4 = _coconut_sentinel
+                _coconut_dotted_func_name_store_3 = _coconut_sentinel
             def __ge__(self, other):
                 try:
                     result = old_ge(self, other)
@@ -136,8 +133,8 @@ else:
                 else:
                     return result
             Version.__ge__ = __ge__
-            if _coconut_dotted_func_name_store_4 is not _coconut_sentinel:
-                __ge__ = _coconut_dotted_func_name_store_4
+            if _coconut_dotted_func_name_store_3 is not _coconut_sentinel:
+                __ge__ = _coconut_dotted_func_name_store_3
         except TypeError:
             pass
 

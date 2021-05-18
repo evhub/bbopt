@@ -29,11 +29,15 @@ else:
     # patch sklearn.utils.optimize._check_optimize_result
     try:
         old_check_optimize_result = sklearn.utils.optimize._check_optimize_result
+
         @wraps(old_check_optimize_result)
-        def sklearn.utils.optimize._check_optimize_result(solver, result, *args, **kwargs):
+        def new_check_optimize_result(solver, result, *args, **kwargs):
             if not isinstance(result.message, bytes):
                 result.message = result.message.encode("latin1")
             return old_check_optimize_result(solver, result, *args, **kwargs)
+
+        sklearn.utils.optimize._check_optimize_result = new_check_optimize_result
+        sklearn.gaussian_process._gpr._check_optimize_result = new_check_optimize_result
     except AttributeError:
         pass
 
