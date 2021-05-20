@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x898423c9
+# __coconut_hash__ = 0xb3899759
 
 # Compiled with Coconut version 1.5.0-post_dev45 [Fish License]
 
@@ -37,6 +37,7 @@ if _coconut_sys.version_info < (3, 3):
 else:
     from collections.abc import Iterable
 from contextlib import contextmanager
+from functools import wraps
 
 import numpy as np
 from portalocker import Lock
@@ -251,6 +252,7 @@ def open_with_lock(fpath, mode="rb+", timeout=None, **kwargs):
 
 def convert_match_errors(name, func):
     """Re-raise MatchErrors as TypeErrors."""
+    @wraps(func)
     def match_errors_converted_func(*args, **kwargs):
         try:
             return func(*args, **kwargs)

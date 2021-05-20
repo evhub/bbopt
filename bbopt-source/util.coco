@@ -6,6 +6,7 @@ import os
 import sys
 from collections.abc import Mapping, Iterable
 from contextlib import contextmanager
+from functools import wraps
 
 import numpy as np
 from portalocker import Lock
@@ -221,6 +222,7 @@ def open_with_lock(fpath, mode="rb+", timeout=None, **kwargs):
 
 def convert_match_errors(name, func):
     """Re-raise MatchErrors as TypeErrors."""
+    @wraps(func)
     def match_errors_converted_func(*args, **kwargs):
         try:
             return func(*args, **kwargs)
