@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x2d62a24
+# __coconut_hash__ = 0x69bfebbb
 
-# Compiled with Coconut version 1.5.0-post_dev43 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev45 [Fish License]
 
 """
 The pySOT backend. Does black box optimization using pySOT.

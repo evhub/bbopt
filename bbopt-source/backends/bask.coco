@@ -3,6 +3,7 @@ The bayes-skopt backend. Does black-box optimization with the bask fork of sciki
 """
 
 from bask import Optimizer
+
 from bbopt.backends.skopt import (
     SkoptBackend,
     create_dimensions,
