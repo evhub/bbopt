@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xe2870793
+# __coconut_hash__ = 0x6fca16e0
 
-# Compiled with Coconut version 1.5.0-post_dev45 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev49 [Fish License]
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -191,7 +191,7 @@ else:
     else:
         py_breakpoint = breakpoint
 class _coconut(object):
-    import collections, copy, functools, types, itertools, operator, threading, weakref, os, warnings, contextlib, traceback
+    import collections, copy, functools, types, itertools, operator, threading, os, warnings, contextlib, traceback, weakref
     if _coconut_sys.version_info < (3, 2):
         try:
             from backports.functools_lru_cache import lru_cache
@@ -253,16 +253,30 @@ class MatchError(Exception):
 class _coconut_tail_call(object):
     __slots__ = ("func", "args", "kwargs")
     def __init__(self, func, *args, **kwargs):
-        self.func, self.args, self.kwargs = func, args, kwargs
+        self.func = func
+        self.args = args
+        self.kwargs = kwargs
 _coconut_tco_func_dict = {}
 def _coconut_tco(func):
     @_coconut.functools.wraps(func)
     def tail_call_optimized_func(*args, **kwargs):
         call_func = func
         while True:
-            wkref = _coconut_tco_func_dict.get(_coconut.id(call_func))
-            if wkref is not None and wkref() is call_func or _coconut.isinstance(call_func, _coconut_base_pattern_func):
+            if _coconut.isinstance(call_func, _coconut_base_pattern_func):
                 call_func = call_func._coconut_tco_func
+            elif _coconut.isinstance(call_func, _coconut.types.MethodType):
+                wkref = _coconut_tco_func_dict.get(_coconut.id(call_func.__func__))
+                wkref_func = None if wkref is None else wkref()
+                if wkref_func is call_func.__func__:
+                    if call_func.__self__ is None:
+                        call_func = call_func._coconut_tco_func
+                    else:
+                        call_func = _coconut.functools.partial(call_func._coconut_tco_func, call_func.__self__)
+            else:
+                wkref = _coconut_tco_func_dict.get(_coconut.id(call_func))
+                wkref_func = None if wkref is None else wkref()
+                if wkref_func is call_func:
+                    call_func = call_func._coconut_tco_func
             result = call_func(*args, **kwargs)  # pass --no-tco to clean up your traceback
             if not isinstance(result, _coconut_tail_call):
                 return result
@@ -319,6 +333,8 @@ class _coconut_base_compose(object):
     def __reduce__(self):
         return (self.__class__, (self.func,) + _coconut.tuple(self.funcstars))
     def __get__(self, obj, objtype=None):
+        if obj is None:
+            return self
         return _coconut.functools.partial(self, obj)
 def _coconut_forward_compose(func, *funcs): return _coconut_base_compose(func, *((f, 0) for f in funcs))
 def _coconut_back_compose(*funcs): return _coconut_forward_compose(*_coconut.reversed(funcs))
@@ -797,6 +813,8 @@ class recursive_iterator(object):
     def __reduce__(self):
         return (self.__class__, (self.func,))
     def __get__(self, obj, objtype=None):
+        if obj is None:
+            return self
         return _coconut.functools.partial(self, obj)
 class _coconut_FunctionMatchErrorContext(object):
     __slots__ = ('exc_class', 'taken')

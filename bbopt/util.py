@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb3899759
+# __coconut_hash__ = 0xe779536
 
-# Compiled with Coconut version 1.5.0-post_dev45 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev49 [Fish License]
 
 """
 Utilities for use across all of bbopt.
@@ -132,38 +132,38 @@ def running_best(examples):
     best_example = max_gain = min_loss = None
     for example in examples:
 
-        _coconut_match_to = example
-        _coconut_case_check_0 = False
-        if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
-            _coconut_match_temp_0 = _coconut_match_to.get("values", _coconut_sentinel)
-            _coconut_match_temp_1 = _coconut_match_to.get("gain", _coconut_sentinel)
+        _coconut_case_match_to_0 = example
+        _coconut_case_match_check_0 = False
+        if _coconut.isinstance(_coconut_case_match_to_0, _coconut.abc.Mapping):
+            _coconut_match_temp_0 = _coconut_case_match_to_0.get("values", _coconut_sentinel)
+            _coconut_match_temp_1 = _coconut_case_match_to_0.get("gain", _coconut_sentinel)
             if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut_match_temp_1 is not _coconut_sentinel):
                 values = _coconut_match_temp_0
                 gain = _coconut_match_temp_1
-                _coconut_case_check_0 = True
-        if _coconut_case_check_0:
+                _coconut_case_match_check_0 = True
+        if _coconut_case_match_check_0:
             if min_loss is not None:
                 raise ValueError("cannot have examples with maximize and examples with minimize")
             if max_gain is None or gain >= max_gain:
                 best_example = example
                 max_gain = gain
 
-        if not _coconut_case_check_0:
-            if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
-                _coconut_match_temp_0 = _coconut_match_to.get("values", _coconut_sentinel)
-                _coconut_match_temp_1 = _coconut_match_to.get("loss", _coconut_sentinel)
+        if not _coconut_case_match_check_0:
+            if _coconut.isinstance(_coconut_case_match_to_0, _coconut.abc.Mapping):
+                _coconut_match_temp_0 = _coconut_case_match_to_0.get("values", _coconut_sentinel)
+                _coconut_match_temp_1 = _coconut_case_match_to_0.get("loss", _coconut_sentinel)
                 if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut_match_temp_1 is not _coconut_sentinel):
                     values = _coconut_match_temp_0
                     loss = _coconut_match_temp_1
-                    _coconut_case_check_0 = True
-            if _coconut_case_check_0:
+                    _coconut_case_match_check_0 = True
+            if _coconut_case_match_check_0:
                 if max_gain is not None:
                     raise ValueError("cannot have examples with maximize and examples with minimize")
                 if min_loss is None or loss <= min_loss:
                     best_example = example
                     min_loss = loss
 
-        if not _coconut_case_check_0:
+        if not _coconut_case_match_check_0:
             raise ValueError("invalid example {_coconut_format_0}".format(_coconut_format_0=(example)))
 
         yield best_example
@@ -267,24 +267,24 @@ def printerr(*args):
 
 
 @_coconut_mark_as_match
-def init_backend(*_coconut_match_to_args, **_coconut_match_to_kwargs):
+def init_backend(*_coconut_match_args, **_coconut_match_kwargs):
     """Create a backend object of the given name with the given data."""
-    _coconut_match_check = False
+    _coconut_match_check_0 = False
     _coconut_FunctionMatchError = _coconut_get_function_match_error()
-    if (_coconut.sum((_coconut.len(_coconut_match_to_args) > 0, "name" in _coconut_match_to_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_to_args) > 1, "examples" in _coconut_match_to_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_to_args) > 2, "params" in _coconut_match_to_kwargs)) == 1):
-        _coconut_match_temp_0 = _coconut_match_to_args[0] if _coconut.len(_coconut_match_to_args) > 0 else _coconut_match_to_kwargs.pop("name")
-        _coconut_match_temp_1 = _coconut_match_to_args[1] if _coconut.len(_coconut_match_to_args) > 1 else _coconut_match_to_kwargs.pop("examples")
-        _coconut_match_temp_2 = _coconut_match_to_args[2] if _coconut.len(_coconut_match_to_args) > 2 else _coconut_match_to_kwargs.pop("params")
-        args = _coconut_match_to_args[3:]
-        _coconut_match_temp_3 = _coconut_match_to_kwargs.pop("attempt_to_update_backend") if "attempt_to_update_backend" in _coconut_match_to_kwargs else None
+    if (_coconut.sum((_coconut.len(_coconut_match_args) > 0, "name" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 1, "examples" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 2, "params" in _coconut_match_kwargs)) == 1):
+        _coconut_match_temp_0 = _coconut_match_args[0] if _coconut.len(_coconut_match_args) > 0 else _coconut_match_kwargs.pop("name")
+        _coconut_match_temp_1 = _coconut_match_args[1] if _coconut.len(_coconut_match_args) > 1 else _coconut_match_kwargs.pop("examples")
+        _coconut_match_temp_2 = _coconut_match_args[2] if _coconut.len(_coconut_match_args) > 2 else _coconut_match_kwargs.pop("params")
+        args = _coconut_match_args[3:]
+        _coconut_match_temp_3 = _coconut_match_kwargs.pop("attempt_to_update_backend") if "attempt_to_update_backend" in _coconut_match_kwargs else None
         name = _coconut_match_temp_0
         examples = _coconut_match_temp_1
         params = _coconut_match_temp_2
         attempt_to_update_backend = _coconut_match_temp_3
-        options = _coconut_match_to_kwargs
-        _coconut_match_check = True
-    if not _coconut_match_check:
-        raise _coconut_FunctionMatchError('match def init_backend(name, examples, params, *args, attempt_to_update_backend=None, **options):', _coconut_match_to_args)
+        options = _coconut_match_kwargs
+        _coconut_match_check_0 = True
+    if not _coconut_match_check_0:
+        raise _coconut_FunctionMatchError('match def init_backend(name, examples, params, *args, attempt_to_update_backend=None, **options):', _coconut_match_args)
 
     backend_cls = backend_registry[name]
     backend_examples = examples[:]

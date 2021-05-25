@@ -173,6 +173,7 @@ Supported algorithms are:
 - `"latin_hypercube"` (`pySOT` backend)
 - `"symmetric_latin_hypercube"` (`pySOT` backend)
 - `"two_factorial"` (`pySOT` backend)
+- `"epsilon_greedy"` (`mixture` backend)
 
 _Note: The `bayes-skopt` backend is only available on Python 3.7+ and the `pySOT` backend is only available on Python 3+._
 

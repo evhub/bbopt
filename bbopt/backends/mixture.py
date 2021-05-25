@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa4701ec4
+# __coconut_hash__ = 0x46926f42
 
-# Compiled with Coconut version 1.5.0-post_dev45 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev49 [Fish License]
 
 """
 The mixture backend. Lets you specify a distribution over different possible algorithms.
@@ -79,4 +79,7 @@ class MixtureBackend(Backend):
 # Registered names:
 
 _coconut_call_set_names(MixtureBackend)
+EPS = 0.1
+
 MixtureBackend.register()
+MixtureBackend.register_alg("epsilon_greedy", distribution=(("random", EPS), ("serving", 1 - EPS),))

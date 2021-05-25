@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa71cca5a
+# __coconut_hash__ = 0xfe973f3b
 
-# Compiled with Coconut version 1.5.0-post_dev45 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev49 [Fish License]
 
 """
 The backend and algorithm registries.
@@ -38,14 +38,14 @@ class Registry(_coconut.object):
 
     def __getitem__(self, name):
         name = self.aliases.get(name, name)
-        _coconut_match_to = self.registered
-        _coconut_match_check = False
-        if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
-            _coconut_match_temp_0 = _coconut_match_to.get(name, _coconut_sentinel)
+        _coconut_match_to_0 = self.registered
+        _coconut_match_check_0 = False
+        if _coconut.isinstance(_coconut_match_to_0, _coconut.abc.Mapping):
+            _coconut_match_temp_0 = _coconut_match_to_0.get(name, _coconut_sentinel)
             if _coconut_match_temp_0 is not _coconut_sentinel:
                 value = _coconut_match_temp_0
-                _coconut_match_check = True
-        if _coconut_match_check:
+                _coconut_match_check_0 = True
+        if _coconut_match_check_0:
             return self.registered[name]
         else:
             if name in self.generators:
@@ -79,33 +79,33 @@ class Registry(_coconut.object):
         return self.registered[name]
 
     def __iter__(self):
-        _coconut_yield_from = _coconut.iter(self.registered)
+        _coconut_yield_from_1 = _coconut.iter(self.registered)
         while True:
             try:
-                yield _coconut.next(_coconut_yield_from)
-            except _coconut.StopIteration as _coconut_yield_err:
-                _coconut_yield_from_0 = _coconut_yield_err.args[0] if _coconut.len(_coconut_yield_err.args) > 0 else None
+                yield _coconut.next(_coconut_yield_from_1)
+            except _coconut.StopIteration as _coconut_yield_err_0:
+                _coconut_yield_from_0 = _coconut_yield_err_0.args[0] if _coconut.len(_coconut_yield_err_0.args) > 0 else None
                 break
 
         _coconut_yield_from_0
-        _coconut_yield_from = _coconut.iter(self.generators)
+        _coconut_yield_from_3 = _coconut.iter(self.generators)
         while True:
             try:
-                yield _coconut.next(_coconut_yield_from)
-            except _coconut.StopIteration as _coconut_yield_err:
-                _coconut_yield_from_1 = _coconut_yield_err.args[0] if _coconut.len(_coconut_yield_err.args) > 0 else None
-                break
-
-        _coconut_yield_from_1
-        _coconut_yield_from = _coconut.iter(self.aliases)
-        while True:
-            try:
-                yield _coconut.next(_coconut_yield_from)
-            except _coconut.StopIteration as _coconut_yield_err:
-                _coconut_yield_from_2 = _coconut_yield_err.args[0] if _coconut.len(_coconut_yield_err.args) > 0 else None
+                yield _coconut.next(_coconut_yield_from_3)
+            except _coconut.StopIteration as _coconut_yield_err_1:
+                _coconut_yield_from_2 = _coconut_yield_err_1.args[0] if _coconut.len(_coconut_yield_err_1.args) > 0 else None
                 break
 
         _coconut_yield_from_2
+        _coconut_yield_from_5 = _coconut.iter(self.aliases)
+        while True:
+            try:
+                yield _coconut.next(_coconut_yield_from_5)
+            except _coconut.StopIteration as _coconut_yield_err_2:
+                _coconut_yield_from_4 = _coconut_yield_err_2.args[0] if _coconut.len(_coconut_yield_err_2.args) > 0 else None
+                break
+
+        _coconut_yield_from_4
 
     def run_all_gens(self):
         """Run all generators."""
@@ -115,15 +115,15 @@ class Registry(_coconut.object):
     def items(self):
         """Get all items in the registry as (name, value) pairs."""
         self.run_all_gens()
-        _coconut_yield_from = _coconut.iter(self.registered.items())
+        _coconut_yield_from_7 = _coconut.iter(self.registered.items())
         while True:
             try:
-                yield _coconut.next(_coconut_yield_from)
-            except _coconut.StopIteration as _coconut_yield_err:
-                _coconut_yield_from_3 = _coconut_yield_err.args[0] if _coconut.len(_coconut_yield_err.args) > 0 else None
+                yield _coconut.next(_coconut_yield_from_7)
+            except _coconut.StopIteration as _coconut_yield_err_3:
+                _coconut_yield_from_6 = _coconut_yield_err_3.args[0] if _coconut.len(_coconut_yield_err_3.args) > 0 else None
                 break
 
-        _coconut_yield_from_3
+        _coconut_yield_from_6
 
     def asdict(self):
         """Convert registry to dictionary."""

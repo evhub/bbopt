@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x70c204e1
+# __coconut_hash__ = 0x9f5d37c8
 
-# Compiled with Coconut version 1.5.0-post_dev45 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev49 [Fish License]
 
 """
 The main BBopt interface.
@@ -84,23 +84,23 @@ class BlackBoxOptimizer(_coconut.object):
     _coconut_decorator_0 = _coconut.functools.partial(convert_match_errors, "BlackBoxOptimizer.__init__")
     @_coconut_decorator_0
     @_coconut_mark_as_match
-    def __init__(*_coconut_match_to_args, **_coconut_match_to_kwargs):
+    def __init__(*_coconut_match_args, **_coconut_match_kwargs):
         """Construct a new BlackBoxOptimizer. It is recommended to pass file=__file__."""
-        _coconut_match_check = False
+        _coconut_match_check_0 = False
         _coconut_FunctionMatchError = _coconut_get_function_match_error()
-        if (_coconut.len(_coconut_match_to_args) <= 2) and (_coconut.sum((_coconut.len(_coconut_match_to_args) > 0, "self" in _coconut_match_to_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_to_args) > 1, "file" in _coconut_match_to_kwargs)) == 1):
-            _coconut_match_temp_0 = _coconut_match_to_args[0] if _coconut.len(_coconut_match_to_args) > 0 else _coconut_match_to_kwargs.pop("self")
-            _coconut_match_temp_1 = _coconut_match_to_args[1] if _coconut.len(_coconut_match_to_args) > 1 else _coconut_match_to_kwargs.pop("file")
-            _coconut_match_temp_2 = _coconut_match_to_kwargs.pop("tag") if "tag" in _coconut_match_to_kwargs else None
-            _coconut_match_temp_3 = _coconut_match_to_kwargs.pop("protocol") if "protocol" in _coconut_match_to_kwargs else None
-            if (_coconut.isinstance(_coconut_match_temp_1, Str)) and (not _coconut_match_to_kwargs):
+        if (_coconut.len(_coconut_match_args) <= 2) and (_coconut.sum((_coconut.len(_coconut_match_args) > 0, "self" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 1, "file" in _coconut_match_kwargs)) == 1):
+            _coconut_match_temp_0 = _coconut_match_args[0] if _coconut.len(_coconut_match_args) > 0 else _coconut_match_kwargs.pop("self")
+            _coconut_match_temp_1 = _coconut_match_args[1] if _coconut.len(_coconut_match_args) > 1 else _coconut_match_kwargs.pop("file")
+            _coconut_match_temp_2 = _coconut_match_kwargs.pop("tag") if "tag" in _coconut_match_kwargs else None
+            _coconut_match_temp_3 = _coconut_match_kwargs.pop("protocol") if "protocol" in _coconut_match_kwargs else None
+            if (_coconut.isinstance(_coconut_match_temp_1, Str)) and (not _coconut_match_kwargs):
                 self = _coconut_match_temp_0
                 file = _coconut_match_temp_1
                 tag = _coconut_match_temp_2
                 protocol = _coconut_match_temp_3
-                _coconut_match_check = True
-        if not _coconut_match_check:
-            raise _coconut_FunctionMatchError('match def __init__(self, file is Str, *, tag=None, protocol=None):', _coconut_match_to_args)
+                _coconut_match_check_0 = True
+        if not _coconut_match_check_0:
+            raise _coconut_FunctionMatchError('match def __init__(self, file is Str, *, tag=None, protocol=None):', _coconut_match_args)
 
         self._file = norm_path(file)
         self._tag = tag
@@ -166,17 +166,17 @@ class BlackBoxOptimizer(_coconut.object):
         """Load data from the given file."""
         contents = df.read()
         if contents:
-            _coconut_match_to = self._loads(contents)
-            _coconut_match_check = False
-            if (_coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping)) and (_coconut.len(_coconut_match_to) == 2):
-                _coconut_match_temp_0 = _coconut_match_to.get("params", _coconut_sentinel)
-                _coconut_match_temp_1 = _coconut_match_to.get("examples", _coconut_sentinel)
+            _coconut_match_to_0 = self._loads(contents)
+            _coconut_match_check_1 = False
+            if (_coconut.isinstance(_coconut_match_to_0, _coconut.abc.Mapping)) and (_coconut.len(_coconut_match_to_0) == 2):
+                _coconut_match_temp_0 = _coconut_match_to_0.get("params", _coconut_sentinel)
+                _coconut_match_temp_1 = _coconut_match_to_0.get("examples", _coconut_sentinel)
                 if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut_match_temp_1 is not _coconut_sentinel):
                     params = _coconut_match_temp_0
                     examples = _coconut_match_temp_1
-                    _coconut_match_check = True
-            if not _coconut_match_check:
-                raise _coconut_MatchError('{"params": params, "examples": examples} = self._loads(contents)', _coconut_match_to)
+                    _coconut_match_check_1 = True
+            if not _coconut_match_check_1:
+                raise _coconut_MatchError('{"params": params, "examples": examples} = self._loads(contents)', _coconut_match_to_0)
 
             self._old_params = params
             self._add_examples(examples)
@@ -240,16 +240,16 @@ class BlackBoxOptimizer(_coconut.object):
         args = param_processor.standardize_args(func, args)
         kwargs = param_processor.standardize_kwargs(kwargs)
 
-        _coconut_match_to = self._old_params
-        _coconut_match_check = False
-        if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
-            _coconut_match_temp_0 = _coconut_match_to.get(name, _coconut_sentinel)
+        _coconut_match_to_1 = self._old_params
+        _coconut_match_check_2 = False
+        if _coconut.isinstance(_coconut_match_to_1, _coconut.abc.Mapping):
+            _coconut_match_temp_0 = _coconut_match_to_1.get(name, _coconut_sentinel)
             if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut.isinstance(_coconut_match_temp_0, _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_temp_0) == 3):
                 old_func = _coconut_match_temp_0[0]
                 old_args = _coconut_match_temp_0[1]
                 old_kwargs = _coconut_match_temp_0[2]
-                _coconut_match_check = True
-        if _coconut_match_check:
+                _coconut_match_check_2 = True
+        if _coconut_match_check_2:
             if (func, args) != (old_func, old_args):
                 printerr("BBopt Warning: detected change in parameter {_coconut_format_0} ({_coconut_format_1} != {_coconut_format_2}) (you may need to delete your old BBopt data)".format(_coconut_format_0=(name), _coconut_format_1=((func, args)), _coconut_format_2=((old_func, old_args))))
 
@@ -373,7 +373,7 @@ class BlackBoxOptimizer(_coconut.object):
 
     def partial_dependence(self, i_name, j_name=None, *args, **kwargs):
         """Calls skopt.plots.partial_dependence where i_name and j_name are parameter names."""
-        def _coconut_mock_func(self, i_name, j_name=None, *args, **kwargs): return self, i_name, j_name, args, kwargs
+        def _coconut_mock_6(self, i_name, j_name=None, *args, **kwargs): return self, i_name, j_name, args, kwargs
         while True:
             from skopt.plots import partial_dependence
             if not self._examples:
@@ -386,11 +386,11 @@ class BlackBoxOptimizer(_coconut.object):
             j = None if j_name is None else sorted_names.index(j_name)
 
             try:
-                _coconut_is_recursive = partial_dependence is _coconut_recursive_func_24
+                _coconut_tre_check_0 = partial_dependence is _coconut_recursive_func_24
             except _coconut.NameError:
-                _coconut_is_recursive = False
-            if _coconut_is_recursive:
-                self, i_name, j_name, args, kwargs = _coconut_mock_func(skopt_backend.space, skopt_backend.model, i, j, *args, **kwargs)
+                _coconut_tre_check_0 = False
+            if _coconut_tre_check_0:
+                self, i_name, j_name, args, kwargs = _coconut_mock_6(skopt_backend.space, skopt_backend.model, i, j, *args, **kwargs)
                 continue
             else:
                 return partial_dependence(skopt_backend.space, skopt_backend.model, i, j, *args, **kwargs)

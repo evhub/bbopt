@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa234deac
+# __coconut_hash__ = 0x65e04e94
 
-# Compiled with Coconut version 1.5.0-post_dev45 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev49 [Fish License]
 
 """
 Utilities for use in BBopt backends.
@@ -54,24 +54,24 @@ def make_features(values, params, fallback_func=param_processor.choose_default_p
     for name, (func, args, kwargs) in sorted_items(params):
 # determine feature
         fallback = False
-        _coconut_match_to = values
-        _coconut_match_check = False
-        if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
-            _coconut_match_temp_0 = _coconut_match_to.get(name, _coconut_sentinel)
+        _coconut_match_to_1 = values
+        _coconut_match_check_1 = False
+        if _coconut.isinstance(_coconut_match_to_1, _coconut.abc.Mapping):
+            _coconut_match_temp_0 = _coconut_match_to_1.get(name, _coconut_sentinel)
             if _coconut_match_temp_0 is not _coconut_sentinel:
                 feature = _coconut_match_temp_0
-                _coconut_match_check = True
-        if _coconut_match_check:
+                _coconut_match_check_1 = True
+        if _coconut_match_check_1:
             pass
         else:
-            _coconut_match_to = kwargs
-            _coconut_match_check = False
-            if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
-                _coconut_match_temp_0 = _coconut_match_to.get("placeholder_when_missing", _coconut_sentinel)
+            _coconut_match_to_0 = kwargs
+            _coconut_match_check_0 = False
+            if _coconut.isinstance(_coconut_match_to_0, _coconut.abc.Mapping):
+                _coconut_match_temp_0 = _coconut_match_to_0.get("placeholder_when_missing", _coconut_sentinel)
                 if _coconut_match_temp_0 is not _coconut_sentinel:
                     placeholder_value = _coconut_match_temp_0
-                    _coconut_match_check = True
-            if _coconut_match_check:
+                    _coconut_match_check_0 = True
+            if _coconut_match_check_0:
                 feature = placeholder_value
             else:
                 fallback = True
@@ -79,14 +79,14 @@ def make_features(values, params, fallback_func=param_processor.choose_default_p
 
 # run converters
         if not fallback or convert_fallback:
-            _coconut_match_to = converters
-            _coconut_match_check = False
-            if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
-                _coconut_match_temp_0 = _coconut_match_to.get(func, _coconut_sentinel)
+            _coconut_match_to_2 = converters
+            _coconut_match_check_2 = False
+            if _coconut.isinstance(_coconut_match_to_2, _coconut.abc.Mapping):
+                _coconut_match_temp_0 = _coconut_match_to_2.get(func, _coconut_sentinel)
                 if _coconut_match_temp_0 is not _coconut_sentinel:
                     converter_func = _coconut_match_temp_0
-                    _coconut_match_check = True
-            if _coconut_match_check:
+                    _coconut_match_check_2 = True
+            if _coconut_match_check_2:
                 feature = converter_func(feature, *args)
 
         yield feature
@@ -94,12 +94,12 @@ def make_features(values, params, fallback_func=param_processor.choose_default_p
 
 def get_names_and_features(values, params, *args, **kwargs):
     """Same as make_features but yields (name, feature) instead of just feature."""
-    _coconut_yield_from = _coconut.iter(zip(sorted(params), make_features(values, params, *args, **kwargs)))
+    _coconut_yield_from_1 = _coconut.iter(zip(sorted(params), make_features(values, params, *args, **kwargs)))
     while True:
         try:
-            yield _coconut.next(_coconut_yield_from)
-        except _coconut.StopIteration as _coconut_yield_err:
-            _coconut_yield_from_0 = _coconut_yield_err.args[0] if _coconut.len(_coconut_yield_err.args) > 0 else None
+            yield _coconut.next(_coconut_yield_from_1)
+        except _coconut.StopIteration as _coconut_yield_err_0:
+            _coconut_yield_from_0 = _coconut_yield_err_0.args[0] if _coconut.len(_coconut_yield_err_0.args) > 0 else None
             break
 
     _coconut_yield_from_0
@@ -111,28 +111,28 @@ def split_examples(examples, params, fallback_func=param_processor.choose_defaul
     for example in examples:
 
 # extract values, loss
-        _coconut_match_to = example
-        _coconut_case_check_0 = False
-        if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
-            _coconut_match_temp_0 = _coconut_match_to.get("values", _coconut_sentinel)
-            _coconut_match_temp_1 = _coconut_match_to.get("gain", _coconut_sentinel)
+        _coconut_case_match_to_0 = example
+        _coconut_case_match_check_0 = False
+        if _coconut.isinstance(_coconut_case_match_to_0, _coconut.abc.Mapping):
+            _coconut_match_temp_0 = _coconut_case_match_to_0.get("values", _coconut_sentinel)
+            _coconut_match_temp_1 = _coconut_case_match_to_0.get("gain", _coconut_sentinel)
             if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut_match_temp_1 is not _coconut_sentinel):
                 values = _coconut_match_temp_0
                 gain = _coconut_match_temp_1
-                _coconut_case_check_0 = True
-        if _coconut_case_check_0:
+                _coconut_case_match_check_0 = True
+        if _coconut_case_match_check_0:
             loss = negate_objective(gain)
-        if not _coconut_case_check_0:
-            if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
-                _coconut_match_temp_0 = _coconut_match_to.get("values", _coconut_sentinel)
-                _coconut_match_temp_1 = _coconut_match_to.get("loss", _coconut_sentinel)
+        if not _coconut_case_match_check_0:
+            if _coconut.isinstance(_coconut_case_match_to_0, _coconut.abc.Mapping):
+                _coconut_match_temp_0 = _coconut_case_match_to_0.get("values", _coconut_sentinel)
+                _coconut_match_temp_1 = _coconut_case_match_to_0.get("loss", _coconut_sentinel)
                 if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut_match_temp_1 is not _coconut_sentinel):
                     values = _coconut_match_temp_0
                     loss = _coconut_match_temp_1
-                    _coconut_case_check_0 = True
-            if _coconut_case_check_0:
+                    _coconut_case_match_check_0 = True
+            if _coconut_case_match_check_0:
                 pass
-        if not _coconut_case_check_0:
+        if not _coconut_case_match_check_0:
             raise ValueError("invalid example {_coconut_format_0}".format(_coconut_format_0=(example)))
 
 # extract features
@@ -186,24 +186,24 @@ def serve_values(name, func, args, kwargs, serving_values, fallback_func, backen
             raise ValueError("the {_coconut_format_0} backend does not support {_coconut_format_1} option(s)".format(_coconut_format_0=(backend_name), _coconut_format_1=(unsupported_kwargs)))
 
 # determine value
-    _coconut_match_to = serving_values
-    _coconut_match_check = False
-    if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
-        _coconut_match_temp_0 = _coconut_match_to.get(name, _coconut_sentinel)
+    _coconut_match_to_4 = serving_values
+    _coconut_match_check_4 = False
+    if _coconut.isinstance(_coconut_match_to_4, _coconut.abc.Mapping):
+        _coconut_match_temp_0 = _coconut_match_to_4.get(name, _coconut_sentinel)
         if _coconut_match_temp_0 is not _coconut_sentinel:
             value = _coconut_match_temp_0
-            _coconut_match_check = True
-    if _coconut_match_check:
+            _coconut_match_check_4 = True
+    if _coconut_match_check_4:
         return value
     else:
-        _coconut_match_to = kwargs
-        _coconut_match_check = False
-        if _coconut.isinstance(_coconut_match_to, _coconut.abc.Mapping):
-            _coconut_match_temp_0 = _coconut_match_to.get("guess", _coconut_sentinel)
+        _coconut_match_to_3 = kwargs
+        _coconut_match_check_3 = False
+        if _coconut.isinstance(_coconut_match_to_3, _coconut.abc.Mapping):
+            _coconut_match_temp_0 = _coconut_match_to_3.get("guess", _coconut_sentinel)
             if _coconut_match_temp_0 is not _coconut_sentinel:
                 guess = _coconut_match_temp_0
-                _coconut_match_check = True
-        if _coconut_match_check:
+                _coconut_match_check_3 = True
+        if _coconut_match_check_3:
             return guess
         else:
             return fallback_func(name, func, *args, **kwargs)

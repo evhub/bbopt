@@ -60,4 +60,10 @@ class MixtureBackend(Backend):
 
 # Registered names:
 
+EPS = 0.1
+
 MixtureBackend.register()
+MixtureBackend.register_alg("epsilon_greedy", distribution=(
+    ("random", EPS),
+    ("serving", 1 - EPS),
+))
