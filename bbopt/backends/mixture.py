@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x46926f42
+# __coconut_hash__ = 0x1a0d969b
 
 # Compiled with Coconut version 1.5.0-post_dev49 [Fish License]
 
@@ -28,6 +28,7 @@ if _coconut_sys.version_info >= (3,):
 
 import random
 
+from bbopt import constants
 from bbopt.registry import alg_registry
 from bbopt.util import init_backend
 from bbopt.backends.util import Backend
@@ -79,7 +80,5 @@ class MixtureBackend(Backend):
 # Registered names:
 
 _coconut_call_set_names(MixtureBackend)
-EPS = 0.1
-
 MixtureBackend.register()
-MixtureBackend.register_alg("epsilon_greedy", distribution=(("random", EPS), ("serving", 1 - EPS),))
+MixtureBackend.register_alg("epsilon_greedy", distribution=(("random", constants.eps_greedy_explore_prob), ("serving", 1 - constants.eps_greedy_explore_prob),))

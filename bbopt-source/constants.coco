@@ -77,3 +77,7 @@ use_placeholder_when_outside_support = False
 # CLI constants:
 default_trials = 100
 default_jobs = 1
+
+
+# Backend constants:
+eps_greedy_explore_prob = 0.1

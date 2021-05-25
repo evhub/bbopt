@@ -4,6 +4,7 @@ The mixture backend. Lets you specify a distribution over different possible alg
 
 import random
 
+from bbopt import constants
 from bbopt.registry import alg_registry
 from bbopt.util import init_backend
 from bbopt.backends.util import Backend
@@ -60,10 +61,8 @@ class MixtureBackend(Backend):
 
 # Registered names:
 
-EPS = 0.1
-
 MixtureBackend.register()
 MixtureBackend.register_alg("epsilon_greedy", distribution=(
-    ("random", EPS),
-    ("serving", 1 - EPS),
+    ("random", constants.eps_greedy_explore_prob),
+    ("serving", 1 - constants.eps_greedy_explore_prob),
 ))

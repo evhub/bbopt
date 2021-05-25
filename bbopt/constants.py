@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xae8d99a2
+# __coconut_hash__ = 0x6601c366
 
 # Compiled with Coconut version 1.5.0-post_dev49 [Fish License]
 
@@ -57,3 +57,7 @@ use_placeholder_when_outside_support = False
 # CLI constants:
 default_trials = 100
 default_jobs = 1
+
+
+# Backend constants:
+eps_greedy_explore_prob = 0.1
