@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xe779536
+# __coconut_hash__ = 0x14319f22
 
 # Compiled with Coconut version 1.5.0-post_dev49 [Fish License]
 
@@ -250,14 +250,17 @@ def open_with_lock(fpath, mode="rb+", timeout=None, **kwargs):
                     pass
 
 
-def convert_match_errors(name, func):
+def convert_match_errors(func):
     """Re-raise MatchErrors as TypeErrors."""
     @wraps(func)
     def match_errors_converted_func(*args, **kwargs):
         try:
             return func(*args, **kwargs)
         except MatchError as err:
-            raise TypeError("arguments did not match call signature for function {_coconut_format_0}".format(_coconut_format_0=(name)))
+            func_name = getattr(func, "__qualname__", func.__name__)
+            _coconut_raise_from_0 = TypeError("arguments did not match call signature for function {_coconut_format_0}".format(_coconut_format_0=(func_name)))
+            _coconut_raise_from_0.__cause__ = err
+            raise _coconut_raise_from_0
     return match_errors_converted_func
 
 
@@ -266,6 +269,7 @@ def printerr(*args):
     print(*args, file=sys.stderr)
 
 
+@convert_match_errors
 @_coconut_mark_as_match
 def init_backend(*_coconut_match_args, **_coconut_match_kwargs):
     """Create a backend object of the given name with the given data."""

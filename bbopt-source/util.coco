@@ -220,14 +220,15 @@ def open_with_lock(fpath, mode="rb+", timeout=None, **kwargs):
                     pass
 
 
-def convert_match_errors(name, func):
+def convert_match_errors(func):
     """Re-raise MatchErrors as TypeErrors."""
     @wraps(func)
     def match_errors_converted_func(*args, **kwargs):
         try:
             return func(*args, **kwargs)
         except MatchError as err:
-            raise TypeError(f"arguments did not match call signature for function {name}")
+            func_name = getattr(func, "__qualname__", func.__name__)
+            raise TypeError(f"arguments did not match call signature for function {func_name}") from err
     return match_errors_converted_func
 
 
@@ -236,6 +237,7 @@ def printerr(*args):
     print(*args, file=sys.stderr)
 
 
+@convert_match_errors
 match def init_backend(name, examples, params, *args, attempt_to_update_backend=None, **options):
     """Create a backend object of the given name with the given data."""
     backend_cls = backend_registry[name]
