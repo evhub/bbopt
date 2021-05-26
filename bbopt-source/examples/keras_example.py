@@ -19,11 +19,11 @@ from pprint import pprint
 import numpy as np
 from matplotlib import pyplot as plt
 from sklearn import datasets
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.optimizers import SGD
-from keras.utils import to_categorical
-from keras.regularizers import l1_l2
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.optimizers import SGD
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.regularizers import l1_l2
 
 
 # BBopt setup:
@@ -89,7 +89,8 @@ def run_trial():
         verbose=0,
     )
 
-    train_loss, train_acc = train_history.history["loss"][-1], train_history.history["acc"][-1]
+    train_loss = train_history.history["loss"][-1]
+    train_acc = train_history.history["accuracy"][-1]
 
     validation_loss, validation_acc = model.evaluate(X_validate, y_validate, verbose=0)
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xbd0b2df8
+# __coconut_hash__ = 0x5b3599e5
 
 # Compiled with Coconut version 1.5.0-post_dev49 [Fish License]
 
@@ -402,32 +402,68 @@ class BlackBoxOptimizer(_coconut.object):
         xi, yi = self.partial_dependence(i_name, **kwargs)
         return plot(xi, yi, ax=ax, yscale=yscale, title="Partial dependence of {_coconut_format_0}".format(_coconut_format_0=(i_name)), xlabel="Values of {_coconut_format_0}".format(_coconut_format_0=(i_name)), ylabel="The loss at each point".format())
 
-    def _call_skopt_plot_func(self, skopt_plot_func, *args, **kwargs):
-        """Call the given skopt.plots function."""
+    def get_skopt_result(self):
+        """Get a result object usable by skopt.plots functions."""
         if not self._examples:
             raise ValueError("no existing data available to be plotted")
-
-        skopt_backend = self._get_skopt_backend()
-
-        return skopt_plot_func(skopt_backend.result, *args, **kwargs)
+        return self._get_skopt_backend().result
 
     def plot_evaluations(self, *args, **kwargs):
         """Calls skopt.plots.plot_evaluations."""
-        from skopt.plots import plot_evaluations
-        return self._call_skopt_plot_func(plot_evaluations, *args, **kwargs)
+        def _coconut_mock_8(self, *args, **kwargs): return self, args, kwargs
+        while True:
+            from skopt.plots import plot_evaluations
+            try:
+                _coconut_tre_check_1 = plot_evaluations is _coconut_recursive_func_27
+            except _coconut.NameError:
+                _coconut_tre_check_1 = False
+            if _coconut_tre_check_1:
+                self, args, kwargs = _coconut_mock_8(self.get_skopt_result(), *args, **kwargs)
+                continue
+            else:
+                return plot_evaluations(self.get_skopt_result(), *args, **kwargs)
 
+
+            return None
+    _coconut_recursive_func_27 = plot_evaluations
     def plot_objective(self, *args, **kwargs):
         """Calls skopt.plots.plot_objective."""
-        from skopt.plots import plot_objective
-        return self._call_skopt_plot_func(plot_objective, *args, **kwargs)
+        def _coconut_mock_9(self, *args, **kwargs): return self, args, kwargs
+        while True:
+            from skopt.plots import plot_objective
+            try:
+                _coconut_tre_check_2 = plot_objective is _coconut_recursive_func_28
+            except _coconut.NameError:
+                _coconut_tre_check_2 = False
+            if _coconut_tre_check_2:
+                self, args, kwargs = _coconut_mock_9(self.get_skopt_result(), *args, **kwargs)
+                continue
+            else:
+                return plot_objective(self.get_skopt_result(), *args, **kwargs)
 
+
+            return None
+    _coconut_recursive_func_28 = plot_objective
     def plot_regret(self, *args, **kwargs):
         """Calls skopt.plots.plot_regret."""
-        from skopt.plots import plot_regret
-        return self._call_skopt_plot_func(plot_regret, *args, **kwargs)
+        def _coconut_mock_10(self, *args, **kwargs): return self, args, kwargs
+        while True:
+            from skopt.plots import plot_regret
+            try:
+                _coconut_tre_check_3 = plot_regret is _coconut_recursive_func_29
+            except _coconut.NameError:
+                _coconut_tre_check_3 = False
+            if _coconut_tre_check_3:
+                self, args, kwargs = _coconut_mock_10(self.get_skopt_result(), *args, **kwargs)
+                continue
+            else:
+                return plot_regret(self.get_skopt_result(), *args, **kwargs)
+
 
 # Base random functions:
 
+            return None
+    _coconut_recursive_func_29 = plot_regret
     def randrange(self, name, *args, **kwargs):
         """Create a new parameter with the given name modeled by random.randrange(*args)."""
         return self.param(name, "randrange", *args, **kwargs)

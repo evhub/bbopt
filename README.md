@@ -98,6 +98,7 @@ Some examples of BBopt in action:
     1. [`plot_evaluations`](#plot_evaluations)
     1. [`plot_objective`](#plot_objective)
     1. [`plot_regret`](#plot_regret)
+    1. [`get_skopt_result`](#get_skopt_result)
     1. [`get_current_run`](#get_current_run)
     1. [`get_best_run`](#get_best_run)
     1. [`get_data`](#get_data)
@@ -262,6 +263,12 @@ BlackBoxOptimizer.**plot_regret**([_ax_, [_true\_minimum_, [_yscale_]]])
 Calls [`skopt.plots.plot_regret`](https://scikit-optimize.github.io/stable/modules/generated/skopt.plots.plot_regret.html) using previous trial data.
 
 Run BBopt's [`keras` example](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.py) to generate an example plot.
+
+#### `get_skopt_result`
+
+BlackBoxOptimizer.**get_skopt_result**()
+
+Gets an `OptimizeResult` object usable by [`skopt.plots`](https://scikit-optimize.github.io/stable/modules/classes.html#module-skopt.plots) functions. Allows for arbitrary manipulation of BBopt optimization results in `scikit-optimize` including any plotting functions not natively supported by BBopt.
 
 #### `get_current_run`
 

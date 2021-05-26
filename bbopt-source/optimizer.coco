@@ -376,33 +376,26 @@ class BlackBoxOptimizer:
             ylabel=f"The loss at each point",
         )
 
-    def _call_skopt_plot_func(self, skopt_plot_func, *args, **kwargs):
-        """Call the given skopt.plots function."""
+    def get_skopt_result(self):
+        """Get a result object usable by skopt.plots functions."""
         if not self._examples:
             raise ValueError("no existing data available to be plotted")
-
-        skopt_backend = self._get_skopt_backend()
-
-        return skopt_plot_func(
-            skopt_backend.result,
-            *args,
-            **kwargs,
-        )
+        return self._get_skopt_backend().result
 
     def plot_evaluations(self, *args, **kwargs):
         """Calls skopt.plots.plot_evaluations."""
         from skopt.plots import plot_evaluations
-        return self._call_skopt_plot_func(plot_evaluations, *args, **kwargs)
+        return plot_evaluations(self.get_skopt_result(), *args, **kwargs)
 
     def plot_objective(self, *args, **kwargs):
         """Calls skopt.plots.plot_objective."""
         from skopt.plots import plot_objective
-        return self._call_skopt_plot_func(plot_objective, *args, **kwargs)
+        return plot_objective(self.get_skopt_result(), *args, **kwargs)
 
     def plot_regret(self, *args, **kwargs):
         """Calls skopt.plots.plot_regret."""
         from skopt.plots import plot_regret
-        return self._call_skopt_plot_func(plot_regret, *args, **kwargs)
+        return plot_regret(self.get_skopt_result(), *args, **kwargs)
 
     # Base random functions:
 
