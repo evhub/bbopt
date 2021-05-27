@@ -19,8 +19,8 @@ u = bb.normalvariate("x0", 0, 1) * sin(bb.normalvariate("x1", 0, 1))
 
 # Since we used hyperopt-only parameters, we shouldn't have skopt.
 if hasattr(bb.backend, "selected_backend"):
-    bb.remember({"backend": bb.backend.selected_backend.backend_name})
-    assert bb.backend.selected_backend.backend_name != "scikit-optimize", bb.backend.selected_backend.backend_name
+    bb.remember({"backend": bb.backend.selected_backend})
+    assert bb.backend.selected_backend != "scikit-optimize", bb.backend.selected_backend
 else:
     bb.remember({"backend": bb.backend.backend_name})
 

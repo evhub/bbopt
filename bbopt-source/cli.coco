@@ -6,7 +6,6 @@ import os
 import sys
 import argparse
 import subprocess
-from concurrent.futures import ProcessPoolExecutor
 from pprint import pprint
 
 if sys.version_info >= (3, 3):
@@ -81,8 +80,8 @@ def run_trial(args, cmd, i):
         show(f"{i+1}/{args.num_trials} starting...")
         subprocess.check_call(cmd)
         show(f"{i+1}/{args.num_trials} finished.")
-    except BrokenProcessPool:
-        raise KeyboardInterrupt()
+    except BrokenProcessPool as err:
+        raise KeyboardInterrupt(str(err))
 
 
 def main(*args, **kwargs):
@@ -96,13 +95,12 @@ def main(*args, **kwargs):
     cmd_str = " ".join(cmd)
     show(f"Running {args.num_trials} trials using {args.jobs} process(es) of:\n\t> {cmd_str}")
 
-    if args.jobs == 1:
-        for i in range(args.num_trials):
-            run_trial(args, cmd, i)
+    if args.jobs <= 1:
+        range(args.num_trials) |> map$(run_trial$(args, cmd)) |> consume
     else:
-        with ProcessPoolExecutor(args.jobs) as executor:
-            for i in range(args.num_trials):
-                executor.submit(run_trial, args, cmd, i)
+        with parallel_map.multiple_sequential_calls(max_workers=args.jobs):
+            range(args.num_trials) |> parallel_map$(run_trial$(args, cmd)) |> consume
+
 
     if not args.quiet:
         bb = BlackBoxOptimizer(args.file)

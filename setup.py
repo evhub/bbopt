@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x96ad0255
+# __coconut_hash__ = 0xf058fb22
 
-# Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev52 [Fish License]
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -496,6 +496,8 @@ class _coconut_parallel_concurrent_map_func_wrapper(object):
     def __init__(self, map_cls, func):
         self.map_cls = map_cls
         self.func = func
+    def __reduce__(self):
+        return (self.__class__, (self.map_cls, self.func))
     def __call__(self, *args, **kwargs):
         self.map_cls.get_executor_stack().append(None)
         try:
@@ -507,7 +509,7 @@ class _coconut_parallel_concurrent_map_func_wrapper(object):
         finally:
             self.map_cls.get_executor_stack().pop()
 class _coconut_base_parallel_concurrent_map(map):
-    __slots__ = ("result",)
+    __slots__ = ("result")
     @classmethod
     def get_executor_stack(cls):
         return cls.threadlocal_ns.__dict__.setdefault("executor_stack", [None])
@@ -519,10 +521,10 @@ class _coconut_base_parallel_concurrent_map(map):
         return self
     @classmethod
     @_coconut.contextlib.contextmanager
-    def multiple_sequential_calls(cls):
+    def multiple_sequential_calls(cls, max_workers=None):
         """Context manager that causes nested calls to use the same pool."""
         if cls.get_executor_stack()[-1] is None:
-            with cls.make_executor() as executor:
+            with cls.make_executor(max_workers) as executor:
                 cls.get_executor_stack()[-1] = executor
                 try:
                     yield
@@ -543,10 +545,10 @@ class parallel_map(_coconut_base_parallel_concurrent_map):
     use `with parallel_map.multiple_sequential_calls():`."""
     __slots__ = ()
     threadlocal_ns = _coconut.threading.local()
-    @classmethod
-    def make_executor(cls):
+    @staticmethod
+    def make_executor(max_workers=None):
         from concurrent.futures import ProcessPoolExecutor
-        return ProcessPoolExecutor()
+        return ProcessPoolExecutor(max_workers)
     def __repr__(self):
         return "parallel_" + _coconut_map.__repr__(self)
 class concurrent_map(_coconut_base_parallel_concurrent_map):
@@ -555,11 +557,11 @@ class concurrent_map(_coconut_base_parallel_concurrent_map):
     `with concurrent_map.multiple_sequential_calls():`."""
     __slots__ = ()
     threadlocal_ns = _coconut.threading.local()
-    @classmethod
-    def make_executor(cls):
+    @staticmethod
+    def make_executor(max_workers=None):
         from concurrent.futures import ThreadPoolExecutor
         from multiprocessing import cpu_count
-        return ThreadPoolExecutor(cpu_count() * 5)
+        return ThreadPoolExecutor(cpu_count() * 5 if max_workers is None else max_workers)
     def __repr__(self):
         return "concurrent_" + _coconut_map.__repr__(self)
 class filter(_coconut.filter):

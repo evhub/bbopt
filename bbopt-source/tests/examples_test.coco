@@ -98,6 +98,7 @@ def call_test(args, ignore_errs=(), prepend_py=True):
     """Call args on the command line for a test."""
     if prepend_py:
         args = [sys.executable, "-m"] + args
+    print(">", " ".join(args))
     stdout, stderr, retcode = call_output(args)
     stdout, stderr = "".join(stdout), "".join(stderr)
     (stdout + stderr).strip() |> print
@@ -275,6 +276,7 @@ class TestExamples(unittest.TestCase):
         print("\ntest tpe_or_gp:")
         with using(tpe_or_gp_data):
             results = call_bbopt(tpe_or_gp_file)
+
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(tpe_or_gp_data)
 
