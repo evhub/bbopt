@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xe05d7f45
+# __coconut_hash__ = 0x9dc1f38e
 
 # Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
@@ -41,9 +41,9 @@ from pprint import pprint
 import numpy as np
 
 from bbopt import constants
-from bbopt.registry import alg_registry
 from bbopt.registry import backend_registry
-from bbopt.params import param_processor
+from bbopt.registry import alg_registry
+from bbopt.registry import meta_registry
 from bbopt.util import Str
 from bbopt.util import norm_path
 from bbopt.util import json_serialize
@@ -58,9 +58,12 @@ from bbopt.util import plot
 from bbopt.util import open_with_lock
 from bbopt.util import printerr
 from bbopt.util import convert_match_errors
+from bbopt.params import param_processor
 from bbopt.backends.util import init_backend
 from bbopt.backends.serving import ServingBackend
 
+
+# Utilities:
 
 def array_param(func, name, shape, kwargs):
     """Create a new array parameter for the given name and shape with entries from func."""
@@ -74,6 +77,8 @@ def array_param(func, name, shape, kwargs):
         arr[indices] = func(cell_name, **proc_kwargs)
     return arr
 
+
+# Optimizer:
 
 class BlackBoxOptimizer(_coconut.object):
     """Main bbopt optimizer object. See https://github.com/evhub/bbopt for documentation."""
@@ -107,34 +112,29 @@ class BlackBoxOptimizer(_coconut.object):
 
         if protocol is None:
 # auto-detect protocol
-            self._protocol = "json"
+            self.protocol = "json"
             if not os.path.exists(self.data_file):
-                self._protocol = constants.default_protocol
+                self.protocol = constants.default_protocol
         else:
-            self._protocol = protocol
+            self.protocol = protocol
 
         self.reload()
 
 # Private utilities:
 
-    @property
-    def _using_json(self):
-        """Whether we are currently saving in json or pickle."""
-        return self._protocol == "json"
-
     def _loads(self, raw_contents):
         """Load data from the given raw data string."""
-        if self._using_json:
+        if self.using_json:
             return json.loads(str(raw_contents, encoding="utf-8"))
         else:
             return pickle.loads(raw_contents)
 
     def _dumps(self, unserialized_data):
         """Dump data to a raw data string."""
-        if self._using_json:
+        if self.using_json:
             return json.dumps((json_serialize)(unserialized_data)).encode(encoding="utf-8")
         else:
-            return pickle.dumps(unserialized_data, protocol=self._protocol)
+            return pickle.dumps(unserialized_data, protocol=self.protocol)
 
     @property
     def _got_reward(self):
@@ -206,12 +206,6 @@ class BlackBoxOptimizer(_coconut.object):
         ((df.write)((self._dumps)(self.get_data())))
         sync_file(df)
 
-    @property
-    def _metric(self):
-        """Whether using a gain or a loss."""
-        assert self._examples, "cannot determine metric from empty examples"
-        return "gain" if "gain" in self._examples[0] else "loss"
-
     def _get_backend(self, backend, *args, **options):
         backend_cls = backend_registry.get(backend, backend)
 
@@ -246,7 +240,43 @@ class BlackBoxOptimizer(_coconut.object):
         """The base name of the given file."""
         return os.path.splitext(os.path.basename(self._file))[0] + ("_" + self._tag if self._tag is not None else "")
 
-# External API:
+# External but undocumented:
+
+    def reload(self):
+        """Completely reload the optimizer."""
+        self._backend_store = defaultdict(list)
+        self._old_params = {}
+        self._examples = []
+        self._load_data()
+        self.run_backend(ServingBackend)
+
+    def save_data(self):
+        """Forcibly saves data."""
+        with open_with_lock(self.data_file) as df:
+            self._save_to(df)
+
+    @property
+    def metric(self):
+        """Whether using a gain or a loss."""
+        assert self._examples, "cannot determine metric from empty examples"
+        return "gain" if "gain" in self._examples[0] else "loss"
+
+    @property
+    def using_json(self):
+        """Whether we are currently saving in json or pickle."""
+        return self.protocol == "json"
+
+    @property
+    def is_serving(self):
+        """Whether we are currently using the serving backend or not."""
+        return isinstance(self.backend, ServingBackend) and not self.backend.allow_missing_data
+
+    @property
+    def num_examples(self):
+        """The number of examples seen so far (current example not counted until maximize/minimize call)."""
+        return len(self._examples)
+
+# Public API:
 
     def param(self, name, func, *args, **kwargs):
         """Create a black box parameter and return its value."""
@@ -278,14 +308,6 @@ class BlackBoxOptimizer(_coconut.object):
         self._current_example["values"][name] = value
         return value
 
-    def reload(self):
-        """Completely reload the optimizer."""
-        self._backend_store = defaultdict(list)
-        self._old_params = {}
-        self._examples = []
-        self._load_data()
-        self.run_backend(ServingBackend)
-
     def run_backend(self, backend, *args, **options):
         """Optimize parameters using the given backend."""
         if self._new_params:
@@ -304,8 +326,12 @@ class BlackBoxOptimizer(_coconut.object):
         (use .algs to get the list of valid algorithms)."""
         if alg is self.DEFAULT_ALG_SENTINEL:
             alg = constants.default_alg
-        backend, options = alg_registry[alg]
-        self.run_backend(backend, **options)
+        if alg in meta_registry:
+            algs, meta_alg = meta_registry[alg]
+            self.run_meta(algs, meta_alg)
+        else:
+            backend, options = alg_registry[alg]
+            self.run_backend(backend, **options)
 
     def run_meta(self, algs, meta_alg=DEFAULT_ALG_SENTINEL):
         """Dynamically choose the best algorithm from the given set of algorithms."""
@@ -331,14 +357,9 @@ class BlackBoxOptimizer(_coconut.object):
         self._set_reward("gain", value)
 
     @property
-    def is_serving(self):
-        """Whether we are currently using the serving backend or not."""
-        return isinstance(self.backend, ServingBackend) and not self.backend.allow_missing_data
-
-    @property
     def data_file(self):
         """The path to the file we are saving data to."""
-        return os.path.join(os.path.dirname(self._file), self._file_name) + constants.data_file_ext + (".json" if self._using_json else ".pickle")
+        return os.path.join(os.path.dirname(self._file), self._file_name) + constants.data_file_ext + (".json" if self.using_json else ".pickle")
 
     def get_data(self, print_data=False):
         """Get all currently-loaded data as a dictionary containing params and examples."""
@@ -347,16 +368,6 @@ class BlackBoxOptimizer(_coconut.object):
         if print_data:
             pprint(data_dict)
         return data_dict
-
-    @property
-    def num_examples(self):
-        """The number of examples seen so far (current example not counted until maximize/minimize call)."""
-        return len(self._examples)
-
-    def save_data(self):
-        """Forcibly saves data."""
-        with open_with_lock(self.data_file) as df:
-            self._save_to(df)
 
     def tell_examples(self, examples):
         """Adds the given examples to memory and writes the current memory to disk."""
@@ -384,9 +395,9 @@ class BlackBoxOptimizer(_coconut.object):
             raise ValueError("no existing data available to be plotted")
 
         iterations = range(1, len(self._examples) + 1)
-        best_metrics = ((list)((map)(_coconut.operator.itemgetter((self._metric)), (running_best)((sorted_examples)(self._examples)))))
+        best_metrics = ((list)((map)(_coconut.operator.itemgetter((self.metric)), (running_best)((sorted_examples)(self._examples)))))
 
-        return plot(iterations, best_metrics, ax=ax, yscale=yscale, title="Convergence plot for {_coconut_format_0}".format(_coconut_format_0=(self._file_name)), xlabel="Number of trials $n$", ylabel="Best {_coconut_format_0} after $n$ trials".format(_coconut_format_0=(self._metric)))
+        return plot(iterations, best_metrics, ax=ax, yscale=yscale, title="Convergence plot for {_coconut_format_0}".format(_coconut_format_0=(self._file_name)), xlabel="Number of trials $n$", ylabel="Best {_coconut_format_0} after $n$ trials".format(_coconut_format_0=(self.metric)))
 
     def plot_history(self, ax=None, yscale=None):
         """Plot the gain/loss of every point in the order in which they were sampled."""
@@ -394,9 +405,9 @@ class BlackBoxOptimizer(_coconut.object):
             raise ValueError("no existing data available to be plotted")
 
         iterations = range(1, len(self._examples) + 1)
-        metrics = ((list)((map)(_coconut.operator.itemgetter((self._metric)), (sorted_examples)(self._examples))))
+        metrics = ((list)((map)(_coconut.operator.itemgetter((self.metric)), (sorted_examples)(self._examples))))
 
-        return plot(iterations, metrics, ax=ax, yscale=yscale, title="History plot for {_coconut_format_0}".format(_coconut_format_0=(self._file_name)), xlabel="Number of trials $n$", ylabel="The {_coconut_format_0} on the $n$th trial".format(_coconut_format_0=(self._metric)))
+        return plot(iterations, metrics, ax=ax, yscale=yscale, title="History plot for {_coconut_format_0}".format(_coconut_format_0=(self._file_name)), xlabel="Number of trials $n$", ylabel="The {_coconut_format_0} on the $n$th trial".format(_coconut_format_0=(self.metric)))
 
     def partial_dependence(self, i_name, j_name=None, *args, **kwargs):
         """Calls skopt.plots.partial_dependence where i_name and j_name are parameter names."""
@@ -541,6 +552,7 @@ class BlackBoxOptimizer(_coconut.object):
     def choice(self, name, seq, **kwargs):
         """Create a new parameter with the given name modeled by random.choice(seq)."""
         if constants.use_generic_categories_for_categorical_data:
+            (param_processor.modify_kwargs)(seq.index, kwargs)
             return seq[self._categorical(name, len(seq), **kwargs)]
         else:
             return self.param(name, "choice", seq, **kwargs)

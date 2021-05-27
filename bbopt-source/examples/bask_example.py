@@ -10,7 +10,7 @@ To run this example, just run:
 from bbopt import BlackBoxOptimizer
 bb = BlackBoxOptimizer(file=__file__)
 if __name__ == "__main__":
-    bb.run(alg="bayes_gaussian_process")
+    bb.run(alg="bask_gaussian_process")
 
 
 # We set the x parameter conditional on the use_high parameter and add randomness.

@@ -33,4 +33,5 @@ class TestConstants(unittest.TestCase):
             if not name.startswith("__"):
                 assert not isinstance(value, list), "Constant " + name + " should be tuple, not list"
                 assert not isinstance(value, set), "Constant " + name + " should be frozenset, not set"
-                assert_dict_or_callable_or_hashable(name, value)
+                if "sentinel" not in name.lower():
+                    assert_dict_or_callable_or_hashable(name, value)

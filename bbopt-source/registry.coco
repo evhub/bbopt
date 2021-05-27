@@ -2,6 +2,7 @@
 The backend and algorithm registries.
 """
 
+# Registry class:
 
 class Registry:
     """Registry that keeps track of registered objects."""
@@ -11,6 +12,11 @@ class Registry:
         self.registered = defaults ?? {}
         self.generators = generators ?? {}
         self.aliases = aliases ?? {}
+        self.no_conflict_registries = []
+
+    def shouldnt_conflict_with(self, registry):
+        """Add the given registry to the no conflict registries."""
+        self.no_conflict_registries.append(registry)
 
     def __getitem__(self, name):
         name = self.aliases.get(name, name)
@@ -19,6 +25,9 @@ class Registry:
         else: if name in self.generators:
             return self.run_gen(name)
         else:
+            for registry in self.no_conflict_registries:
+                if name in registry:
+                    raise ValueError(f"invalid {self.obj_name}: {name} ({name} is a(n) {registry.obj_name} not a(n) {self.obj_name})")
             valid_names = ", ".join(repr(name) for name in self)
             raise ValueError(f"unknown {self.obj_name}: {name} (valid {self.obj_name}s: {valid_names})")
 
@@ -31,18 +40,32 @@ class Registry:
 
     def register(self, name, value, replace=False):
         """Register value under the given name."""
-        if not replace and name in self.registered:
-            raise ValueError(f"cannot register already existing name {name!r}")
+        if not replace:
+            match {=name: stored_val, **_} in self.registered:
+                if stored_val == value:
+                    return
+                else:
+                    raise ValueError(f"cannot change registry for already existing name: {name}")
         if name in self.aliases:
-            raise ValueError(f"cannot register name with existing alias {name!r}")
+            raise ValueError(f"cannot register name with existing alias: {name}")
+        for registry in self.no_conflict_registries:
+            if name in registry:
+                raise ValueError(f"cannot register name with conflicting {registry.obj_name}: {name}")
         self.registered[name] = value
 
     def register_alias(self, name, alias, replace=False):
         """Register an alias for the given name."""
-        if not replace and alias in self.aliases:
-            raise ValueError(f"cannot register already existing alias {alias!r}")
+        if not replace:
+            match {=name: stored_alias, **_} in self.aliases:
+                if stored_alias == alias:
+                    return
+                else:
+                    raise ValueError(f"cannot change registry for already existing alias: {alias}")
         if alias in self.registered:
-            raise ValueError(f"cannot register overlapping alias {alias!r}")
+            raise ValueError(f"cannot register overlapping alias: {alias}")
+        for registry in self.no_conflict_registries:
+            if name in registry:
+                raise ValueError(f"cannot register alias with conflicting {registry.obj_name}: {alias}")
         self.aliases[alias] = name
 
     def run_gen(self, name):
@@ -57,6 +80,9 @@ class Registry:
         yield from self.registered
         yield from self.generators
         yield from self.aliases
+
+    def __contains__(self, name) =
+        name in self.registered or name in self.generators or name in self.aliases
 
     def run_all_gens(self):
         """Run all generators."""
@@ -74,7 +100,13 @@ class Registry:
         return self.registered
 
 
+# Registries:
+
 backend_registry = Registry("backend")
 
-
 alg_registry = Registry("algorithm")
+
+meta_registry = Registry("meta algorithm")
+
+alg_registry.shouldnt_conflict_with(meta_registry)
+meta_registry.shouldnt_conflict_with(alg_registry)

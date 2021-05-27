@@ -264,3 +264,6 @@ PySOTBackend.register_alg("lower_confidence_bound", strategy="LCB", surrogate="G
 PySOTBackend.register_alg("latin_hypercube", design="latin_hypercube")
 PySOTBackend.register_alg("symmetric_latin_hypercube", design="symmetric_latin_hypercube")
 PySOTBackend.register_alg("two_factorial", design="two_factorial")
+
+# register meta alg
+PySOTBackend.register_meta_for_all_algs("any_pysot")

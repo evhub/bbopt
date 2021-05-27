@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xfa542cad
+# __coconut_hash__ = 0xeb03e45
 
 # Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
@@ -30,6 +30,7 @@ if _coconut_sys.version_info < (3, 3):
     from collections import Iterable
 else:
     from collections.abc import Iterable
+from contextlib import contextmanager
 
 from bbopt import constants
 from bbopt.util import sorted_items
@@ -37,6 +38,7 @@ from bbopt.util import convert_match_errors
 from bbopt.params import param_processor
 from bbopt.registry import backend_registry
 from bbopt.registry import alg_registry
+from bbopt.registry import meta_registry
 
 
 # Utilities:
@@ -324,11 +326,23 @@ class Backend(_coconut.object):
         assert self.current_values is not None, "Backend subclasses using Backend.param must set current_values"
         return serve_values(name, func, args, kwargs, serving_values=self.current_values, fallback_func=self.fallback_func, backend_name=self.backend_name, implemented_funcs=self.implemented_funcs, supported_kwargs=self.supported_kwargs)
 
+    registered_algs = None
+
     @classmethod
     def register(cls):
         """Register this backend to the backend registry."""
         assert cls.backend_name is not None, "Backend subclasses using Backend.register must set backend_name on the class"
         backend_registry.register(cls.backend_name, cls)
+
+# clear out registered_algs when register is called, since that
+#  probably indicates a subclass is trying to register new algs
+        cls.registered_algs = []
+
+    @classmethod
+    def register_alias(cls, alias):
+        """Register an alias for this backend."""
+        assert cls.backend_name is not None, "Backend subclasses using Backend.register_alias must set backend_name on the class"
+        backend_registry.register_alias(cls.backend_name, alias)
 
     @classmethod
     def register_alg(cls, alg_name, **options):
@@ -336,11 +350,22 @@ class Backend(_coconut.object):
         assert cls.backend_name is not None, "Backend subclasses using Backend.register_alg must set backend_name on the class"
         alg_registry.register(alg_name, (cls.backend_name, options))
 
+        assert cls.registered_algs is not None, "Backend.register_alg must come after Backend.register"
+        cls.registered_algs.append(alg_name)
+
     @classmethod
-    def register_alias(cls, alias):
-        """Register an alias for this backend."""
-        assert cls.backend_name is not None, "Backend subclasses using Backend.register_alias must set backend_name on the class"
-        backend_registry.register_alias(cls.backend_name, alias)
+    def register_meta_for_all_algs(cls, alg_name, meta_alg=None):
+        """Register a meta algorithm for all the algs registered on this class."""
+        assert cls.registered_algs is not None, "register_meta_for_all_algs requires prior register_alg calls"
+        cls.register_meta(alg_name, cls.registered_algs, meta_alg)
+
+    @staticmethod
+    def register_meta(alg_name, algs, meta_alg=None):
+        """Register an algorithm that defers to run_meta."""
+        if meta_alg is None:
+            from bbopt.optimizer import BlackBoxOptimizer
+            meta_alg = BlackBoxOptimizer.DEFAULT_ALG_SENTINEL
+        meta_registry.register(alg_name, (algs, meta_alg))
 
     @staticmethod
     def register_param_func(func_name, handler, placeholder_generator, support_check_func):

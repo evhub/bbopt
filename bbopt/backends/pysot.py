@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xcafee74d
+# __coconut_hash__ = 0x5cd49583
 
 # Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
@@ -323,3 +323,6 @@ PySOTBackend.register_alg("lower_confidence_bound", strategy="LCB", surrogate="G
 PySOTBackend.register_alg("latin_hypercube", design="latin_hypercube")
 PySOTBackend.register_alg("symmetric_latin_hypercube", design="symmetric_latin_hypercube")
 PySOTBackend.register_alg("two_factorial", design="two_factorial")
+
+# register meta alg
+PySOTBackend.register_meta_for_all_algs("any_pysot")

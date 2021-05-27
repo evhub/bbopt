@@ -34,4 +34,4 @@ class BaskBackend(SkoptBackend):
 
 BaskBackend.register()
 BaskBackend.register_alias("bask")
-BaskBackend.register_alg("bayes_gaussian_process")
+BaskBackend.register_alg("bask_gaussian_process")

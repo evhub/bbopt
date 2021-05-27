@@ -176,7 +176,10 @@ class SkoptBackend(StandardBackend):
 
 SkoptBackend.register()
 SkoptBackend.register_alias("skopt")
+
 SkoptBackend.register_alg("gaussian_process", base_estimator="GP")
 SkoptBackend.register_alg("random_forest", base_estimator="RF")
 SkoptBackend.register_alg("extra_trees", base_estimator="ET")
 SkoptBackend.register_alg("gradient_boosted_regression_trees", base_estimator="GBRT")
+
+SkoptBackend.register_meta_for_all_algs("any_skopt")

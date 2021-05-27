@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x47afaaaf
+# __coconut_hash__ = 0x5158bb0f
 
 # Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
@@ -55,6 +55,7 @@ class TestConstants(unittest.TestCase):
             if not name.startswith("__"):
                 assert not isinstance(value, list), "Constant " + name + " should be tuple, not list"
                 assert not isinstance(value, set), "Constant " + name + " should be frozenset, not set"
-                assert_dict_or_callable_or_hashable(name, value)
+                if "sentinel" not in name.lower():
+                    assert_dict_or_callable_or_hashable(name, value)
 
 _coconut_call_set_names(TestConstants)

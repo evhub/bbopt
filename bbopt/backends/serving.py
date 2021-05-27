@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x6c073a7
+# __coconut_hash__ = 0xec98ffbd
 
 # Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
@@ -43,6 +43,7 @@ class ServingBackend(Backend):
 # since we're serving, ignore params and just extract the best example
         self.current_values = best_example(examples)["values"]
 
+# set new allow_missing_data and call init_fallback_backend if necessary
         self.allow_missing_data = allow_missing_data
         if not self.fallback_backend and self.allow_missing_data:
             self.init_fallback_backend()
@@ -67,5 +68,5 @@ class ServingBackend(Backend):
 
 _coconut_call_set_names(ServingBackend)
 ServingBackend.register()
-ServingBackend.register_alg("serving")
+ServingBackend.register_alg("serving")  # allow_missing_data=False not included to help bb._backend_store
 ServingBackend.register_alg("greedy", allow_missing_data=True)

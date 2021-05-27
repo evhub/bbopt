@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc8f8976c
+# __coconut_hash__ = 0x10702aa0
 
 # Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
@@ -87,6 +87,7 @@ def using(path, rem_on_start=True, rem_on_end=False):
             shutil.rmtree(path)
         elif os.path.isfile(path):
             os.remove(path)
+        assert not os.path.exists(path), "failed to remove: {_coconut_format_0}".format(_coconut_format_0=(path))
     try:
         yield
     finally:
@@ -140,11 +141,11 @@ def assert_improving(data):
     if "loss" in first_half[0]:
         first_losses = (ave)((map)(_coconut.operator.itemgetter(("loss")), first_half))
         second_losses = (ave)((map)(_coconut.operator.itemgetter(("loss")), second_half))
-        assert second_losses < first_losses, (first_losses, second_losses)
+        assert second_losses < first_losses
     else:
         first_gains = (ave)((map)(_coconut.operator.itemgetter(("gain")), first_half))
         second_gains = (ave)((map)(_coconut.operator.itemgetter(("gain")), second_half))
-        assert second_gains > first_gains, (first_gains, second_gains)
+        assert second_gains > first_gains
 
 
 def call_bbopt(fpath, trials=NUM_TRIALS, procs=NUM_PROCS):
@@ -218,7 +219,7 @@ class TestExamples(unittest.TestCase):
         def test_pysot(self):
             print("\ntest pysot:")
             with using(pysot_data):
-                results = call_bbopt(pysot_file)
+                results = call_bbopt(pysot_file, trials=2)
                 want = min(get_nums(results, numtype=float))
                 assert os.path.exists(pysot_data)
 

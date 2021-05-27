@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc09a74b9
+# __coconut_hash__ = 0x77ebbca8
 
 # Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
@@ -53,4 +53,4 @@ class BaskBackend(SkoptBackend):
 _coconut_call_set_names(BaskBackend)
 BaskBackend.register()
 BaskBackend.register_alias("bask")
-BaskBackend.register_alg("bayes_gaussian_process")
+BaskBackend.register_alg("bask_gaussian_process")

@@ -6,8 +6,9 @@ import numpy as np
 
 from hyperopt import (
     hp,
-    tpe,
     FMinIter,
+    tpe,
+    atpe,
     anneal,
 )
 from hyperopt.pyll import as_apply
@@ -162,5 +163,12 @@ class HyperoptBackend(StandardBackend):
 # Registered names:
 
 HyperoptBackend.register()
+
 HyperoptBackend.register_alg("tree_structured_parzen_estimator", algo=tpe.suggest)
+HyperoptBackend.register_alg("adaptive_tpe", algo=atpe.suggest)
 HyperoptBackend.register_alg("annealing", algo=anneal.suggest)
+
+HyperoptBackend.register_meta("tpe_or_gp", (
+    "tree_structured_parzen_estimator",
+    "gaussian_process",
+))

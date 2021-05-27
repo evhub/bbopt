@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xcbff4614
+# __coconut_hash__ = 0x2146b345
 
 # Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
@@ -224,7 +224,10 @@ class SkoptBackend(StandardBackend):
 _coconut_call_set_names(SkoptBackend)
 SkoptBackend.register()
 SkoptBackend.register_alias("skopt")
+
 SkoptBackend.register_alg("gaussian_process", base_estimator="GP")
 SkoptBackend.register_alg("random_forest", base_estimator="RF")
 SkoptBackend.register_alg("extra_trees", base_estimator="ET")
 SkoptBackend.register_alg("gradient_boosted_regression_trees", base_estimator="GBRT")
+
+SkoptBackend.register_meta_for_all_algs("any_skopt")
