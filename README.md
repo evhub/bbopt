@@ -78,6 +78,7 @@ Some examples of BBopt in action:
 - [`keras_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.py): Complete example of using BBopt to optimize a neural network built with [Keras](https://keras.io/). Uses the full API to implement its own optimization loop and thus avoid the overhead of running the entire file multiple times.
 - [`mixture_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/mixture_example.py): Example of using the `mixture` backend to randomly switch between different algorithms.
 - [`json_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/json_example.py): Example of using `json` instead of `pickle` to save parameters.
+- [`remove_erroring_algs_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/remove_erroring_algs_example.py): Example of using the `remove_erroring_algs` feature of the `mixture` backend.
 
 ## Full API
 
@@ -105,6 +106,7 @@ Some examples of BBopt in action:
     1. [`get_best_run`](#get_best_run)
     1. [`get_data`](#get_data)
     1. [`data_file`](#data_file)
+    1. [`is_serving`](#is_serving)
     1. [`tell_examples`](#tell_examples)
     1. [`backend`](#backend)
 1. [Parameter Definition Methods](#parameter-definition-methods)
@@ -147,14 +149,14 @@ _protocol_ determines how BBopt serializes data. If `None` (the default), BBopt 
 
 #### `run`
 
-BlackBoxOptimizer.**run**(_alg_=`"tree_structured_parzen_estimator"`)
+BlackBoxOptimizer.**run**(_alg_=`"tpe_or_gp"`)
 
 Start optimizing using the given black box optimization algorithm. Use **algs** to get the valid values for _alg_.
 
 If this method is never called, or called with `alg="serving"`, BBopt will just serve the best parameters found so far, which is how the basic boilerplate works. Note that, if no saved parameter data is found, and a _guess_ is present, BBopt will use that, which is a good way of distributing your parameter values without including all your saved parameter data.
 
 In addition to supporting all algorithms in **algs**, **run** also supports the following pseudo-algorithms which defer to **run_meta**:
-- `"tpe_or_gp"` (equivalent to `run_meta(("tree_structured_parzen_estimator", "gaussian_process"))`)
+- `"tpe_or_gp"` (same as calling **run_meta** with `"gaussian_process"` and `"tree_structured_parzen_estimator"` except that `"gaussian_process"` is ignored if unsupported parameter definition functions are used (e.g. `normalvariate`)) (used if **run** is called with no args)
 - `"any_skopt"` (equivalent to calling **run_meta** with all `scikit-optimize` algorithms)
 - `"any_pysot"` (equivalent to calling **run_meta** with all `pySOT` algorithms)
 
@@ -168,8 +170,8 @@ Supported algorithms are:
 - `"serving"` (`serving` backend) (used if **run** is never called)
 - `"greedy"` (`serving` backend) (same as `"serving"` but falls back to `"random"` if no data is present)
 - `"random"` (`random` backend)
-- `"tree_structured_parzen_estimator"` (`hyperopt` backend) (used if **run** is called with no args)
-- `"adaptive_tpe"` (`hyperopt` backend)
+- `"tree_structured_parzen_estimator"` (`hyperopt` backend)
+- `"adaptive_tpe"` (`hyperopt` backend; but only Python 3+)
 - `"annealing"` (`hyperopt` backend)
 - `"gaussian_process"` (`scikit-optimize` backend)
 - `"random_forest"` (`scikit-optimize` backend)
@@ -183,7 +185,7 @@ Supported algorithms are:
 - `"latin_hypercube"` (`pySOT` backend)
 - `"symmetric_latin_hypercube"` (`pySOT` backend)
 - `"two_factorial"` (`pySOT` backend)
-- `"epsilon_greedy"` (`mixture` backend)
+- `"epsilon_greedy"` (`mixture` backend) (the default _meta\_alg_ in **run_meta**)
 
 _Note: The `bayes-skopt` backend is only available on Python 3.7+ and the `pySOT` backend is only available on Python 3+._
 
@@ -201,7 +203,7 @@ The base function behind **run**. Instead of specifying an algorithm, **run_back
 
 - `scikit-optimize` passes the arguments to [`skopt.Optimizer`](https://scikit-optimize.github.io/#skopt.Optimizer),
 - `hyperopt` passes the arguments to [`fmin`](https://github.com/hyperopt/hyperopt/wiki/FMin),
-- `mixture` expects a `distribution` argument to specify the mixture of different algorithms to use, specifically a list of `(alg, weight)` tuples,
+- `mixture` expects a `distribution` argument to specify the mixture of different algorithms to use, specifically a list of `(alg, weight)` tuples (and also admits a `remove_erroring_algs` bool to automatically remove erroring algorithms),
 - `bayes-skopt` passes the arguments to [`bask.Optimizer`](https://github.com/kiudee/bayes-skopt/blob/master/bask/optimizer.py#L35), and
 - `pySOT` expects a `strategy` (either a strategy class or one of `"SRBF", "EI", "DYCORS", "LCB"`), a `surrogate` (either a surrogate class or one of `"RBF", "GP"`), and a `design` (either an experimental design class or one of `None, "latin_hypercube", "symmetric_latin_hypercube", "two_factorial"`).
 
@@ -308,6 +310,12 @@ Dump a dictionary containing `"params"`—the parameters BBopt knows about and w
 BlackBoxOptimizer.**data_file**
 
 The path of the file where BBopt is saving data to.
+
+#### `is_serving`
+
+BlackBoxOptimizer.**is_serving**
+
+Whether BBopt is currently using the `"serving"` algorithm.
 
 #### `tell_examples`
 

@@ -225,11 +225,6 @@ class BlackBoxOptimizer:
         return self.protocol == "json"
 
     @property
-    def is_serving(self) =
-        """Whether we are currently using the serving backend or not."""
-        isinstance(self.backend, ServingBackend) and not self.backend.allow_missing_data
-
-    @property
     def num_examples(self) =
         """The number of examples seen so far (current example not counted until maximize/minimize call)."""
         len(self._examples)
@@ -304,6 +299,11 @@ class BlackBoxOptimizer:
     def maximize(self, value):
         """Set the gain of the current run."""
         self._set_reward("gain", value)
+
+    @property
+    def is_serving(self) =
+        """Whether we are currently using the serving backend or not."""
+        isinstance(self.backend, ServingBackend) and not self.backend.allow_missing_data
 
     @property
     def data_file(self) =

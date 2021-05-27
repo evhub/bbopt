@@ -45,11 +45,17 @@ numpy_data = os.path.join(example_dir, "numpy_example.bbopt.pickle")
 meta_file = os.path.join(example_dir, "meta_example.py")
 meta_data = os.path.join(example_dir, "meta_example.bbopt.pickle")
 
+tpe_or_gp_file = os.path.join(example_dir, "tpe_or_gp_example.py")
+tpe_or_gp_data = os.path.join(example_dir, "tpe_or_gp_example.bbopt.pickle")
+
 mixture_file = os.path.join(example_dir, "mixture_example.py")
 mixture_data = os.path.join(example_dir, "mixture_example.bbopt.pickle")
 
 json_file = os.path.join(example_dir, "json_example.py")
 json_data = os.path.join(example_dir, "json_example.bbopt.json")
+
+remove_erroring_algs_file = os.path.join(example_dir, "remove_erroring_algs_example.py")
+remove_erroring_algs_data = os.path.join(example_dir, "remove_erroring_algs_example.bbopt.pickle")
 
 
 # Utilities:
@@ -265,6 +271,19 @@ class TestExamples(unittest.TestCase):
             assert 0 <= meta_example.u < 1
             assert meta_example.bb.num_examples == NUM_TRIALS
 
+    def test_tpe_or_gp(self):
+        print("\ntest tpe_or_gp:")
+        with using(tpe_or_gp_data):
+            results = call_bbopt(tpe_or_gp_file)
+            want = min(get_nums(results, numtype=float))
+            assert os.path.exists(tpe_or_gp_data)
+
+            from bbopt.examples import tpe_or_gp_example
+            assert_improving(tpe_or_gp_example.bb.get_data(print_data=True))
+            assert tpe_or_gp_example.u == want
+            assert 0 <= tpe_or_gp_example.u < 1
+            assert tpe_or_gp_example.bb.num_examples == NUM_TRIALS
+
     def test_mixture(self):
         print("\ntest mixture:")
         with using(mixture_data):
@@ -296,6 +315,18 @@ class TestExamples(unittest.TestCase):
             assert_improving(json_example.bb.get_data(print_data=True))
             assert json_example.y == want
             assert json_example.bb.num_examples == NUM_TRIALS
+
+    def test_remove_erroring_algs(self):
+        print("\ntest remove_erroring_algs:")
+        with using(remove_erroring_algs_data):
+            results = call_bbopt(remove_erroring_algs_file)
+            want = min(get_nums(results, numtype=float))
+            assert os.path.exists(remove_erroring_algs_data)
+
+            from bbopt.examples import remove_erroring_algs_example
+            assert_improving(remove_erroring_algs_example.bb.get_data(print_data=True))
+            assert remove_erroring_algs_example.y == want
+            assert remove_erroring_algs_example.bb.num_examples == NUM_TRIALS
 
 
 if __name__ == "__main__":

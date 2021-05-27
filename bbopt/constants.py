@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb4f6e612
+# __coconut_hash__ = 0xaa6637dd
 
 # Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
@@ -29,7 +29,7 @@ if _coconut_sys.version_info >= (3,):
 
 # Installation constants:
 name = "bbopt"
-version = "1.2.5"
+version = "1.2.5"  # TODO: set to 1.3.0 once tests are passing
 description = "The easiest hyperparameter optimization you'll ever do."
 long_description = """
 See BBopt's GitHub_ for more information.
@@ -48,7 +48,7 @@ extra_requirements["dev"] = (extra_requirements["examples"] + ("coconut-develop"
 # Optimizer constants:
 data_file_ext = ".bbopt"
 lock_timeout = 6
-default_alg = "tree_structured_parzen_estimator"
+default_alg = "tpe_or_gp"
 default_protocol = 2
 use_generic_categories_for_categorical_data = False
 use_placeholder_when_outside_support = False
@@ -63,4 +63,5 @@ default_jobs = 1
 
 # Backend constants:
 default_fallback_backend = "random"
+erroring_backend_errs = (ValueError, TypeError)
 eps_greedy_explore_prob = 0.2

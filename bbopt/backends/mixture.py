@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd3f028e
+# __coconut_hash__ = 0x93617230
 
 # Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
@@ -40,27 +40,50 @@ class MixtureBackend(Backend):
     can be used to retrieve which alg/backend is currently being used."""
     backend_name = "mixture"
 
-    def __init__(self, examples, params, distribution):
+    def __init__(self, examples, params, *args, **kwargs):
+        self.backend_store = {}
+        self.attempt_update(examples, params, *args, **kwargs)
+
+    remove_erroring_algs = None
+
+    @override
+    def attempt_update(self, examples, params, distribution, remove_erroring_algs=False):
+        """Special method that allows fast updating of the backend."""
+        self.use_distribution(distribution, force=remove_erroring_algs != self.remove_erroring_algs)
+
+        self.examples = examples
+        self.params = params
+        self.remove_erroring_algs = remove_erroring_algs
+
+        self.select_new_backend()
+        return True
+
+    def use_distribution(self, distribution, force=False):
+        """Set the distribution to the given distribution."""
         if distribution == "epsilon_greedy":
             distribution = (("random", constants.eps_greedy_explore_prob), ("greedy", 1 - constants.eps_greedy_explore_prob),)
+        else:
+            distribution = tuple(distribution)
 
-        self.params = params
-        total_weight = sum((weight for alg, weight in distribution))
+        if force or distribution != self.distribution:
+            self.set_cum_probs_for(distribution)
+            self.distribution = distribution
 
-# generate cutoff points
+    def set_cum_probs_for(self, distribution):
+        """Set the cum_probs used to pick the backend according to the given distribution."""
         self.cum_probs = []
+        total_weight = sum((weight for alg, weight in distribution))
         prev_cutoff = 0
         for alg, weight in distribution:
-            cutoff = prev_cutoff + weight / total_weight
+            if weight == float("inf"):
+                cutoff = 1
+            else:
+                cutoff = prev_cutoff + weight / total_weight
             self.cum_probs.append((alg, cutoff))
             prev_cutoff = cutoff
 
-        self.backend_store = {}
-        self.tell_examples(examples)
-
-    @override
-    def tell_examples(self, examples):
-        """Special method that allows fast updating of the backend with new examples."""
+    def select_new_backend(self):
+        """Randomly select a new backend."""
 # randomly select algorithm
         rand_val = random.random()
         self.selected_alg = None
@@ -68,16 +91,37 @@ class MixtureBackend(Backend):
             if rand_val <= cutoff:
                 self.selected_alg = alg
                 break
+        if self.selected_alg is None:
+            raise ValueError("could not select backend from distribution: {_coconut_format_0}".format(_coconut_format_0=(self.distribution)))
 
 # initialize backend
         self.selected_backend, options = alg_registry[self.selected_alg]
-        self.current_backend = init_backend(self.selected_backend, examples, self.params, attempt_to_update_backend=self.backend_store.get(self.selected_alg), **options)
-        self.backend_store[self.selected_alg] = self.current_backend
+        try:
+            self.current_backend = init_backend(self.selected_backend, self.examples, self.params, attempt_to_update_backend=self.backend_store.get(self.selected_alg), **options)
+        except constants.erroring_backend_errs:
+            self.reselect_backend()
+        else:
+            self.backend_store[self.selected_alg] = self.current_backend
+
+    def reselect_backend(self):
+        """Choose a new backend when the current one errors."""
+        new_distribution = []
+        for alg, weight in self.distribution:
+            if alg != self.selected_alg:
+                new_distribution.append((alg, weight))
+        self.set_cum_probs_for(new_distribution)
+        self.select_new_backend()
 
     @override
     def param(self, name, func, *args, **kwargs):
         """Defer parameter selection to the selected backend."""
-        return self.current_backend.param(name, func, *args, **kwargs)
+        try:
+            return self.current_backend.param(name, func, *args, **kwargs)
+        except constants.erroring_backend_errs:
+            if not self.remove_erroring_algs:
+                raise
+            self.reselect_backend()
+        return self.param(name, func, *args, **kwargs)
 
 
 # Registered names:
@@ -85,3 +129,4 @@ class MixtureBackend(Backend):
 _coconut_call_set_names(MixtureBackend)
 MixtureBackend.register()
 MixtureBackend.register_alg("epsilon_greedy", distribution="epsilon_greedy")
+MixtureBackend.register_alg("_safe_gaussian_process", distribution=(("gaussian_process", float("inf")), ("random", 1),), remove_erroring_algs=True)

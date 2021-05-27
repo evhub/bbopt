@@ -22,8 +22,7 @@ if __name__ == "__main__":
 
 # If we're not serving, store which algorithm the
 #  mixture backend has selected.
-from bbopt.backends.mixture import MixtureBackend
-if isinstance(bb.backend, MixtureBackend):
+if not bb.is_serving:
     bb.remember({
         "alg": bb.backend.selected_alg,
     })

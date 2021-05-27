@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x9dc1f38e
+# __coconut_hash__ = 0x7075f2da
 
 # Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
@@ -267,11 +267,6 @@ class BlackBoxOptimizer(_coconut.object):
         return self.protocol == "json"
 
     @property
-    def is_serving(self):
-        """Whether we are currently using the serving backend or not."""
-        return isinstance(self.backend, ServingBackend) and not self.backend.allow_missing_data
-
-    @property
     def num_examples(self):
         """The number of examples seen so far (current example not counted until maximize/minimize call)."""
         return len(self._examples)
@@ -355,6 +350,11 @@ class BlackBoxOptimizer(_coconut.object):
     def maximize(self, value):
         """Set the gain of the current run."""
         self._set_reward("gain", value)
+
+    @property
+    def is_serving(self):
+        """Whether we are currently using the serving backend or not."""
+        return isinstance(self.backend, ServingBackend) and not self.backend.allow_missing_data
 
     @property
     def data_file(self):

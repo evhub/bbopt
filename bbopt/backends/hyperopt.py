@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb614dbbd
+# __coconut_hash__ = 0x53038eff
 
 # Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
@@ -26,12 +26,13 @@ if _coconut_sys.version_info >= (3,):
 
 
 
+sys = _coconut_sys
+
 import numpy as np
 
 from hyperopt import hp
 from hyperopt import FMinIter
 from hyperopt import tpe
-from hyperopt import atpe
 from hyperopt import anneal
 from hyperopt.pyll import as_apply
 from hyperopt.base import Domain
@@ -166,7 +167,10 @@ _coconut_call_set_names(HyperoptBackend)
 HyperoptBackend.register()
 
 HyperoptBackend.register_alg("tree_structured_parzen_estimator", algo=tpe.suggest)
-HyperoptBackend.register_alg("adaptive_tpe", algo=atpe.suggest)
 HyperoptBackend.register_alg("annealing", algo=anneal.suggest)
 
-HyperoptBackend.register_meta("tpe_or_gp", ("tree_structured_parzen_estimator", "gaussian_process",))
+if sys.version_info >= (3,):
+    from hyperopt import atpe
+    HyperoptBackend.register_alg("adaptive_tpe", algo=atpe.suggest)
+
+HyperoptBackend.register_meta("tpe_or_gp", ("tree_structured_parzen_estimator", "_safe_gaussian_process",))
