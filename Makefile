@@ -35,16 +35,16 @@ upload: clean install
 	twine upload dist/*
 
 .PHONY: test
-test: install
+test: clean install
 	pytest --strict --fulltrace -s ./bbopt/tests
 
 .PHONY: test-keras
-test-keras: install
+test-keras: clean install
 	-rm ./bbopt/examples/keras_example.bbopt.pickle
 	python ./bbopt/examples/keras_example.py
 
 .PHONY: test-2
-test-2: install-2
+test-2: clean install-2
 	python2 -m pytest --strict --fulltrace -s ./bbopt/tests
 
 .PHONY: clean

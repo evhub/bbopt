@@ -4,12 +4,42 @@ Utilities for use in BBopt backends.
 
 from collections.abc import Iterable
 
-from bbopt.util import sorted_items
+from bbopt import constants
+from bbopt.util import sorted_items, convert_match_errors
 from bbopt.params import param_processor
 from bbopt.registry import backend_registry, alg_registry
 
 
 # Utilities:
+
+@convert_match_errors
+match def init_backend(backend, examples, params, *args, attempt_to_update_backend, **options):
+    """Create a backend object with the given data (backend can be backend name or class)."""
+    if isinstance(backend, type) and issubclass(backend, Backend):
+        backend_cls = backend
+    else:
+        backend_cls = backend_registry[backend]
+        assert issubclass(backend_cls, Backend), f"invalid backend class for {backend}: {backend_cls}"
+
+    backend_examples = examples[:]
+    backend_params = params.copy()
+
+    new_backend = None
+    if isinstance(attempt_to_update_backend, backend_cls):
+        updated_backend = attempt_to_update_backend.attempt_update(backend_examples, backend_params, *args, **options)
+        if updated_backend is True:
+            new_backend = attempt_to_update_backend
+        elif isinstance(updated_backend, backend_cls):
+            new_backend = updated_backend
+        else:
+            assert updated_backend is False, f"invalid {backend_cls}.attempt_update return value: {updated_backend}"
+
+    if new_backend is None:
+        assert not attempt_to_update_backend or isinstance(attempt_to_update_backend, Backend), f"invalid backend to attempt update on: {attempt_to_update_backend}"
+        new_backend = backend_cls(backend_examples, backend_params, *args, **options)
+
+    return new_backend
+
 
 def negate_objective(objective):
     """Take the negative of the given objective (converts a gain into a loss and vice versa)."""
@@ -202,7 +232,7 @@ class Backend:
 
     def init_fallback_backend(self):
         """Set fallback_backend to a new random backend instance."""
-        self.fallback_backend = backend_registry["random"]()
+        self.fallback_backend = backend_registry[constants.default_fallback_backend]()
 
     def fallback_func(self, name, func, *args, **kwargs):
         """Default fallback_func calls self.fallback_backend.param."""

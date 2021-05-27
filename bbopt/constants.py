@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x171712e8
+# __coconut_hash__ = 0x985ec9da
 
-# Compiled with Coconut version 1.5.0-post_dev49 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
 """
 Constants for use across all of BBopt.
@@ -29,7 +29,7 @@ if _coconut_sys.version_info >= (3,):
 
 # Installation constants:
 name = "bbopt"
-version = "1.2.3"
+version = "1.2.4"
 description = "The easiest hyperparameter optimization you'll ever do."
 long_description = """
 See BBopt's GitHub_ for more information.
@@ -52,6 +52,8 @@ default_alg = "tree_structured_parzen_estimator"
 default_protocol = 2
 use_generic_categories_for_categorical_data = False
 use_placeholder_when_outside_support = False
+meta_opt_alg_var = "_run_meta_alg"
+default_meta_alg = "epsilon_greedy"
 
 
 # CLI constants:
@@ -60,4 +62,5 @@ default_jobs = 1
 
 
 # Backend constants:
-eps_greedy_explore_prob = 0.1
+default_fallback_backend = "random"
+eps_greedy_explore_prob = 0.2

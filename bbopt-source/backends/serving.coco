@@ -10,24 +10,37 @@ class ServingBackend(Backend):
     """The serving backend uses the parameter values from the best example."""
     backend_name = "serving"
 
-    def __init__(self, examples, params):
-        self.attempt_update(examples, params)
+    def __init__(self, *args, **kwargs):
+        self.attempt_update(*args, **kwargs)
 
     @override
-    def fallback_func(self, name, func, *args, **kwargs):
-        raise ValueError(f"missing data for parameter {name} while serving and no guess")
-
-    @override
-    def attempt_update(self, examples, params):
+    def attempt_update(self, examples, params, allow_missing_data=False):
         """Update the serving backend with new parameters."""
         # since we're serving, ignore params and just extract the best example
         self.current_values = best_example(examples)["values"]
+
+        self.allow_missing_data = allow_missing_data
+        if not self.fallback_backend and self.allow_missing_data:
+            self.init_fallback_backend()
+
         return True
+
+    @override
+    def fallback_func(self, name, func, *args, **kwargs):
+        if self.allow_missing_data:
+            return super(ServingBackend, self).fallback_func(name, func, *args, **kwargs)
+        else:
+            raise ValueError(f"missing data for parameter {name} while serving and no guess")
+
+    @classmethod
+    def register_none_aliases(cls):
+        """Add None aliases as in previous versions of BBopt."""
+        cls.register_alias(None)
+        cls.register_alg(None)
 
 
 # Registered names:
 
 ServingBackend.register()
-ServingBackend.register_alias(None)
 ServingBackend.register_alg("serving")
-ServingBackend.register_alg(None)
+ServingBackend.register_alg("greedy", allow_missing_data=True)

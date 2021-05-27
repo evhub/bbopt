@@ -5,7 +5,7 @@ Constants for use across all of BBopt.
 
 # Installation constants:
 name = "bbopt"
-version = "1.2.3"
+version = "1.2.4"
 description = "The easiest hyperparameter optimization you'll ever do."
 long_description = """
 See BBopt's GitHub_ for more information.
@@ -72,6 +72,8 @@ default_alg = "tree_structured_parzen_estimator"
 default_protocol = 2
 use_generic_categories_for_categorical_data = False
 use_placeholder_when_outside_support = False
+meta_opt_alg_var = "_run_meta_alg"
+default_meta_alg = "epsilon_greedy"
 
 
 # CLI constants:
@@ -80,4 +82,5 @@ default_jobs = 1
 
 
 # Backend constants:
-eps_greedy_explore_prob = 0.1
+default_fallback_backend = "random"
+eps_greedy_explore_prob = 0.2

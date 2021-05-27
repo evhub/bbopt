@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x61caf29b
+# __coconut_hash__ = 0x998f0cea
 
-# Compiled with Coconut version 1.5.0-post_dev49 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
 """
 Backends contains all of bbopt's different backends.

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x65e04e94
+# __coconut_hash__ = 0xfa542cad
 
-# Compiled with Coconut version 1.5.0-post_dev49 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
 """
 Utilities for use in BBopt backends.
@@ -31,13 +31,63 @@ if _coconut_sys.version_info < (3, 3):
 else:
     from collections.abc import Iterable
 
+from bbopt import constants
 from bbopt.util import sorted_items
+from bbopt.util import convert_match_errors
 from bbopt.params import param_processor
 from bbopt.registry import backend_registry
 from bbopt.registry import alg_registry
 
 
 # Utilities:
+
+@convert_match_errors
+@_coconut_mark_as_match
+def init_backend(*_coconut_match_args, **_coconut_match_kwargs):
+    """Create a backend object with the given data (backend can be backend name or class)."""
+    _coconut_match_check_0 = False
+    _coconut_FunctionMatchError = _coconut_get_function_match_error()
+    if (_coconut.sum((_coconut.len(_coconut_match_args) > 0, "backend" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 1, "examples" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 2, "params" in _coconut_match_kwargs)) == 1):
+        _coconut_match_temp_0 = _coconut_match_args[0] if _coconut.len(_coconut_match_args) > 0 else _coconut_match_kwargs.pop("backend")
+        _coconut_match_temp_1 = _coconut_match_args[1] if _coconut.len(_coconut_match_args) > 1 else _coconut_match_kwargs.pop("examples")
+        _coconut_match_temp_2 = _coconut_match_args[2] if _coconut.len(_coconut_match_args) > 2 else _coconut_match_kwargs.pop("params")
+        args = _coconut_match_args[3:]
+        _coconut_match_temp_3 = _coconut_match_kwargs.pop("attempt_to_update_backend") if "attempt_to_update_backend" in _coconut_match_kwargs else _coconut_sentinel
+        if _coconut_match_temp_3 is not _coconut_sentinel:
+            backend = _coconut_match_temp_0
+            examples = _coconut_match_temp_1
+            params = _coconut_match_temp_2
+            attempt_to_update_backend = _coconut_match_temp_3
+            options = _coconut_match_kwargs
+            _coconut_match_check_0 = True
+    if not _coconut_match_check_0:
+        raise _coconut_FunctionMatchError('match def init_backend(backend, examples, params, *args, attempt_to_update_backend, **options):', _coconut_match_args)
+
+    if isinstance(backend, type) and issubclass(backend, Backend):
+        backend_cls = backend
+    else:
+        backend_cls = backend_registry[backend]
+        assert issubclass(backend_cls, Backend), "invalid backend class for {_coconut_format_0}: {_coconut_format_1}".format(_coconut_format_0=(backend), _coconut_format_1=(backend_cls))
+
+    backend_examples = examples[:]
+    backend_params = params.copy()
+
+    new_backend = None
+    if isinstance(attempt_to_update_backend, backend_cls):
+        updated_backend = attempt_to_update_backend.attempt_update(backend_examples, backend_params, *args, **options)
+        if updated_backend is True:
+            new_backend = attempt_to_update_backend
+        elif isinstance(updated_backend, backend_cls):
+            new_backend = updated_backend
+        else:
+            assert updated_backend is False, "invalid {_coconut_format_0}.attempt_update return value: {_coconut_format_1}".format(_coconut_format_0=(backend_cls), _coconut_format_1=(updated_backend))
+
+    if new_backend is None:
+        assert not attempt_to_update_backend or isinstance(attempt_to_update_backend, Backend), "invalid backend to attempt update on: {_coconut_format_0}".format(_coconut_format_0=(attempt_to_update_backend))
+        new_backend = backend_cls(backend_examples, backend_params, *args, **options)
+
+    return new_backend
+
 
 def negate_objective(objective):
     """Take the negative of the given objective (converts a gain into a loss and vice versa)."""
@@ -55,23 +105,23 @@ def make_features(values, params, fallback_func=param_processor.choose_default_p
 # determine feature
         fallback = False
         _coconut_match_to_1 = values
-        _coconut_match_check_1 = False
+        _coconut_match_check_2 = False
         if _coconut.isinstance(_coconut_match_to_1, _coconut.abc.Mapping):
             _coconut_match_temp_0 = _coconut_match_to_1.get(name, _coconut_sentinel)
             if _coconut_match_temp_0 is not _coconut_sentinel:
                 feature = _coconut_match_temp_0
-                _coconut_match_check_1 = True
-        if _coconut_match_check_1:
+                _coconut_match_check_2 = True
+        if _coconut_match_check_2:
             pass
         else:
             _coconut_match_to_0 = kwargs
-            _coconut_match_check_0 = False
+            _coconut_match_check_1 = False
             if _coconut.isinstance(_coconut_match_to_0, _coconut.abc.Mapping):
                 _coconut_match_temp_0 = _coconut_match_to_0.get("placeholder_when_missing", _coconut_sentinel)
                 if _coconut_match_temp_0 is not _coconut_sentinel:
                     placeholder_value = _coconut_match_temp_0
-                    _coconut_match_check_0 = True
-            if _coconut_match_check_0:
+                    _coconut_match_check_1 = True
+            if _coconut_match_check_1:
                 feature = placeholder_value
             else:
                 fallback = True
@@ -80,13 +130,13 @@ def make_features(values, params, fallback_func=param_processor.choose_default_p
 # run converters
         if not fallback or convert_fallback:
             _coconut_match_to_2 = converters
-            _coconut_match_check_2 = False
+            _coconut_match_check_3 = False
             if _coconut.isinstance(_coconut_match_to_2, _coconut.abc.Mapping):
                 _coconut_match_temp_0 = _coconut_match_to_2.get(func, _coconut_sentinel)
                 if _coconut_match_temp_0 is not _coconut_sentinel:
                     converter_func = _coconut_match_temp_0
-                    _coconut_match_check_2 = True
-            if _coconut_match_check_2:
+                    _coconut_match_check_3 = True
+            if _coconut_match_check_3:
                 feature = converter_func(feature, *args)
 
         yield feature
@@ -187,23 +237,23 @@ def serve_values(name, func, args, kwargs, serving_values, fallback_func, backen
 
 # determine value
     _coconut_match_to_4 = serving_values
-    _coconut_match_check_4 = False
+    _coconut_match_check_5 = False
     if _coconut.isinstance(_coconut_match_to_4, _coconut.abc.Mapping):
         _coconut_match_temp_0 = _coconut_match_to_4.get(name, _coconut_sentinel)
         if _coconut_match_temp_0 is not _coconut_sentinel:
             value = _coconut_match_temp_0
-            _coconut_match_check_4 = True
-    if _coconut_match_check_4:
+            _coconut_match_check_5 = True
+    if _coconut_match_check_5:
         return value
     else:
         _coconut_match_to_3 = kwargs
-        _coconut_match_check_3 = False
+        _coconut_match_check_4 = False
         if _coconut.isinstance(_coconut_match_to_3, _coconut.abc.Mapping):
             _coconut_match_temp_0 = _coconut_match_to_3.get("guess", _coconut_sentinel)
             if _coconut_match_temp_0 is not _coconut_sentinel:
                 guess = _coconut_match_temp_0
-                _coconut_match_check_3 = True
-        if _coconut_match_check_3:
+                _coconut_match_check_4 = True
+        if _coconut_match_check_4:
             return guess
         else:
             return fallback_func(name, func, *args, **kwargs)
@@ -262,7 +312,7 @@ class Backend(_coconut.object):
 
     def init_fallback_backend(self):
         """Set fallback_backend to a new random backend instance."""
-        self.fallback_backend = backend_registry["random"]()
+        self.fallback_backend = backend_registry[constants.default_fallback_backend]()
 
     def fallback_func(self, name, func, *args, **kwargs):
         """Default fallback_func calls self.fallback_backend.param."""

@@ -15,12 +15,19 @@ class Registry:
     def __getitem__(self, name):
         name = self.aliases.get(name, name)
         match {=name: value, **_} in self.registered:
-            return self.registered[name]
+            return value
         else: if name in self.generators:
             return self.run_gen(name)
         else:
             valid_names = ", ".join(repr(name) for name in self)
             raise ValueError(f"unknown {self.obj_name}: {name} (valid {self.obj_name}s: {valid_names})")
+
+    def get(self, name, default=None):
+        """Attempt to __getitem__ else default."""
+        try:
+            return self[name]
+        except ValueError, TypeError:
+            return default
 
     def register(self, name, value, replace=False):
         """Register value under the given name."""

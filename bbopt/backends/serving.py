@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3812c675
+# __coconut_hash__ = 0x6c073a7
 
-# Compiled with Coconut version 1.5.0-post_dev49 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
 """
 The serving backend. Selects the best existing data point.
@@ -34,25 +34,38 @@ class ServingBackend(Backend):
     """The serving backend uses the parameter values from the best example."""
     backend_name = "serving"
 
-    def __init__(self, examples, params):
-        self.attempt_update(examples, params)
+    def __init__(self, *args, **kwargs):
+        self.attempt_update(*args, **kwargs)
 
     @override
-    def fallback_func(self, name, func, *args, **kwargs):
-        raise ValueError("missing data for parameter {_coconut_format_0} while serving and no guess".format(_coconut_format_0=(name)))
-
-    @override
-    def attempt_update(self, examples, params):
+    def attempt_update(self, examples, params, allow_missing_data=False):
         """Update the serving backend with new parameters."""
 # since we're serving, ignore params and just extract the best example
         self.current_values = best_example(examples)["values"]
+
+        self.allow_missing_data = allow_missing_data
+        if not self.fallback_backend and self.allow_missing_data:
+            self.init_fallback_backend()
+
         return True
+
+    @override
+    def fallback_func(self, name, func, *args, **kwargs):
+        if self.allow_missing_data:
+            return super(ServingBackend, self).fallback_func(name, func, *args, **kwargs)
+        else:
+            raise ValueError("missing data for parameter {_coconut_format_0} while serving and no guess".format(_coconut_format_0=(name)))
+
+    @classmethod
+    def register_none_aliases(cls):
+        """Add None aliases as in previous versions of BBopt."""
+        cls.register_alias(None)
+        cls.register_alg(None)
 
 
 # Registered names:
 
 _coconut_call_set_names(ServingBackend)
 ServingBackend.register()
-ServingBackend.register_alias(None)
 ServingBackend.register_alg("serving")
-ServingBackend.register_alg(None)
+ServingBackend.register_alg("greedy", allow_missing_data=True)

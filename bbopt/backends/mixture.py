@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x1a0d969b
+# __coconut_hash__ = 0xd3f028e
 
-# Compiled with Coconut version 1.5.0-post_dev49 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
 """
 The mixture backend. Lets you specify a distribution over different possible algorithms.
@@ -30,8 +30,8 @@ import random
 
 from bbopt import constants
 from bbopt.registry import alg_registry
-from bbopt.util import init_backend
 from bbopt.backends.util import Backend
+from bbopt.backends.util import init_backend
 
 
 class MixtureBackend(Backend):
@@ -41,6 +41,9 @@ class MixtureBackend(Backend):
     backend_name = "mixture"
 
     def __init__(self, examples, params, distribution):
+        if distribution == "epsilon_greedy":
+            distribution = (("random", constants.eps_greedy_explore_prob), ("greedy", 1 - constants.eps_greedy_explore_prob),)
+
         self.params = params
         total_weight = sum((weight for alg, weight in distribution))
 
@@ -81,4 +84,4 @@ class MixtureBackend(Backend):
 
 _coconut_call_set_names(MixtureBackend)
 MixtureBackend.register()
-MixtureBackend.register_alg("epsilon_greedy", distribution=(("random", constants.eps_greedy_explore_prob), ("serving", 1 - constants.eps_greedy_explore_prob),))
+MixtureBackend.register_alg("epsilon_greedy", distribution="epsilon_greedy")

@@ -11,6 +11,47 @@ from importlib import reload
 from coconut.command.util import call_output
 
 
+# Constants:
+
+NUM_TRIALS = 30
+NUM_PROCS = 2
+
+example_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "examples")
+
+random_file = os.path.join(example_dir, "random_example.py")
+random_data = os.path.join(example_dir, "random_example.bbopt.pickle")
+
+skopt_file = os.path.join(example_dir, "skopt_example.py")
+skopt_data = os.path.join(example_dir, "skopt_example.bbopt.pickle")
+
+pysot_file = os.path.join(example_dir, "pysot_example.py")
+pysot_data = os.path.join(example_dir, "pysot_example.bbopt.pickle")
+
+hyperopt_file = os.path.join(example_dir, "hyperopt_example.py")
+hyperopt_data = os.path.join(example_dir, "hyperopt_example.bbopt.pickle")
+
+conditional_hyperopt_file = os.path.join(example_dir, "conditional_hyperopt_example.py")
+conditional_hyperopt_data = os.path.join(example_dir, "conditional_hyperopt_example.bbopt.pickle")
+
+conditional_skopt_file = os.path.join(example_dir, "conditional_skopt_example.py")
+conditional_skopt_data = os.path.join(example_dir, "conditional_skopt_example.bbopt.pickle")
+
+bask_file = os.path.join(example_dir, "bask_example.py")
+bask_data = os.path.join(example_dir, "bask_example.bbopt.pickle")
+
+numpy_file = os.path.join(example_dir, "numpy_example.py")
+numpy_data = os.path.join(example_dir, "numpy_example.bbopt.pickle")
+
+meta_file = os.path.join(example_dir, "meta_example.py")
+meta_data = os.path.join(example_dir, "meta_example.bbopt.pickle")
+
+mixture_file = os.path.join(example_dir, "mixture_example.py")
+mixture_data = os.path.join(example_dir, "mixture_example.bbopt.pickle")
+
+json_file = os.path.join(example_dir, "json_example.py")
+json_data = os.path.join(example_dir, "json_example.bbopt.json")
+
+
 # Utilities:
 
 @contextmanager
@@ -89,41 +130,14 @@ def assert_improving(data):
         assert second_gains > first_gains, (first_gains, second_gains)
 
 
-# Constants:
-
-NUM_TRIALS = 30
-
-example_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "examples")
-
-random_file = os.path.join(example_dir, "random_example.py")
-random_data = os.path.join(example_dir, "random_example.bbopt.pickle")
-
-skopt_file = os.path.join(example_dir, "skopt_example.py")
-skopt_data = os.path.join(example_dir, "skopt_example.bbopt.pickle")
-
-pysot_file = os.path.join(example_dir, "pysot_example.py")
-pysot_data = os.path.join(example_dir, "pysot_example.bbopt.pickle")
-
-hyperopt_file = os.path.join(example_dir, "hyperopt_example.py")
-hyperopt_data = os.path.join(example_dir, "hyperopt_example.bbopt.pickle")
-
-conditional_hyperopt_file = os.path.join(example_dir, "conditional_hyperopt_example.py")
-conditional_hyperopt_data = os.path.join(example_dir, "conditional_hyperopt_example.bbopt.pickle")
-
-conditional_skopt_file = os.path.join(example_dir, "conditional_skopt_example.py")
-conditional_skopt_data = os.path.join(example_dir, "conditional_skopt_example.bbopt.pickle")
-
-bask_file = os.path.join(example_dir, "bask_example.py")
-bask_data = os.path.join(example_dir, "bask_example.bbopt.pickle")
-
-numpy_file = os.path.join(example_dir, "numpy_example.py")
-numpy_data = os.path.join(example_dir, "numpy_example.bbopt.pickle")
-
-mixture_file = os.path.join(example_dir, "mixture_example.py")
-mixture_data = os.path.join(example_dir, "mixture_example.bbopt.pickle")
-
-json_file = os.path.join(example_dir, "json_example.py")
-json_data = os.path.join(example_dir, "json_example.bbopt.json")
+def call_bbopt(fpath, trials=NUM_TRIALS, procs=NUM_PROCS):
+    """Call bbopt on the given file."""
+    cmd = ["bbopt", fpath]
+    if trials is not None:
+        cmd += ["-n", str(trials)]
+    if procs is not None:
+        cmd += ["-j", str(procs)]
+    return call_test(cmd)
 
 
 # Tests:
@@ -133,7 +147,7 @@ class TestExamples(unittest.TestCase):
     def test_random(self):
         print("\ntest random:")
         with using(random_data):
-            results = call_test(["bbopt", random_file, "-n", str(NUM_TRIALS)])
+            results = call_bbopt(random_file, procs=None)
             want = max(get_nums(results, numtype=int))
             assert os.path.exists(random_data)
 
@@ -146,7 +160,7 @@ class TestExamples(unittest.TestCase):
     def test_skopt(self):
         print("\ntest skopt:")
         with using(skopt_data):
-            results = call_test(["bbopt", skopt_file, "-n", str(NUM_TRIALS), "-j", "2"])
+            results = call_bbopt(skopt_file)
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(skopt_data)
 
@@ -159,7 +173,7 @@ class TestExamples(unittest.TestCase):
     def test_conditional_skopt(self):
         print("\ntest conditional_skopt:")
         with using(conditional_skopt_data):
-            results = call_test(["bbopt", conditional_skopt_file, "-n", str(NUM_TRIALS), "-j", "2"])
+            results = call_bbopt(conditional_skopt_file)
             want = max(get_nums(results, numtype=int))
             assert os.path.exists(conditional_skopt_data)
 
@@ -173,7 +187,7 @@ class TestExamples(unittest.TestCase):
         def test_bask(self):
             print("\ntest bask:")
             with using(bask_data):
-                results = call_test(["bbopt", bask_file, "-n", str(NUM_TRIALS), "-j", "2"])
+                results = call_bbopt(bask_file)
                 want = max(get_nums(results, numtype=float))
                 assert os.path.exists(bask_data)
 
@@ -187,7 +201,7 @@ class TestExamples(unittest.TestCase):
         def test_pysot(self):
             print("\ntest pysot:")
             with using(pysot_data):
-                results = call_test(["bbopt", pysot_file, "-n", "2", "-j", "2"])
+                results = call_bbopt(pysot_file)
                 want = min(get_nums(results, numtype=float))
                 assert os.path.exists(pysot_data)
 
@@ -200,7 +214,7 @@ class TestExamples(unittest.TestCase):
     def test_hyperopt(self):
         print("\ntest hyperopt:")
         with using(hyperopt_data):
-            results = call_test(["bbopt", hyperopt_file, "-n", str(NUM_TRIALS), "-j", "2"])
+            results = call_bbopt(hyperopt_file)
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(hyperopt_data)
 
@@ -212,7 +226,7 @@ class TestExamples(unittest.TestCase):
     def test_conditional_hyperopt(self):
         print("\ntest conditional_hyperopt:")
         with using(conditional_hyperopt_data):
-            results = call_test(["bbopt", conditional_hyperopt_file, "-n", str(NUM_TRIALS), "-j", "2"])
+            results = call_bbopt(conditional_hyperopt_file)
             want = max(get_nums(results, numtype=int))
             assert os.path.exists(conditional_hyperopt_data)
 
@@ -228,7 +242,7 @@ class TestExamples(unittest.TestCase):
             from bbopt.examples import numpy_example
             assert numpy_example.y == 0
 
-            results = call_test(["bbopt", numpy_file, "-n", str(NUM_TRIALS), "-j", "2"])
+            results = call_bbopt(numpy_file)
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(numpy_data)
 
@@ -237,13 +251,26 @@ class TestExamples(unittest.TestCase):
             assert numpy_example.y == want
             assert numpy_example.bb.num_examples == NUM_TRIALS
 
+    def test_meta(self):
+        print("\ntest meta:")
+        with using(meta_data):
+            results = call_bbopt(meta_file)
+            want = min(get_nums(results, numtype=float))
+            assert os.path.exists(meta_data)
+
+            from bbopt.examples import meta_example
+            assert_improving(meta_example.bb.get_data(print_data=True))
+            assert meta_example.u == want
+            assert 0 <= meta_example.u < 1
+            assert meta_example.bb.num_examples == NUM_TRIALS
+
     def test_mixture(self):
         print("\ntest mixture:")
         with using(mixture_data):
             from bbopt.examples import mixture_example
             assert mixture_example.loss == abs(sum([3,4,5,6,7]) - 10)
 
-            results = call_test(["bbopt", mixture_file, "-n", str(NUM_TRIALS), "-j", "2"])
+            results = call_bbopt(mixture_file)
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(mixture_data)
 
@@ -260,7 +287,7 @@ class TestExamples(unittest.TestCase):
             from bbopt.examples import json_example
             assert round(json_example.y, 5) == 6
 
-            results = call_test(["bbopt", json_file, "-n", str(NUM_TRIALS), "-j", "2"])
+            results = call_bbopt(json_file)
             want = min(get_nums(results, numtype=float))
             assert os.path.exists(json_data)
 

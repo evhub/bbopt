@@ -6,8 +6,10 @@ import random
 
 from bbopt import constants
 from bbopt.registry import alg_registry
-from bbopt.util import init_backend
-from bbopt.backends.util import Backend
+from bbopt.backends.util import (
+    Backend,
+    init_backend,
+)
 
 
 class MixtureBackend(Backend):
@@ -17,6 +19,12 @@ class MixtureBackend(Backend):
     backend_name = "mixture"
 
     def __init__(self, examples, params, distribution):
+        if distribution == "epsilon_greedy":
+            distribution = (
+                ("random", constants.eps_greedy_explore_prob),
+                ("greedy", 1 - constants.eps_greedy_explore_prob),
+            )
+
         self.params = params
         total_weight = sum(weight for alg, weight in distribution)
 
@@ -62,7 +70,4 @@ class MixtureBackend(Backend):
 # Registered names:
 
 MixtureBackend.register()
-MixtureBackend.register_alg("epsilon_greedy", distribution=(
-    ("random", constants.eps_greedy_explore_prob),
-    ("serving", 1 - constants.eps_greedy_explore_prob),
-))
+MixtureBackend.register_alg("epsilon_greedy", distribution="epsilon_greedy")

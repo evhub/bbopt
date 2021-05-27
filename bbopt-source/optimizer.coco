@@ -8,19 +8,16 @@ import pickle
 import math
 import itertools
 import time
+from collections import defaultdict
 from pprint import pprint
 
 import numpy as np
 
 from bbopt import constants
-from bbopt.registry import (
-    backend_registry,
-    alg_registry,
-)
+from bbopt.registry import alg_registry, backend_registry
 from bbopt.params import param_processor
 from bbopt.util import (
     Str,
-    init_backend,
     norm_path,
     json_serialize,
     best_example,
@@ -35,6 +32,7 @@ from bbopt.util import (
     printerr,
     convert_match_errors,
 )
+from bbopt.backends.util import init_backend
 from bbopt.backends.serving import ServingBackend
 
 
@@ -111,6 +109,9 @@ class BlackBoxOptimizer:
         self._current_example[reward_type] = denumpy_all(value)
         if not self.is_serving:
             self._save_current_data()
+        # _save_current_data ensures that _old_params has already been
+        #  updated with _new_params, so _new_params can safely be cleared
+        self._new_params = {}
 
     def _add_examples(self, examples):
         """Load the given examples into memory."""
@@ -159,22 +160,46 @@ class BlackBoxOptimizer:
         assert self._examples, "cannot determine metric from empty examples"
         "gain" if "gain" in self._examples[0] else "loss"
 
-    _skopt_backend_args = None
-    _skopt_backend = None
+    def _get_backend(self, backend, *args, **options):
+        backend_cls = backend_registry.get(backend, backend)
+
+        store_ind = None
+        update_backend = self.backend
+        for i, (stored_args, stored_options, stored_backend) in enumerate(self._backend_store[backend_cls]):
+            update_backend = stored_backend
+            if stored_args == args and stored_options == options:
+                store_ind = i
+                break
+
+        new_backend = init_backend(
+            backend_cls,
+            self._examples,
+            self._old_params,
+            *args,
+            attempt_to_update_backend=update_backend,
+            **options,
+        )
+
+        if store_ind is None:
+            self._backend_store[backend_cls].append((args, options, new_backend))
+        else:
+            self._backend_store[backend_cls][store_ind] = (args, options, new_backend)
+
+        return new_backend
 
     def _get_skopt_backend(self):
         """Get a scikit-optimize backend regardless of whether currently using one."""
         from bbopt.backends.skopt import SkoptBackend
+
         if isinstance(self.backend, SkoptBackend):
             return self.backend
+        else:
+            return self._get_backend(SkoptBackend)
 
-        skopt_backend_args = (self._examples, self._old_params)
-        if self._skopt_backend_args == skopt_backend_args:
-            return self._skopt_backend
-
-        self._skopt_backend_args = skopt_backend_args
-        self._skopt_backend = SkoptBackend(*skopt_backend_args)
-        return self._skopt_backend
+    @property
+    def _file_name(self) =
+        """The base name of the given file."""
+        os.path.splitext(os.path.basename(self._file))[0] + ("_" + self._tag if self._tag is not None else "")
 
     # External API:
 
@@ -201,14 +226,17 @@ class BlackBoxOptimizer:
 
     def reload(self):
         """Completely reload the optimizer."""
+        self._backend_store = defaultdict(list)
         self._old_params = {}
         self._examples = []
         self._load_data()
-        self.run(alg=None)  # backend is set to serving by default
+        self.run_backend(ServingBackend)
 
     def run_backend(self, backend, *args, **options):
         """Optimize parameters using the given backend."""
-        self.backend = init_backend(backend, self._examples, self._old_params, *args, attempt_to_update_backend=self.backend, **options)
+        if self._new_params:
+            raise ValueError("run must come before parameter definitions or after maximize/minimize")
+        self.backend = self._get_backend(backend, *args, **options)
         self._new_params = {}
         self._current_example = {"values": {}}
 
@@ -224,6 +252,15 @@ class BlackBoxOptimizer:
             alg = constants.default_alg
         backend, options = alg_registry[alg]
         self.run_backend(backend, **options)
+
+    def run_meta(self, algs, meta_alg=DEFAULT_ALG_SENTINEL):
+        """Dynamically choose the best algorithm from the given set of algorithms."""
+        if meta_alg is self.DEFAULT_ALG_SENTINEL:
+            meta_alg = constants.default_meta_alg
+        self.run(meta_alg)
+        alg = self.choice(constants.meta_opt_alg_var, algs)
+        backend, options = alg_registry[alg]
+        self.backend = self._get_backend(backend, **options)
 
     def remember(self, info):
         """Store a dictionary of information about the current run."""
@@ -242,12 +279,7 @@ class BlackBoxOptimizer:
     @property
     def is_serving(self) =
         """Whether we are currently using the serving backend or not."""
-        isinstance(self.backend, ServingBackend)
-
-    @property
-    def _file_name(self) =
-        """The base name of the given file."""
-        os.path.splitext(os.path.basename(self._file))[0] + ("_" + self._tag if self._tag is not None else "")
+        isinstance(self.backend, ServingBackend) and not self.backend.allow_missing_data
 
     @property
     def data_file(self) =

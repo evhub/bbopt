@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xfe973f3b
+# __coconut_hash__ = 0x528937
 
-# Compiled with Coconut version 1.5.0-post_dev49 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
 """
 The backend and algorithm registries.
@@ -46,13 +46,20 @@ class Registry(_coconut.object):
                 value = _coconut_match_temp_0
                 _coconut_match_check_0 = True
         if _coconut_match_check_0:
-            return self.registered[name]
+            return value
         else:
             if name in self.generators:
                 return self.run_gen(name)
             else:
                 valid_names = ", ".join((repr(name) for name in self))
                 raise ValueError("unknown {_coconut_format_0}: {_coconut_format_1} (valid {_coconut_format_2}s: {_coconut_format_3})".format(_coconut_format_0=(self.obj_name), _coconut_format_1=(name), _coconut_format_2=(self.obj_name), _coconut_format_3=(valid_names)))
+
+    def get(self, name, default=None):
+        """Attempt to __getitem__ else default."""
+        try:
+            return self[name]
+        except (ValueError, TypeError):
+            return default
 
     def register(self, name, value, replace=False):
         """Register value under the given name."""

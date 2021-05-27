@@ -69,6 +69,7 @@ Some examples of BBopt in action:
 - [`random_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/random_example.py): Extremely basic example using the `random` backend.
 - [`skopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/skopt_example.py): Slightly more complex example making use of the `gaussian_process` algorithm from the `scikit-optimize` backend.
 - [`hyperopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/hyperopt_example.py): Example showcasing the `tree_structured_parzen_estimator` algorithm from the `hyperopt` backend.
+- [`meta_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/meta_example.py): Example of using **run_meta** to dynamically choose an algorithm.
 - [`numpy_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/numpy_example.py): Example which showcases how to have numpy array parameters.
 - [`conditional_skopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_skopt_example.py): Example of having black box parameters that are dependent on other black box parameters using the `gaussian_process` algorithm from the `scikit-optimize` backend.
 - [`conditional_hyperopt_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/conditional_hyperopt_example.py): Example of doing conditional parameters with the `tree_structured_parzen_estimator` algorithm from the `hyperopt` backend.
@@ -87,6 +88,7 @@ Some examples of BBopt in action:
     1. [Constructor](#constructor)
     1. [`run`](#run)
     1. [`algs`](#algs)
+    1. [`run_meta`](#run_meta)
     1. [`run_backend`](#run_backend)
     1. [`minimize`](#minimize)
     1. [`maximize`](#maximize)
@@ -149,7 +151,7 @@ BlackBoxOptimizer.**run**(_alg_=`"tree_structured_parzen_estimator"`)
 
 Start optimizing using the given black box optimization algorithm. Use **algs** to get the valid values for _alg_.
 
-If this method is never called, or called with `alg=None`, BBopt will just serve the best parameters found so far, which is how the basic boilerplate works. Note that, if no saved parameter data is found, and a _guess_ is present, BBopt will use that, which is a good way of distributing your parameter values without including all your saved parameter data.
+If this method is never called, or called with `alg="serving"`, BBopt will just serve the best parameters found so far, which is how the basic boilerplate works. Note that, if no saved parameter data is found, and a _guess_ is present, BBopt will use that, which is a good way of distributing your parameter values without including all your saved parameter data.
 
 #### `algs`
 
@@ -158,9 +160,10 @@ BlackBoxOptimizer.**algs**
 A dictionary mapping the valid algorithms for use in **run** to the pair `(backend, kwargs)` of the backend and arguments to that backend that the algorithm corresponds to.
 
 Supported algorithms are:
-- `"serving"` (or `None`) (`serving` backend)
+- `"serving"` (`serving` backend) (used if **run** is never called)
+- `"greedy"` (`serving` backend)
 - `"random"` (`random` backend)
-- `"tree_structured_parzen_estimator"` (`hyperopt` backend) (the default)
+- `"tree_structured_parzen_estimator"` (`hyperopt` backend) (used if **run** is called with no args)
 - `"annealing"` (`hyperopt` backend)
 - `"gaussian_process"` (`scikit-optimize` backend)
 - `"random_forest"` (`scikit-optimize` backend)
@@ -177,6 +180,12 @@ Supported algorithms are:
 - `"epsilon_greedy"` (`mixture` backend)
 
 _Note: The `bayes-skopt` backend is only available on Python 3.7+ and the `pySOT` backend is only available on Python 3+._
+
+#### `run_meta`
+
+BlackBoxOptimizer.**run_meta**(_algs_, _meta\_alg_=`"epsilon_greedy"`)
+
+**run_meta** is a special version of **run** that uses the _meta\_alg_ algorithm to dynamically pick an algorithm from among the given _algs_.
 
 #### `run_backend`
 

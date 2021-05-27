@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x5b3599e5
+# __coconut_hash__ = 0xe05d7f45
 
-# Compiled with Coconut version 1.5.0-post_dev49 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
 """
 The main BBopt interface.
@@ -35,16 +35,16 @@ else:
 import math
 import itertools
 import time
+from collections import defaultdict
 from pprint import pprint
 
 import numpy as np
 
 from bbopt import constants
-from bbopt.registry import backend_registry
 from bbopt.registry import alg_registry
+from bbopt.registry import backend_registry
 from bbopt.params import param_processor
 from bbopt.util import Str
-from bbopt.util import init_backend
 from bbopt.util import norm_path
 from bbopt.util import json_serialize
 from bbopt.util import best_example
@@ -58,6 +58,7 @@ from bbopt.util import plot
 from bbopt.util import open_with_lock
 from bbopt.util import printerr
 from bbopt.util import convert_match_errors
+from bbopt.backends.util import init_backend
 from bbopt.backends.serving import ServingBackend
 
 
@@ -151,6 +152,9 @@ class BlackBoxOptimizer(_coconut.object):
         self._current_example[reward_type] = denumpy_all(value)
         if not self.is_serving:
             self._save_current_data()
+# _save_current_data ensures that _old_params has already been
+#  updated with _new_params, so _new_params can safely be cleared
+        self._new_params = {}
 
     def _add_examples(self, examples):
         """Load the given examples into memory."""
@@ -208,22 +212,39 @@ class BlackBoxOptimizer(_coconut.object):
         assert self._examples, "cannot determine metric from empty examples"
         return "gain" if "gain" in self._examples[0] else "loss"
 
-    _skopt_backend_args = None
-    _skopt_backend = None
+    def _get_backend(self, backend, *args, **options):
+        backend_cls = backend_registry.get(backend, backend)
+
+        store_ind = None
+        update_backend = self.backend
+        for i, (stored_args, stored_options, stored_backend) in enumerate(self._backend_store[backend_cls]):
+            update_backend = stored_backend
+            if stored_args == args and stored_options == options:
+                store_ind = i
+                break
+
+        new_backend = init_backend(backend_cls, self._examples, self._old_params, *args, attempt_to_update_backend=update_backend, **options)
+
+        if store_ind is None:
+            self._backend_store[backend_cls].append((args, options, new_backend))
+        else:
+            self._backend_store[backend_cls][store_ind] = (args, options, new_backend)
+
+        return new_backend
 
     def _get_skopt_backend(self):
         """Get a scikit-optimize backend regardless of whether currently using one."""
         from bbopt.backends.skopt import SkoptBackend
+
         if isinstance(self.backend, SkoptBackend):
             return self.backend
+        else:
+            return self._get_backend(SkoptBackend)
 
-        skopt_backend_args = (self._examples, self._old_params)
-        if self._skopt_backend_args == skopt_backend_args:
-            return self._skopt_backend
-
-        self._skopt_backend_args = skopt_backend_args
-        self._skopt_backend = SkoptBackend(*skopt_backend_args)
-        return self._skopt_backend
+    @property
+    def _file_name(self):
+        """The base name of the given file."""
+        return os.path.splitext(os.path.basename(self._file))[0] + ("_" + self._tag if self._tag is not None else "")
 
 # External API:
 
@@ -259,14 +280,17 @@ class BlackBoxOptimizer(_coconut.object):
 
     def reload(self):
         """Completely reload the optimizer."""
+        self._backend_store = defaultdict(list)
         self._old_params = {}
         self._examples = []
         self._load_data()
-        self.run(alg=None)  # backend is set to serving by default
+        self.run_backend(ServingBackend)
 
     def run_backend(self, backend, *args, **options):
         """Optimize parameters using the given backend."""
-        self.backend = init_backend(backend, self._examples, self._old_params, *args, attempt_to_update_backend=self.backend, **options)
+        if self._new_params:
+            raise ValueError("run must come before parameter definitions or after maximize/minimize")
+        self.backend = self._get_backend(backend, *args, **options)
         self._new_params = {}
         self._current_example = {"values": {}}
 
@@ -282,6 +306,15 @@ class BlackBoxOptimizer(_coconut.object):
             alg = constants.default_alg
         backend, options = alg_registry[alg]
         self.run_backend(backend, **options)
+
+    def run_meta(self, algs, meta_alg=DEFAULT_ALG_SENTINEL):
+        """Dynamically choose the best algorithm from the given set of algorithms."""
+        if meta_alg is self.DEFAULT_ALG_SENTINEL:
+            meta_alg = constants.default_meta_alg
+        self.run(meta_alg)
+        alg = self.choice(constants.meta_opt_alg_var, algs)
+        backend, options = alg_registry[alg]
+        self.backend = self._get_backend(backend, **options)
 
     def remember(self, info):
         """Store a dictionary of information about the current run."""
@@ -300,12 +333,7 @@ class BlackBoxOptimizer(_coconut.object):
     @property
     def is_serving(self):
         """Whether we are currently using the serving backend or not."""
-        return isinstance(self.backend, ServingBackend)
-
-    @property
-    def _file_name(self):
-        """The base name of the given file."""
-        return os.path.splitext(os.path.basename(self._file))[0] + ("_" + self._tag if self._tag is not None else "")
+        return isinstance(self.backend, ServingBackend) and not self.backend.allow_missing_data
 
     @property
     def data_file(self):
@@ -372,7 +400,7 @@ class BlackBoxOptimizer(_coconut.object):
 
     def partial_dependence(self, i_name, j_name=None, *args, **kwargs):
         """Calls skopt.plots.partial_dependence where i_name and j_name are parameter names."""
-        def _coconut_mock_6(self, i_name, j_name=None, *args, **kwargs): return self, i_name, j_name, args, kwargs
+        def _coconut_mock_8(self, i_name, j_name=None, *args, **kwargs): return self, i_name, j_name, args, kwargs
         while True:
             from skopt.plots import partial_dependence
             if not self._examples:
@@ -385,18 +413,18 @@ class BlackBoxOptimizer(_coconut.object):
             j = None if j_name is None else sorted_names.index(j_name)
 
             try:
-                _coconut_tre_check_0 = partial_dependence is _coconut_recursive_func_24
+                _coconut_tre_check_0 = partial_dependence is _coconut_recursive_func_26
             except _coconut.NameError:
                 _coconut_tre_check_0 = False
             if _coconut_tre_check_0:
-                self, i_name, j_name, args, kwargs = _coconut_mock_6(skopt_backend.space, skopt_backend.model, i, j, *args, **kwargs)
+                self, i_name, j_name, args, kwargs = _coconut_mock_8(skopt_backend.space, skopt_backend.model, i, j, *args, **kwargs)
                 continue
             else:
                 return partial_dependence(skopt_backend.space, skopt_backend.model, i, j, *args, **kwargs)
 
 
             return None
-    _coconut_recursive_func_24 = partial_dependence
+    _coconut_recursive_func_26 = partial_dependence
     def plot_partial_dependence_1D(self, i_name, ax=None, yscale=None, **kwargs):
         """Constructs a 1D partial dependence plot using self.partial_dependence."""
         xi, yi = self.partial_dependence(i_name, **kwargs)
@@ -410,51 +438,51 @@ class BlackBoxOptimizer(_coconut.object):
 
     def plot_evaluations(self, *args, **kwargs):
         """Calls skopt.plots.plot_evaluations."""
-        def _coconut_mock_8(self, *args, **kwargs): return self, args, kwargs
+        def _coconut_mock_10(self, *args, **kwargs): return self, args, kwargs
         while True:
             from skopt.plots import plot_evaluations
             try:
-                _coconut_tre_check_1 = plot_evaluations is _coconut_recursive_func_27
+                _coconut_tre_check_1 = plot_evaluations is _coconut_recursive_func_29
             except _coconut.NameError:
                 _coconut_tre_check_1 = False
             if _coconut_tre_check_1:
-                self, args, kwargs = _coconut_mock_8(self.get_skopt_result(), *args, **kwargs)
+                self, args, kwargs = _coconut_mock_10(self.get_skopt_result(), *args, **kwargs)
                 continue
             else:
                 return plot_evaluations(self.get_skopt_result(), *args, **kwargs)
 
 
             return None
-    _coconut_recursive_func_27 = plot_evaluations
+    _coconut_recursive_func_29 = plot_evaluations
     def plot_objective(self, *args, **kwargs):
         """Calls skopt.plots.plot_objective."""
-        def _coconut_mock_9(self, *args, **kwargs): return self, args, kwargs
+        def _coconut_mock_11(self, *args, **kwargs): return self, args, kwargs
         while True:
             from skopt.plots import plot_objective
             try:
-                _coconut_tre_check_2 = plot_objective is _coconut_recursive_func_28
+                _coconut_tre_check_2 = plot_objective is _coconut_recursive_func_30
             except _coconut.NameError:
                 _coconut_tre_check_2 = False
             if _coconut_tre_check_2:
-                self, args, kwargs = _coconut_mock_9(self.get_skopt_result(), *args, **kwargs)
+                self, args, kwargs = _coconut_mock_11(self.get_skopt_result(), *args, **kwargs)
                 continue
             else:
                 return plot_objective(self.get_skopt_result(), *args, **kwargs)
 
 
             return None
-    _coconut_recursive_func_28 = plot_objective
+    _coconut_recursive_func_30 = plot_objective
     def plot_regret(self, *args, **kwargs):
         """Calls skopt.plots.plot_regret."""
-        def _coconut_mock_10(self, *args, **kwargs): return self, args, kwargs
+        def _coconut_mock_12(self, *args, **kwargs): return self, args, kwargs
         while True:
             from skopt.plots import plot_regret
             try:
-                _coconut_tre_check_3 = plot_regret is _coconut_recursive_func_29
+                _coconut_tre_check_3 = plot_regret is _coconut_recursive_func_31
             except _coconut.NameError:
                 _coconut_tre_check_3 = False
             if _coconut_tre_check_3:
-                self, args, kwargs = _coconut_mock_10(self.get_skopt_result(), *args, **kwargs)
+                self, args, kwargs = _coconut_mock_12(self.get_skopt_result(), *args, **kwargs)
                 continue
             else:
                 return plot_regret(self.get_skopt_result(), *args, **kwargs)
@@ -463,7 +491,7 @@ class BlackBoxOptimizer(_coconut.object):
 # Base random functions:
 
             return None
-    _coconut_recursive_func_29 = plot_regret
+    _coconut_recursive_func_31 = plot_regret
     def randrange(self, name, *args, **kwargs):
         """Create a new parameter with the given name modeled by random.randrange(*args)."""
         return self.param(name, "randrange", *args, **kwargs)
