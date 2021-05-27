@@ -44,4 +44,4 @@ class ServingBackend(Backend):
 
 ServingBackend.register()
 ServingBackend.register_alg("serving")  # allow_missing_data=False not included to help bb._backend_store
-ServingBackend.register_alg("greedy", allow_missing_data=True)
+ServingBackend.register_alg("max_greedy", allow_missing_data=True)

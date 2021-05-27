@@ -220,9 +220,6 @@ class ParamProcessor:
         # denumpy args
         args = denumpy_all(args)
 
-        # standardize arguments to a list
-        args = list(args)
-
         # detect invalid funcs
         if func not in self.handlers:
             raise ValueError(f"unknown parameter definition function {func} (register with bbopt.params.param_processor.register)")
@@ -231,7 +228,8 @@ class ParamProcessor:
         result = self.handlers[func](args)
         args = result if result is not None else args
 
-        return args
+        # standardize arguments to a list
+        return list(args)
 
     def standardize_kwargs(self, kwargs):
         """Standardizes param keyword args."""

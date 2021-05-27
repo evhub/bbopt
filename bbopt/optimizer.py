@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7075f2da
+# __coconut_hash__ = 0x8ee4c792
 
 # Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
@@ -622,6 +622,16 @@ class BlackBoxOptimizer(_coconut.object):
 
     def randn(self, name, *shape, **kwargs):
         """Create a new array parameter for the given name and shape modeled by np.random.randn."""
-        return array_param(_coconut_partial(self.normalvariate, {1: 0, 2: 1}, 3), name, shape, kwargs)
+        return array_param(self.stdnormal, name, shape, kwargs)
+
+# Undocumented derived random functions:
+
+    def shuffle(self, name, population, **kwargs):
+        """Create a new parameter with the given name modeled by random.shuffle(population)."""
+        population[:] = self.shuffled(name, population, **kwargs)
+
+    def stdnormal(self, name, **kwargs):
+        """Equivalent to bb.normalvariate(name, 0, 1)."""
+        return self.normalvariate(name, 0, 1, **kwargs)
 
 _coconut_call_set_names(BlackBoxOptimizer)

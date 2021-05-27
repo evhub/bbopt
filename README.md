@@ -76,6 +76,7 @@ Some examples of BBopt in action:
 - [`bask_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/bask_example.py): Example of using conditional parameters with a semi-random target using the `bask_gp` algorithm from the `bayes-skopt` backend.
 - [`pysot_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/pysot_example.py): Example of using the full API to implement an optimization loop and avoid the overhead of running the entire file multiple times while making use of the `pySOT` backend.
 - [`keras_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.py): Complete example of using BBopt to optimize a neural network built with [Keras](https://keras.io/). Uses the full API to implement its own optimization loop and thus avoid the overhead of running the entire file multiple times.
+- [`tpe_or_gp_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/tpe_or_gp_example.py): Example of using the default algorithm `"tpe_or_gp"` to dynamically select a good backend.
 - [`mixture_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/mixture_example.py): Example of using the `mixture` backend to randomly switch between different algorithms.
 - [`json_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/json_example.py): Example of using `json` instead of `pickle` to save parameters.
 - [`remove_erroring_algs_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/remove_erroring_algs_example.py): Example of using the `remove_erroring_algs` feature of the `mixture` backend.
@@ -168,7 +169,7 @@ A dictionary mapping the valid algorithms for use in **run** to the pair `(backe
 
 Supported algorithms are:
 - `"serving"` (`serving` backend) (used if **run** is never called)
-- `"greedy"` (`serving` backend) (same as `"serving"` but falls back to `"random"` if no data is present)
+- `"max_greedy"` (`serving` backend) (same as `"serving"` but falls back to `"random"` if no data is present)
 - `"random"` (`random` backend)
 - `"tree_structured_parzen_estimator"` (`hyperopt` backend)
 - `"adaptive_tpe"` (`hyperopt` backend; but only Python 3+)
@@ -185,13 +186,13 @@ Supported algorithms are:
 - `"latin_hypercube"` (`pySOT` backend)
 - `"symmetric_latin_hypercube"` (`pySOT` backend)
 - `"two_factorial"` (`pySOT` backend)
-- `"epsilon_greedy"` (`mixture` backend) (the default _meta\_alg_ in **run_meta**)
+- `"epsilon_max_greedy"` (`mixture` backend) (the default _meta\_alg_ in **run_meta**)
 
 _Note: The `bayes-skopt` backend is only available on Python 3.7+ and the `pySOT` backend is only available on Python 3+._
 
 #### `run_meta`
 
-BlackBoxOptimizer.**run_meta**(_algs_, _meta\_alg_=`"epsilon_greedy"`)
+BlackBoxOptimizer.**run_meta**(_algs_, _meta\_alg_=`"epsilon_max_greedy"`)
 
 **run_meta** is a special version of **run** that uses the _meta\_alg_ algorithm to dynamically pick an algorithm from among the given _algs_. Both _algs_ and _meta\_alg_ can use any algorithms in **algs**.
 

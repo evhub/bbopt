@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x93617230
+# __coconut_hash__ = 0x1e4b746b
 
 # Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
@@ -60,8 +60,8 @@ class MixtureBackend(Backend):
 
     def use_distribution(self, distribution, force=False):
         """Set the distribution to the given distribution."""
-        if distribution == "epsilon_greedy":
-            distribution = (("random", constants.eps_greedy_explore_prob), ("greedy", 1 - constants.eps_greedy_explore_prob),)
+        if distribution == "epsilon_max_greedy":
+            distribution = (("random", constants.eps_greedy_explore_prob), ("max_greedy", 1 - constants.eps_greedy_explore_prob),)
         else:
             distribution = tuple(distribution)
 
@@ -77,6 +77,8 @@ class MixtureBackend(Backend):
         for alg, weight in distribution:
             if weight == float("inf"):
                 cutoff = 1
+            elif weight in (float("-inf"), float("nan")) or total_weight == float("nan"):
+                cutoff = prev_cutoff
             else:
                 cutoff = prev_cutoff + weight / total_weight
             self.cum_probs.append((alg, cutoff))
@@ -99,6 +101,8 @@ class MixtureBackend(Backend):
         try:
             self.current_backend = init_backend(self.selected_backend, self.examples, self.params, attempt_to_update_backend=self.backend_store.get(self.selected_alg), **options)
         except constants.erroring_backend_errs:
+            if not self.remove_erroring_algs:
+                raise
             self.reselect_backend()
         else:
             self.backend_store[self.selected_alg] = self.current_backend
@@ -128,5 +132,5 @@ class MixtureBackend(Backend):
 
 _coconut_call_set_names(MixtureBackend)
 MixtureBackend.register()
-MixtureBackend.register_alg("epsilon_greedy", distribution="epsilon_greedy")
-MixtureBackend.register_alg("_safe_gaussian_process", distribution=(("gaussian_process", float("inf")), ("random", 1),), remove_erroring_algs=True)
+MixtureBackend.register_alg("epsilon_max_greedy", distribution="epsilon_max_greedy")
+MixtureBackend.register_alg("_safe_gaussian_process", distribution=(("gaussian_process", float("inf")), ("annealing", 1),), remove_erroring_algs=True)

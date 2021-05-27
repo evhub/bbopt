@@ -73,7 +73,7 @@ default_protocol = 2
 use_generic_categories_for_categorical_data = False
 use_placeholder_when_outside_support = False
 meta_opt_alg_var = "_run_meta_alg"
-default_meta_alg = "epsilon_greedy"
+default_meta_alg = "epsilon_max_greedy"
 
 
 # CLI constants:

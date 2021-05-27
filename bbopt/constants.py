@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xaa6637dd
+# __coconut_hash__ = 0x87035a4b
 
 # Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
@@ -53,7 +53,7 @@ default_protocol = 2
 use_generic_categories_for_categorical_data = False
 use_placeholder_when_outside_support = False
 meta_opt_alg_var = "_run_meta_alg"
-default_meta_alg = "epsilon_greedy"
+default_meta_alg = "epsilon_max_greedy"
 
 
 # CLI constants:

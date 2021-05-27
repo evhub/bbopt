@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb57791c6
+# __coconut_hash__ = 0xa7c21b92
 
 # Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
@@ -298,7 +298,7 @@ class TestExamples(unittest.TestCase):
             from bbopt.examples import tpe_or_gp_example
             assert_improving(tpe_or_gp_example.bb.get_data(print_data=True))
             assert tpe_or_gp_example.u == want
-            assert 0 <= tpe_or_gp_example.u < 1
+            assert tpe_or_gp_example.u < 1
             assert tpe_or_gp_example.bb.num_examples == NUM_TRIALS
 
     def test_mixture(self):

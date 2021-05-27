@@ -38,10 +38,10 @@ class MixtureBackend(Backend):
 
     def use_distribution(self, distribution, force=False):
         """Set the distribution to the given distribution."""
-        if distribution == "epsilon_greedy":
+        if distribution == "epsilon_max_greedy":
             distribution = (
                 ("random", constants.eps_greedy_explore_prob),
-                ("greedy", 1 - constants.eps_greedy_explore_prob),
+                ("max_greedy", 1 - constants.eps_greedy_explore_prob),
             )
         else:
             distribution = tuple(distribution)
@@ -58,6 +58,8 @@ class MixtureBackend(Backend):
         for alg, weight in distribution:
             if weight == float("inf"):
                 cutoff = 1
+            elif weight in (float("-inf"), float("nan")) or total_weight == float("nan"):
+                cutoff = prev_cutoff
             else:
                 cutoff = prev_cutoff + weight / total_weight
             self.cum_probs.append((alg, cutoff))
@@ -86,6 +88,8 @@ class MixtureBackend(Backend):
                 **options,
             )
         except constants.erroring_backend_errs:
+            if not self.remove_erroring_algs:
+                raise
             self.reselect_backend()
         else:
             self.backend_store[self.selected_alg] = self.current_backend
@@ -114,11 +118,11 @@ class MixtureBackend(Backend):
 # Registered names:
 
 MixtureBackend.register()
-MixtureBackend.register_alg("epsilon_greedy", distribution="epsilon_greedy")
+MixtureBackend.register_alg("epsilon_max_greedy", distribution="epsilon_max_greedy")
 MixtureBackend.register_alg("_safe_gaussian_process",
     distribution=(
         ("gaussian_process", float("inf")),
-        ("random", 1),
+        ("annealing", 1),
     ),
     remove_erroring_algs=True,
 )

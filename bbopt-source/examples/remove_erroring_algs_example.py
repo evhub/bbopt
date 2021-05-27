@@ -23,15 +23,12 @@ if __name__ == "__main__":
 x0 = bb.randint("x0", 1, 10, guess=5)
 x1 = bb.choice("x1", [-10, -1, 0, 1, 10])
 
-if not bb.is_serving:
-    assert bb.backend.selected_alg == "gaussian_process"
-
 
 # Set a parameter that only hyperopt supports.
 x2 = bb.normalvariate("x2", mu=0, sigma=1)
 
 if not bb.is_serving:
-    assert bb.backend.selected_alg == "tree_structured_parzen_estimator"
+    assert bb.backend.selected_alg == "tree_structured_parzen_estimator", bb.backend.selected_alg
 
 
 # Set the goal.

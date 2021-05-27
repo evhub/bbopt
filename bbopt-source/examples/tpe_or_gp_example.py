@@ -18,9 +18,11 @@ u = bb.normalvariate("x0", 0, 1) * sin(bb.normalvariate("x1", 0, 1))
 
 
 # Since we used hyperopt-only parameters, we shouldn't have skopt.
-bb.remember({"backend": bb.backend.backend_name})
-if hasattr(bb.backend, "selected_alg"):
-    assert bb.backend.selected_alg != "gaussian_process"
+if hasattr(bb.backend, "selected_backend"):
+    bb.remember({"backend": bb.backend.selected_backend.backend_name})
+    assert bb.backend.selected_backend.backend_name != "scikit-optimize", bb.backend.selected_backend.backend_name
+else:
+    bb.remember({"backend": bb.backend.backend_name})
 
 
 # Set u as the thing to minimize.

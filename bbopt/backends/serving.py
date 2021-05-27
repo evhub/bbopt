@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xec98ffbd
+# __coconut_hash__ = 0x678dcaf2
 
 # Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
@@ -69,4 +69,4 @@ class ServingBackend(Backend):
 _coconut_call_set_names(ServingBackend)
 ServingBackend.register()
 ServingBackend.register_alg("serving")  # allow_missing_data=False not included to help bb._backend_store
-ServingBackend.register_alg("greedy", allow_missing_data=True)
+ServingBackend.register_alg("max_greedy", allow_missing_data=True)

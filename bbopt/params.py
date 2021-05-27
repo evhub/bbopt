@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc6b8056c
+# __coconut_hash__ = 0xc1f9ae1a
 
 # Compiled with Coconut version 1.5.0-post_dev50 [Fish License]
 
@@ -246,9 +246,6 @@ class ParamProcessor(_coconut.object):
 # denumpy args
         args = denumpy_all(args)
 
-# standardize arguments to a list
-        args = list(args)
-
 # detect invalid funcs
         if func not in self.handlers:
             raise ValueError("unknown parameter definition function {_coconut_format_0} (register with bbopt.params.param_processor.register)".format(_coconut_format_0=(func)))
@@ -257,7 +254,8 @@ class ParamProcessor(_coconut.object):
         result = self.handlers[func](args)
         args = result if result is not None else args
 
-        return args
+# standardize arguments to a list
+        return list(args)
 
     def standardize_kwargs(self, kwargs):
         """Standardizes param keyword args."""

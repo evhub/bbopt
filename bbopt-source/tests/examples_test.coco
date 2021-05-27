@@ -281,7 +281,7 @@ class TestExamples(unittest.TestCase):
             from bbopt.examples import tpe_or_gp_example
             assert_improving(tpe_or_gp_example.bb.get_data(print_data=True))
             assert tpe_or_gp_example.u == want
-            assert 0 <= tpe_or_gp_example.u < 1
+            assert tpe_or_gp_example.u < 1
             assert tpe_or_gp_example.bb.num_examples == NUM_TRIALS
 
     def test_mixture(self):
