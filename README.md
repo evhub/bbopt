@@ -8,7 +8,7 @@ BBopt aims to provide the easiest hyperparameter optimization you'll ever do. Th
 BBopt's features include:
 - a universal API for defining your tunable parameters based on the standard library [`random`](https://docs.python.org/3.6/library/random.html) module (so you don't even have to learn anything new!),
 - tons of state-of-the-art black box optimization algorithms such as Gaussian Processes from [`scikit-optimize`](https://scikit-optimize.github.io/) or Tree Structured Parzen Estimation from [`hyperopt`](http://hyperopt.github.io/hyperopt/) for tuning parameters,
-- the ability to switch algorithms while retaining all previous trials and even [dynamically choose the best algorithm for your use case](#run_meta),
+- the ability to switch algorithms while retaining all previous trials and even dynamically choose the best algorithm for your use case,
 - multiprocessing-safe data saving to enable running multiple trials in parallel,
 - lots of data visualization methods, including support for everything in [`skopt.plots`](https://scikit-optimize.github.io/plots.m.html),
 - support for optimizing over conditional parameters that only appear during some runs,
@@ -401,7 +401,7 @@ _Backends which support **sample**: `scikit-optimize`, `hyperopt`, `bayes-skopt`
 
 BlackBoxOptimizer.**shuffled**(_name_, _population_, **_kwargs_)
 
-Create a new parameter modeled by [`random.shuffle(population)`](https://docs.python.org/3/library/random.html#random.shuffle) except that it returns the shuffled list instead of shuffling it in place.
+Create a new parameter modeled by [`random.shuffle(population)`](https://docs.python.org/3/library/random.html#random.shuffle) except that it returns the shuffled list instead of shuffling it in place. An in-place version as `BlackBoxOptimizer.shuffle` is also supported.
 
 _Backends which support **shuffled**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `random`._
 
@@ -437,7 +437,7 @@ _Backends which support **loguniform**: `scikit-optimize`, `hyperopt`, `bayes-sk
 
 BlackBoxOptimizer.**normalvariate**(_name_, _mu_, _sigma_, **_kwargs_)
 
-Create a new parameter modeled by [`random.normalvariate(mu, sigma)`](https://docs.python.org/3/library/random.html#random.normalvariate).
+Create a new parameter modeled by [`random.normalvariate(mu, sigma)`](https://docs.python.org/3/library/random.html#random.normalvariate). A shortcut for the standard normal distribution is available via `BlackBoxOptimizer.stdnormal`.
 
 _Backends which support **normalvariate**: `hyperopt`, `random`._
 

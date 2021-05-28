@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x8cfedb7c
+# __coconut_hash__ = 0xa1487694
 
-# Compiled with Coconut version 1.5.0-post_dev52 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev53 [Fish License]
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -15,11 +15,19 @@ if not _coconut_module_name or not _coconut_module_name[0].isalpha() or not all 
 _coconut_cached_module = _coconut_sys.modules.get(str(_coconut_module_name + ".__coconut__"))
 if _coconut_cached_module is not None and _coconut_os_path.dirname(_coconut_cached_module.__file__) != _coconut_file_path:
     del _coconut_sys.modules[str(_coconut_module_name + ".__coconut__")]
-_coconut_sys.path.insert(0, _coconut_os_path.dirname(_coconut_file_path))
-exec("from " + _coconut_module_name + ".__coconut__ import *")
-exec("from " + _coconut_module_name + ".__coconut__ import _coconut_call_set_names, _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable")
-if _coconut_sys.version_info >= (3,):
-    _coconut_sys.path.pop(0)
+try:
+    from typing import TYPE_CHECKING as _coconut_TYPE_CHECKING
+except ImportError:
+    _coconut_TYPE_CHECKING = False
+if _coconut_TYPE_CHECKING:
+    from __coconut__ import *
+    from __coconut__ import _coconut_call_set_names, _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
+else:
+    _coconut_sys.path.insert(0, _coconut_os_path.dirname(_coconut_file_path))
+    exec("from " + _coconut_module_name + ".__coconut__ import *")
+    exec("from " + _coconut_module_name + ".__coconut__ import _coconut_call_set_names, _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable")
+    if _coconut_sys.version_info >= (3,):
+        _coconut_sys.path.pop(0)
 
 # Compiled Coconut: -----------------------------------------------------------
 
@@ -41,7 +49,7 @@ from coconut.command.util import call_output
 
 # Constants:
 
-NUM_TRIALS = 30
+NUM_TRIALS = 28
 NUM_PROCS = 2
 
 example_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "examples")
@@ -139,23 +147,33 @@ def get_nums(inputstr, numtype=float):
             pass
 
 
-def ave(xs):
+def mean(xs):
     return sum(xs) / len(xs)
+def median(xs):
+    sorted_xs = (list)((sorted)(xs))
+    return mean((sorted_xs[len(sorted_xs) // 2], sorted_xs[(len(sorted_xs) + 1) // 2],))
 
 
-def assert_improving(data):
+def assert_improving(data, ave_func=mean):
     """Assert that the second half of data is greater/smaller than the first."""
     examples = data["examples"]
+    assert len(examples) >= 2, data
     half_pt = len(examples) // 2
     first_half, second_half = examples[:half_pt], examples[half_pt:]
     if "loss" in first_half[0]:
-        first_losses = (ave)((map)(_coconut.operator.itemgetter(("loss")), first_half))
-        second_losses = (ave)((map)(_coconut.operator.itemgetter(("loss")), second_half))
-        assert second_losses < first_losses
+        first_losses = (ave_func)((map)(_coconut.operator.itemgetter(("loss")), first_half))
+        second_losses = (ave_func)((map)(_coconut.operator.itemgetter(("loss")), second_half))
+        if ave_func == median:
+            assert second_losses <= first_losses
+        else:
+            assert second_losses < first_losses
     else:
-        first_gains = (ave)((map)(_coconut.operator.itemgetter(("gain")), first_half))
-        second_gains = (ave)((map)(_coconut.operator.itemgetter(("gain")), second_half))
-        assert second_gains > first_gains
+        first_gains = (ave_func)((map)(_coconut.operator.itemgetter(("gain")), first_half))
+        second_gains = (ave_func)((map)(_coconut.operator.itemgetter(("gain")), second_half))
+        if ave_func == median:
+            assert second_gains >= first_gains
+        else:
+            assert second_gains > first_gains
 
 
 def call_bbopt(fpath, trials=NUM_TRIALS, procs=NUM_PROCS):
@@ -247,7 +265,7 @@ class TestExamples(unittest.TestCase):
             assert os.path.exists(hyperopt_data)
 
             from bbopt.examples import hyperopt_example
-            assert_improving(hyperopt_example.bb.get_data(print_data=True))
+            assert_improving(hyperopt_example.bb.get_data(print_data=True), ave_func=median)
             assert hyperopt_example.y == want
             assert hyperopt_example.bb.num_examples == NUM_TRIALS
 

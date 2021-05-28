@@ -557,6 +557,14 @@ class BlackBoxOptimizer:
         random.shuffle(population) except returned instead of modified in place."""
         return self.sample(name, population, len(population), **kwargs)
 
+    def shuffle(self, name, population, **kwargs):
+        """Create a new parameter with the given name modeled by random.shuffle(population)."""
+        population[:] = self.shuffled(name, population, **kwargs)
+
+    def stdnormal(self, name, **kwargs):
+        """Equivalent to bb.normalvariate(name, 0, 1)."""
+        return self.normalvariate(name, 0, 1, **kwargs)
+
     # Array-based random functions:
 
     def rand(self, name, *shape, **kwargs):
@@ -566,13 +574,3 @@ class BlackBoxOptimizer:
     def randn(self, name, *shape, **kwargs):
         """Create a new array parameter for the given name and shape modeled by np.random.randn."""
         return array_param(self.stdnormal, name, shape, kwargs)
-
-    # Undocumented derived random functions:
-
-    def shuffle(self, name, population, **kwargs):
-        """Create a new parameter with the given name modeled by random.shuffle(population)."""
-        population[:] = self.shuffled(name, population, **kwargs)
-
-    def stdnormal(self, name, **kwargs):
-        """Equivalent to bb.normalvariate(name, 0, 1)."""
-        return self.normalvariate(name, 0, 1, **kwargs)

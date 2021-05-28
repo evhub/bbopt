@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa0ccc445
+# __coconut_hash__ = 0xf27fd81a
 
-# Compiled with Coconut version 1.5.0-post_dev52 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev53 [Fish License]
 
 """
 The main BBopt interface.
@@ -19,11 +19,19 @@ if not _coconut_module_name or not _coconut_module_name[0].isalpha() or not all 
 _coconut_cached_module = _coconut_sys.modules.get(str(_coconut_module_name + ".__coconut__"))
 if _coconut_cached_module is not None and _coconut_os_path.dirname(_coconut_cached_module.__file__) != _coconut_file_path:
     del _coconut_sys.modules[str(_coconut_module_name + ".__coconut__")]
-_coconut_sys.path.insert(0, _coconut_os_path.dirname(_coconut_file_path))
-exec("from " + _coconut_module_name + ".__coconut__ import *")
-exec("from " + _coconut_module_name + ".__coconut__ import _coconut_call_set_names, _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable")
-if _coconut_sys.version_info >= (3,):
-    _coconut_sys.path.pop(0)
+try:
+    from typing import TYPE_CHECKING as _coconut_TYPE_CHECKING
+except ImportError:
+    _coconut_TYPE_CHECKING = False
+if _coconut_TYPE_CHECKING:
+    from __coconut__ import *
+    from __coconut__ import _coconut_call_set_names, _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
+else:
+    _coconut_sys.path.insert(0, _coconut_os_path.dirname(_coconut_file_path))
+    exec("from " + _coconut_module_name + ".__coconut__ import *")
+    exec("from " + _coconut_module_name + ".__coconut__ import _coconut_call_set_names, _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable")
+    if _coconut_sys.version_info >= (3,):
+        _coconut_sys.path.pop(0)
 
 # Compiled Coconut: -----------------------------------------------------------
 
@@ -617,6 +625,14 @@ class BlackBoxOptimizer(_coconut.object):
         random.shuffle(population) except returned instead of modified in place."""
         return self.sample(name, population, len(population), **kwargs)
 
+    def shuffle(self, name, population, **kwargs):
+        """Create a new parameter with the given name modeled by random.shuffle(population)."""
+        population[:] = self.shuffled(name, population, **kwargs)
+
+    def stdnormal(self, name, **kwargs):
+        """Equivalent to bb.normalvariate(name, 0, 1)."""
+        return self.normalvariate(name, 0, 1, **kwargs)
+
 # Array-based random functions:
 
     def rand(self, name, *shape, **kwargs):
@@ -626,15 +642,5 @@ class BlackBoxOptimizer(_coconut.object):
     def randn(self, name, *shape, **kwargs):
         """Create a new array parameter for the given name and shape modeled by np.random.randn."""
         return array_param(self.stdnormal, name, shape, kwargs)
-
-# Undocumented derived random functions:
-
-    def shuffle(self, name, population, **kwargs):
-        """Create a new parameter with the given name modeled by random.shuffle(population)."""
-        population[:] = self.shuffled(name, population, **kwargs)
-
-    def stdnormal(self, name, **kwargs):
-        """Equivalent to bb.normalvariate(name, 0, 1)."""
-        return self.normalvariate(name, 0, 1, **kwargs)
 
 _coconut_call_set_names(BlackBoxOptimizer)
