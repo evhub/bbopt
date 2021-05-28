@@ -2,13 +2,17 @@
 install: build
 	pip install -Ue .[dev]
 
-.PHONY: install-2
-install-2: build
+.PHONY: install-py2
+install-py2: build
 	python2 -m pip install -Ue .[dev]
 
 .PHONY: force-install
 force-install: force-build
 	pip install -Ue .[dev]
+
+.PHONY: force-install-py2
+force-install-py2: force-build
+	python2 -m pip install -Ue .[dev]
 
 .PHONY: setup
 setup:
@@ -38,14 +42,18 @@ upload: clean install
 test: clean install
 	pytest --strict --fulltrace -s ./bbopt/tests
 
+.PHONY: force-test
+force-test: clean force-install
+	pytest --strict --fulltrace -s ./bbopt/tests
+
+.PHONY: force-test-py2
+force-test-py2: clean force-install-py2
+	python2 -m pytest --strict --fulltrace -s ./bbopt/tests
+
 .PHONY: test-keras
 test-keras: clean install
 	-rm ./bbopt/examples/keras_example.bbopt.pickle
 	python ./bbopt/examples/keras_example.py
-
-.PHONY: test-2
-test-2: clean install-2
-	python2 -m pytest --strict --fulltrace -s ./bbopt/tests
 
 .PHONY: clean
 clean:

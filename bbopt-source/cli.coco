@@ -101,7 +101,6 @@ def main(*args, **kwargs):
         with parallel_map.multiple_sequential_calls(max_workers=args.jobs):
             range(args.num_trials) |> parallel_map$(run_trial$(args, cmd)) |> consume
 
-
     if not args.quiet:
         bb = BlackBoxOptimizer(args.file)
         rel_data_file = os.path.relpath(bb.data_file)
