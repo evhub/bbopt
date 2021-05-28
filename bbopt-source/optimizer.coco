@@ -3,6 +3,7 @@ The main BBopt interface.
 """
 
 import os
+import sys
 import json
 import pickle
 import math
@@ -507,8 +508,12 @@ class BlackBoxOptimizer:
         return self.randrange(name, start, stop, **kwargs)
 
     def random(self, name, **kwargs):
-        """Create a new parameter with the given name modeled by random.random()."""
-        return self.uniform(name, 0, 1, **kwargs)
+        """Create a new parameter with the given name modeled by random.random().
+        Equivalent to random.uniform(0, 1) except that 1 is disallowed."""
+        result = self.uniform(name, 0, 1, **kwargs)
+        if result >= 1:
+            result -= sys.float_info.epsilon
+        return result
 
     def getrandbits(self, name, k, **kwargs):
         """Create a new parameter with the given name modeled by random.getrandbits(k)."""

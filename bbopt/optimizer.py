@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xe76cccae
+# __coconut_hash__ = 0xd9703dea
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -27,8 +27,7 @@ if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha(
             try:
                 _coconut_v.__module__ = _coconut_full_module_name
             except AttributeError:
-                _coconut_vtype = type(_coconut_v)
-                _coconut_vtype.__module__ = _coconut_full_module_name
+                type(_coconut_v).__module__ = _coconut_full_module_name
     _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
 from __coconut__ import _coconut_call_set_names, _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
@@ -38,6 +37,7 @@ _coconut_sys.path.pop(0)
 
 
 import os
+sys = _coconut_sys
 import json
 if _coconut_sys.version_info < (3,):
     import cPickle as pickle
@@ -576,8 +576,12 @@ class BlackBoxOptimizer(_coconut.object):
         return self.randrange(name, start, stop, **kwargs)
 
     def random(self, name, **kwargs):
-        """Create a new parameter with the given name modeled by random.random()."""
-        return self.uniform(name, 0, 1, **kwargs)
+        """Create a new parameter with the given name modeled by random.random().
+        Equivalent to random.uniform(0, 1) except that 1 is disallowed."""
+        result = self.uniform(name, 0, 1, **kwargs)
+        if result >= 1:
+            result -= sys.float_info.epsilon
+        return result
 
     def getrandbits(self, name, k, **kwargs):
         """Create a new parameter with the given name modeled by random.getrandbits(k)."""

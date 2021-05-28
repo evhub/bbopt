@@ -409,7 +409,7 @@ _Backends which support **shuffled**: `scikit-optimize`, `hyperopt`, `bayes-skop
 
 BlackBoxOptimizer.**random**(_name_, **_kwargs_)
 
-Create a new parameter modeled by [`random.random()`](https://docs.python.org/3/library/random.html#random.random), which is equivalent to `random.uniform(0, 1)`.
+Create a new parameter modeled by [`random.random()`](https://docs.python.org/3/library/random.html#random.random), which is equivalent to `random.uniform(0, 1)` except that `1` is disallowed.
 
 _Backends which support **random**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `random`._
 
