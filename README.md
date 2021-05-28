@@ -385,7 +385,7 @@ _Backends which support **choice**: `scikit-optimize`, `hyperopt`, `bayes-skopt`
 
 BlackBoxOptimizer.**randbool**(_name_, **_kwargs_)
 
-Create a new boolean parameter, modeled by the equivalent of `random.choice([True, False])`.
+Create a new boolean parameter, modeled by the equivalent of `random.choice([False, True])`.
 
 _Backends which support **randbool**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `random`._
 
@@ -417,7 +417,7 @@ _Backends which support **random**: `scikit-optimize`, `hyperopt`, `bayes-skopt`
 
 BlackBoxOptimizer.**uniform**(_name_, _a_, _b_, **_kwargs_)
 
-Create a new parameter modeled by [`random.uniform(a, b)`](https://docs.python.org/3/library/random.html#random.uniform), which uniformly selects a float between _a_ and _b_.
+Create a new parameter modeled by [`random.uniform(a, b)`](https://docs.python.org/3/library/random.html#random.uniform), which uniformly selects a float in the range \[_a_, _b_\].
 
 _Backends which support **uniform**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `random`._
 
@@ -437,7 +437,9 @@ _Backends which support **loguniform**: `scikit-optimize`, `hyperopt`, `bayes-sk
 
 BlackBoxOptimizer.**normalvariate**(_name_, _mu_, _sigma_, **_kwargs_)
 
-Create a new parameter modeled by [`random.normalvariate(mu, sigma)`](https://docs.python.org/3/library/random.html#random.normalvariate). A shortcut for the standard normal distribution is available via `BlackBoxOptimizer.stdnormal`.
+Create a new parameter modeled by [`random.normalvariate(mu, sigma)`](https://docs.python.org/3/library/random.html#random.normalvariate).
+
+A shortcut for the standard normal distribution is also available via `BlackBoxOptimizer.stdnormal`.
 
 _Backends which support **normalvariate**: `hyperopt`, `random`._
 

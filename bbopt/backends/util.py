@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc8790ef8
+# __coconut_hash__ = 0xeb165cce
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -27,8 +27,7 @@ if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha(
             try:
                 _coconut_v.__module__ = _coconut_full_module_name
             except AttributeError:
-                _coconut_vtype = type(_coconut_v)
-                _coconut_vtype.__module__ = _coconut_full_module_name
+                type(_coconut_v).__module__ = _coconut_full_module_name
     _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
 from __coconut__ import _coconut_call_set_names, _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
@@ -110,8 +109,8 @@ def negate_objective(objective):
         return -objective
 
 
-def make_features(values, params, fallback_func=param_processor.choose_default_placeholder, converters={}, convert_fallback=True,):
-    """Return an iterator of the values for the parameters in sorted order with the given fallback function.
+def get_names_and_features(values, params, fallback_func=param_processor.choose_default_placeholder, converters={}, convert_fallback=True,):
+    """Return an iterator of (name, feature) for the parameters in sorted order with the given fallback function.
     If passed, converters must map funcs to functions from (value, *args) -> new_value which will be run
     on the resulting value for that func (but only on fallbacks if convert_fallback)."""
     for name, (func, args, kwargs) in sorted_items(params):
@@ -152,12 +151,12 @@ def make_features(values, params, fallback_func=param_processor.choose_default_p
             if _coconut_match_check_3:
                 feature = converter_func(feature, *args)
 
-        yield feature
+        yield name, feature
 
 
-def get_names_and_features(values, params, *args, **kwargs):
-    """Same as make_features but yields (name, feature) instead of just feature."""
-    _coconut_yield_from_1 = _coconut.iter(zip(sorted(params), make_features(values, params, *args, **kwargs)))
+def make_features(*args, **kwargs):
+    """Same as get_names_and_features but just yields the features."""
+    _coconut_yield_from_1 = _coconut.iter((starmap)(lambda name, feature: feature, get_names_and_features(*args, **kwargs)))
     while True:
         try:
             yield _coconut.next(_coconut_yield_from_1)
@@ -210,9 +209,9 @@ def split_examples(examples, params, fallback_func=param_processor.choose_defaul
 
 def get_named_data_points_and_losses(examples, params, *args, **kwargs):
     """Same as split_examples but returns named_data_points instead of data_points."""
-    sorted_names = list(sorted(params))
     data_points, losses = split_examples(examples, params, *args, **kwargs)
     named_data_points = []
+    sorted_names = list(sorted(params))
     for point in data_points:
         pt_val = {}
         for name, item in zip(sorted_names, point):

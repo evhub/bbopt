@@ -54,14 +54,14 @@ def negate_objective(objective):
         return -objective
 
 
-def make_features(
+def get_names_and_features(
         values,
         params,
         fallback_func=param_processor.choose_default_placeholder,
         converters={},
         convert_fallback=True,
     ):
-    """Return an iterator of the values for the parameters in sorted order with the given fallback function.
+    """Return an iterator of (name, feature) for the parameters in sorted order with the given fallback function.
     If passed, converters must map funcs to functions from (value, *args) -> new_value which will be run
     on the resulting value for that func (but only on fallbacks if convert_fallback)."""
     for name, (func, args, kwargs) in sorted_items(params):
@@ -80,12 +80,12 @@ def make_features(
             match {=func: converter_func, **_} in converters:
                 feature = converter_func(feature, *args)
 
-        yield feature
+        yield name, feature
 
 
-def get_names_and_features(values, params, *args, **kwargs):
-    """Same as make_features but yields (name, feature) instead of just feature."""
-    yield from zip(sorted(params), make_features(values, params, *args, **kwargs))
+def make_features(*args, **kwargs):
+    """Same as get_names_and_features but just yields the features."""
+    yield from get_names_and_features(*args, **kwargs) |> starmap$((name, feature) -> feature)
 
 
 def split_examples(
@@ -120,9 +120,9 @@ def split_examples(
 
 def get_named_data_points_and_losses(examples, params, *args, **kwargs):
     """Same as split_examples but returns named_data_points instead of data_points."""
-    sorted_names = list(sorted(params))
     data_points, losses = split_examples(examples, params, *args, **kwargs)
     named_data_points = []
+    sorted_names = list(sorted(params))
     for point in data_points:
         pt_val = {}
         for name, item in zip(sorted_names, point):
