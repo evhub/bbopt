@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x8fb73138
+# __coconut_hash__ = 0xe00a2077
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -23,8 +23,7 @@ if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha(
             try:
                 _coconut_v.__module__ = _coconut_full_module_name
             except AttributeError:
-                _coconut_vtype = type(_coconut_v)
-                _coconut_vtype.__module__ = _coconut_full_module_name
+                type(_coconut_v).__module__ = _coconut_full_module_name
     _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
 from __coconut__ import _coconut_call_set_names, _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
@@ -161,19 +160,15 @@ def assert_improving(data, ave_func=mean):
     half_pt = len(examples) // 2
     first_half, second_half = examples[:half_pt], examples[half_pt:]
     if "loss" in first_half[0]:
+        ave_func = min if ave_func is None else ave_func
         first_losses = (ave_func)((map)(_coconut.operator.itemgetter(("loss")), first_half))
         second_losses = (ave_func)((map)(_coconut.operator.itemgetter(("loss")), second_half))
-        if ave_func == median:
-            assert second_losses <= first_losses
-        else:
-            assert second_losses < first_losses
+        assert second_losses < first_losses
     else:
+        ave_func = max if ave_func is None else ave_func
         first_gains = (ave_func)((map)(_coconut.operator.itemgetter(("gain")), first_half))
         second_gains = (ave_func)((map)(_coconut.operator.itemgetter(("gain")), second_half))
-        if ave_func == median:
-            assert second_gains >= first_gains
-        else:
-            assert second_gains > first_gains
+        assert second_gains > first_gains
 
 
 def call_bbopt(fpath, trials=NUM_TRIALS, procs=NUM_PROCS):
@@ -265,7 +260,7 @@ class TestExamples(unittest.TestCase):
             assert os.path.exists(hyperopt_data)
 
             from bbopt.examples import hyperopt_example
-            assert_improving(hyperopt_example.bb.get_data(print_data=True), ave_func=median)
+            assert_improving(hyperopt_example.bb.get_data(print_data=True), ave_func=None)
             assert hyperopt_example.y == want
             assert hyperopt_example.bb.num_examples == NUM_TRIALS
 

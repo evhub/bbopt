@@ -136,19 +136,15 @@ def assert_improving(data, ave_func=mean):
     half_pt = len(examples)//2
     first_half, second_half = examples[:half_pt], examples[half_pt:]
     if "loss" in first_half[0]:
+        ave_func ??= min
         first_losses = first_half |> map$(.["loss"]) |> ave_func
         second_losses = second_half |> map$(.["loss"]) |> ave_func
-        if ave_func == median:
-            assert second_losses <= first_losses
-        else:
-            assert second_losses < first_losses
+        assert second_losses < first_losses
     else:
+        ave_func ??= max
         first_gains = first_half |> map$(.["gain"]) |> ave_func
         second_gains = second_half |> map$(.["gain"]) |> ave_func
-        if ave_func == median:
-            assert second_gains >= first_gains
-        else:
-            assert second_gains > first_gains
+        assert second_gains > first_gains
 
 
 def call_bbopt(fpath, trials=NUM_TRIALS, procs=NUM_PROCS):
@@ -240,7 +236,7 @@ class TestExamples(unittest.TestCase):
             assert os.path.exists(hyperopt_data)
 
             from bbopt.examples import hyperopt_example
-            assert_improving(hyperopt_example.bb.get_data(print_data=True), ave_func=median)
+            assert_improving(hyperopt_example.bb.get_data(print_data=True), ave_func=None)
             assert hyperopt_example.y == want
             assert hyperopt_example.bb.num_examples == NUM_TRIALS
 
