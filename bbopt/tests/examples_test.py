@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xe00a2077
+# __coconut_hash__ = 0x8aafe821
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -188,7 +188,7 @@ class TestExamples(unittest.TestCase):
     def test_random(self):
         print("\ntest random:")
         with using(random_data):
-            results = call_bbopt(random_file, procs=None)
+            results = call_bbopt(random_file, procs=1)
             want = max(get_nums(results, numtype=int))
             assert os.path.exists(random_data)
 
@@ -233,7 +233,7 @@ class TestExamples(unittest.TestCase):
                 assert os.path.exists(bask_data)
 
                 from bbopt.examples import bask_example
-                assert_improving(bask_example.bb.get_data(print_data=True))
+                assert_improving(bask_example.bb.get_data(print_data=True), ave_func=median)
                 assert 0 < want <= 20
                 assert 0 < bask_example.x <= 20
                 assert bask_example.bb.num_examples == NUM_TRIALS
