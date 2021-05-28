@@ -276,7 +276,7 @@ class TestExamples(unittest.TestCase):
             assert os.path.exists(meta_data)
 
             from bbopt.examples import meta_example
-            assert_improving(meta_example.bb.get_data(print_data=True), ave_func=None)
+            assert_improving(meta_example.bb.get_data(print_data=True))
             assert meta_example.u == want
             assert 0 <= meta_example.u < 1
             assert meta_example.bb.num_examples == NUM_TRIALS
