@@ -33,15 +33,13 @@ class ServingBackend(Backend):
         else:
             raise ValueError(f"missing data for parameter {name} while serving and no guess")
 
-    @classmethod
-    def register_none_aliases(cls):
-        """Add None aliases as in previous versions of BBopt."""
-        cls.register_alias(None)
-        cls.register_alg(None)
-
 
 # Registered names:
 
 ServingBackend.register()
-ServingBackend.register_alg("serving")  # allow_missing_data=False not included to help bb._backend_store
+
+# allow_missing_data=False not included to help bb._backend_store
+ServingBackend.register_alg(None)
+ServingBackend.register_alg("serving")
+
 ServingBackend.register_alg("max_greedy", allow_missing_data=True)
