@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x8cb85576
+# __coconut_hash__ = 0x2fa96c38
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -328,7 +328,6 @@ class BlackBoxOptimizer(_coconut.object):
             meta_alg = constants.default_meta_alg
         self.run(meta_alg)
         alg = self.choice(constants.meta_opt_alg_var, algs)
-        print("selected", alg)
         backend, options = alg_registry[alg]
         self.backend = self._get_backend(backend, **options)
 
