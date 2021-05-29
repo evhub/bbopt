@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x8aafe821
+# __coconut_hash__ = 0x53892b89
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -48,7 +48,7 @@ from coconut.command.util import call_output
 
 # Constants:
 
-NUM_TRIALS = 28
+NUM_TRIALS = 24
 NUM_PROCS = 2
 
 example_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "examples")
@@ -151,6 +151,9 @@ def mean(xs):
 def median(xs):
     sorted_xs = (list)((sorted)(xs))
     return mean((sorted_xs[len(sorted_xs) // 2], sorted_xs[(len(sorted_xs) + 1) // 2],))
+def middle_mean(xs):
+    a, b = len(xs) // 4, 3 * len(xs) // 4
+    return mean(xs[a:b])
 
 
 def assert_improving(data, ave_func=mean):
@@ -206,7 +209,7 @@ class TestExamples(unittest.TestCase):
             assert os.path.exists(skopt_data)
 
             from bbopt.examples import skopt_example
-            assert_improving(skopt_example.bb.get_data(print_data=True))
+            assert_improving(skopt_example.bb.get_data(print_data=True), ave_func=middle_mean)
             assert skopt_example.y == want
             assert -9 <= skopt_example.y < 21
             assert skopt_example.bb.num_examples == NUM_TRIALS
