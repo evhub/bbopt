@@ -5,8 +5,13 @@ Utilities for use in BBopt backends.
 from collections.abc import Iterable
 
 from bbopt import constants
-from bbopt.util import sorted_items, convert_match_errors
 from bbopt.params import param_processor
+from bbopt.util import (
+    sorted_items,
+    convert_match_errors,
+    DictProxy,
+    ListProxy,
+)
 from bbopt.registry import (
     backend_registry,
     alg_registry,
@@ -41,14 +46,14 @@ match def _init_backend(backend_cls, examples, params, *args, _attempt_to_update
 
 def _make_safe_backend_store(backend_store, remove_backends):
     """Get a new backend_store without the given remove_backends."""
-    safe_backend_store = backend_store.copy()  # preserves the defaultdict
+    safe_backend_store = DictProxy(old_dict=backend_store, new_dict=backend_store.copy())
     for backend_cls in backend_store:
         if any(isinstance(rem_backend, backend_cls) for rem_backend in remove_backends):
-            safe_specific_backend_store = []
+            safe_specific_backends = []
             for stored_args, stored_options, stored_backend in backend_store[backend_cls]:
                 if stored_backend not in remove_backends:
-                    safe_specific_backend_store.append((stored_args, stored_options, stored_backend))
-            safe_backend_store[backend_cls] = safe_specific_backend_store
+                    safe_specific_backends.append((stored_args, stored_options, stored_backend))
+            safe_backend_store[backend_cls] = ListProxy(old_list=backend_store[backend_cls], new_list=safe_specific_backends)
     return safe_backend_store
 
 
@@ -68,8 +73,11 @@ match def get_backend(backend_store, backend, examples, params, *args, _current_
             store_ind = i
             break
 
-    if backend_cls.request_backend_store is True:
-        options["backend_store"] = _make_safe_backend_store(backend_store, (attempt_to_update_backend, _current_backend))
+    if backend_cls.request_backend_store:
+        init_options = options.copy()
+        init_options["backend_store"] = _make_safe_backend_store(backend_store, (attempt_to_update_backend,))
+    else:
+        init_options = options
 
     new_backend = _init_backend(
         backend_cls,
@@ -77,7 +85,7 @@ match def get_backend(backend_store, backend, examples, params, *args, _current_
         params,
         *args,
         _attempt_to_update_backend=attempt_to_update_backend,
-        **options,
+        **init_options,
     )
 
     if store_ind is None:

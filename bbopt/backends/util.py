@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x477f6619
+# __coconut_hash__ = 0xba4eafc7
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -42,9 +42,11 @@ else:
     from collections.abc import Iterable
 
 from bbopt import constants
+from bbopt.params import param_processor
 from bbopt.util import sorted_items
 from bbopt.util import convert_match_errors
-from bbopt.params import param_processor
+from bbopt.util import DictProxy
+from bbopt.util import ListProxy
 from bbopt.registry import backend_registry
 from bbopt.registry import alg_registry
 from bbopt.registry import meta_registry
@@ -95,14 +97,14 @@ def _init_backend(*_coconut_match_args, **_coconut_match_kwargs):
 
 def _make_safe_backend_store(backend_store, remove_backends):
     """Get a new backend_store without the given remove_backends."""
-    safe_backend_store = backend_store.copy()  # preserves the defaultdict
+    safe_backend_store = DictProxy(old_dict=backend_store, new_dict=backend_store.copy())
     for backend_cls in backend_store:
         if any((isinstance(rem_backend, backend_cls) for rem_backend in remove_backends)):
-            safe_specific_backend_store = []
+            safe_specific_backends = []
             for stored_args, stored_options, stored_backend in backend_store[backend_cls]:
                 if stored_backend not in remove_backends:
-                    safe_specific_backend_store.append((stored_args, stored_options, stored_backend))
-            safe_backend_store[backend_cls] = safe_specific_backend_store
+                    safe_specific_backends.append((stored_args, stored_options, stored_backend))
+            safe_backend_store[backend_cls] = ListProxy(old_list=backend_store[backend_cls], new_list=safe_specific_backends)
     return safe_backend_store
 
 
@@ -142,10 +144,13 @@ def get_backend(*_coconut_match_args, **_coconut_match_kwargs):
             store_ind = i
             break
 
-    if backend_cls.request_backend_store is True:
-        options["backend_store"] = _make_safe_backend_store(backend_store, (attempt_to_update_backend, _current_backend))
+    if backend_cls.request_backend_store:
+        init_options = options.copy()
+        init_options["backend_store"] = _make_safe_backend_store(backend_store, (attempt_to_update_backend,))
+    else:
+        init_options = options
 
-    new_backend = _init_backend(backend_cls, examples, params, *args, _attempt_to_update_backend=attempt_to_update_backend, **options)
+    new_backend = _init_backend(backend_cls, examples, params, *args, _attempt_to_update_backend=attempt_to_update_backend, **init_options)
 
     if store_ind is None:
         backend_store[backend_cls].append((args, options, new_backend))

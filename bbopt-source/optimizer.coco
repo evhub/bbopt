@@ -16,7 +16,6 @@ import numpy as np
 
 from bbopt import constants
 from bbopt.registry import (
-    backend_registry,
     alg_registry,
     meta_registry,
 )
@@ -269,6 +268,7 @@ class BlackBoxOptimizer:
             meta_alg = constants.default_meta_alg
         self.run(meta_alg)
         alg = self.choice(constants.meta_opt_alg_var, algs)
+        print("selected", alg)
         backend, options = alg_registry[alg]
         self.backend = self._get_backend(backend, **options)
 

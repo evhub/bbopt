@@ -234,3 +234,64 @@ def convert_match_errors(func):
 def printerr(*args):
     """Print to stderr."""
     print(*args, file=sys.stderr)
+
+
+class ListProxy:
+    """Behaves like new_list, but appends new elements to old_list."""
+
+    def __init__(self, old_list, new_list):
+        self.old_list = old_list
+        self.new_list = new_list
+
+    def __iter__(self):
+        yield from self.new_list
+
+    def __getitem__(self, index) =
+        self.new_list[index]
+
+    def append(self, obj):
+        self.new_list.append(obj)
+        if obj not in self.old_list:
+            self.old_list.append(obj)
+
+    def __setitem__(self, index, obj):
+        self.new_list[index] = obj
+        if obj not in self.old_list:
+            self.old_list.append(obj)
+
+    def __repr__(self) =
+        f"ListProxy(\n\t{self.old_list=},\n\t{self.new_list=},\n)"
+
+
+class DictProxy:
+    """Behaves like new_dict, but adds new keys to old_dict."""
+
+    def __init__(self, old_dict, new_dict):
+        self.old_dict = old_dict
+        self.new_dict = new_dict
+
+    def __iter__(self):
+        yield from self.new_dict
+
+    def items(self) =
+        self.new_dict.items()
+
+    def keys(self) =
+        self.new_dict.keys()
+
+    def values(self) =
+        self.new_dict.values()
+
+    def __getitem__(self, key):
+        value = self.new_dict[key]
+        if key not in self.old_dict:
+            self.old_dict[key] = value
+        return value
+
+    def __setitem__(self, key, value):
+        self.new_dict[key] = value
+        if key not in self.old_dict:
+            self.old_dict[key] = value
+
+    def __repr__(self) =
+        f"DictProxy(\n\t{self.old_dict=},\n\t{self.new_dict=},\n)"

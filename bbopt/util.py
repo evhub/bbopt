@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x65a1e180
+# __coconut_hash__ = 0x6d51f4f6
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -27,8 +27,7 @@ if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha(
             try:
                 _coconut_v.__module__ = _coconut_full_module_name
             except AttributeError:
-                _coconut_vtype = type(_coconut_v)
-                _coconut_vtype.__module__ = _coconut_full_module_name
+                type(_coconut_v).__module__ = _coconut_full_module_name
     _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
 from __coconut__ import _coconut_call_set_names, _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
@@ -277,3 +276,83 @@ def convert_match_errors(func):
 def printerr(*args):
     """Print to stderr."""
     print(*args, file=sys.stderr)
+
+
+class ListProxy(_coconut.object):
+    """Behaves like new_list, but appends new elements to old_list."""
+
+    def __init__(self, old_list, new_list):
+        self.old_list = old_list
+        self.new_list = new_list
+
+    def __iter__(self):
+        _coconut_yield_from_1 = _coconut.iter(self.new_list)
+        while True:
+            try:
+                yield _coconut.next(_coconut_yield_from_1)
+            except _coconut.StopIteration as _coconut_yield_err_0:
+                _coconut_yield_from_0 = _coconut_yield_err_0.args[0] if _coconut.len(_coconut_yield_err_0.args) > 0 else None
+                break
+
+        _coconut_yield_from_0
+
+    def __getitem__(self, index):
+        return self.new_list[index]
+
+    def append(self, obj):
+        self.new_list.append(obj)
+        if obj not in self.old_list:
+            self.old_list.append(obj)
+
+    def __setitem__(self, index, obj):
+        self.new_list[index] = obj
+        if obj not in self.old_list:
+            self.old_list.append(obj)
+
+    def __repr__(self):
+        return "ListProxy(\n\tself.old_list={_coconut_format_0},\n\tself.new_list={_coconut_format_1},\n)".format(_coconut_format_0=(self.old_list), _coconut_format_1=(self.new_list))
+
+
+_coconut_call_set_names(ListProxy)
+class DictProxy(_coconut.object):
+    """Behaves like new_dict, but adds new keys to old_dict."""
+
+    def __init__(self, old_dict, new_dict):
+        self.old_dict = old_dict
+        self.new_dict = new_dict
+
+    def __iter__(self):
+        _coconut_yield_from_3 = _coconut.iter(self.new_dict)
+        while True:
+            try:
+                yield _coconut.next(_coconut_yield_from_3)
+            except _coconut.StopIteration as _coconut_yield_err_1:
+                _coconut_yield_from_2 = _coconut_yield_err_1.args[0] if _coconut.len(_coconut_yield_err_1.args) > 0 else None
+                break
+
+        _coconut_yield_from_2
+
+    def items(self):
+        return self.new_dict.items()
+
+    def keys(self):
+        return self.new_dict.keys()
+
+    def values(self):
+        return self.new_dict.values()
+
+    def __getitem__(self, key):
+        value = self.new_dict[key]
+        if key not in self.old_dict:
+            self.old_dict[key] = value
+        return value
+
+    def __setitem__(self, key, value):
+        self.new_dict[key] = value
+        if key not in self.old_dict:
+            self.old_dict[key] = value
+
+    def __repr__(self):
+        return "DictProxy(\n\tself.old_dict={_coconut_format_0},\n\tself.new_dict={_coconut_format_1},\n)".format(_coconut_format_0=(self.old_dict), _coconut_format_1=(self.new_dict))
+
+_coconut_call_set_names(DictProxy)
