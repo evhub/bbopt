@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xde17165f
+# __coconut_hash__ = 0x1e9c5d2c
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -27,8 +27,7 @@ if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha(
             try:
                 _coconut_v.__module__ = _coconut_full_module_name
             except AttributeError:
-                _coconut_vtype = type(_coconut_v)
-                _coconut_vtype.__module__ = _coconut_full_module_name
+                type(_coconut_v).__module__ = _coconut_full_module_name
     _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
 from __coconut__ import _coconut_call_set_names, _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
@@ -40,31 +39,55 @@ _coconut_sys.path.pop(0)
 import random
 
 from bbopt import constants
+from bbopt.util import convert_match_errors
 from bbopt.registry import alg_registry
 from bbopt.backends.util import Backend
-from bbopt.backends.util import init_backend
+from bbopt.backends.util import get_backend
 
 
 class MixtureBackend(Backend):
     """Mixture backend. Takes in a distribution over different possible algorithms
     of the form [(algorithm, weight)]. The properties selected_alg and selected_backend
     can be used to retrieve which alg/backend is currently being used."""
+
     backend_name = "mixture"
-
-    def __init__(self, examples, params, *args, **kwargs):
-        self.backend_store = {}
-        self.attempt_update(examples, params, *args, **kwargs)
-
+    request_backend_store = True
     remove_erroring_algs = None
 
+    def __init__(self, examples, params, *args, **kwargs):
+        self.attempt_update(examples, params, *args, **kwargs)
+
     @override
-    def attempt_update(self, examples, params, distribution, remove_erroring_algs=False):
+    @convert_match_errors
+    @_coconut_mark_as_match
+    def attempt_update(*_coconut_match_args, **_coconut_match_kwargs):
         """Special method that allows fast updating of the backend."""
+        _coconut_match_check_0 = False
+        _coconut_FunctionMatchError = _coconut_get_function_match_error()
+        if (_coconut.len(_coconut_match_args) <= 5) and (_coconut.sum((_coconut.len(_coconut_match_args) > 0, "self" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 1, "examples" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 2, "params" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 3, "distribution" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 4, "remove_erroring_algs" in _coconut_match_kwargs)) <= 1):
+            _coconut_match_temp_0 = _coconut_match_args[0] if _coconut.len(_coconut_match_args) > 0 else _coconut_match_kwargs.pop("self")
+            _coconut_match_temp_1 = _coconut_match_args[1] if _coconut.len(_coconut_match_args) > 1 else _coconut_match_kwargs.pop("examples")
+            _coconut_match_temp_2 = _coconut_match_args[2] if _coconut.len(_coconut_match_args) > 2 else _coconut_match_kwargs.pop("params")
+            _coconut_match_temp_3 = _coconut_match_args[3] if _coconut.len(_coconut_match_args) > 3 else _coconut_match_kwargs.pop("distribution")
+            _coconut_match_temp_4 = _coconut_match_args[4] if _coconut.len(_coconut_match_args) > 4 else _coconut_match_kwargs.pop("remove_erroring_algs") if "remove_erroring_algs" in _coconut_match_kwargs else False
+            _coconut_match_temp_5 = _coconut_match_kwargs.pop("backend_store") if "backend_store" in _coconut_match_kwargs else _coconut_sentinel
+            if (_coconut_match_temp_5 is not _coconut_sentinel) and (not _coconut_match_kwargs):
+                self = _coconut_match_temp_0
+                examples = _coconut_match_temp_1
+                params = _coconut_match_temp_2
+                distribution = _coconut_match_temp_3
+                remove_erroring_algs = _coconut_match_temp_4
+                backend_store = _coconut_match_temp_5
+                _coconut_match_check_0 = True
+        if not _coconut_match_check_0:
+            raise _coconut_FunctionMatchError('match def attempt_update(self, examples, params, distribution, remove_erroring_algs=False, *, backend_store):', _coconut_match_args)
+
         self.use_distribution(distribution, force=remove_erroring_algs != self.remove_erroring_algs)
 
         self.examples = examples
         self.params = params
         self.remove_erroring_algs = remove_erroring_algs
+        self.backend_store = backend_store
 
         self.select_new_backend()
         return True
@@ -110,13 +133,11 @@ class MixtureBackend(Backend):
 # initialize backend
         self.selected_backend, options = alg_registry[self.selected_alg]
         try:
-            self.current_backend = init_backend(self.selected_backend, self.examples, self.params, attempt_to_update_backend=self.backend_store.get(self.selected_alg), **options)
+            self.current_backend = get_backend(self.backend_store, self.selected_backend, self.examples, self.params, **options)
         except constants.erroring_backend_errs:
             if not self.remove_erroring_algs:
                 raise
             self.reselect_backend()
-        else:
-            self.backend_store[self.selected_alg] = self.current_backend
 
     def reselect_backend(self):
         """Choose a new backend when the current one errors."""
@@ -138,10 +159,23 @@ class MixtureBackend(Backend):
             self.reselect_backend()
         return self.param(name, func, *args, **kwargs)
 
+    @classmethod
+    def register_safe_alg_for(cls, base_alg, new_alg_name=None, fallback_alg=None):
+        """Register a version of base_alg that defaults to the fallback if base_alg fails."""
+        if new_alg_name is None:
+            new_alg_name = "safe_" + base_alg
+        if fallback_alg is None:
+            fallback_alg = constants.safe_fallback_alg
+        cls.register_alg(new_alg_name, distribution=((base_alg, float("inf")), (fallback_alg, 1),), remove_erroring_algs=True)
+
 
 # Registered names:
 
 _coconut_call_set_names(MixtureBackend)
 MixtureBackend.register()
 MixtureBackend.register_alg("epsilon_max_greedy", distribution="epsilon_max_greedy")
-MixtureBackend.register_alg("_safe_gaussian_process", distribution=(("gaussian_process", float("inf")), ("annealing", 1),), remove_erroring_algs=True)
+
+MixtureBackend.register_safe_alg_for("gaussian_process")
+MixtureBackend.register_safe_alg_for("random_forest")
+MixtureBackend.register_safe_alg_for("extra_trees")
+MixtureBackend.register_safe_alg_for("gradient_boosted_regression_trees")

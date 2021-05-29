@@ -76,7 +76,7 @@ Some examples of BBopt in action:
 - [`bask_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/bask_example.py): Example of using conditional parameters with a semi-random target using the `bask_gp` algorithm from the `bayes-skopt` backend.
 - [`pysot_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/pysot_example.py): Example of using the full API to implement an optimization loop and avoid the overhead of running the entire file multiple times while making use of the `pySOT` backend.
 - [`keras_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/keras_example.py): Complete example of using BBopt to optimize a neural network built with [Keras](https://keras.io/). Uses the full API to implement its own optimization loop and thus avoid the overhead of running the entire file multiple times.
-- [`tpe_or_gp_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/tpe_or_gp_example.py): Example of using the default algorithm `"tpe_or_gp"` to dynamically select a good backend.
+- [`any_fast_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/any_fast_example.py): Example of using the default algorithm `"any_fast"` to dynamically select a good backend.
 - [`mixture_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/mixture_example.py): Example of using the `mixture` backend to randomly switch between different algorithms.
 - [`json_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/json_example.py): Example of using `json` instead of `pickle` to save parameters.
 - [`remove_erroring_algs_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/remove_erroring_algs_example.py): Example of using the `remove_erroring_algs` feature of the `mixture` backend.
@@ -150,14 +150,14 @@ _protocol_ determines how BBopt serializes data. If `None` (the default), BBopt 
 
 #### `run`
 
-BlackBoxOptimizer.**run**(_alg_=`"tpe_or_gp"`)
+BlackBoxOptimizer.**run**(_alg_=`"any_fast"`)
 
 Start optimizing using the given black box optimization algorithm. Use **algs** to get the valid values for _alg_.
 
 If this method is never called, or called with `alg="serving"`, BBopt will just serve the best parameters found so far, which is how the basic boilerplate works. Note that, if no saved parameter data is found, and a _guess_ is present, BBopt will use that, which is a good way of distributing your parameter values without including all your saved parameter data.
 
 In addition to supporting all algorithms in **algs**, **run** also supports the following pseudo-algorithms which defer to **run_meta**:
-- `"tpe_or_gp"` (same as calling **run_meta** with `"gaussian_process"` and `"tree_structured_parzen_estimator"` except that `"gaussian_process"` is ignored if unsupported parameter definition functions are used (e.g. `normalvariate`)) (used if **run** is called with no args)
+- `"any_fast"` (same as calling **run_meta** with a suite of algorithms selected for their speed except that some algorithms are ignored if unsupported parameter definition functions are used, e.g. `normalvariate` for `scikit-optimize`) (used if **run** is called with no args)
 - `"any_skopt"` (equivalent to calling **run_meta** with all `scikit-optimize` algorithms)
 - `"any_pysot"` (equivalent to calling **run_meta** with all `pySOT` algorithms)
 
@@ -187,6 +187,8 @@ Supported algorithms are:
 - `"symmetric_latin_hypercube"` (`pySOT` backend)
 - `"two_factorial"` (`pySOT` backend)
 - `"epsilon_max_greedy"` (`mixture` backend) (the default _meta\_alg_ in **run_meta**)
+
+Additionally, there are also some algorithms of the form `safe_<other_alg>` which use `mixture` to defer to `<other_alg>` if `<other_alg>` supports the parameter definition functions you're using, otherwise default to a suitable replacement.
 
 _Note: The `bayes-skopt` backend is only available on Python 3.7+ and the `pySOT` backend is only available on Python 3+._
 

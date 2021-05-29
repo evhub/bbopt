@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd7668260
+# __coconut_hash__ = 0xacf46bb7
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -27,8 +27,7 @@ if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha(
             try:
                 _coconut_v.__module__ = _coconut_full_module_name
             except AttributeError:
-                _coconut_vtype = type(_coconut_v)
-                _coconut_vtype.__module__ = _coconut_full_module_name
+                type(_coconut_v).__module__ = _coconut_full_module_name
     _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
 from __coconut__ import _coconut_call_set_names, _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
@@ -184,4 +183,5 @@ if sys.version_info >= (3,):
     from hyperopt import atpe
     HyperoptBackend.register_alg("adaptive_tpe", algo=atpe.suggest)
 
-HyperoptBackend.register_meta("tpe_or_gp", ("tree_structured_parzen_estimator", "_safe_gaussian_process",))
+HyperoptBackend.register_meta("tpe_or_gp", ("tree_structured_parzen_estimator", "safe_gaussian_process",))
+HyperoptBackend.register_meta("any_fast", ("tree_structured_parzen_estimator", "safe_random_forest", "safe_extra_trees", "safe_gradient_boosted_regression_trees",))

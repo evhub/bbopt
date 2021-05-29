@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x53892b89
+# __coconut_hash__ = 0x20909e30
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -80,8 +80,8 @@ numpy_data = os.path.join(example_dir, "numpy_example.bbopt.pickle")
 meta_file = os.path.join(example_dir, "meta_example.py")
 meta_data = os.path.join(example_dir, "meta_example.bbopt.pickle")
 
-tpe_or_gp_file = os.path.join(example_dir, "tpe_or_gp_example.py")
-tpe_or_gp_data = os.path.join(example_dir, "tpe_or_gp_example.bbopt.pickle")
+any_fast_file = os.path.join(example_dir, "any_fast_example.py")
+any_fast_data = os.path.join(example_dir, "any_fast_example.bbopt.pickle")
 
 mixture_file = os.path.join(example_dir, "mixture_example.py")
 mixture_data = os.path.join(example_dir, "mixture_example.bbopt.pickle")
@@ -308,19 +308,19 @@ class TestExamples(unittest.TestCase):
             assert 0 <= meta_example.u < 1
             assert meta_example.bb.num_examples == NUM_TRIALS
 
-    def test_tpe_or_gp(self):
-        print("\ntest tpe_or_gp:")
-        with using(tpe_or_gp_data):
-            results = call_bbopt(tpe_or_gp_file)
+    def test_any_fast(self):
+        print("\ntest any_fast:")
+        with using(any_fast_data):
+            results = call_bbopt(any_fast_file)
 
             want = min(get_nums(results, numtype=float))
-            assert os.path.exists(tpe_or_gp_data)
+            assert os.path.exists(any_fast_data)
 
-            from bbopt.examples import tpe_or_gp_example
-            assert_improving(tpe_or_gp_example.bb.get_data(print_data=True))
-            assert tpe_or_gp_example.u == want
-            assert tpe_or_gp_example.u < 1
-            assert tpe_or_gp_example.bb.num_examples == NUM_TRIALS
+            from bbopt.examples import any_fast_example
+            assert_improving(any_fast_example.bb.get_data(print_data=True))
+            assert any_fast_example.u == want
+            assert any_fast_example.u < 1
+            assert any_fast_example.bb.num_examples == NUM_TRIALS
 
     def test_mixture(self):
         print("\ntest mixture:")

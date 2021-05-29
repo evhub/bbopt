@@ -5,10 +5,11 @@ The mixture backend. Lets you specify a distribution over different possible alg
 import random
 
 from bbopt import constants
+from bbopt.util import convert_match_errors
 from bbopt.registry import alg_registry
 from bbopt.backends.util import (
     Backend,
-    init_backend,
+    get_backend,
 )
 
 
@@ -16,22 +17,24 @@ class MixtureBackend(Backend):
     """Mixture backend. Takes in a distribution over different possible algorithms
     of the form [(algorithm, weight)]. The properties selected_alg and selected_backend
     can be used to retrieve which alg/backend is currently being used."""
+
     backend_name = "mixture"
-
-    def __init__(self, examples, params, *args, **kwargs):
-        self.backend_store = {}
-        self.attempt_update(examples, params, *args, **kwargs)
-
+    request_backend_store = True
     remove_erroring_algs = None
 
+    def __init__(self, examples, params, *args, **kwargs):
+        self.attempt_update(examples, params, *args, **kwargs)
+
     @override
-    def attempt_update(self, examples, params, distribution, remove_erroring_algs=False):
+    @convert_match_errors
+    match def attempt_update(self, examples, params, distribution, remove_erroring_algs=False, *, backend_store):
         """Special method that allows fast updating of the backend."""
         self.use_distribution(distribution, force=remove_erroring_algs != self.remove_erroring_algs)
 
         self.examples = examples
         self.params = params
         self.remove_erroring_algs = remove_erroring_algs
+        self.backend_store = backend_store
 
         self.select_new_backend()
         return True
@@ -80,19 +83,17 @@ class MixtureBackend(Backend):
         # initialize backend
         self.selected_backend, options = alg_registry[self.selected_alg]
         try:
-            self.current_backend = init_backend(
+            self.current_backend = get_backend(
+                self.backend_store,
                 self.selected_backend,
                 self.examples,
                 self.params,
-                attempt_to_update_backend=self.backend_store.get(self.selected_alg),
                 **options,
             )
         except constants.erroring_backend_errs:
             if not self.remove_erroring_algs:
                 raise
             self.reselect_backend()
-        else:
-            self.backend_store[self.selected_alg] = self.current_backend
 
     def reselect_backend(self):
         """Choose a new backend when the current one errors."""
@@ -114,15 +115,29 @@ class MixtureBackend(Backend):
             self.reselect_backend()
         return self.param(name, func, *args, **kwargs)
 
+    @classmethod
+    def register_safe_alg_for(cls, base_alg, new_alg_name=None, fallback_alg=None):
+        """Register a version of base_alg that defaults to the fallback if base_alg fails."""
+        if new_alg_name is None:
+            new_alg_name = "safe_" + base_alg
+        if fallback_alg is None:
+            fallback_alg = constants.safe_fallback_alg
+        cls.register_alg(
+            new_alg_name,
+            distribution=(
+                (base_alg, float("inf")),
+                (fallback_alg, 1),
+            ),
+            remove_erroring_algs=True,
+        )
+
 
 # Registered names:
 
 MixtureBackend.register()
 MixtureBackend.register_alg("epsilon_max_greedy", distribution="epsilon_max_greedy")
-MixtureBackend.register_alg("_safe_gaussian_process",
-    distribution=(
-        ("gaussian_process", float("inf")),
-        ("annealing", 1),
-    ),
-    remove_erroring_algs=True,
-)
+
+MixtureBackend.register_safe_alg_for("gaussian_process")
+MixtureBackend.register_safe_alg_for("random_forest")
+MixtureBackend.register_safe_alg_for("extra_trees")
+MixtureBackend.register_safe_alg_for("gradient_boosted_regression_trees")

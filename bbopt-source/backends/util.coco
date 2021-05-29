@@ -3,7 +3,6 @@ Utilities for use in BBopt backends.
 """
 
 from collections.abc import Iterable
-from contextlib import contextmanager
 
 from bbopt import constants
 from bbopt.util import sorted_items, convert_match_errors
@@ -18,30 +17,73 @@ from bbopt.registry import (
 # Utilities:
 
 @convert_match_errors
-match def init_backend(backend, examples, params, *args, attempt_to_update_backend, **options):
+match def _init_backend(backend_cls, examples, params, *args, _attempt_to_update_backend=None, **options):
     """Create a backend object with the given data (backend can be backend name or class)."""
-    if isinstance(backend, type) and issubclass(backend, Backend):
-        backend_cls = backend
-    else:
-        backend_cls = backend_registry[backend]
-        assert issubclass(backend_cls, Backend), f"invalid backend class for {backend}: {backend_cls}"
-
     backend_examples = examples[:]
     backend_params = params.copy()
 
     new_backend = None
-    if isinstance(attempt_to_update_backend, backend_cls):
-        updated_backend = attempt_to_update_backend.attempt_update(backend_examples, backend_params, *args, **options)
+    if isinstance(_attempt_to_update_backend, backend_cls):
+        updated_backend = _attempt_to_update_backend.attempt_update(backend_examples, backend_params, *args, **options)
         if updated_backend is True:
-            new_backend = attempt_to_update_backend
+            new_backend = _attempt_to_update_backend
         elif isinstance(updated_backend, backend_cls):
             new_backend = updated_backend
         else:
             assert updated_backend is False, f"invalid {backend_cls}.attempt_update return value: {updated_backend}"
 
     if new_backend is None:
-        assert not attempt_to_update_backend or isinstance(attempt_to_update_backend, Backend), f"invalid backend to attempt update on: {attempt_to_update_backend}"
+        assert not _attempt_to_update_backend or isinstance(_attempt_to_update_backend, Backend), f"invalid backend to attempt update on: {_attempt_to_update_backend}"
         new_backend = backend_cls(backend_examples, backend_params, *args, **options)
+
+    return new_backend
+
+
+def _make_safe_backend_store(backend_store, remove_backends):
+    """Get a new backend_store without the given remove_backends."""
+    safe_backend_store = backend_store.copy()  # preserves the defaultdict
+    for backend_cls in backend_store:
+        if any(isinstance(rem_backend, backend_cls) for rem_backend in remove_backends):
+            safe_specific_backend_store = []
+            for stored_args, stored_options, stored_backend in backend_store[backend_cls]:
+                if stored_backend not in remove_backends:
+                    safe_specific_backend_store.append((stored_args, stored_options, stored_backend))
+            safe_backend_store[backend_cls] = safe_specific_backend_store
+    return safe_backend_store
+
+
+match def get_backend(backend_store, backend, examples, params, *args, _current_backend=None, **options):
+    """Create a backend object, attempting to update a backend from backend_store."""
+    if isinstance(backend, type) and issubclass(backend, Backend):
+        backend_cls = backend
+    else:
+        backend_cls = backend_registry[backend]
+        assert issubclass(backend_cls, Backend), f"invalid backend class for {backend}: {backend_cls}"
+
+    store_ind = None
+    attempt_to_update_backend = _current_backend
+    for i, (stored_args, stored_options, stored_backend) in enumerate(backend_store[backend_cls]):
+        attempt_to_update_backend = stored_backend
+        if stored_args == args and stored_options == options:
+            store_ind = i
+            break
+
+    if backend_cls.request_backend_store is True:
+        options["backend_store"] = _make_safe_backend_store(backend_store, (attempt_to_update_backend, _current_backend))
+
+    new_backend = _init_backend(
+        backend_cls,
+        examples,
+        params,
+        *args,
+        _attempt_to_update_backend=attempt_to_update_backend,
+        **options,
+    )
+
+    if store_ind is None:
+        backend_store[backend_cls].append((args, options, new_backend))
+    else:
+        backend_store[backend_cls][store_ind] = (args, options, new_backend)
 
     return new_backend
 
@@ -203,6 +245,10 @@ class Backend:
     # derived classes can implement tell_examples(new_examples)
     #  to allow fast updating on new data
     tell_examples = None
+
+    # derived classes can set this to True to have a backend_store keyword
+    #  argument passed to __init__ with an object usable in get_backend
+    request_backend_store = False
 
     def __new__(cls, examples=None, params=None, *args, **kwargs):
         self = super(Backend, cls).__new__(cls)

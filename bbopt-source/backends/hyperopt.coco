@@ -174,5 +174,11 @@ if sys.version_info >= (3,):
 
 HyperoptBackend.register_meta("tpe_or_gp", (
     "tree_structured_parzen_estimator",
-    "_safe_gaussian_process",
+    "safe_gaussian_process",
+))
+HyperoptBackend.register_meta("any_fast", (
+    "tree_structured_parzen_estimator",
+    "safe_random_forest",
+    "safe_extra_trees",
+    "safe_gradient_boosted_regression_trees",
 ))

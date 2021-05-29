@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd9703dea
+# __coconut_hash__ = 0xc2778b94
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -70,7 +70,7 @@ from bbopt.util import open_with_lock
 from bbopt.util import printerr
 from bbopt.util import convert_match_errors
 from bbopt.params import param_processor
-from bbopt.backends.util import init_backend
+from bbopt.backends.util import get_backend
 from bbopt.backends.serving import ServingBackend
 
 
@@ -218,24 +218,8 @@ class BlackBoxOptimizer(_coconut.object):
         sync_file(df)
 
     def _get_backend(self, backend, *args, **options):
-        backend_cls = backend_registry.get(backend, backend)
-
-        store_ind = None
-        update_backend = self.backend
-        for i, (stored_args, stored_options, stored_backend) in enumerate(self._backend_store[backend_cls]):
-            update_backend = stored_backend
-            if stored_args == args and stored_options == options:
-                store_ind = i
-                break
-
-        new_backend = init_backend(backend_cls, self._examples, self._old_params, *args, attempt_to_update_backend=update_backend, **options)
-
-        if store_ind is None:
-            self._backend_store[backend_cls].append((args, options, new_backend))
-        else:
-            self._backend_store[backend_cls][store_ind] = (args, options, new_backend)
-
-        return new_backend
+        """Get the given backend, attempting to load from stored backends."""
+        return get_backend(self._backend_store, backend, self._examples, self._old_params, *args, _current_backend=self.backend, **options)
 
     def _get_skopt_backend(self):
         """Get a scikit-optimize backend regardless of whether currently using one."""
