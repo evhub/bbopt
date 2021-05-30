@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb57d300a
+# __coconut_hash__ = 0x4914ba27
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -312,7 +312,7 @@ class TestExamples(unittest.TestCase):
             assert os.path.exists(any_fast_data)
 
             from bbopt.examples import any_fast_example
-            assert_improving(any_fast_example.bb.get_data(print_data=True))
+            assert_improving(any_fast_example.bb.get_data(print_data=True), ave_func=None)
             assert any_fast_example.u == want
             assert any_fast_example.u < 1
             assert any_fast_example.bb.num_examples == NUM_TRIALS
