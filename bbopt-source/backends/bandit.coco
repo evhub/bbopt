@@ -93,6 +93,7 @@ class BanditBackend(Backend):
 # Registered names:
 
 BanditBackend.register()
+
 BanditBackend.register_alg("epsilon_greedy", bandit_alg="greedy")
 BanditBackend.register_alg("boltzmann_exploration", bandit_alg="boltzmann")
 BanditBackend.register_alg("boltzmann_gumbel_exploration", bandit_alg="boltzmann_gumbel")

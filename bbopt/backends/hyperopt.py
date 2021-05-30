@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xacf46bb7
+# __coconut_hash__ = 0x1c18cac0
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -178,10 +178,8 @@ HyperoptBackend.register()
 
 HyperoptBackend.register_alg("tree_structured_parzen_estimator", algo=tpe.suggest)
 HyperoptBackend.register_alg("annealing", algo=anneal.suggest)
-
 if sys.version_info >= (3,):
     from hyperopt import atpe
     HyperoptBackend.register_alg("adaptive_tpe", algo=atpe.suggest)
 
-HyperoptBackend.register_meta("tpe_or_gp", ("tree_structured_parzen_estimator", "safe_gaussian_process",))
-HyperoptBackend.register_meta("any_fast", ("tree_structured_parzen_estimator", "safe_random_forest", "safe_extra_trees", "safe_gradient_boosted_regression_trees",))
+HyperoptBackend.register_meta_for_all_algs("any_hyperopt")

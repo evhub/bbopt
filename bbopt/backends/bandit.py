@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7a539bf1
+# __coconut_hash__ = 0x4cd3ab34
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -166,6 +166,7 @@ class BanditBackend(Backend):
 
 _coconut_call_set_names(BanditBackend)
 BanditBackend.register()
+
 BanditBackend.register_alg("epsilon_greedy", bandit_alg="greedy")
 BanditBackend.register_alg("boltzmann_exploration", bandit_alg="boltzmann")
 BanditBackend.register_alg("boltzmann_gumbel_exploration", bandit_alg="boltzmann_gumbel")
