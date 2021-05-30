@@ -19,39 +19,39 @@ setup:
 	pip install -U setuptools pip pytest coconut-develop[watch]
 
 .PHONY: build
-build:
+build: clean
 	coconut setup.coco --no-tco --strict
 	coconut "bbopt-source" bbopt --no-tco --strict --jobs sys
 	-mkdir "./bbopt/examples"
 	cp -rf "./bbopt-source/examples" "./bbopt/"
 
 .PHONY: force-build
-force-build:
+force-build: clean
 	coconut setup.coco --no-tco --strict --force
 	coconut "bbopt-source" bbopt --no-tco --strict --jobs sys --force
 	-mkdir "./bbopt/examples"
 	cp -rf "./bbopt-source/examples" "./bbopt/"
 
 .PHONY: upload
-upload: clean install
+upload: install
 	python3 setup.py sdist bdist_wheel
 	pip3 install -U --ignore-installed twine
 	twine upload dist/*
 
 .PHONY: test
-test: clean install
+test: install
 	pytest --strict --fulltrace -s ./bbopt/tests
 
 .PHONY: force-test
-force-test: clean force-install
+force-test: force-install
 	pytest --strict --fulltrace -s ./bbopt/tests
 
 .PHONY: force-test-py2
-force-test-py2: clean force-install-py2
+force-test-py2: force-install-py2
 	python2 -m pytest --strict --fulltrace -s ./bbopt/tests
 
 .PHONY: test-keras
-test-keras: clean install
+test-keras: install
 	-rm ./bbopt/examples/keras_example.bbopt.pickle
 	python ./bbopt/examples/keras_example.py
 

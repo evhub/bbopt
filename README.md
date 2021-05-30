@@ -79,7 +79,6 @@ Some examples of BBopt in action:
 - [`any_fast_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/any_fast_example.py): Example of using the default algorithm `"any_fast"` to dynamically select a good backend.
 - [`mixture_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/mixture_example.py): Example of using the `mixture` backend to randomly switch between different algorithms.
 - [`json_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/json_example.py): Example of using `json` instead of `pickle` to save parameters.
-- [`remove_erroring_algs_example.py`](https://github.com/evhub/bbopt/blob/master/bbopt-source/examples/remove_erroring_algs_example.py): Example of using the `remove_erroring_algs` feature of the `mixture` backend.
 
 ## Full API
 
@@ -169,7 +168,6 @@ A dictionary mapping the valid algorithms for use in **run** to the pair `(backe
 
 Supported algorithms are:
 - `"serving"` (`serving` backend) (used if **run** is never called)
-- `"max_greedy"` (`serving` backend) (same as `"serving"` but falls back to `"random"` if no data is present)
 - `"random"` (`random` backend)
 - `"tree_structured_parzen_estimator"` (`hyperopt` backend)
 - `"adaptive_tpe"` (`hyperopt` backend; but only Python 3+)
@@ -186,7 +184,10 @@ Supported algorithms are:
 - `"latin_hypercube"` (`pySOT` backend)
 - `"symmetric_latin_hypercube"` (`pySOT` backend)
 - `"two_factorial"` (`pySOT` backend)
-- `"epsilon_max_greedy"` (`mixture` backend) (the default _meta\_alg_ in **run_meta**)
+- `"epsilon_max_greedy"` (`mixture` backend)
+- `"epsilon_greedy"` (`bandit` backend)
+- `"boltzmann_exploration"` (`bandit` backend)
+- `"boltzmann_gumbel_exploration"` (`bandit` backend) (the default _meta\_alg_ in **run_meta**)
 
 Additionally, there are also some algorithms of the form `safe_<other_alg>` which use `mixture` to defer to `<other_alg>` if `<other_alg>` supports the parameter definition functions you're using, otherwise default to a suitable replacement.
 
@@ -194,7 +195,7 @@ _Note: The `bayes-skopt` backend is only available on Python 3.7+ and the `pySOT
 
 #### `run_meta`
 
-BlackBoxOptimizer.**run_meta**(_algs_, _meta\_alg_=`"epsilon_max_greedy"`)
+BlackBoxOptimizer.**run_meta**(_algs_, _meta\_alg_=`"boltzmann_gumbel_exploration"`)
 
 **run_meta** is a special version of **run** that uses the _meta\_alg_ algorithm to dynamically pick an algorithm from among the given _algs_. Both _algs_ and _meta\_alg_ can use any algorithms in **algs**.
 
@@ -509,10 +510,11 @@ MyBackend.register_alg("my_alg")
 
 Once you've written a BBopt backend as above, you simply need to import it to trigger the `register` calls and enable it to be used in BBopt. For some example BBopt backends, see BBopt's default backends (written in [Coconut](http://coconut-lang.org/)):
 
-- [`serving.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/backends/serving.coco)
 - [`random.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/backends/random.coco)
 - [`skopt.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/backends/skopt.coco)
 - [`bask.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/backends/bask.coco)
 - [`hyperopt.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/backends/hyperopt.coco)
 - [`pysot.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/backends/pysot.coco)
+- [`serving.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/backends/serving.coco)
 - [`mixture.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/backends/mixture.coco)
+- [`bandit.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/backends/bandit.coco)

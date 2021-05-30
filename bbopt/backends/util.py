@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xba4eafc7
+# __coconut_hash__ = 0xfe372768
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -36,6 +36,8 @@ _coconut_sys.path.pop(0)
 
 
 
+import random
+
 if _coconut_sys.version_info < (3, 3):
     from collections import Iterable
 else:
@@ -47,6 +49,7 @@ from bbopt.util import sorted_items
 from bbopt.util import convert_match_errors
 from bbopt.util import DictProxy
 from bbopt.util import ListProxy
+from bbopt.util import mean
 from bbopt.registry import backend_registry
 from bbopt.registry import alg_registry
 from bbopt.registry import meta_registry
@@ -146,7 +149,7 @@ def get_backend(*_coconut_match_args, **_coconut_match_kwargs):
 
     if backend_cls.request_backend_store:
         init_options = options.copy()
-        init_options["backend_store"] = _make_safe_backend_store(backend_store, (attempt_to_update_backend,))
+        init_options["_backend_store"] = _make_safe_backend_store(backend_store, (attempt_to_update_backend,))
     else:
         init_options = options
 
@@ -279,6 +282,50 @@ def get_named_data_points_and_losses(examples, params, *args, **kwargs):
     return named_data_points, losses
 
 
+def marginalize(named_data_points, losses, param_name, ave_func=mean):
+    """Get an average loss for each prior value of param_name."""
+    losses_for_vals = []  # we can't use a dict since vals might not be hashable
+    for point, loss in zip(named_data_points, losses):
+        val = point[param_name]
+        for check_val, check_losses in losses_for_vals:
+            if check_val == val:
+                check_losses.append(loss)
+                break
+        else:  # no break
+            losses_for_vals.append((val, [loss]))
+
+    marginals = []
+    for val, all_losses in losses_for_vals:
+        marginals.append((val, ave_func(all_losses)))
+    return marginals
+
+
+def get_cum_probs_for(distribution):
+    """Generate cumulative probabilities from the given distribution."""
+    cum_probs = []
+    total_weight = sum((weight for elem, weight in distribution))
+    prev_cutoff = 0
+    for elem, weight in distribution:
+        if weight == float("inf"):
+            cutoff = 1
+        elif weight in (float("-inf"), float("nan")) or total_weight == float("nan"):
+            cutoff = prev_cutoff
+        else:
+            cutoff = prev_cutoff + weight / total_weight
+        cum_probs.append((elem, cutoff))
+        prev_cutoff = cutoff
+    return cum_probs
+
+
+def random_from_cum_probs(cum_probs):
+    """Randomly choose an element using cum_probs."""
+    rand_val = random.random()
+    for elem, cutoff in cum_probs:
+        if rand_val <= cutoff:
+            return elem
+    return None
+
+
 def make_values(params, point):
     """Return a dictionary with the values replaced by the values in point,
     where point is a list of the values corresponding to the sorted params."""
@@ -354,7 +401,7 @@ class Backend(_coconut.object):
 #  to allow fast updating on new data
     tell_examples = None
 
-# derived classes can set this to True to have a backend_store keyword
+# derived classes can set this to True to have a _backend_store keyword
 #  argument passed to __init__ with an object usable in get_backend
     request_backend_store = False
 
@@ -367,8 +414,10 @@ class Backend(_coconut.object):
             self._kwargs = kwargs
         return self
 
-    def __init__(self, examples=None, params=None):
-        pass
+    def __init__(self, examples=None, params=None, *args, **kwargs):
+        """Just call attempt_update by default."""
+        result = self.attempt_update(examples, params, *args, **kwargs)
+        assert result, "Backend.__init__: {_coconut_format_0}.attempt_update(*{_coconut_format_1}, **{_coconut_format_2}) failed with result {_coconut_format_3!r}".format(_coconut_format_0=(self.__class__.__name__), _coconut_format_1=(args), _coconut_format_2=(kwargs), _coconut_format_3=(result))
 
     def attempt_update(self, examples=None, params=None, *args, **kwargs):
         """Attempt to update this backend with new arguments. False indicates that the
@@ -451,6 +500,7 @@ class StandardBackend(Backend):
     """Base class for standard BBopt backends."""
 
     def __init__(self, examples, params, *args, **kwargs):
+        """Implement __init__ using setup_backend and tell_examples."""
         self.init_fallback_backend()
 
         if not params:

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x1e9c5d2c
+# __coconut_hash__ = 0xdd204baf
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -36,14 +36,16 @@ _coconut_sys.path.pop(0)
 
 
 
-import random
-
 from bbopt import constants
 from bbopt.util import convert_match_errors
 from bbopt.registry import alg_registry
 from bbopt.backends.util import Backend
 from bbopt.backends.util import get_backend
+from bbopt.backends.util import get_cum_probs_for
+from bbopt.backends.util import random_from_cum_probs
 
+
+# Backend:
 
 class MixtureBackend(Backend):
     """Mixture backend. Takes in a distribution over different possible algorithms
@@ -53,9 +55,6 @@ class MixtureBackend(Backend):
     backend_name = "mixture"
     request_backend_store = True
     remove_erroring_algs = None
-
-    def __init__(self, examples, params, *args, **kwargs):
-        self.attempt_update(examples, params, *args, **kwargs)
 
     @override
     @convert_match_errors
@@ -70,24 +69,24 @@ class MixtureBackend(Backend):
             _coconut_match_temp_2 = _coconut_match_args[2] if _coconut.len(_coconut_match_args) > 2 else _coconut_match_kwargs.pop("params")
             _coconut_match_temp_3 = _coconut_match_args[3] if _coconut.len(_coconut_match_args) > 3 else _coconut_match_kwargs.pop("distribution")
             _coconut_match_temp_4 = _coconut_match_args[4] if _coconut.len(_coconut_match_args) > 4 else _coconut_match_kwargs.pop("remove_erroring_algs") if "remove_erroring_algs" in _coconut_match_kwargs else False
-            _coconut_match_temp_5 = _coconut_match_kwargs.pop("backend_store") if "backend_store" in _coconut_match_kwargs else _coconut_sentinel
+            _coconut_match_temp_5 = _coconut_match_kwargs.pop("_backend_store") if "_backend_store" in _coconut_match_kwargs else _coconut_sentinel
             if (_coconut_match_temp_5 is not _coconut_sentinel) and (not _coconut_match_kwargs):
                 self = _coconut_match_temp_0
                 examples = _coconut_match_temp_1
                 params = _coconut_match_temp_2
                 distribution = _coconut_match_temp_3
                 remove_erroring_algs = _coconut_match_temp_4
-                backend_store = _coconut_match_temp_5
+                _backend_store = _coconut_match_temp_5
                 _coconut_match_check_0 = True
         if not _coconut_match_check_0:
-            raise _coconut_FunctionMatchError('match def attempt_update(self, examples, params, distribution, remove_erroring_algs=False, *, backend_store):', _coconut_match_args)
+            raise _coconut_FunctionMatchError('match def attempt_update(self, examples, params, distribution, remove_erroring_algs=False, *, _backend_store):', _coconut_match_args)
 
         self.use_distribution(distribution, force=remove_erroring_algs != self.remove_erroring_algs)
 
         self.examples = examples
         self.params = params
         self.remove_erroring_algs = remove_erroring_algs
-        self.backend_store = backend_store
+        self.backend_store = _backend_store
 
         self.select_new_backend()
         return True
@@ -100,33 +99,13 @@ class MixtureBackend(Backend):
             distribution = tuple(distribution)
 
         if force or distribution != self.distribution:
-            self.set_cum_probs_for(distribution)
+            self.cum_probs = get_cum_probs_for(distribution)
             self.distribution = distribution
-
-    def set_cum_probs_for(self, distribution):
-        """Set the cum_probs used to pick the backend according to the given distribution."""
-        self.cum_probs = []
-        total_weight = sum((weight for alg, weight in distribution))
-        prev_cutoff = 0
-        for alg, weight in distribution:
-            if weight == float("inf"):
-                cutoff = 1
-            elif weight in (float("-inf"), float("nan")) or total_weight == float("nan"):
-                cutoff = prev_cutoff
-            else:
-                cutoff = prev_cutoff + weight / total_weight
-            self.cum_probs.append((alg, cutoff))
-            prev_cutoff = cutoff
 
     def select_new_backend(self):
         """Randomly select a new backend."""
 # randomly select algorithm
-        rand_val = random.random()
-        self.selected_alg = None
-        for alg, cutoff in self.cum_probs:
-            if rand_val <= cutoff:
-                self.selected_alg = alg
-                break
+        self.selected_alg = random_from_cum_probs(self.cum_probs)
         if self.selected_alg is None:
             raise ValueError("could not select backend from distribution: {_coconut_format_0}".format(_coconut_format_0=(self.distribution)))
 
@@ -145,7 +124,7 @@ class MixtureBackend(Backend):
         for alg, weight in self.distribution:
             if alg != self.selected_alg:
                 new_distribution.append((alg, weight))
-        self.set_cum_probs_for(new_distribution)
+        self.cum_probs = get_cum_probs_for(new_distribution)
         self.select_new_backend()
 
     @override

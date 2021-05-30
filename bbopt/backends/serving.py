@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xbe3ee192
+# __coconut_hash__ = 0xa35d2d5b
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -40,12 +40,11 @@ from bbopt.util import best_example
 from bbopt.backends.util import Backend
 
 
+# Backend:
+
 class ServingBackend(Backend):
     """The serving backend uses the parameter values from the best example."""
     backend_name = "serving"
-
-    def __init__(self, *args, **kwargs):
-        self.attempt_update(*args, **kwargs)
 
     @override
     def attempt_update(self, examples, params, allow_missing_data=False):

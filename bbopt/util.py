@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x6d51f4f6
+# __coconut_hash__ = 0x59e580da
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -355,4 +355,14 @@ class DictProxy(_coconut.object):
     def __repr__(self):
         return "DictProxy(\n\tself.old_dict={_coconut_format_0},\n\tself.new_dict={_coconut_format_1},\n)".format(_coconut_format_0=(self.old_dict), _coconut_format_1=(self.new_dict))
 
+
 _coconut_call_set_names(DictProxy)
+def mean(xs):
+    """Compute the arithmetic mean of the given sequence."""
+    return sum(xs) / len(xs)
+
+
+def median(xs):
+    """Compute the median of the given sequence."""
+    sorted_xs = (list)((sorted)(xs))
+    return mean((sorted_xs[len(sorted_xs) // 2], sorted_xs[(len(sorted_xs) + 1) // 2],))

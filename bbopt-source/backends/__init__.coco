@@ -9,6 +9,7 @@ import traceback
 from bbopt.backends.serving import ServingBackend
 from bbopt.backends.random import RandomBackend
 from bbopt.backends.mixture import MixtureBackend
+from bbopt.backends.bandit import BanditBackend
 try:
     from bbopt.backends.skopt import SkoptBackend
 except ImportError:

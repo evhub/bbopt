@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xba05626b
+# __coconut_hash__ = 0xca7caf8f
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -39,7 +39,7 @@ _coconut_sys.path.pop(0)
 
 # Installation constants:
 name = "bbopt"
-version = "1.3.3"
+version = "1.3.4"
 description = "The easiest hyperparameter optimization you'll ever do."
 long_description = """
 See BBopt's GitHub_ for more information.
@@ -57,7 +57,7 @@ extra_requirements["dev"] = (extra_requirements["examples"] + ("coconut-develop"
 
 # Optimizer constants:
 default_alg = "any_fast"
-default_meta_alg = "epsilon_max_greedy"
+default_meta_alg = "boltzmann_gumbel_exploration"
 
 default_protocol = 2
 lock_timeout = 6
@@ -77,7 +77,5 @@ default_jobs = 4
 default_fallback_backend = "random"
 erroring_backend_errs = (ValueError, TypeError)
 
-
-# Mixture constants:
 eps_greedy_explore_prob = 0.2
 safe_fallback_alg = "tree_structured_parzen_estimator"

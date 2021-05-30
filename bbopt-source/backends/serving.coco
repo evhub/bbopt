@@ -6,12 +6,11 @@ from bbopt.util import best_example
 from bbopt.backends.util import Backend
 
 
+# Backend:
+
 class ServingBackend(Backend):
     """The serving backend uses the parameter values from the best example."""
     backend_name = "serving"
-
-    def __init__(self, *args, **kwargs):
-        self.attempt_update(*args, **kwargs)
 
     @override
     def attempt_update(self, examples, params, allow_missing_data=False):

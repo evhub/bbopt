@@ -1,0 +1,98 @@
+"""
+The bandit backend. Implementations of simple multi-armed bandit algorithms, primarily for run_meta.
+"""
+
+import random
+import math
+
+import numpy as np
+
+from bbopt import constants
+from bbopt.util import mean
+from bbopt.backends.util import (
+    Backend,
+    get_named_data_points_and_losses,
+    marginalize,
+)
+
+
+# Backend:
+
+class BanditBackend(Backend):
+    """The bandit backend implements simple multi-armed bandit algorithms."""
+    backend_name = "bandit"
+
+    def __init__(self, *args, **options):
+        self.init_fallback_backend()
+        self.attempt_update(*args, **options)
+
+    @override
+    def attempt_update(self, examples, params, bandit_alg, eps=None, temp=None):
+        """Update the bandit algorithm with new parameters."""
+        self.bandit_alg = bandit_alg
+
+        if len(examples) <= 1:
+            self.named_data_points = self.losses = None
+            return True
+
+        self.named_data_points, self.losses = get_named_data_points_and_losses(examples, params)
+
+        if bandit_alg == "greedy":
+            if eps is None:
+                eps = constants.eps_greedy_explore_prob
+            assert temp is None, f"temp parameter not supported for {bandit_alg=}"
+
+        elif bandit_alg.startswith("boltzmann"):
+            if eps is None:
+                # make sure we cover the full space before doing our bandit algorithm
+                eps = 1 / math.sqrt(len(self.losses) - 1)
+            if temp is None:
+                temp = self.losses |> np.asarray |> np.std$(ddof=1)
+
+        else:
+            raise ValueError(f"invalid multi-armed bandit algorithm: {bandit_alg}")
+
+        self.eps = eps
+        self.temp = temp
+
+        return True
+
+    @override
+    def param(self, name, *args, **kwargs):
+        """Get a value for the given parameter."""
+        if self.losses is None or random.random() < self.eps:
+            rand_val = self.fallback_backend.param(name, *args, **kwargs)
+
+            # attempt to reroll once if we've already seen the value
+            if self.named_data_points is not None:
+                if any(point[name] == rand_val for point in self.named_data_points):
+                    rand_val = self.fallback_backend.param(name, *args, **kwargs)
+
+            return rand_val
+
+        elif self.bandit_alg == "greedy":
+            marginals = marginalize(self.named_data_points, self.losses, name)
+            best_val, min_loss = min(marginals, key=def ((val, loss)) -> loss)
+            return best_val
+
+        else:
+            marginals = marginalize(self.named_data_points, self.losses, name, ave_func=losses -> (mean(losses), len(losses)))
+            xs = marginals |> starmap$(def (val, (loss, N)) -> -loss) |> np.asarray
+            zs = self.temp * np.random.gumbel(size=xs.shape)
+
+            if self.bandit_alg == "boltzmann_gumbel":
+                ns = marginals |> starmap$(def (val, (loss, N)) -> N) |> np.asarray
+                zs /= np.sqrt(ns)
+            else:
+                assert self.bandit_alg == "boltzmann", f"invalid boltzmann bandit algorithm: {self.bandit_alg}"
+
+            best_i = np.argmax(xs + zs)
+            return marginals[best_i][0]
+
+
+# Registered names:
+
+BanditBackend.register()
+BanditBackend.register_alg("epsilon_greedy", bandit_alg="greedy")
+BanditBackend.register_alg("boltzmann_exploration", bandit_alg="boltzmann")
+BanditBackend.register_alg("boltzmann_gumbel_exploration", bandit_alg="boltzmann_gumbel")

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x20909e30
+# __coconut_hash__ = 0xb57d300a
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -45,6 +45,9 @@ else:
 
 from coconut.command.util import call_output
 
+from bbopt.util import mean
+from bbopt.util import median
+
 
 # Constants:
 
@@ -88,9 +91,6 @@ mixture_data = os.path.join(example_dir, "mixture_example.bbopt.pickle")
 
 json_file = os.path.join(example_dir, "json_example.py")
 json_data = os.path.join(example_dir, "json_example.bbopt.json")
-
-remove_erroring_algs_file = os.path.join(example_dir, "remove_erroring_algs_example.py")
-remove_erroring_algs_data = os.path.join(example_dir, "remove_erroring_algs_example.bbopt.pickle")
 
 
 # Utilities:
@@ -146,11 +146,6 @@ def get_nums(inputstr, numtype=float):
             pass
 
 
-def mean(xs):
-    return sum(xs) / len(xs)
-def median(xs):
-    sorted_xs = (list)((sorted)(xs))
-    return mean((sorted_xs[len(sorted_xs) // 2], sorted_xs[(len(sorted_xs) + 1) // 2],))
 def middle_mean(xs):
     a, b = len(xs) // 4, 3 * len(xs) // 4
     return mean(xs[a:b])
@@ -353,18 +348,6 @@ class TestExamples(unittest.TestCase):
             assert_improving(json_example.bb.get_data(print_data=True))
             assert json_example.y == want
             assert json_example.bb.num_examples == NUM_TRIALS
-
-    def test_remove_erroring_algs(self):
-        print("\ntest remove_erroring_algs:")
-        with using(remove_erroring_algs_data):
-            results = call_bbopt(remove_erroring_algs_file)
-            want = min(get_nums(results, numtype=float))
-            assert os.path.exists(remove_erroring_algs_data)
-
-            from bbopt.examples import remove_erroring_algs_example
-            assert_improving(remove_erroring_algs_example.bb.get_data(print_data=True))
-            assert remove_erroring_algs_example.y == want
-            assert remove_erroring_algs_example.bb.num_examples == NUM_TRIALS
 
 
 _coconut_call_set_names(TestExamples)

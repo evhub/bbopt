@@ -295,3 +295,17 @@ class DictProxy:
 
     def __repr__(self) =
         f"DictProxy(\n\t{self.old_dict=},\n\t{self.new_dict=},\n)"
+
+
+def mean(xs) =
+    """Compute the arithmetic mean of the given sequence."""
+    sum(xs) / len(xs)
+
+
+def median(xs):
+    """Compute the median of the given sequence."""
+    sorted_xs = xs |> sorted |> list
+    return mean((
+        sorted_xs[len(sorted_xs)//2],
+        sorted_xs[(len(sorted_xs) + 1)//2],
+    ))

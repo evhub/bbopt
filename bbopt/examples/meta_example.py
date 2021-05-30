@@ -15,6 +15,7 @@ if __name__ == "__main__":
             "tree_structured_parzen_estimator",
             "gaussian_process",
         ),
+        meta_alg="epsilon_greedy",
     )
 
 
