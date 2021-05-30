@@ -59,7 +59,6 @@ def array_param(func, name, shape, kwargs):
 
 class BlackBoxOptimizer:
     """Main bbopt optimizer object. See https://github.com/evhub/bbopt for documentation."""
-    DEFAULT_ALG_SENTINEL = object()
     backend = None
     _new_params = None
     _current_example = None
@@ -250,10 +249,10 @@ class BlackBoxOptimizer:
         """All algorithms supported by run."""
         alg_registry.asdict()
 
-    def run(self, alg=DEFAULT_ALG_SENTINEL):
+    def run(self, alg=constants.default_alg_sentinel):
         """Optimize parameters using the given algorithm
         (use .algs to get the list of valid algorithms)."""
-        if alg is self.DEFAULT_ALG_SENTINEL:
+        if alg is constants.default_alg_sentinel:
             alg = constants.default_alg
         if alg in meta_registry:
             algs, meta_alg = meta_registry[alg]
@@ -262,9 +261,9 @@ class BlackBoxOptimizer:
             backend, options = alg_registry[alg]
             self.run_backend(backend, **options)
 
-    def run_meta(self, algs, meta_alg=DEFAULT_ALG_SENTINEL):
+    def run_meta(self, algs, meta_alg=constants.default_alg_sentinel):
         """Dynamically choose the best algorithm from the given set of algorithms."""
-        if meta_alg is self.DEFAULT_ALG_SENTINEL:
+        if meta_alg is constants.default_alg_sentinel:
             meta_alg = constants.default_meta_alg
         self.run(meta_alg)
         alg = self.choice(constants.meta_opt_alg_var, algs)

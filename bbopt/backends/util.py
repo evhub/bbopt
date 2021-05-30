@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xfe372768
+# __coconut_hash__ = 0x883c2614
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -482,11 +482,8 @@ class Backend(_coconut.object):
         cls.register_meta(alg_name, cls.registered_algs, meta_alg)
 
     @staticmethod
-    def register_meta(alg_name, algs, meta_alg=None):
+    def register_meta(alg_name, algs, meta_alg=constants.default_alg_sentinel):
         """Register an algorithm that defers to run_meta."""
-        if meta_alg is None:
-            from bbopt.optimizer import BlackBoxOptimizer
-            meta_alg = BlackBoxOptimizer.DEFAULT_ALG_SENTINEL
         meta_registry.register(alg_name, (algs, meta_alg))
 
     @staticmethod

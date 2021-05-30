@@ -77,6 +77,8 @@ data_file_ext = ".bbopt"
 use_generic_categories_for_categorical_data = False
 use_placeholder_when_outside_support = False
 
+default_alg_sentinel = object()
+
 
 # CLI constants:
 default_trials = 100

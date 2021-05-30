@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xca7caf8f
+# __coconut_hash__ = 0xf14ab61c
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -66,6 +66,8 @@ data_file_ext = ".bbopt"
 
 use_generic_categories_for_categorical_data = False
 use_placeholder_when_outside_support = False
+
+default_alg_sentinel = object()
 
 
 # CLI constants:

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x2fa96c38
+# __coconut_hash__ = 0xdc14fe71
 
 # Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
 
@@ -92,7 +92,6 @@ def array_param(func, name, shape, kwargs):
 
 class BlackBoxOptimizer(_coconut.object):
     """Main bbopt optimizer object. See https://github.com/evhub/bbopt for documentation."""
-    DEFAULT_ALG_SENTINEL = object()
     backend = None
     _new_params = None
     _current_example = None
@@ -310,10 +309,10 @@ class BlackBoxOptimizer(_coconut.object):
         """All algorithms supported by run."""
         return alg_registry.asdict()
 
-    def run(self, alg=DEFAULT_ALG_SENTINEL):
+    def run(self, alg=constants.default_alg_sentinel):
         """Optimize parameters using the given algorithm
         (use .algs to get the list of valid algorithms)."""
-        if alg is self.DEFAULT_ALG_SENTINEL:
+        if alg is constants.default_alg_sentinel:
             alg = constants.default_alg
         if alg in meta_registry:
             algs, meta_alg = meta_registry[alg]
@@ -322,9 +321,9 @@ class BlackBoxOptimizer(_coconut.object):
             backend, options = alg_registry[alg]
             self.run_backend(backend, **options)
 
-    def run_meta(self, algs, meta_alg=DEFAULT_ALG_SENTINEL):
+    def run_meta(self, algs, meta_alg=constants.default_alg_sentinel):
         """Dynamically choose the best algorithm from the given set of algorithms."""
-        if meta_alg is self.DEFAULT_ALG_SENTINEL:
+        if meta_alg is constants.default_alg_sentinel:
             meta_alg = constants.default_meta_alg
         self.run(meta_alg)
         alg = self.choice(constants.meta_opt_alg_var, algs)
