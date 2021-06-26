@@ -32,9 +32,12 @@ force-build: clean
 	-mkdir "./bbopt/examples"
 	cp -rf "./bbopt-source/examples" "./bbopt/"
 
-.PHONY: upload
-upload: install
+.PHONY: package
+package:
 	python3 setup.py sdist bdist_wheel
+
+.PHONY: upload
+upload: install package
 	pip3 install -U --ignore-installed twine
 	twine upload dist/*
 

@@ -14,13 +14,13 @@ install:
 - make setup
 script:
 - make test
-deploy:
-  provider: pypi
-  edge:
-    branch: v1.8.45
-  user: evhub-develop
-  password:
-    secure: DJgg1rgC9DtLXh3WM6kIl0nS9TR3mvjSqmn6oOSAcOhNKQGt/TKlL5oVLYgQ/rdxaWB7JGKdyaB1JNbj5R86nYAGQWWWUFjvucIwF1Bz9xapQSFqx3+HlaJjdnn++tqZPWb83PXLcdw/Tiy/R+L3nS5iToeX4MhYmrTa2iqn5sel3nGJiUfpNFW1/LAuVrJ4GcB++UMofYBDXsVUugxD7F5BYbHgnhCtz9XE0proBxQOgLaIh20ke+lVeOd+5Y7rZSeVaU4JDPEcPaPfGYgFnodwUwmuDo0eXi90hxWkf/mvHh6l1qekwA8tzT1at6rcoWXcG+YTYL1aR0y/m6ROgx+xltir7PXm9RHF+9F5+erSA937/xDACglziudzmW1AVXTgqWnK53B6bwxDEhIP6Pk/hOmB10axsFgO5UsQY2YIPwietiI2TyWjsk0r0MhVGlOtHwiXuPwyyDxy4p3KyoU379qXu/QugFJg8zd++O+rgizmmty8fJ9U6HXF+LamfeUE0GFOtMuWPhQ4v1+MkYmljNJo7R5NnAHydIrC299gmw8Ek96bQ0iKkgfgJSYHUbgb1ujUsI8Z3mkO+tdzu9YAo89hdztiNuFBLfEt1paMFB2YIyD88FzNoLut/5JxMkpB92JQHP78mkUA9gmACjyoUtMJzCe64ImPQdlQpjQ=
-  on:
-    distributions: sdist bdist_wheel
-    repo: evhub/bbopt
+# deploy:
+#   provider: pypi
+#   edge:
+#     branch: v1.8.45
+#   user: evhub-develop
+#   password:
+#     secure: DJgg1rgC9DtLXh3WM6kIl0nS9TR3mvjSqmn6oOSAcOhNKQGt/TKlL5oVLYgQ/rdxaWB7JGKdyaB1JNbj5R86nYAGQWWWUFjvucIwF1Bz9xapQSFqx3+HlaJjdnn++tqZPWb83PXLcdw/Tiy/R+L3nS5iToeX4MhYmrTa2iqn5sel3nGJiUfpNFW1/LAuVrJ4GcB++UMofYBDXsVUugxD7F5BYbHgnhCtz9XE0proBxQOgLaIh20ke+lVeOd+5Y7rZSeVaU4JDPEcPaPfGYgFnodwUwmuDo0eXi90hxWkf/mvHh6l1qekwA8tzT1at6rcoWXcG+YTYL1aR0y/m6ROgx+xltir7PXm9RHF+9F5+erSA937/xDACglziudzmW1AVXTgqWnK53B6bwxDEhIP6Pk/hOmB10axsFgO5UsQY2YIPwietiI2TyWjsk0r0MhVGlOtHwiXuPwyyDxy4p3KyoU379qXu/QugFJg8zd++O+rgizmmty8fJ9U6HXF+LamfeUE0GFOtMuWPhQ4v1+MkYmljNJo7R5NnAHydIrC299gmw8Ek96bQ0iKkgfgJSYHUbgb1ujUsI8Z3mkO+tdzu9YAo89hdztiNuFBLfEt1paMFB2YIyD88FzNoLut/5JxMkpB92JQHP78mkUA9gmACjyoUtMJzCe64ImPQdlQpjQ=
+#   on:
+#     distributions: sdist bdist_wheel
+#     repo: evhub/bbopt
