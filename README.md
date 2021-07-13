@@ -62,6 +62,15 @@ import <your module here>
 ```
 to serve it!
 
+_Note: Neither `__file__` nor `__name__` are available in Jupyter notebooks. In that case, just setup BBopt with:_
+```python
+import os
+
+# BBopt setup:
+from bbopt import BlackBoxOptimizer
+bb = BlackBoxOptimizer(data_dir=os.getcwd(), data_name="my_project_name")
+```
+
 ## Examples
 
 Some examples of BBopt in action:
@@ -140,10 +149,13 @@ Why does this work? If you're using the basic boilerplate, then running `python 
 #### Constructor
 
 **BlackBoxOptimizer**(_file_, *, _tag_=`None`, _protocol_=`None`)
+**BlackBoxOptimizer**(_data\_dir_, _data\_name_, *, _tag_=`None`, _protocol_=`None`)
 
 Create a new `bb` object; this should be done at the beginning of your program as all the other functions are methods of this object.
 
-_file_ is used by BBopt to figure out where to load and save data to, and should usually just be set to `__file__`. _tag_ allows additional customization of the BBopt data file for when multiple BBopt instances might be desired for the same file. Specifically, BBopt uses `os.path.splitext(file)[0] + "_" + tag` as the base path for the data file.
+_file_ is used by BBopt to figure out where to load and save data to, and should usually just be set to `__file__`. _tag_ allows additional customization of the BBopt data file for when multiple BBopt instances might be desired for the same file. Specifically, BBopt will save data to `os.path.splitext(file)[0] + "_" + tag + extension`.
+
+Alternatively, _data\_dir_ and _data\_name_ can be used to specify where to save and load data to. In that case, BBopt will save data to `os.path.join(data_dir, data_name + extension)` if no _tag_ is passed, or `os.path.join(data_dir, data_name + "_" + tag + extension)` if a _tag_ is given.
 
 _protocol_ determines how BBopt serializes data. If `None` (the default), BBopt will use pickle protocol 2, which is the highest version that works on both Python 2 and Python 3 (unless a `json` file is present, in which case BBopt will use `json`). To use the newest protocol instead, pass `protocol=-1`. If `protocol="json"`, BBopt will use `json` instead of `pickle`, which is occasionally useful if you want to access your data outside of Python.
 

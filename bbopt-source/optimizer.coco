@@ -63,9 +63,7 @@ class BlackBoxOptimizer:
     _new_params = None
     _current_example = None
 
-    @convert_match_errors
     match def __init__(self, file is Str, *, tag=None, protocol=None):
-        """Construct a new BlackBoxOptimizer. It is recommended to pass file=__file__."""
         self._file = norm_path(file)
         self._tag = tag
 
@@ -78,6 +76,14 @@ class BlackBoxOptimizer:
             self.protocol = protocol
 
         self.reload()
+
+    @convert_match_errors
+    addpattern def __init__(self, data_dir is Str, data_name is Str, **kwargs):
+        """
+        Construct a new BlackBoxOptimizer. You must either pass file=__file__ or
+        both data_dir="/path/to/some/dir" and data_name="my_project_name".
+        """
+        self.__init__(os.path.join(data_dir, data_name), **kwargs)
 
     # Private utilities:
 

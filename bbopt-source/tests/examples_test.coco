@@ -127,7 +127,7 @@ def middle_mean(xs) =
     mean(xs[a:b])
 
 
-def assert_improving(data, ave_func=mean):
+def assert_improving(data, ave_func=mean, within_frac=0.1):
     """Assert that the second half of data is greater/smaller than the first."""
     examples = \data["examples"]
     assert len(examples) >= 2, \data
@@ -137,12 +137,12 @@ def assert_improving(data, ave_func=mean):
         ave_func ??= min
         first_losses = first_half |> map$(.["loss"]) |> ave_func
         second_losses = second_half |> map$(.["loss"]) |> ave_func
-        assert second_losses < first_losses
+        assert second_losses - first_losses < first_losses * within_frac
     else:
         ave_func ??= max
         first_gains = first_half |> map$(.["gain"]) |> ave_func
         second_gains = second_half |> map$(.["gain"]) |> ave_func
-        assert second_gains > first_gains
+        assert second_gains - first_gains > -first_gains * within_frac
 
 
 def call_bbopt(fpath, trials=NUM_TRIALS, procs=NUM_PROCS):
