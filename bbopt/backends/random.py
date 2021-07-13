@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x278a4dfa
+# __coconut_hash__ = 0x4d9396b7
 
-# Compiled with Coconut version 1.5.0-post_dev73 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev74 [Fish License]
 
 """
 The random backend. Does not use existing data, simply spits out random valid values.

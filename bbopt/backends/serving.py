@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3100d9
+# __coconut_hash__ = 0xccd73426
 
-# Compiled with Coconut version 1.5.0-post_dev73 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev74 [Fish License]
 
 """
 The serving backend. Selects the best existing data point.

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb7487f21
+# __coconut_hash__ = 0xc444bc3d
 
-# Compiled with Coconut version 1.5.0-post_dev73 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev74 [Fish License]
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -154,7 +154,12 @@ def middle_mean(xs):
     return mean(xs[a:b])
 
 
-def assert_improving(data, ave_func=mean, within_frac=0.1):
+def stdev(xs):
+    mu = mean(xs)
+
+
+    return mean(((x - mu)**2 for x in xs))**0.5
+def assert_improving(data, ave_func=mean, within_stdevs=0.5):
     """Assert that the second half of data is greater/smaller than the first."""
     examples = data["examples"]
     assert len(examples) >= 2, data
@@ -162,14 +167,22 @@ def assert_improving(data, ave_func=mean, within_frac=0.1):
     first_half, second_half = examples[:half_pt], examples[half_pt:]
     if "loss" in first_half[0]:
         ave_func = min if ave_func is None else ave_func
-        first_losses = (ave_func)((map)(_coconut.operator.itemgetter(("loss")), first_half))
-        second_losses = (ave_func)((map)(_coconut.operator.itemgetter(("loss")), second_half))
-        assert second_losses - first_losses < first_losses * within_frac
+        first_losses = (map)(_coconut.operator.itemgetter(("loss")), first_half)
+        second_losses = (map)(_coconut.operator.itemgetter(("loss")), second_half)
+
+        first_ave_loss = ave_func(first_losses)
+        second_ave_loss = ave_func(second_losses)
+        first_stdev = stdev(first_losses)
+        assert second_ave_loss - first_ave_loss < first_stdev * with_stdevs
     else:
         ave_func = max if ave_func is None else ave_func
-        first_gains = (ave_func)((map)(_coconut.operator.itemgetter(("gain")), first_half))
-        second_gains = (ave_func)((map)(_coconut.operator.itemgetter(("gain")), second_half))
-        assert second_gains - first_gains > -first_gains * within_frac
+        first_gains = (map)(_coconut.operator.itemgetter(("gain")), first_half)
+        second_gains = (map)(_coconut.operator.itemgetter(("gain")), second_half)
+
+        first_ave_gain = ave_func(first_gains)
+        second_ave_gain = ave_func(second_gains)
+        first_stdev = stdev(first_losses)
+        assert second_ave_gain - first_ave_gain > -first_stdev * with_stdevs
 
 
 def call_bbopt(fpath, trials=NUM_TRIALS, procs=NUM_PROCS):
