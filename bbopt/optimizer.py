@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xdc14fe71
+# __coconut_hash__ = 0x239fc972
 
-# Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev73 [Fish License]
 
 """
 The main BBopt interface.
@@ -27,11 +27,14 @@ if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha(
             try:
                 _coconut_v.__module__ = _coconut_full_module_name
             except AttributeError:
-                type(_coconut_v).__module__ = _coconut_full_module_name
+                _coconut_v_type = type(_coconut_v)
+                if getattr(_coconut_v_type, "__module__", None) == str("__coconut__"):
+                    _coconut_v_type.__module__ = _coconut_full_module_name
     _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
 from __coconut__ import _coconut_call_set_names, _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
 _coconut_sys.path.pop(0)
+
 # Compiled Coconut: -----------------------------------------------------------
 
 
@@ -96,10 +99,8 @@ class BlackBoxOptimizer(_coconut.object):
     _new_params = None
     _current_example = None
 
-    @convert_match_errors
     @_coconut_mark_as_match
     def __init__(*_coconut_match_args, **_coconut_match_kwargs):
-        """Construct a new BlackBoxOptimizer. It is recommended to pass file=__file__."""
         _coconut_match_check_0 = False
         _coconut_FunctionMatchError = _coconut_get_function_match_error()
         if (_coconut.len(_coconut_match_args) <= 2) and (_coconut.sum((_coconut.len(_coconut_match_args) > 0, "self" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 1, "file" in _coconut_match_kwargs)) == 1):
@@ -128,6 +129,31 @@ class BlackBoxOptimizer(_coconut.object):
             self.protocol = protocol
 
         self.reload()
+
+    @convert_match_errors
+    @_coconut_addpattern(__init__)
+    @_coconut_mark_as_match
+    def __init__(*_coconut_match_args, **_coconut_match_kwargs):
+        """
+        Construct a new BlackBoxOptimizer. You must either pass file=__file__ or
+        both data_dir="/path/to/some/dir" and data_name="my_project_name".
+        """
+        _coconut_match_check_1 = False
+        _coconut_FunctionMatchError = _coconut_get_function_match_error()
+        if (_coconut.len(_coconut_match_args) <= 3) and (_coconut.sum((_coconut.len(_coconut_match_args) > 0, "self" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 1, "data_dir" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 2, "data_name" in _coconut_match_kwargs)) == 1):
+            _coconut_match_temp_0 = _coconut_match_args[0] if _coconut.len(_coconut_match_args) > 0 else _coconut_match_kwargs.pop("self")
+            _coconut_match_temp_1 = _coconut_match_args[1] if _coconut.len(_coconut_match_args) > 1 else _coconut_match_kwargs.pop("data_dir")
+            _coconut_match_temp_2 = _coconut_match_args[2] if _coconut.len(_coconut_match_args) > 2 else _coconut_match_kwargs.pop("data_name")
+            if (_coconut.isinstance(_coconut_match_temp_1, Str)) and (_coconut.isinstance(_coconut_match_temp_2, Str)):
+                self = _coconut_match_temp_0
+                data_dir = _coconut_match_temp_1
+                data_name = _coconut_match_temp_2
+                kwargs = _coconut_match_kwargs
+                _coconut_match_check_1 = True
+        if not _coconut_match_check_1:
+            raise _coconut_FunctionMatchError('addpattern def __init__(self, data_dir is Str, data_name is Str, **kwargs):', _coconut_match_args)
+
+        self.__init__(os.path.join(data_dir, data_name), **kwargs)
 
 # Private utilities:
 
@@ -179,15 +205,15 @@ class BlackBoxOptimizer(_coconut.object):
         contents = df.read()
         if contents:
             _coconut_match_to_0 = self._loads(contents)
-            _coconut_match_check_1 = False
+            _coconut_match_check_2 = False
             if (_coconut.isinstance(_coconut_match_to_0, _coconut.abc.Mapping)) and (_coconut.len(_coconut_match_to_0) == 2):
                 _coconut_match_temp_0 = _coconut_match_to_0.get("params", _coconut_sentinel)
                 _coconut_match_temp_1 = _coconut_match_to_0.get("examples", _coconut_sentinel)
                 if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut_match_temp_1 is not _coconut_sentinel):
                     params = _coconut_match_temp_0
                     examples = _coconut_match_temp_1
-                    _coconut_match_check_1 = True
-            if not _coconut_match_check_1:
+                    _coconut_match_check_2 = True
+            if not _coconut_match_check_2:
                 raise _coconut_MatchError('{"params": params, "examples": examples} = self._loads(contents)', _coconut_match_to_0)
 
             self._old_params = params
@@ -279,15 +305,15 @@ class BlackBoxOptimizer(_coconut.object):
         kwargs = param_processor.standardize_kwargs(kwargs)
 
         _coconut_match_to_1 = self._old_params
-        _coconut_match_check_2 = False
+        _coconut_match_check_3 = False
         if _coconut.isinstance(_coconut_match_to_1, _coconut.abc.Mapping):
             _coconut_match_temp_0 = _coconut_match_to_1.get(name, _coconut_sentinel)
             if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut.isinstance(_coconut_match_temp_0, _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_temp_0) == 3):
                 old_func = _coconut_match_temp_0[0]
                 old_args = _coconut_match_temp_0[1]
                 old_kwargs = _coconut_match_temp_0[2]
-                _coconut_match_check_2 = True
-        if _coconut_match_check_2:
+                _coconut_match_check_3 = True
+        if _coconut_match_check_3:
             if (func, args) != (old_func, old_args):
                 printerr("BBopt Warning: detected change in parameter {_coconut_format_0} ({_coconut_format_1} != {_coconut_format_2}) (you may need to delete your old BBopt data)".format(_coconut_format_0=(name), _coconut_format_1=((func, args)), _coconut_format_2=((old_func, old_args))))
 
@@ -404,7 +430,7 @@ class BlackBoxOptimizer(_coconut.object):
 
     def partial_dependence(self, i_name, j_name=None, *args, **kwargs):
         """Calls skopt.plots.partial_dependence where i_name and j_name are parameter names."""
-        def _coconut_mock_8(self, i_name, j_name=None, *args, **kwargs): return self, i_name, j_name, args, kwargs
+        def _coconut_mock_9(self, i_name, j_name=None, *args, **kwargs): return self, i_name, j_name, args, kwargs
         while True:
             from skopt.plots import partial_dependence
             if not self._examples:
@@ -417,18 +443,18 @@ class BlackBoxOptimizer(_coconut.object):
             j = None if j_name is None else sorted_names.index(j_name)
 
             try:
-                _coconut_tre_check_0 = partial_dependence is _coconut_recursive_func_26
+                _coconut_tre_check_0 = partial_dependence is _coconut_recursive_func_27
             except _coconut.NameError:
                 _coconut_tre_check_0 = False
             if _coconut_tre_check_0:
-                self, i_name, j_name, args, kwargs = _coconut_mock_8(skopt_backend.space, skopt_backend.model, i, j, *args, **kwargs)
+                self, i_name, j_name, args, kwargs = _coconut_mock_9(skopt_backend.space, skopt_backend.model, i, j, *args, **kwargs)
                 continue
             else:
                 return partial_dependence(skopt_backend.space, skopt_backend.model, i, j, *args, **kwargs)
 
 
             return None
-    _coconut_recursive_func_26 = partial_dependence
+    _coconut_recursive_func_27 = partial_dependence
     def plot_partial_dependence_1D(self, i_name, ax=None, yscale=None, **kwargs):
         """Constructs a 1D partial dependence plot using self.partial_dependence."""
         xi, yi = self.partial_dependence(i_name, **kwargs)
@@ -442,51 +468,51 @@ class BlackBoxOptimizer(_coconut.object):
 
     def plot_evaluations(self, *args, **kwargs):
         """Calls skopt.plots.plot_evaluations."""
-        def _coconut_mock_10(self, *args, **kwargs): return self, args, kwargs
+        def _coconut_mock_11(self, *args, **kwargs): return self, args, kwargs
         while True:
             from skopt.plots import plot_evaluations
             try:
-                _coconut_tre_check_1 = plot_evaluations is _coconut_recursive_func_29
+                _coconut_tre_check_1 = plot_evaluations is _coconut_recursive_func_30
             except _coconut.NameError:
                 _coconut_tre_check_1 = False
             if _coconut_tre_check_1:
-                self, args, kwargs = _coconut_mock_10(self.get_skopt_result(), *args, **kwargs)
+                self, args, kwargs = _coconut_mock_11(self.get_skopt_result(), *args, **kwargs)
                 continue
             else:
                 return plot_evaluations(self.get_skopt_result(), *args, **kwargs)
 
 
             return None
-    _coconut_recursive_func_29 = plot_evaluations
+    _coconut_recursive_func_30 = plot_evaluations
     def plot_objective(self, *args, **kwargs):
         """Calls skopt.plots.plot_objective."""
-        def _coconut_mock_11(self, *args, **kwargs): return self, args, kwargs
+        def _coconut_mock_12(self, *args, **kwargs): return self, args, kwargs
         while True:
             from skopt.plots import plot_objective
             try:
-                _coconut_tre_check_2 = plot_objective is _coconut_recursive_func_30
+                _coconut_tre_check_2 = plot_objective is _coconut_recursive_func_31
             except _coconut.NameError:
                 _coconut_tre_check_2 = False
             if _coconut_tre_check_2:
-                self, args, kwargs = _coconut_mock_11(self.get_skopt_result(), *args, **kwargs)
+                self, args, kwargs = _coconut_mock_12(self.get_skopt_result(), *args, **kwargs)
                 continue
             else:
                 return plot_objective(self.get_skopt_result(), *args, **kwargs)
 
 
             return None
-    _coconut_recursive_func_30 = plot_objective
+    _coconut_recursive_func_31 = plot_objective
     def plot_regret(self, *args, **kwargs):
         """Calls skopt.plots.plot_regret."""
-        def _coconut_mock_12(self, *args, **kwargs): return self, args, kwargs
+        def _coconut_mock_13(self, *args, **kwargs): return self, args, kwargs
         while True:
             from skopt.plots import plot_regret
             try:
-                _coconut_tre_check_3 = plot_regret is _coconut_recursive_func_31
+                _coconut_tre_check_3 = plot_regret is _coconut_recursive_func_32
             except _coconut.NameError:
                 _coconut_tre_check_3 = False
             if _coconut_tre_check_3:
-                self, args, kwargs = _coconut_mock_12(self.get_skopt_result(), *args, **kwargs)
+                self, args, kwargs = _coconut_mock_13(self.get_skopt_result(), *args, **kwargs)
                 continue
             else:
                 return plot_regret(self.get_skopt_result(), *args, **kwargs)
@@ -495,7 +521,7 @@ class BlackBoxOptimizer(_coconut.object):
 # Base random functions:
 
             return None
-    _coconut_recursive_func_31 = plot_regret
+    _coconut_recursive_func_32 = plot_regret
     def randrange(self, name, *args, **kwargs):
         """Create a new parameter with the given name modeled by random.randrange(*args)."""
         return self.param(name, "randrange", *args, **kwargs)

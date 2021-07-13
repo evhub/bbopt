@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4914ba27
+# __coconut_hash__ = 0xb7487f21
 
-# Compiled with Coconut version 1.5.0-post_dev57 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev73 [Fish License]
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -23,11 +23,14 @@ if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha(
             try:
                 _coconut_v.__module__ = _coconut_full_module_name
             except AttributeError:
-                type(_coconut_v).__module__ = _coconut_full_module_name
+                _coconut_v_type = type(_coconut_v)
+                if getattr(_coconut_v_type, "__module__", None) == str("__coconut__"):
+                    _coconut_v_type.__module__ = _coconut_full_module_name
     _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
 from __coconut__ import _coconut_call_set_names, _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
 _coconut_sys.path.pop(0)
+
 # Compiled Coconut: -----------------------------------------------------------
 
 # Imports:
@@ -151,7 +154,7 @@ def middle_mean(xs):
     return mean(xs[a:b])
 
 
-def assert_improving(data, ave_func=mean):
+def assert_improving(data, ave_func=mean, within_frac=0.1):
     """Assert that the second half of data is greater/smaller than the first."""
     examples = data["examples"]
     assert len(examples) >= 2, data
@@ -161,12 +164,12 @@ def assert_improving(data, ave_func=mean):
         ave_func = min if ave_func is None else ave_func
         first_losses = (ave_func)((map)(_coconut.operator.itemgetter(("loss")), first_half))
         second_losses = (ave_func)((map)(_coconut.operator.itemgetter(("loss")), second_half))
-        assert second_losses < first_losses
+        assert second_losses - first_losses < first_losses * within_frac
     else:
         ave_func = max if ave_func is None else ave_func
         first_gains = (ave_func)((map)(_coconut.operator.itemgetter(("gain")), first_half))
         second_gains = (ave_func)((map)(_coconut.operator.itemgetter(("gain")), second_half))
-        assert second_gains > first_gains
+        assert second_gains - first_gains > -first_gains * within_frac
 
 
 def call_bbopt(fpath, trials=NUM_TRIALS, procs=NUM_PROCS):
