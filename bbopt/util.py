@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa295e2f1
+# __coconut_hash__ = 0xa2cf1f11
 
 # Compiled with Coconut version 1.5.0-post_dev74 [Fish License]
 
@@ -360,12 +360,36 @@ class DictProxy(_coconut.object):
 
 
 _coconut_call_set_names(DictProxy)
-def mean(xs):
-    """Compute the arithmetic mean of the given sequence."""
+@_coconut_mark_as_match
+def mean(*_coconut_match_args, **_coconut_match_kwargs):
+    _coconut_match_check_0 = False
+    _coconut_FunctionMatchError = _coconut_get_function_match_error()
+    if (_coconut.len(_coconut_match_args) == 1) and (_coconut.isinstance(_coconut_match_args[0], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_args[0]) >= 0):
+        xs = _coconut.list(_coconut_match_args[0])
+        if not _coconut_match_kwargs:
+            _coconut_match_check_0 = True
+    if not _coconut_match_check_0:
+        raise _coconut_FunctionMatchError('match def mean([] + xs) =', _coconut_match_args)
+
     return sum(xs) / len(xs)
+
+@_coconut_addpattern(mean)
+@_coconut_mark_as_match
+def mean(*_coconut_match_args, **_coconut_match_kwargs):
+    """Compute the arithmetic mean of the given sequence."""
+    _coconut_match_check_1 = False
+    _coconut_FunctionMatchError = _coconut_get_function_match_error()
+    if (_coconut.len(_coconut_match_args) == 1) and (_coconut.isinstance(_coconut_match_args[0], _coconut.abc.Iterable)):
+        xs = _coconut_match_args[0]
+        if not _coconut_match_kwargs:
+            _coconut_match_check_1 = True
+    if not _coconut_match_check_1:
+        raise _coconut_FunctionMatchError('addpattern def mean(() :: xs) =', _coconut_match_args)
+
+    return (mean)((tuple)(xs))
 
 
 def median(xs):
     """Compute the median of the given sequence."""
-    sorted_xs = (list)((sorted)(xs))
+    sorted_xs = (tuple)((sorted)(xs))
     return mean((sorted_xs[len(sorted_xs) // 2], sorted_xs[(len(sorted_xs) + 1) // 2],))

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc444bc3d
+# __coconut_hash__ = 0x1d5df9dd
 
 # Compiled with Coconut version 1.5.0-post_dev74 [Fish License]
 
@@ -150,11 +150,13 @@ def get_nums(inputstr, numtype=float):
 
 
 def middle_mean(xs):
+    """Mean of the middle half of xs."""
     a, b = len(xs) // 4, 3 * len(xs) // 4
     return mean(xs[a:b])
 
 
 def stdev(xs):
+    """Standard deviation of xs."""
     mu = mean(xs)
 
 
@@ -173,7 +175,7 @@ def assert_improving(data, ave_func=mean, within_stdevs=0.5):
         first_ave_loss = ave_func(first_losses)
         second_ave_loss = ave_func(second_losses)
         first_stdev = stdev(first_losses)
-        assert second_ave_loss - first_ave_loss < first_stdev * with_stdevs
+        assert second_ave_loss - first_ave_loss < first_stdev * within_stdevs
     else:
         ave_func = max if ave_func is None else ave_func
         first_gains = (map)(_coconut.operator.itemgetter(("gain")), first_half)
@@ -181,8 +183,8 @@ def assert_improving(data, ave_func=mean, within_stdevs=0.5):
 
         first_ave_gain = ave_func(first_gains)
         second_ave_gain = ave_func(second_gains)
-        first_stdev = stdev(first_losses)
-        assert second_ave_gain - first_ave_gain > -first_stdev * with_stdevs
+        first_stdev = stdev(first_gains)
+        assert second_ave_gain - first_ave_gain > -first_stdev * within_stdevs
 
 
 def call_bbopt(fpath, trials=NUM_TRIALS, procs=NUM_PROCS):

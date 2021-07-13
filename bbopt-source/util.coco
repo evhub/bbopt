@@ -297,14 +297,17 @@ class DictProxy:
         f"DictProxy(\n\t{self.old_dict=},\n\t{self.new_dict=},\n)"
 
 
-def mean(xs) =
-    """Compute the arithmetic mean of the given sequence."""
+match def mean([] + xs) =
     sum(xs) / len(xs)
+
+addpattern def mean(() :: xs) =
+    """Compute the arithmetic mean of the given sequence."""
+    xs |> tuple |> mean
 
 
 def median(xs):
     """Compute the median of the given sequence."""
-    sorted_xs = xs |> sorted |> list
+    sorted_xs = xs |> sorted |> tuple
     return mean((
         sorted_xs[len(sorted_xs)//2],
         sorted_xs[(len(sorted_xs) + 1)//2],
