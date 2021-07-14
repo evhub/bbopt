@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x37bfecd4
+# __coconut_hash__ = 0x5e7343e6
 
 # Compiled with Coconut version 1.5.0-post_dev74 [Fish License]
 
@@ -72,14 +72,16 @@ def _init_backend(*_coconut_match_args, **_coconut_match_kwargs):
         _coconut_match_temp_2 = _coconut_match_args[2] if _coconut.len(_coconut_match_args) > 2 else _coconut_match_kwargs.pop("params")
         args = _coconut_match_args[3:]
         _coconut_match_temp_3 = _coconut_match_kwargs.pop("_attempt_to_update_backend") if "_attempt_to_update_backend" in _coconut_match_kwargs else None
+        _coconut_match_temp_4 = _coconut_match_kwargs.pop("_on_new_backend") if "_on_new_backend" in _coconut_match_kwargs else None
         backend_cls = _coconut_match_temp_0
         examples = _coconut_match_temp_1
         params = _coconut_match_temp_2
         _attempt_to_update_backend = _coconut_match_temp_3
+        _on_new_backend = _coconut_match_temp_4
         options = _coconut_match_kwargs
         _coconut_match_check_0 = True
     if not _coconut_match_check_0:
-        raise _coconut_FunctionMatchError('match def _init_backend(backend_cls, examples, params, *args, _attempt_to_update_backend=None, **options):', _coconut_match_args)
+        raise _coconut_FunctionMatchError('match def _init_backend(backend_cls, examples, params, *args, _attempt_to_update_backend=None, _on_new_backend=None, **options):', _coconut_match_args)
 
     backend_examples = examples[:]
     backend_params = params.copy()
@@ -97,6 +99,8 @@ def _init_backend(*_coconut_match_args, **_coconut_match_kwargs):
     if new_backend is None:
         assert not _attempt_to_update_backend or isinstance(_attempt_to_update_backend, Backend), "invalid backend to attempt update on: {_coconut_format_0}".format(_coconut_format_0=(_attempt_to_update_backend))
         new_backend = backend_cls(backend_examples, backend_params, *args, **options)
+        if _on_new_backend is not None:
+            _on_new_backend(new_backend)
 
     return new_backend
 
@@ -126,15 +130,17 @@ def get_backend(*_coconut_match_args, **_coconut_match_kwargs):
         _coconut_match_temp_3 = _coconut_match_args[3] if _coconut.len(_coconut_match_args) > 3 else _coconut_match_kwargs.pop("params")
         args = _coconut_match_args[4:]
         _coconut_match_temp_4 = _coconut_match_kwargs.pop("_current_backend") if "_current_backend" in _coconut_match_kwargs else None
+        _coconut_match_temp_5 = _coconut_match_kwargs.pop("_on_new_backend") if "_on_new_backend" in _coconut_match_kwargs else None
         backend_store = _coconut_match_temp_0
         backend = _coconut_match_temp_1
         examples = _coconut_match_temp_2
         params = _coconut_match_temp_3
         _current_backend = _coconut_match_temp_4
+        _on_new_backend = _coconut_match_temp_5
         options = _coconut_match_kwargs
         _coconut_match_check_1 = True
     if not _coconut_match_check_1:
-        raise _coconut_FunctionMatchError('match def get_backend(backend_store, backend, examples, params, *args, _current_backend=None, **options):', _coconut_match_args)
+        raise _coconut_FunctionMatchError('match def get_backend(backend_store, backend, examples, params, *args, _current_backend=None, _on_new_backend=None, **options):', _coconut_match_args)
 
     if isinstance(backend, type) and issubclass(backend, Backend):
         backend_cls = backend
@@ -156,7 +162,7 @@ def get_backend(*_coconut_match_args, **_coconut_match_kwargs):
     else:
         init_options = options
 
-    new_backend = _init_backend(backend_cls, examples, params, *args, _attempt_to_update_backend=attempt_to_update_backend, **init_options)
+    new_backend = _init_backend(backend_cls, examples, params, *args, _attempt_to_update_backend=attempt_to_update_backend, _on_new_backend=_on_new_backend, **init_options)
 
     if store_ind is None:
         backend_store[backend_cls].append((args, options, new_backend))
@@ -411,7 +417,7 @@ class Backend(_coconut.object):
     def __new__(cls, examples=None, params=None, *args, **kwargs):
         self = super(Backend, cls).__new__(cls)
         if self.tell_examples is not None:
-            self._examples = examples
+            self._examples = []
             self._params = params
             self._args = args
             self._kwargs = kwargs
@@ -435,6 +441,7 @@ class Backend(_coconut.object):
                 self.tell_examples(new_examples)
             except NotImplementedError:
                 return False
+        self._examples = examples
         return True
 
     def init_fallback_backend(self):

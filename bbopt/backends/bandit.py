@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3ac69196
+# __coconut_hash__ = 0x31fc0eb1
 
 # Compiled with Coconut version 1.5.0-post_dev74 [Fish License]
 
@@ -59,7 +59,7 @@ class BanditBackend(Backend):
 
     def __init__(self, *args, **options):
         self.init_fallback_backend()
-        self.attempt_update(*args, **options)
+        super(BanditBackend, self).__init__(*args, **options)
 
     @override
     def attempt_update(self, examples, params, bandit_alg, eps=None, temp=None):

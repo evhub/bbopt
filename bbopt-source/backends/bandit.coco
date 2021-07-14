@@ -24,7 +24,7 @@ class BanditBackend(Backend):
 
     def __init__(self, *args, **options):
         self.init_fallback_backend()
-        self.attempt_update(*args, **options)
+        super(BanditBackend, self).__init__(*args, **options)
 
     @override
     def attempt_update(self, examples, params, bandit_alg, eps=None, temp=None):

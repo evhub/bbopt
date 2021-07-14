@@ -64,6 +64,8 @@ class BlackBoxOptimizer:
     _current_example = None
 
     match def __init__(self, file is Str, *, tag=None, protocol=None):
+        self._backend_creation_counts = defaultdict(int)
+
         self._file = norm_path(file)
         self._tag = tag
 
@@ -171,6 +173,7 @@ class BlackBoxOptimizer:
             self._old_params,
             *args,
             _current_backend=self.backend,
+            _on_new_backend=(def backend -> self._backend_creation_counts[type(backend)] += 1),
             **options,
         )
 

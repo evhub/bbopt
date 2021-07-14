@@ -43,15 +43,15 @@ upload: install package
 
 .PHONY: test
 test: install
-	pytest --strict --fulltrace -s ./bbopt/tests
+	pytest --strict-markers --full-trace -s ./bbopt/tests
 
 .PHONY: force-test
 force-test: force-install
-	pytest --strict --fulltrace -s ./bbopt/tests
+	pytest --strict-markers --full-trace -s ./bbopt/tests
 
 .PHONY: force-test-py2
 force-test-py2: force-install-py2
-	python2 -m pytest --strict --fulltrace -s ./bbopt/tests
+	python2 -m pytest --strict-markers --full-trace -s ./bbopt/tests
 
 .PHONY: test-keras
 test-keras: install

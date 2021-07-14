@@ -25,7 +25,7 @@ from bbopt.registry import (
 # Utilities:
 
 @convert_match_errors
-match def _init_backend(backend_cls, examples, params, *args, _attempt_to_update_backend=None, **options):
+match def _init_backend(backend_cls, examples, params, *args, _attempt_to_update_backend=None, _on_new_backend=None, **options):
     """Create a backend object with the given data (backend can be backend name or class)."""
     backend_examples = examples[:]
     backend_params = params.copy()
@@ -43,6 +43,8 @@ match def _init_backend(backend_cls, examples, params, *args, _attempt_to_update
     if new_backend is None:
         assert not _attempt_to_update_backend or isinstance(_attempt_to_update_backend, Backend), f"invalid backend to attempt update on: {_attempt_to_update_backend}"
         new_backend = backend_cls(backend_examples, backend_params, *args, **options)
+        if _on_new_backend is not None:
+            _on_new_backend(new_backend)
 
     return new_backend
 
@@ -60,7 +62,7 @@ def _make_safe_backend_store(backend_store, remove_backends):
     return safe_backend_store
 
 
-match def get_backend(backend_store, backend, examples, params, *args, _current_backend=None, **options):
+match def get_backend(backend_store, backend, examples, params, *args, _current_backend=None, _on_new_backend=None, **options):
     """Create a backend object, attempting to update a backend from backend_store."""
     if isinstance(backend, type) and issubclass(backend, Backend):
         backend_cls = backend
@@ -88,6 +90,7 @@ match def get_backend(backend_store, backend, examples, params, *args, _current_
         params,
         *args,
         _attempt_to_update_backend=attempt_to_update_backend,
+        _on_new_backend=_on_new_backend,
         **init_options,
     )
 
@@ -308,7 +311,7 @@ class Backend:
     def __new__(cls, examples=None, params=None, *args, **kwargs):
         self = super(Backend, cls).__new__(cls)
         if self.tell_examples is not None:
-            self._examples = examples
+            self._examples = []
             self._params = params
             self._args = args
             self._kwargs = kwargs
@@ -336,6 +339,7 @@ class Backend:
                 self.tell_examples(new_examples)
             except NotImplementedError:
                 return False
+        self._examples = examples
         return True
 
     def init_fallback_backend(self):

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x39c1dfa1
+# __coconut_hash__ = 0x294515c0
 
 # Compiled with Coconut version 1.5.0-post_dev74 [Fish License]
 
@@ -116,6 +116,8 @@ class BlackBoxOptimizer(_coconut.object):
                 _coconut_match_check_0 = True
         if not _coconut_match_check_0:
             raise _coconut_FunctionMatchError('match def __init__(self, file is Str, *, tag=None, protocol=None):', _coconut_match_args)
+
+        self._backend_creation_counts = defaultdict(int)
 
         self._file = norm_path(file)
         self._tag = tag
@@ -243,7 +245,9 @@ class BlackBoxOptimizer(_coconut.object):
 
     def _get_backend(self, backend, *args, **options):
         """Get the given backend, attempting to load from stored backends."""
-        return get_backend(self._backend_store, backend, self._examples, self._old_params, *args, _current_backend=self.backend, **options)
+        def _coconut_lambda_0(backend):
+            self._backend_creation_counts[type(backend)] += 1
+        return get_backend(self._backend_store, backend, self._examples, self._old_params, *args, _current_backend=self.backend, _on_new_backend=(_coconut_lambda_0), **options)
 
     def _get_skopt_backend(self):
         """Get a scikit-optimize backend regardless of whether currently using one."""
@@ -624,10 +628,10 @@ class BlackBoxOptimizer(_coconut.object):
             if len(sampling_population) <= 1:
                 sample.append(sampling_population[0])
             else:
-                def _coconut_lambda_0(val):
+                def _coconut_lambda_1(val):
                     elem = _coconut_igetitem(val, i)
                     return sampling_population.index(elem) if elem in sampling_population else 0
-                proc_kwargs = (param_processor.modify_kwargs)(_coconut_lambda_0, kwargs)
+                proc_kwargs = (param_processor.modify_kwargs)(_coconut_lambda_1, kwargs)
                 ind = self.randrange("{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(i)), len(sampling_population), **proc_kwargs)
                 sample.append(sampling_population.pop(ind))
         return sample

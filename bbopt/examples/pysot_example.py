@@ -38,6 +38,8 @@ def main(num_trials=10):
 
 if __name__ == "__main__":
     print(main())
+    # check that we only ever created one backend
+    assert all(count <= 2 for count in bb._backend_creation_counts.values()), bb._backend_creation_counts
 
 
 best_y = run_trial(serving=True)
