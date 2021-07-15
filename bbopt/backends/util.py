@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x5e7343e6
+# __coconut_hash__ = 0x779c92c1
 
-# Compiled with Coconut version 1.5.0-post_dev74 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev75 [Fish License]
 
 """
 Utilities for use in BBopt backends.

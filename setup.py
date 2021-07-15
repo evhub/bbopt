@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x9541e1dd
+# __coconut_hash__ = 0x4b839e46
 
-# Compiled with Coconut version 1.5.0-post_dev74 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev75 [Fish License]
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -294,8 +294,8 @@ def _coconut_tco(func):
             call_func, args, kwargs = result.func, result.args, result.kwargs
     tail_call_optimized_func._coconut_tco_func = func
     tail_call_optimized_func.__module__ = _coconut.getattr(func, "__module__", None)
-    tail_call_optimized_func.__name__ = _coconut.getattr(func, "__name__", "<coconut tco function (pass --no-tco to remove)>")
-    tail_call_optimized_func.__qualname__ = _coconut.getattr(func, "__qualname__", tail_call_optimized_func.__name__)
+    tail_call_optimized_func.__name__ = _coconut.getattr(func, "__name__", None)
+    tail_call_optimized_func.__qualname__ = _coconut.getattr(func, "__qualname__", None)
     _coconut_tco_func_dict[_coconut.id(tail_call_optimized_func)] = _coconut.weakref.ref(tail_call_optimized_func)
     return tail_call_optimized_func
 def _coconut_igetitem(iterable, index):
