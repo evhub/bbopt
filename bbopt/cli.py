@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf02ba152
+# __coconut_hash__ = 0x32bcb1a5
 
-# Compiled with Coconut version 1.5.0-post_dev75 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev78 [Fish License]
 
 """
 BBopt command line interface.
@@ -79,9 +79,15 @@ def run_trial(args, cmd, i):
     """Pickleable function for running trials in parallel."""
     try:
         show = _coconut.functools.partial(base_show, args.quiet)
+
         show("{_coconut_format_0}/{_coconut_format_1} starting...".format(_coconut_format_0=(i + 1), _coconut_format_1=(args.num_trials)))
-        subprocess.check_call(cmd)
+
+        sub_proc_env = os.environ.copy()
+        sub_proc_env[constants.run_id_env_var] = str(i)
+        subprocess.check_call(cmd, env=sub_proc_env)
+
         show("{_coconut_format_0}/{_coconut_format_1} finished.".format(_coconut_format_0=(i + 1), _coconut_format_1=(args.num_trials)))
+
     except BrokenProcessPool as err:
         raise KeyboardInterrupt(str(err))
 

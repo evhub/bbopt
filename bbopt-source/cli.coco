@@ -77,9 +77,15 @@ def run_trial(args, cmd, i):
     """Pickleable function for running trials in parallel."""
     try:
         show = base_show$(args.quiet)
+
         show(f"{i+1}/{args.num_trials} starting...")
-        subprocess.check_call(cmd)
+
+        sub_proc_env = os.environ.copy()
+        sub_proc_env[constants.run_id_env_var] = str(i)
+        subprocess.check_call(cmd, env=sub_proc_env)
+
         show(f"{i+1}/{args.num_trials} finished.")
+
     except BrokenProcessPool as err:
         raise KeyboardInterrupt(str(err))
 

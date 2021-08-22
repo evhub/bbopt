@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x356b119
+# __coconut_hash__ = 0xd692b6e3
 
-# Compiled with Coconut version 1.5.0-post_dev75 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev78 [Fish License]
 
 """
 The main BBopt interface.
@@ -408,6 +408,11 @@ class BlackBoxOptimizer(_coconut.object):
         return best_example(self._examples)
 
     get_optimal_run = get_best_run
+
+    @property
+    def run_id(self):
+        """The run ID number if using bbopt CLI."""
+        return os.environ.get(constants.run_id_env_var)
 
 # Plotting functions:
 

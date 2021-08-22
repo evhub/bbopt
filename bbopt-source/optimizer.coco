@@ -325,11 +325,16 @@ class BlackBoxOptimizer:
             raise ValueError("get_current_run calls must come after run")
         return self._current_example
 
-    def get_best_run(self):
+    def get_best_run(self) =
         """Return a dictionary containing the best parameters and reward computed so far."""
-        return best_example(self._examples)
+        best_example(self._examples)
 
     get_optimal_run = get_best_run
+
+    @property
+    def run_id(self) =
+        """The run ID number if using bbopt CLI."""
+        os.environ.get(constants.run_id_env_var)
 
     # Plotting functions:
 

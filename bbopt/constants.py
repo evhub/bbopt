@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3671e500
+# __coconut_hash__ = 0xd9775244
 
-# Compiled with Coconut version 1.5.0-post_dev75 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev78 [Fish License]
 
 """
 Constants for use across all of BBopt.
@@ -42,7 +42,7 @@ _coconut_sys.path.pop(0)
 
 # Installation constants:
 name = "bbopt"
-version = "1.3.6"
+version = "1.3.7"
 description = "The easiest hyperparameter optimization you'll ever do."
 long_description = """
 See BBopt's GitHub_ for more information.
@@ -76,6 +76,8 @@ default_alg_sentinel = object()
 # CLI constants:
 default_trials = 100
 default_jobs = 4
+
+run_id_env_var = "BBOPT_RUN_ID"
 
 
 # Backend constants:
