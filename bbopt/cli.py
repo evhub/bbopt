@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x32bcb1a5
+# __coconut_hash__ = 0x1f0fd47f
 
 # Compiled with Coconut version 1.5.0-post_dev78 [Fish License]
 
@@ -67,6 +67,8 @@ parser.add_argument("-q", "--quiet", action="store_true", help="suppress all inf
 parser.add_argument("--python", metavar="executable", type=str, default=sys.executable, help="the python executable to use (defaults to the current python)")
 
 parser.add_argument("--args", type=str, nargs=argparse.REMAINDER, help="arguments to pass to the file being run")
+
+parser.add_argument("-v", "--version", action="version", version="%(prog)s " + constants.version)
 
 
 def base_show(quiet, msg):

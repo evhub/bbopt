@@ -66,6 +66,12 @@ parser.add_argument(
     help="arguments to pass to the file being run",
 )
 
+parser.add_argument(
+    "-v", "--version",
+    action="version",
+    version="%(prog)s " + constants.version,
+)
+
 
 def base_show(quiet, msg):
     """Show the given message with [BBopt] if not quiet."""
