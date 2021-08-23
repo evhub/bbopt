@@ -334,7 +334,7 @@ class BlackBoxOptimizer:
     @property
     def run_id(self) =
         """The run ID number if using bbopt CLI."""
-        os.environ.get(constants.run_id_env_var)
+        os.environ.get(constants.run_id_env_var) |?> int
 
     # Plotting functions:
 
