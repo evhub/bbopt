@@ -24,5 +24,5 @@ bb.minimize(y)
 
 # Finally, we'll print out the value we used for debugging purposes.
 if __name__ == "__main__":
-    assert isinstance(bbopt.run_id, int)  # check the run id for testing purposes
+    assert isinstance(bb.run_id, int)  # check the run id for testing purposes
     print(repr(y))
