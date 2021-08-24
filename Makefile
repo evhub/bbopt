@@ -20,15 +20,13 @@ setup:
 
 .PHONY: build
 build: clean
-	coconut setup.coco --no-tco --strict
-	coconut "bbopt-source" bbopt --no-tco --strict --jobs sys
+	coconut setup.coco --and bbopt-source bbopt --no-tco --strict --jobs sys
 	-mkdir "./bbopt/examples"
 	cp -rf "./bbopt-source/examples" "./bbopt/"
 
 .PHONY: force-build
 force-build: clean
-	coconut setup.coco --no-tco --strict --force
-	coconut "bbopt-source" bbopt --no-tco --strict --jobs sys --force
+	coconut setup.coco --and bbopt-source bbopt --force --no-tco --strict --jobs sys
 	-mkdir "./bbopt/examples"
 	cp -rf "./bbopt-source/examples" "./bbopt/"
 
@@ -76,4 +74,4 @@ wipe: clean
 
 .PHONY: watch
 watch: install
-	coconut "bbopt-source" bbopt --watch --no-tco --strict
+	coconut bbopt-source bbopt --watch --no-tco --strict --jobs sys
