@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x180cf0ae
+# __coconut_hash__ = 0x81ee1059
 
-# Compiled with Coconut version 1.5.0-post_dev78 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev91 [Fish License]
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -299,7 +299,7 @@ def _coconut_tco(func):
     _coconut_tco_func_dict[_coconut.id(tail_call_optimized_func)] = _coconut.weakref.ref(tail_call_optimized_func)
     return tail_call_optimized_func
 def _coconut_igetitem(iterable, index):
-    obj_igetitem = _coconut.getattr(iterable, "__igetitem__", None)
+    obj_igetitem = _coconut.getattr(iterable, "__iter_getitem__", None)
     if obj_igetitem is None:
         obj_igetitem = _coconut.getattr(iterable, "__getitem__", None)
     if obj_igetitem is not None:
@@ -1108,6 +1108,31 @@ def reveal_locals():
     """Special function to get MyPy to print the type of the current locals.
     At runtime, reveal_locals always returns None."""
     pass
+def _coconut_handle_cls_kwargs(**kwargs):
+    metaclass = kwargs.pop("metaclass", None)
+    if kwargs and metaclass is None:
+        raise _coconut.TypeError("unexpected keyword argument(s) in class definition: %s" % (kwargs,))
+    def coconut_handle_cls_kwargs_wrapper(cls):
+        if metaclass is None:
+            return cls
+        orig_vars = cls.__dict__.copy()
+        slots = orig_vars.get("__slots__")
+        if slots is not None:
+            if _coconut.isinstance(slots, str):
+                slots = [slots]
+            for slots_var in slots:
+                orig_vars.pop(slots_var)
+        orig_vars.pop("__dict__", None)
+        orig_vars.pop("__weakref__", None)
+        if _coconut.hasattr(cls, "__qualname__"):
+            orig_vars["__qualname__"] = cls.__qualname__
+        return metaclass(cls.__name__, cls.__bases__, orig_vars, **kwargs)
+    return coconut_handle_cls_kwargs_wrapper
+def _coconut_handle_cls_stargs(*args):
+    temp_names = ["_coconut_base_cls_%s" % (i,) for i in _coconut.range(_coconut.len(args))]
+    ns = _coconut.dict(_coconut.zip(temp_names, args))
+    exec("class _coconut_cls_stargs_base(" + ", ".join(temp_names) + "): pass", ns)
+    return ns["_coconut_cls_stargs_base"]
 _coconut_MatchError, _coconut_count, _coconut_enumerate, _coconut_filter, _coconut_makedata, _coconut_map, _coconut_reiterable, _coconut_reversed, _coconut_starmap, _coconut_tee, _coconut_zip, TYPE_CHECKING, reduce, takewhile, dropwhile = MatchError, count, enumerate, filter, makedata, map, reiterable, reversed, starmap, tee, zip, False, _coconut.functools.reduce, _coconut.itertools.takewhile, _coconut.itertools.dropwhile
 
 # Compiled Coconut: -----------------------------------------------------------
