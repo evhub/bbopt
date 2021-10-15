@@ -155,6 +155,7 @@ Why does this work? If you're using the basic boilerplate, then running `python 
 #### Constructor
 
 **BlackBoxOptimizer**(_file_, *, _tag_=`None`, _protocol_=`None`)
+
 **BlackBoxOptimizer**(_data\_dir_, _data\_name_, *, _tag_=`None`, _protocol_=`None`)
 
 Create a new `bb` object; this should be done at the beginning of your program as all the other functions are methods of this object.
