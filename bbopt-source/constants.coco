@@ -5,7 +5,7 @@ Constants for use across all of BBopt.
 
 # Installation constants:
 name = "bbopt"
-version = "1.3.7"
+version = "1.3.8"
 description = "The easiest hyperparameter optimization you'll ever do."
 long_description = """
 See BBopt's GitHub_ for more information.
@@ -24,7 +24,6 @@ classifiers = (
 requirements = (
     "numpy>=1.15.1",
     "matplotlib>=2.2.5",
-    "scikit-optimize>=0.8.1",
 )
 extra_requirements = {
     ":python_version>='3.7'": (
@@ -34,6 +33,7 @@ extra_requirements = {
         "pysot>=0.3.3",
         "portalocker>=2.2.1",
         "hyperopt>=0.2.4",
+        "scikit-optimize>=0.8.1",
         # highest version supported by bask
         "scikit-learn>=0.23.2",
         # fixes an issue with networkx which is used by hyperopt
@@ -46,6 +46,8 @@ extra_requirements = {
     ":python_version<'3'": (
         "futures>=3.3",
         "scikit-learn>=0.20.4",
+        # highest version with Python 2 support
+        "scikit-optimize>=0.8.1,<0.9",
         # fixes an issue with portalocker 2 on Python 2
         "portalocker>=1.7.1,<2.0",
         # fixes issues with hyperopt on Python 2

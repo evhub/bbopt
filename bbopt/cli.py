@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb20f55d3
+# __coconut_hash__ = 0x754213cd
 
-# Compiled with Coconut version 1.5.0-post_dev91 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev92 [Fish License]
 
 """
 BBopt command line interface.
@@ -85,7 +85,7 @@ def run_trial(args, cmd, i):
         show("{_coconut_format_0}/{_coconut_format_1} starting...".format(_coconut_format_0=(i + 1), _coconut_format_1=(args.num_trials)))
 
         sub_proc_env = os.environ.copy()
-        sub_proc_env[constants.run_id_env_var] = str(i)
+        sub_proc_env[py_str(constants.run_id_env_var)] = py_str(i)
         subprocess.check_call(cmd, env=sub_proc_env)
 
         show("{_coconut_format_0}/{_coconut_format_1} finished.".format(_coconut_format_0=(i + 1), _coconut_format_1=(args.num_trials)))

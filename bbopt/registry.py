@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xdc6a321f
+# __coconut_hash__ = 0x13244af7
 
-# Compiled with Coconut version 1.5.0-post_dev91 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev92 [Fish License]
 
 """
 The backend and algorithm registries.

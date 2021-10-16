@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa07b4419
+# __coconut_hash__ = 0x9760b177
 
-# Compiled with Coconut version 1.5.0-post_dev91 [Fish License]
+# Compiled with Coconut version 1.5.0-post_dev92 [Fish License]
 
 """
 The bayes-skopt backend. Does black-box optimization with the bask fork of scikit-optimize.

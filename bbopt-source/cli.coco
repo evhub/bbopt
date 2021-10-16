@@ -87,7 +87,7 @@ def run_trial(args, cmd, i):
         show(f"{i+1}/{args.num_trials} starting...")
 
         sub_proc_env = os.environ.copy()
-        sub_proc_env[constants.run_id_env_var] = str(i)
+        sub_proc_env[py_str(constants.run_id_env_var)] = py_str(i)
         subprocess.check_call(cmd, env=sub_proc_env)
 
         show(f"{i+1}/{args.num_trials} finished.")
