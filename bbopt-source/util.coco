@@ -105,15 +105,15 @@ def running_best(examples):
     best_example = max_gain = min_loss = None
     for example in examples:
 
-        case example:
-            match {"values": values, "gain": gain, **_}:
+        match example:
+            case {"values": values, "gain": gain, **_}:
                 if min_loss is not None:
                     raise ValueError("cannot have examples with maximize and examples with minimize")
                 if max_gain is None or gain >= max_gain:
                     best_example = example
                     max_gain = gain
 
-            match {"values": values, "loss": loss, **_}:
+            case {"values": values, "loss": loss, **_}:
                 if max_gain is not None:
                     raise ValueError("cannot have examples with maximize and examples with minimize")
                 if min_loss is None or loss <= min_loss:

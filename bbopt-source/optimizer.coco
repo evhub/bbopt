@@ -63,7 +63,7 @@ class BlackBoxOptimizer:
     _new_params = None
     _current_example = None
 
-    match def __init__(self, file is Str, *, tag=None, protocol=None):
+    match def __init__(self, file `isinstance` Str, *, tag=None, protocol=None):
         self._backend_creation_counts = defaultdict(int)
 
         self._file = norm_path(file)
@@ -80,7 +80,7 @@ class BlackBoxOptimizer:
         self.reload()
 
     @convert_match_errors
-    addpattern def __init__(self, data_dir is Str, data_name is Str, **kwargs):
+    addpattern def __init__(self, data_dir `isinstance` Str, data_name `isinstance` Str, **kwargs):
         """
         Construct a new BlackBoxOptimizer. You must either pass file=__file__ or
         both data_dir="/path/to/some/dir" and data_name="my_project_name".
@@ -236,7 +236,7 @@ class BlackBoxOptimizer:
         args = param_processor.standardize_args(func, args)
         kwargs = param_processor.standardize_kwargs(kwargs)
 
-        match {=name: (old_func, old_args, old_kwargs), **_} in self._old_params:
+        match {==name: (old_func, old_args, old_kwargs), **_} in self._old_params:
             if (func, args) != (old_func, old_args):
                 printerr(f"BBopt Warning: detected change in parameter {name} ({(func, args)} != {(old_func, old_args)}) (you may need to delete your old BBopt data)")
 

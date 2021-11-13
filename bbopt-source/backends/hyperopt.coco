@@ -34,17 +34,17 @@ from bbopt.backends.util import (
 
 def create_space(name, func, *args):
     """Create a hyperopt space for the given parameter."""
-    case func, args:
-        match "choice", (choices,):
+    match func, args:
+        case "choice", (choices,):
             return hp.choice(name, choices)
-        match "randrange", (start, stop, step):
+        case "randrange", (start, stop, step):
             if step != 1:
                 raise ValueError("the hyperopt backend only supports a randrange step size of 1 (use bb.choice(name, range(start, stop, step)) instead)")
             # despite being called randint, hp.randint is exclusive
             return start + hp.randint(name, stop - start)
-        match "uniform", (a, b):
+        case "uniform", (a, b):
             return hp.uniform(name, a, b)
-        match "normalvariate", (mu, sigma):
+        case "normalvariate", (mu, sigma):
             return hp.normal(name, mu, sigma)
     raise TypeError(f"invalid parameter {name}")
 

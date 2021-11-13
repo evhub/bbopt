@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x13244af7
+# __coconut_hash__ = 0x4ec01422
 
-# Compiled with Coconut version 1.5.0-post_dev92 [Fish License]
+# Compiled with Coconut version 2.0.0-a_dev9 [How Not to Be Seen]
 
 """
 The backend and algorithm registries.
@@ -32,7 +32,7 @@ if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha(
                     _coconut_v_type.__module__ = _coconut_full_module_name
     _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
-from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
+from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _coconut, _coconut_MatchError, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op
 _coconut_sys.path.pop(0)
 
 # Compiled Coconut: -----------------------------------------------------------
@@ -59,11 +59,15 @@ class Registry(_coconut.object):
         name = self.aliases.get(name, name)
         _coconut_match_to_0 = self.registered
         _coconut_match_check_0 = False
+        _coconut_match_set_name_value = _coconut_sentinel
         if _coconut.isinstance(_coconut_match_to_0, _coconut.abc.Mapping):
             _coconut_match_temp_0 = _coconut_match_to_0.get(name, _coconut_sentinel)
             if _coconut_match_temp_0 is not _coconut_sentinel:
-                value = _coconut_match_temp_0
+                _coconut_match_set_name_value = _coconut_match_temp_0
                 _coconut_match_check_0 = True
+        if _coconut_match_check_0:
+            if _coconut_match_set_name_value is not _coconut_sentinel:
+                value = _coconut_match_temp_0
         if _coconut_match_check_0:
             return value
         else:
@@ -88,11 +92,15 @@ class Registry(_coconut.object):
         if not replace:
             _coconut_match_to_1 = self.registered
             _coconut_match_check_1 = False
+            _coconut_match_set_name_stored_val = _coconut_sentinel
             if _coconut.isinstance(_coconut_match_to_1, _coconut.abc.Mapping):
                 _coconut_match_temp_0 = _coconut_match_to_1.get(name, _coconut_sentinel)
                 if _coconut_match_temp_0 is not _coconut_sentinel:
-                    stored_val = _coconut_match_temp_0
+                    _coconut_match_set_name_stored_val = _coconut_match_temp_0
                     _coconut_match_check_1 = True
+            if _coconut_match_check_1:
+                if _coconut_match_set_name_stored_val is not _coconut_sentinel:
+                    stored_val = _coconut_match_temp_0
             if _coconut_match_check_1:
                 if stored_val == value:
                     return
@@ -110,11 +118,15 @@ class Registry(_coconut.object):
         if not replace:
             _coconut_match_to_2 = self.aliases
             _coconut_match_check_2 = False
+            _coconut_match_set_name_stored_alias = _coconut_sentinel
             if _coconut.isinstance(_coconut_match_to_2, _coconut.abc.Mapping):
                 _coconut_match_temp_0 = _coconut_match_to_2.get(name, _coconut_sentinel)
                 if _coconut_match_temp_0 is not _coconut_sentinel:
-                    stored_alias = _coconut_match_temp_0
+                    _coconut_match_set_name_stored_alias = _coconut_match_temp_0
                     _coconut_match_check_2 = True
+            if _coconut_match_check_2:
+                if _coconut_match_set_name_stored_alias is not _coconut_sentinel:
+                    stored_alias = _coconut_match_temp_0
             if _coconut_match_check_2:
                 if stored_alias == alias:
                     return

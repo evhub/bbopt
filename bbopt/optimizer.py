@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x5623ba94
+# __coconut_hash__ = 0x3af381c
 
-# Compiled with Coconut version 1.5.0-post_dev92 [Fish License]
+# Compiled with Coconut version 2.0.0-a_dev9 [How Not to Be Seen]
 
 """
 The main BBopt interface.
@@ -32,7 +32,7 @@ if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha(
                     _coconut_v_type.__module__ = _coconut_full_module_name
     _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
-from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
+from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _coconut, _coconut_MatchError, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op
 _coconut_sys.path.pop(0)
 
 # Compiled Coconut: -----------------------------------------------------------
@@ -102,20 +102,33 @@ class BlackBoxOptimizer(_coconut.object):
     @_coconut_mark_as_match
     def __init__(*_coconut_match_args, **_coconut_match_kwargs):
         _coconut_match_check_0 = False
+        _coconut_match_set_name_self = _coconut_sentinel
+        _coconut_match_set_name_file = _coconut_sentinel
+        _coconut_match_set_name_tag = _coconut_sentinel
+        _coconut_match_set_name_protocol = _coconut_sentinel
         _coconut_FunctionMatchError = _coconut_get_function_match_error()
         if (_coconut.len(_coconut_match_args) <= 2) and (_coconut.sum((_coconut.len(_coconut_match_args) > 0, "self" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 1, "file" in _coconut_match_kwargs)) == 1):
             _coconut_match_temp_0 = _coconut_match_args[0] if _coconut.len(_coconut_match_args) > 0 else _coconut_match_kwargs.pop("self")
             _coconut_match_temp_1 = _coconut_match_args[1] if _coconut.len(_coconut_match_args) > 1 else _coconut_match_kwargs.pop("file")
             _coconut_match_temp_2 = _coconut_match_kwargs.pop("tag") if "tag" in _coconut_match_kwargs else None
             _coconut_match_temp_3 = _coconut_match_kwargs.pop("protocol") if "protocol" in _coconut_match_kwargs else None
-            if (_coconut.isinstance(_coconut_match_temp_1, Str)) and (not _coconut_match_kwargs):
-                self = _coconut_match_temp_0
-                file = _coconut_match_temp_1
-                tag = _coconut_match_temp_2
-                protocol = _coconut_match_temp_3
+            if ((isinstance)(_coconut_match_temp_1, Str)) and (not _coconut_match_kwargs):
+                _coconut_match_set_name_self = _coconut_match_temp_0
+                _coconut_match_set_name_file = _coconut_match_temp_1
+                _coconut_match_set_name_tag = _coconut_match_temp_2
+                _coconut_match_set_name_protocol = _coconut_match_temp_3
                 _coconut_match_check_0 = True
+        if _coconut_match_check_0:
+            if _coconut_match_set_name_self is not _coconut_sentinel:
+                self = _coconut_match_temp_0
+            if _coconut_match_set_name_file is not _coconut_sentinel:
+                file = _coconut_match_temp_1
+            if _coconut_match_set_name_tag is not _coconut_sentinel:
+                tag = _coconut_match_temp_2
+            if _coconut_match_set_name_protocol is not _coconut_sentinel:
+                protocol = _coconut_match_temp_3
         if not _coconut_match_check_0:
-            raise _coconut_FunctionMatchError('match def __init__(self, file is Str, *, tag=None, protocol=None):', _coconut_match_args)
+            raise _coconut_FunctionMatchError('match def __init__(self, file `isinstance` Str, *, tag=None, protocol=None):', _coconut_match_args)
 
         self._backend_creation_counts = defaultdict(int)
 
@@ -141,19 +154,32 @@ class BlackBoxOptimizer(_coconut.object):
         both data_dir="/path/to/some/dir" and data_name="my_project_name".
         """
         _coconut_match_check_1 = False
+        _coconut_match_set_name_self = _coconut_sentinel
+        _coconut_match_set_name_data_dir = _coconut_sentinel
+        _coconut_match_set_name_data_name = _coconut_sentinel
+        _coconut_match_set_name_kwargs = _coconut_sentinel
         _coconut_FunctionMatchError = _coconut_get_function_match_error()
         if (_coconut.len(_coconut_match_args) <= 3) and (_coconut.sum((_coconut.len(_coconut_match_args) > 0, "self" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 1, "data_dir" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 2, "data_name" in _coconut_match_kwargs)) == 1):
             _coconut_match_temp_0 = _coconut_match_args[0] if _coconut.len(_coconut_match_args) > 0 else _coconut_match_kwargs.pop("self")
             _coconut_match_temp_1 = _coconut_match_args[1] if _coconut.len(_coconut_match_args) > 1 else _coconut_match_kwargs.pop("data_dir")
             _coconut_match_temp_2 = _coconut_match_args[2] if _coconut.len(_coconut_match_args) > 2 else _coconut_match_kwargs.pop("data_name")
-            if (_coconut.isinstance(_coconut_match_temp_1, Str)) and (_coconut.isinstance(_coconut_match_temp_2, Str)):
-                self = _coconut_match_temp_0
-                data_dir = _coconut_match_temp_1
-                data_name = _coconut_match_temp_2
-                kwargs = _coconut_match_kwargs
+            if ((isinstance)(_coconut_match_temp_1, Str)) and ((isinstance)(_coconut_match_temp_2, Str)):
+                _coconut_match_set_name_self = _coconut_match_temp_0
+                _coconut_match_set_name_data_dir = _coconut_match_temp_1
+                _coconut_match_set_name_data_name = _coconut_match_temp_2
+                _coconut_match_set_name_kwargs = _coconut_match_kwargs
                 _coconut_match_check_1 = True
+        if _coconut_match_check_1:
+            if _coconut_match_set_name_self is not _coconut_sentinel:
+                self = _coconut_match_temp_0
+            if _coconut_match_set_name_data_dir is not _coconut_sentinel:
+                data_dir = _coconut_match_temp_1
+            if _coconut_match_set_name_data_name is not _coconut_sentinel:
+                data_name = _coconut_match_temp_2
+            if _coconut_match_set_name_kwargs is not _coconut_sentinel:
+                kwargs = _coconut_match_kwargs
         if not _coconut_match_check_1:
-            raise _coconut_FunctionMatchError('addpattern def __init__(self, data_dir is Str, data_name is Str, **kwargs):', _coconut_match_args)
+            raise _coconut_FunctionMatchError('addpattern def __init__(self, data_dir `isinstance` Str, data_name `isinstance` Str, **kwargs):', _coconut_match_args)
 
         self.__init__(os.path.join(data_dir, data_name), **kwargs)
 
@@ -208,13 +234,20 @@ class BlackBoxOptimizer(_coconut.object):
         if contents:
             _coconut_match_to_0 = self._loads(contents)
             _coconut_match_check_2 = False
-            if (_coconut.isinstance(_coconut_match_to_0, _coconut.abc.Mapping)) and (_coconut.len(_coconut_match_to_0) == 2):
+            _coconut_match_set_name_params = _coconut_sentinel
+            _coconut_match_set_name_examples = _coconut_sentinel
+            if _coconut.isinstance(_coconut_match_to_0, _coconut.abc.Mapping):
                 _coconut_match_temp_0 = _coconut_match_to_0.get("params", _coconut_sentinel)
                 _coconut_match_temp_1 = _coconut_match_to_0.get("examples", _coconut_sentinel)
                 if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut_match_temp_1 is not _coconut_sentinel):
-                    params = _coconut_match_temp_0
-                    examples = _coconut_match_temp_1
+                    _coconut_match_set_name_params = _coconut_match_temp_0
+                    _coconut_match_set_name_examples = _coconut_match_temp_1
                     _coconut_match_check_2 = True
+            if _coconut_match_check_2:
+                if _coconut_match_set_name_params is not _coconut_sentinel:
+                    params = _coconut_match_temp_0
+                if _coconut_match_set_name_examples is not _coconut_sentinel:
+                    examples = _coconut_match_temp_1
             if not _coconut_match_check_2:
                 raise _coconut_MatchError('{"params": params, "examples": examples} = self._loads(contents)', _coconut_match_to_0)
 
@@ -233,7 +266,7 @@ class BlackBoxOptimizer(_coconut.object):
         with open_with_lock(self.data_file) as df:
 # we create the timestamp while we have the lock to ensure its uniqueness
             self._current_example["timestamp"] = time.time()
-            self._add_examples([self._current_example])
+            self._add_examples([self._current_example, ])
             self._save_to(df)
 
     def _save_to(self, df):
@@ -310,13 +343,23 @@ class BlackBoxOptimizer(_coconut.object):
 
         _coconut_match_to_1 = self._old_params
         _coconut_match_check_3 = False
+        _coconut_match_set_name_old_func = _coconut_sentinel
+        _coconut_match_set_name_old_args = _coconut_sentinel
+        _coconut_match_set_name_old_kwargs = _coconut_sentinel
         if _coconut.isinstance(_coconut_match_to_1, _coconut.abc.Mapping):
             _coconut_match_temp_0 = _coconut_match_to_1.get(name, _coconut_sentinel)
             if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut.isinstance(_coconut_match_temp_0, _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_temp_0) == 3):
-                old_func = _coconut_match_temp_0[0]
-                old_args = _coconut_match_temp_0[1]
-                old_kwargs = _coconut_match_temp_0[2]
+                _coconut_match_set_name_old_func = _coconut_match_temp_0[0]
+                _coconut_match_set_name_old_args = _coconut_match_temp_0[1]
+                _coconut_match_set_name_old_kwargs = _coconut_match_temp_0[2]
                 _coconut_match_check_3 = True
+        if _coconut_match_check_3:
+            if _coconut_match_set_name_old_func is not _coconut_sentinel:
+                old_func = _coconut_match_temp_0[0]
+            if _coconut_match_set_name_old_args is not _coconut_sentinel:
+                old_args = _coconut_match_temp_0[1]
+            if _coconut_match_set_name_old_kwargs is not _coconut_sentinel:
+                old_kwargs = _coconut_match_temp_0[2]
         if _coconut_match_check_3:
             if (func, args) != (old_func, old_args):
                 printerr("BBopt Warning: detected change in parameter {_coconut_format_0} ({_coconut_format_1} != {_coconut_format_2}) (you may need to delete your old BBopt data)".format(_coconut_format_0=(name), _coconut_format_1=((func, args)), _coconut_format_2=((old_func, old_args))))
@@ -610,13 +653,13 @@ class BlackBoxOptimizer(_coconut.object):
     def loguniform(self, name, min_val, max_val, **kwargs):
         """Create a new parameter with the given name modeled by
         math.exp(random.uniform(math.log(min_val), math.log(max_val)))."""
-        kwargs = (_coconut.functools.partial(param_processor.modify_kwargs, math.log))(kwargs)
+        kwargs = (param_processor.modify_kwargs)(math.log, kwargs)
         log_a, log_b = math.log(min_val), math.log(max_val)
         return math.exp(self.uniform(name, log_a, log_b, **kwargs))
 
     def lognormvariate(self, name, mu, sigma, **kwargs):
         """Create a new parameter with the given name modeled by random.lognormvariate(mu, sigma)."""
-        kwargs = (_coconut.functools.partial(param_processor.modify_kwargs, math.log))(kwargs)
+        kwargs = (param_processor.modify_kwargs)(math.log, kwargs)
         return math.exp(self.normalvariate(name, mu, sigma, **kwargs))
 
     def randbool(self, name, **kwargs):
@@ -634,7 +677,7 @@ class BlackBoxOptimizer(_coconut.object):
                 sample.append(sampling_population[0])
             else:
                 def _coconut_lambda_1(val):
-                    elem = _coconut_igetitem(val, i)
+                    elem = _coconut_iter_getitem(val, i)
                     return sampling_population.index(elem) if elem in sampling_population else 0
                 proc_kwargs = (param_processor.modify_kwargs)(_coconut_lambda_1, kwargs)
                 ind = self.randrange("{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(i)), len(sampling_population), **proc_kwargs)

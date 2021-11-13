@@ -73,19 +73,19 @@ class BBoptOptimizationProblem(OptimizationProblem):
         self.choices = {}
         for i, (name, (func, args, kwargs)) in enumerate(sorted_items(params)):
             self.names.append(name)
-            case func, args:
-                match "choice", (choices,):
+            match func, args:
+                case "choice", (choices,):
                     self.lb.append(0)
                     self.ub.append(len(choices) - 1)
                     self.int_var.append(i)
                     self.choices[name] = choices
-                match "randrange", (start, stop, step):
+                case "randrange", (start, stop, step):
                     rng = range(start, stop, step)
                     self.lb.append(0)
                     self.ub.append(len(rng) - 1)
                     self.int_var.append(i)
                     self.choices[name] = rng
-                match "uniform", (start, stop):
+                case "uniform", (start, stop):
                     self.lb.append(start)
                     self.ub.append(stop)
                     self.cont_var.append(i)
@@ -104,7 +104,7 @@ class BBoptOptimizationProblem(OptimizationProblem):
         for i in range(self.dim):
             name = self.names[i]
             val = xs[i]
-            match {=name: choices, **_} in self.choices:
+            match {==name: choices, **_} in self.choices:
                 assert val == int(val), val
                 val = choices[int(val)]
             self.got_values[name] = val
@@ -116,7 +116,7 @@ class BBoptOptimizationProblem(OptimizationProblem):
         for ex_dict, loss in zip(new_data, new_losses):
             pt = []
             for name, val in ex_dict.items():
-                match {=name: choices, **_} in self.choices:
+                match {==name: choices, **_} in self.choices:
                     chosen_ind = choices.index(val)
                     pt.append(chosen_ind)
                 else:
@@ -152,22 +152,22 @@ class PySOTBackend(StandardBackend):
         design_kwargs = dict(
             dim=self.opt_problem.dim,
         )
-        case design:
-            match None:
+        match design:
+            case None:
                 self.exp_design = EmptyExperimentalDesign(**design_kwargs)
-            match "latin_hypercube":
+            case "latin_hypercube":
                 self.exp_design = LatinHypercube(
                     num_pts=2 * (self.opt_problem.dim + 1),
                     **design_kwargs,
                 )
-            match "symmetric_latin_hypercube":
+            case "symmetric_latin_hypercube":
                 self.exp_design = SymmetricLatinHypercube(
                     num_pts=2 * (self.opt_problem.dim + 1),
                     **design_kwargs,
                 )
-            match "two_factorial":
+            case "two_factorial":
                 self.exp_design = TwoFactorial(**design_kwargs)
-            match design_cls if callable(design_cls):
+            case design_cls if callable(design_cls):
                 self.exp_design = design_cls(**design_kwargs)
         else:
             raise TypeError(f"unknown experimental design {design!r}")
@@ -177,16 +177,16 @@ class PySOTBackend(StandardBackend):
             lb=self.opt_problem.lb,
             ub=self.opt_problem.ub,
         )
-        case surrogate:
-            match "RBF":
+        match surrogate:
+            case "RBF":
                 self.surrogate = RBFInterpolant(
                     kernel=LinearKernel() if design is None else CubicKernel(),
                     tail=ConstantTail(self.opt_problem.dim) if design is None else LinearTail(self.opt_problem.dim),
                     **surrogate_kwargs,
                 )
-            match "GP":
+            case "GP":
                 self.surrogate = GPRegressor(**surrogate_kwargs)
-            match surrogate_cls if callable(surrogate_cls):
+            case surrogate_cls if callable(surrogate_cls):
                 self.surrogate = surrogate_cls(**surrogate_kwargs)
         else:
             raise TypeError(f"unknown surrogate {surrogate!r}")
@@ -199,16 +199,16 @@ class PySOTBackend(StandardBackend):
             asynchronous=True,
             batch_size=1,
         )
-        case strategy:
-            match "SRBF":
+        match strategy:
+            case "SRBF":
                 self.strategy = SRBFStrategy(**strategy_kwargs)
-            match "EI":
+            case "EI":
                 self.strategy = EIStrategy(**strategy_kwargs)
-            match "DYCORS":
+            case "DYCORS":
                 self.strategy = DYCORSStrategy(**strategy_kwargs)
-            match "LCB":
+            case "LCB":
                 self.strategy = LCBStrategy(**strategy_kwargs)
-            match strategy_cls if callable(strategy_cls):
+            case strategy_cls if callable(strategy_cls):
                 self.strategy = strategy_cls(**strategy_kwargs)
         else:
             raise TypeError(f"unknown strategy {strategy!r}")

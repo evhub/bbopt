@@ -123,7 +123,7 @@ def get_names_and_features(
     for name, (func, args, kwargs) in sorted_items(params):
         # determine feature
         fallback = False
-        match {=name: feature, **_} in values:
+        match {==name: feature, **_} in values:
             pass
         else: match {"placeholder_when_missing": placeholder_value, **_} in kwargs:
             feature = placeholder_value
@@ -133,7 +133,7 @@ def get_names_and_features(
 
         # run converters
         if not fallback or convert_fallback:
-            match {=func: converter_func, **_} in converters:
+            match {==func: converter_func, **_} in converters:
                 feature = converter_func(feature, *args)
 
         yield name, feature
@@ -156,10 +156,10 @@ def split_examples(
     for example in examples:
 
         # extract values, loss
-        case example:
-            match {"values": values, "gain": gain, **_}:
+        match example:
+            case {"values": values, "gain": gain, **_}:
                 loss = negate_objective(gain)
-            match {"values": values, "loss": loss, **_}:
+            case {"values": values, "loss": loss, **_}:
                 pass
         else:
             raise ValueError(f"invalid example {example}")
@@ -269,7 +269,7 @@ def serve_values(
             raise ValueError(f"the {backend_name} backend does not support {unsupported_kwargs} option(s)")
 
     # determine value
-    match {=name: value, **_} in serving_values:
+    match {==name: value, **_} in serving_values:
         return value
     else: match {"guess": guess, **_} in kwargs:
         return guess

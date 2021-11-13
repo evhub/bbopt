@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x96400a56
+# __coconut_hash__ = 0x1cbc222c
 
-# Compiled with Coconut version 1.5.0-post_dev92 [Fish License]
+# Compiled with Coconut version 2.0.0-a_dev9 [How Not to Be Seen]
 
 """
 The mixture backend. Lets you specify a distribution over different possible algorithms.
@@ -32,7 +32,7 @@ if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha(
                     _coconut_v_type.__module__ = _coconut_full_module_name
     _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
-from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
+from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _coconut, _coconut_MatchError, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op
 _coconut_sys.path.pop(0)
 
 # Compiled Coconut: -----------------------------------------------------------
@@ -65,6 +65,12 @@ class MixtureBackend(Backend):
     def attempt_update(*_coconut_match_args, **_coconut_match_kwargs):
         """Special method that allows fast updating of the backend."""
         _coconut_match_check_0 = False
+        _coconut_match_set_name_self = _coconut_sentinel
+        _coconut_match_set_name_examples = _coconut_sentinel
+        _coconut_match_set_name_params = _coconut_sentinel
+        _coconut_match_set_name_distribution = _coconut_sentinel
+        _coconut_match_set_name_remove_erroring_algs = _coconut_sentinel
+        _coconut_match_set_name__backend_store = _coconut_sentinel
         _coconut_FunctionMatchError = _coconut_get_function_match_error()
         if (_coconut.len(_coconut_match_args) <= 5) and (_coconut.sum((_coconut.len(_coconut_match_args) > 0, "self" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 1, "examples" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 2, "params" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 3, "distribution" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 4, "remove_erroring_algs" in _coconut_match_kwargs)) <= 1):
             _coconut_match_temp_0 = _coconut_match_args[0] if _coconut.len(_coconut_match_args) > 0 else _coconut_match_kwargs.pop("self")
@@ -74,13 +80,26 @@ class MixtureBackend(Backend):
             _coconut_match_temp_4 = _coconut_match_args[4] if _coconut.len(_coconut_match_args) > 4 else _coconut_match_kwargs.pop("remove_erroring_algs") if "remove_erroring_algs" in _coconut_match_kwargs else False
             _coconut_match_temp_5 = _coconut_match_kwargs.pop("_backend_store") if "_backend_store" in _coconut_match_kwargs else _coconut_sentinel
             if (_coconut_match_temp_5 is not _coconut_sentinel) and (not _coconut_match_kwargs):
-                self = _coconut_match_temp_0
-                examples = _coconut_match_temp_1
-                params = _coconut_match_temp_2
-                distribution = _coconut_match_temp_3
-                remove_erroring_algs = _coconut_match_temp_4
-                _backend_store = _coconut_match_temp_5
+                _coconut_match_set_name_self = _coconut_match_temp_0
+                _coconut_match_set_name_examples = _coconut_match_temp_1
+                _coconut_match_set_name_params = _coconut_match_temp_2
+                _coconut_match_set_name_distribution = _coconut_match_temp_3
+                _coconut_match_set_name_remove_erroring_algs = _coconut_match_temp_4
+                _coconut_match_set_name__backend_store = _coconut_match_temp_5
                 _coconut_match_check_0 = True
+        if _coconut_match_check_0:
+            if _coconut_match_set_name_self is not _coconut_sentinel:
+                self = _coconut_match_temp_0
+            if _coconut_match_set_name_examples is not _coconut_sentinel:
+                examples = _coconut_match_temp_1
+            if _coconut_match_set_name_params is not _coconut_sentinel:
+                params = _coconut_match_temp_2
+            if _coconut_match_set_name_distribution is not _coconut_sentinel:
+                distribution = _coconut_match_temp_3
+            if _coconut_match_set_name_remove_erroring_algs is not _coconut_sentinel:
+                remove_erroring_algs = _coconut_match_temp_4
+            if _coconut_match_set_name__backend_store is not _coconut_sentinel:
+                _backend_store = _coconut_match_temp_5
         if not _coconut_match_check_0:
             raise _coconut_FunctionMatchError('match def attempt_update(self, examples, params, distribution, remove_erroring_algs=False, *, _backend_store):', _coconut_match_args)
 
@@ -97,7 +116,7 @@ class MixtureBackend(Backend):
     def use_distribution(self, distribution, force=False):
         """Set the distribution to the given distribution."""
         if distribution == "epsilon_max_greedy":
-            distribution = (("random", constants.eps_greedy_explore_prob), ("max_greedy", 1 - constants.eps_greedy_explore_prob),)
+            distribution = (("random", constants.eps_greedy_explore_prob), ("max_greedy", 1 - constants.eps_greedy_explore_prob))
         else:
             distribution = tuple(distribution)
 
@@ -148,7 +167,7 @@ class MixtureBackend(Backend):
             new_alg_name = "safe_" + base_alg
         if fallback_alg is None:
             fallback_alg = constants.safe_fallback_alg
-        cls.register_alg(new_alg_name, distribution=((base_alg, float("inf")), (fallback_alg, 1),), remove_erroring_algs=True)
+        cls.register_alg(new_alg_name, distribution=((base_alg, float("inf")), (fallback_alg, 1)), remove_erroring_algs=True)
 
 
 # Registered names:
@@ -163,5 +182,5 @@ MixtureBackend.register_safe_alg_for("extra_trees")
 MixtureBackend.register_safe_alg_for("gradient_boosted_regression_trees")
 
 # we register meta alg mixtures here
-MixtureBackend.register_meta("tpe_or_gp", ("tree_structured_parzen_estimator", "safe_gaussian_process",))
-MixtureBackend.register_meta("any_fast", ("tree_structured_parzen_estimator", "safe_random_forest", "safe_extra_trees", "safe_gradient_boosted_regression_trees",))
+MixtureBackend.register_meta("tpe_or_gp", ("tree_structured_parzen_estimator", "safe_gaussian_process"))
+MixtureBackend.register_meta("any_fast", ("tree_structured_parzen_estimator", "safe_random_forest", "safe_extra_trees", "safe_gradient_boosted_regression_trees"))

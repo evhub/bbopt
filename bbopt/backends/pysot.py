@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x204bdabe
+# __coconut_hash__ = 0x89d458b1
 
-# Compiled with Coconut version 1.5.0-post_dev92 [Fish License]
+# Compiled with Coconut version 2.0.0-a_dev9 [How Not to Be Seen]
 
 """
 The pySOT backend. Does black box optimization using pySOT.
@@ -32,7 +32,7 @@ if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha(
                     _coconut_v_type.__module__ = _coconut_full_module_name
     _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
-from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
+from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _coconut, _coconut_MatchError, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op
 _coconut_sys.path.pop(0)
 
 # Compiled Coconut: -----------------------------------------------------------
@@ -104,20 +104,34 @@ class BBoptOptimizationProblem(OptimizationProblem):
             self.names.append(name)
             _coconut_case_match_to_0 = func, args
             _coconut_case_match_check_0 = False
+            _coconut_match_set_name_choices = _coconut_sentinel
             if (_coconut.isinstance(_coconut_case_match_to_0, _coconut.abc.Sequence)) and (_coconut.len(_coconut_case_match_to_0) == 2) and (_coconut_case_match_to_0[0] == "choice") and (_coconut.isinstance(_coconut_case_match_to_0[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_case_match_to_0[1]) == 1):
-                choices = _coconut_case_match_to_0[1][0]
+                _coconut_match_set_name_choices = _coconut_case_match_to_0[1][0]
                 _coconut_case_match_check_0 = True
+            if _coconut_case_match_check_0:
+                if _coconut_match_set_name_choices is not _coconut_sentinel:
+                    choices = _coconut_case_match_to_0[1][0]
             if _coconut_case_match_check_0:
                 self.lb.append(0)
                 self.ub.append(len(choices) - 1)
                 self.int_var.append(i)
                 self.choices[name] = choices
             if not _coconut_case_match_check_0:
+                _coconut_match_set_name_start = _coconut_sentinel
+                _coconut_match_set_name_stop = _coconut_sentinel
+                _coconut_match_set_name_step = _coconut_sentinel
                 if (_coconut.isinstance(_coconut_case_match_to_0, _coconut.abc.Sequence)) and (_coconut.len(_coconut_case_match_to_0) == 2) and (_coconut_case_match_to_0[0] == "randrange") and (_coconut.isinstance(_coconut_case_match_to_0[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_case_match_to_0[1]) == 3):
-                    start = _coconut_case_match_to_0[1][0]
-                    stop = _coconut_case_match_to_0[1][1]
-                    step = _coconut_case_match_to_0[1][2]
+                    _coconut_match_set_name_start = _coconut_case_match_to_0[1][0]
+                    _coconut_match_set_name_stop = _coconut_case_match_to_0[1][1]
+                    _coconut_match_set_name_step = _coconut_case_match_to_0[1][2]
                     _coconut_case_match_check_0 = True
+                if _coconut_case_match_check_0:
+                    if _coconut_match_set_name_start is not _coconut_sentinel:
+                        start = _coconut_case_match_to_0[1][0]
+                    if _coconut_match_set_name_stop is not _coconut_sentinel:
+                        stop = _coconut_case_match_to_0[1][1]
+                    if _coconut_match_set_name_step is not _coconut_sentinel:
+                        step = _coconut_case_match_to_0[1][2]
                 if _coconut_case_match_check_0:
                     rng = range(start, stop, step)
                     self.lb.append(0)
@@ -125,10 +139,17 @@ class BBoptOptimizationProblem(OptimizationProblem):
                     self.int_var.append(i)
                     self.choices[name] = rng
             if not _coconut_case_match_check_0:
+                _coconut_match_set_name_start = _coconut_sentinel
+                _coconut_match_set_name_stop = _coconut_sentinel
                 if (_coconut.isinstance(_coconut_case_match_to_0, _coconut.abc.Sequence)) and (_coconut.len(_coconut_case_match_to_0) == 2) and (_coconut_case_match_to_0[0] == "uniform") and (_coconut.isinstance(_coconut_case_match_to_0[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_case_match_to_0[1]) == 2):
-                    start = _coconut_case_match_to_0[1][0]
-                    stop = _coconut_case_match_to_0[1][1]
+                    _coconut_match_set_name_start = _coconut_case_match_to_0[1][0]
+                    _coconut_match_set_name_stop = _coconut_case_match_to_0[1][1]
                     _coconut_case_match_check_0 = True
+                if _coconut_case_match_check_0:
+                    if _coconut_match_set_name_start is not _coconut_sentinel:
+                        start = _coconut_case_match_to_0[1][0]
+                    if _coconut_match_set_name_stop is not _coconut_sentinel:
+                        stop = _coconut_case_match_to_0[1][1]
                 if _coconut_case_match_check_0:
                     self.lb.append(start)
                     self.ub.append(stop)
@@ -150,11 +171,15 @@ class BBoptOptimizationProblem(OptimizationProblem):
             val = xs[i]
             _coconut_match_to_0 = self.choices
             _coconut_match_check_0 = False
+            _coconut_match_set_name_choices = _coconut_sentinel
             if _coconut.isinstance(_coconut_match_to_0, _coconut.abc.Mapping):
                 _coconut_match_temp_0 = _coconut_match_to_0.get(name, _coconut_sentinel)
                 if _coconut_match_temp_0 is not _coconut_sentinel:
-                    choices = _coconut_match_temp_0
+                    _coconut_match_set_name_choices = _coconut_match_temp_0
                     _coconut_match_check_0 = True
+            if _coconut_match_check_0:
+                if _coconut_match_set_name_choices is not _coconut_sentinel:
+                    choices = _coconut_match_temp_0
             if _coconut_match_check_0:
                 assert val == int(val), val
                 val = choices[int(val)]
@@ -169,11 +194,15 @@ class BBoptOptimizationProblem(OptimizationProblem):
             for name, val in ex_dict.items():
                 _coconut_match_to_1 = self.choices
                 _coconut_match_check_1 = False
+                _coconut_match_set_name_choices = _coconut_sentinel
                 if _coconut.isinstance(_coconut_match_to_1, _coconut.abc.Mapping):
                     _coconut_match_temp_0 = _coconut_match_to_1.get(name, _coconut_sentinel)
                     if _coconut_match_temp_0 is not _coconut_sentinel:
-                        choices = _coconut_match_temp_0
+                        _coconut_match_set_name_choices = _coconut_match_temp_0
                         _coconut_match_check_1 = True
+                if _coconut_match_check_1:
+                    if _coconut_match_set_name_choices is not _coconut_sentinel:
+                        choices = _coconut_match_temp_0
                 if _coconut_match_check_1:
                     chosen_ind = choices.index(val)
                     pt.append(chosen_ind)
@@ -190,7 +219,7 @@ _coconut_call_set_names(BBoptOptimizationProblem)
 class PySOTBackend(StandardBackend):
     """The pySOT backend uses pySOT for black box optimization."""
     backend_name = "pySOT"
-    implemented_funcs = ("choice", "randrange", "uniform",)
+    implemented_funcs = ("choice", "randrange", "uniform")
 
     strategy = None
 
@@ -221,8 +250,12 @@ class PySOTBackend(StandardBackend):
             if _coconut_case_match_check_1:
                 self.exp_design = TwoFactorial(**design_kwargs)
         if not _coconut_case_match_check_1:
-            design_cls = _coconut_case_match_to_1
+            _coconut_match_set_name_design_cls = _coconut_sentinel
+            _coconut_match_set_name_design_cls = _coconut_case_match_to_1
             _coconut_case_match_check_1 = True
+            if _coconut_case_match_check_1:
+                if _coconut_match_set_name_design_cls is not _coconut_sentinel:
+                    design_cls = _coconut_case_match_to_1
             if _coconut_case_match_check_1 and not (callable(design_cls)):
                 _coconut_case_match_check_1 = False
             if _coconut_case_match_check_1:
@@ -243,8 +276,12 @@ class PySOTBackend(StandardBackend):
             if _coconut_case_match_check_2:
                 self.surrogate = GPRegressor(**surrogate_kwargs)
         if not _coconut_case_match_check_2:
-            surrogate_cls = _coconut_case_match_to_2
+            _coconut_match_set_name_surrogate_cls = _coconut_sentinel
+            _coconut_match_set_name_surrogate_cls = _coconut_case_match_to_2
             _coconut_case_match_check_2 = True
+            if _coconut_case_match_check_2:
+                if _coconut_match_set_name_surrogate_cls is not _coconut_sentinel:
+                    surrogate_cls = _coconut_case_match_to_2
             if _coconut_case_match_check_2 and not (callable(surrogate_cls)):
                 _coconut_case_match_check_2 = False
             if _coconut_case_match_check_2:
@@ -275,8 +312,12 @@ class PySOTBackend(StandardBackend):
             if _coconut_case_match_check_3:
                 self.strategy = LCBStrategy(**strategy_kwargs)
         if not _coconut_case_match_check_3:
-            strategy_cls = _coconut_case_match_to_3
+            _coconut_match_set_name_strategy_cls = _coconut_sentinel
+            _coconut_match_set_name_strategy_cls = _coconut_case_match_to_3
             _coconut_case_match_check_3 = True
+            if _coconut_case_match_check_3:
+                if _coconut_match_set_name_strategy_cls is not _coconut_sentinel:
+                    strategy_cls = _coconut_case_match_to_3
             if _coconut_case_match_check_3 and not (callable(strategy_cls)):
                 _coconut_case_match_check_3 = False
             if _coconut_case_match_check_3:

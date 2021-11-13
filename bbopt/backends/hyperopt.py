@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x757da2d4
+# __coconut_hash__ = 0x61a3a4c6
 
-# Compiled with Coconut version 1.5.0-post_dev92 [Fish License]
+# Compiled with Coconut version 2.0.0-a_dev9 [How Not to Be Seen]
 
 """
 The hyperopt backend. Does black box optimization using hyperopt.
@@ -32,7 +32,7 @@ if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha(
                     _coconut_v_type.__module__ = _coconut_full_module_name
     _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
-from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _coconut, _coconut_MatchError, _coconut_igetitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable
+from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _coconut, _coconut_MatchError, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op
 _coconut_sys.path.pop(0)
 
 # Compiled Coconut: -----------------------------------------------------------
@@ -67,34 +67,62 @@ def create_space(name, func, *args):
     """Create a hyperopt space for the given parameter."""
     _coconut_case_match_to_0 = func, args
     _coconut_case_match_check_0 = False
+    _coconut_match_set_name_choices = _coconut_sentinel
     if (_coconut.isinstance(_coconut_case_match_to_0, _coconut.abc.Sequence)) and (_coconut.len(_coconut_case_match_to_0) == 2) and (_coconut_case_match_to_0[0] == "choice") and (_coconut.isinstance(_coconut_case_match_to_0[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_case_match_to_0[1]) == 1):
-        choices = _coconut_case_match_to_0[1][0]
+        _coconut_match_set_name_choices = _coconut_case_match_to_0[1][0]
         _coconut_case_match_check_0 = True
+    if _coconut_case_match_check_0:
+        if _coconut_match_set_name_choices is not _coconut_sentinel:
+            choices = _coconut_case_match_to_0[1][0]
     if _coconut_case_match_check_0:
         return hp.choice(name, choices)
     if not _coconut_case_match_check_0:
+        _coconut_match_set_name_start = _coconut_sentinel
+        _coconut_match_set_name_stop = _coconut_sentinel
+        _coconut_match_set_name_step = _coconut_sentinel
         if (_coconut.isinstance(_coconut_case_match_to_0, _coconut.abc.Sequence)) and (_coconut.len(_coconut_case_match_to_0) == 2) and (_coconut_case_match_to_0[0] == "randrange") and (_coconut.isinstance(_coconut_case_match_to_0[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_case_match_to_0[1]) == 3):
-            start = _coconut_case_match_to_0[1][0]
-            stop = _coconut_case_match_to_0[1][1]
-            step = _coconut_case_match_to_0[1][2]
+            _coconut_match_set_name_start = _coconut_case_match_to_0[1][0]
+            _coconut_match_set_name_stop = _coconut_case_match_to_0[1][1]
+            _coconut_match_set_name_step = _coconut_case_match_to_0[1][2]
             _coconut_case_match_check_0 = True
+        if _coconut_case_match_check_0:
+            if _coconut_match_set_name_start is not _coconut_sentinel:
+                start = _coconut_case_match_to_0[1][0]
+            if _coconut_match_set_name_stop is not _coconut_sentinel:
+                stop = _coconut_case_match_to_0[1][1]
+            if _coconut_match_set_name_step is not _coconut_sentinel:
+                step = _coconut_case_match_to_0[1][2]
         if _coconut_case_match_check_0:
             if step != 1:
                 raise ValueError("the hyperopt backend only supports a randrange step size of 1 (use bb.choice(name, range(start, stop, step)) instead)")
 # despite being called randint, hp.randint is exclusive
             return start + hp.randint(name, stop - start)
     if not _coconut_case_match_check_0:
+        _coconut_match_set_name_a = _coconut_sentinel
+        _coconut_match_set_name_b = _coconut_sentinel
         if (_coconut.isinstance(_coconut_case_match_to_0, _coconut.abc.Sequence)) and (_coconut.len(_coconut_case_match_to_0) == 2) and (_coconut_case_match_to_0[0] == "uniform") and (_coconut.isinstance(_coconut_case_match_to_0[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_case_match_to_0[1]) == 2):
-            a = _coconut_case_match_to_0[1][0]
-            b = _coconut_case_match_to_0[1][1]
+            _coconut_match_set_name_a = _coconut_case_match_to_0[1][0]
+            _coconut_match_set_name_b = _coconut_case_match_to_0[1][1]
             _coconut_case_match_check_0 = True
+        if _coconut_case_match_check_0:
+            if _coconut_match_set_name_a is not _coconut_sentinel:
+                a = _coconut_case_match_to_0[1][0]
+            if _coconut_match_set_name_b is not _coconut_sentinel:
+                b = _coconut_case_match_to_0[1][1]
         if _coconut_case_match_check_0:
             return hp.uniform(name, a, b)
     if not _coconut_case_match_check_0:
+        _coconut_match_set_name_mu = _coconut_sentinel
+        _coconut_match_set_name_sigma = _coconut_sentinel
         if (_coconut.isinstance(_coconut_case_match_to_0, _coconut.abc.Sequence)) and (_coconut.len(_coconut_case_match_to_0) == 2) and (_coconut_case_match_to_0[0] == "normalvariate") and (_coconut.isinstance(_coconut_case_match_to_0[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_case_match_to_0[1]) == 2):
-            mu = _coconut_case_match_to_0[1][0]
-            sigma = _coconut_case_match_to_0[1][1]
+            _coconut_match_set_name_mu = _coconut_case_match_to_0[1][0]
+            _coconut_match_set_name_sigma = _coconut_case_match_to_0[1][1]
             _coconut_case_match_check_0 = True
+        if _coconut_case_match_check_0:
+            if _coconut_match_set_name_mu is not _coconut_sentinel:
+                mu = _coconut_case_match_to_0[1][0]
+            if _coconut_match_set_name_sigma is not _coconut_sentinel:
+                sigma = _coconut_case_match_to_0[1][1]
         if _coconut_case_match_check_0:
             return hp.normal(name, mu, sigma)
     raise TypeError("invalid parameter {_coconut_format_0}".format(_coconut_format_0=(name)))
@@ -109,11 +137,15 @@ def examples_to_trials(examples, params):
 
         _coconut_match_to_0 = ex
         _coconut_match_check_0 = False
+        _coconut_match_set_name_gain = _coconut_sentinel
         if _coconut.isinstance(_coconut_match_to_0, _coconut.abc.Mapping):
             _coconut_match_temp_0 = _coconut_match_to_0.get("gain", _coconut_sentinel)
             if _coconut_match_temp_0 is not _coconut_sentinel:
-                gain = _coconut_match_temp_0
+                _coconut_match_set_name_gain = _coconut_match_temp_0
                 _coconut_match_check_0 = True
+        if _coconut_match_check_0:
+            if _coconut_match_set_name_gain is not _coconut_sentinel:
+                gain = _coconut_match_temp_0
         if _coconut_match_check_0:
             loss = negate_objective(gain)
         else:
@@ -123,8 +155,8 @@ def examples_to_trials(examples, params):
         vals = {}
         idxs = {}
         for k, v in get_names_and_features(ex["values"], params, fallback_func=lambda name, func, *args, **kwargs: NA, converters={"choice": lambda val, choices: choices.index(val), "randrange": lambda val, start, stop, step: val - start}, convert_fallback=False):
-            vals[k] = [v] if v is not NA else []
-            idxs[k] = [tid] if v is not NA else []
+            vals[k] = [v, ] if v is not NA else []
+            idxs[k] = [tid, ] if v is not NA else []
 
         misc = {"tid": tid, "idxs": idxs, "vals": vals, "cmd": None}
 
@@ -138,7 +170,7 @@ def examples_to_trials(examples, params):
 class HyperoptBackend(StandardBackend):
     """The hyperopt backend uses hyperopt for black box optimization."""
     backend_name = "hyperopt"
-    implemented_funcs = ("choice", "randrange", "uniform", "normalvariate",)
+    implemented_funcs = ("choice", "randrange", "uniform", "normalvariate")
 
     @override
     def setup_backend(self, params, algo=tpe.suggest, rstate=np.random.RandomState(), show_progressbar=False, **options):
@@ -181,7 +213,7 @@ HyperoptBackend.register()
 
 HyperoptBackend.register_alg("tree_structured_parzen_estimator", algo=tpe.suggest)
 HyperoptBackend.register_alg("annealing", algo=anneal.suggest)
-if sys.version_info >= (3,):
+if sys.version_info >= (3, ):
     from hyperopt import atpe
     HyperoptBackend.register_alg("adaptive_tpe", algo=atpe.suggest)
 

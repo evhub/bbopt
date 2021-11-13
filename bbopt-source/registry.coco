@@ -20,7 +20,7 @@ class Registry:
 
     def __getitem__(self, name):
         name = self.aliases.get(name, name)
-        match {=name: value, **_} in self.registered:
+        match {==name: value, **_} in self.registered:
             return value
         else: if name in self.generators:
             return self.run_gen(name)
@@ -41,7 +41,7 @@ class Registry:
     def register(self, name, value, replace=False):
         """Register value under the given name."""
         if not replace:
-            match {=name: stored_val, **_} in self.registered:
+            match {==name: stored_val, **_} in self.registered:
                 if stored_val == value:
                     return
                 else:
@@ -56,7 +56,7 @@ class Registry:
     def register_alias(self, name, alias, replace=False):
         """Register an alias for the given name."""
         if not replace:
-            match {=name: stored_alias, **_} in self.aliases:
+            match {==name: stored_alias, **_} in self.aliases:
                 if stored_alias == alias:
                     return
                 else:
