@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x697cf631
+# __coconut_hash__ = 0x48c0faac
 
 # Compiled with Coconut version 2.0.0-a_dev36 [How Not to Be Seen]
 
@@ -183,8 +183,13 @@ class HyperoptBackend(StandardBackend):
     implemented_funcs = ("choice", "randrange", "uniform", "normalvariate")
 
     @override
-    def setup_backend(self, params, algo=tpe.suggest, rstate=np.random.default_rng(), show_progressbar=False, **options):
+    def setup_backend(self, params, algo=tpe.suggest, rstate=None, show_progressbar=False, **options):
         """Special method to initialize the backend from params."""
+        if rstate is None:
+            if sys.verion_info >= (3,):
+                rstate = np.random.default_rng()
+            else:
+                rstate = np.random.RandomState()
         self.params = params
 
         space = (as_apply)(dict(((name), (create_space(name, func, *args))) for name, (func, args, kwargs) in sorted_items(params)))

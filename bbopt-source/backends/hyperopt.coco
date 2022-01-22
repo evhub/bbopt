@@ -116,8 +116,13 @@ class HyperoptBackend(StandardBackend):
     )
 
     @override
-    def setup_backend(self, params, algo=tpe.suggest, rstate=np.random.default_rng(), show_progressbar=False, **options):
+    def setup_backend(self, params, algo=tpe.suggest, rstate=None, show_progressbar=False, **options):
         """Special method to initialize the backend from params."""
+        if rstate is None:
+            if sys.verion_info >= (3,):
+                rstate = np.random.default_rng()
+            else:
+                rstate = np.random.RandomState()
         self.params = params
 
         space = {
