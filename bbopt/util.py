@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x6fca4188
+# __coconut_hash__ = 0x2ba68c86
 
-# Compiled with Coconut version 2.0.0-a_dev9 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0-a_dev36 [How Not to Be Seen]
 
 """
 Utilities for use across all of bbopt.
@@ -14,7 +14,7 @@ from __future__ import print_function, absolute_import, unicode_literals, divisi
 import sys as _coconut_sys, os as _coconut_os
 _coconut_file_dir = _coconut_os.path.dirname(_coconut_os.path.abspath(__file__))
 _coconut_cached_module = _coconut_sys.modules.get(str("__coconut__"))
-if _coconut_cached_module is not None and _coconut_os.path.dirname(_coconut_cached_module.__file__) != _coconut_file_dir:
+if _coconut_cached_module is not None and _coconut_os.path.dirname(_coconut_cached_module.__file__) != _coconut_file_dir:  # type: ignore
     del _coconut_sys.modules[str("__coconut__")]
 _coconut_sys.path.insert(0, _coconut_file_dir)
 _coconut_module_name = _coconut_os.path.splitext(_coconut_os.path.basename(_coconut_file_dir))[0]
@@ -32,7 +32,7 @@ if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha(
                     _coconut_v_type.__module__ = _coconut_full_module_name
     _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
-from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _coconut, _coconut_MatchError, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op
+from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_MatchError, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_multi_dim_arr
 _coconut_sys.path.pop(0)
 
 # Compiled Coconut: -----------------------------------------------------------
@@ -67,9 +67,11 @@ def norm_path(path):
     return ((os.path.normcase)((os.path.realpath)((os.path.abspath)((os.path.expanduser)(path)))))
 
 
+
 def isnumpy(obj):
     """Determines if obj is a numpy scalar."""
     return type(obj).__module__ == "numpy" and np.isscalar(obj)
+
 
 
 def denumpy(obj, fallback=None):
@@ -91,6 +93,7 @@ def denumpy(obj, fallback=None):
     return obj
 
 
+
 def denumpy_all(obj):
     """Recursively apply denumpy to the given obj."""
     if isinstance(obj, (list, tuple)):
@@ -101,6 +104,7 @@ def denumpy_all(obj):
         return denumpy(obj)
     else:
         return obj
+
 
 
 def json_serialize(obj):
@@ -129,14 +133,17 @@ def json_serialize(obj):
     raise TypeError("cannot JSON serialize {_coconut_format_0}".format(_coconut_format_0=(obj)))
 
 
+
 def sorted_items(params):
     """Return an iterator of the dict's items sorted by its keys."""
     return sorted(params.items())
 
 
+
 def sorted_examples(examples):
     """Sort examples by their timestamp."""
     return sorted(examples, key=_coconut.operator.itemgetter(("timestamp")))
+
 
 
 def running_best(examples):
@@ -157,9 +164,9 @@ def running_best(examples):
                 _coconut_case_match_check_0 = True
         if _coconut_case_match_check_0:
             if _coconut_match_set_name_values is not _coconut_sentinel:
-                values = _coconut_match_temp_0
+                values = _coconut_match_set_name_values
             if _coconut_match_set_name_gain is not _coconut_sentinel:
-                gain = _coconut_match_temp_1
+                gain = _coconut_match_set_name_gain
         if _coconut_case_match_check_0:
             if min_loss is not None:
                 raise ValueError("cannot have examples with maximize and examples with minimize")
@@ -171,17 +178,17 @@ def running_best(examples):
             _coconut_match_set_name_values = _coconut_sentinel
             _coconut_match_set_name_loss = _coconut_sentinel
             if _coconut.isinstance(_coconut_case_match_to_0, _coconut.abc.Mapping):
-                _coconut_match_temp_0 = _coconut_case_match_to_0.get("values", _coconut_sentinel)
-                _coconut_match_temp_1 = _coconut_case_match_to_0.get("loss", _coconut_sentinel)
-                if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut_match_temp_1 is not _coconut_sentinel):
-                    _coconut_match_set_name_values = _coconut_match_temp_0
-                    _coconut_match_set_name_loss = _coconut_match_temp_1
+                _coconut_match_temp_2 = _coconut_case_match_to_0.get("values", _coconut_sentinel)
+                _coconut_match_temp_3 = _coconut_case_match_to_0.get("loss", _coconut_sentinel)
+                if (_coconut_match_temp_2 is not _coconut_sentinel) and (_coconut_match_temp_3 is not _coconut_sentinel):
+                    _coconut_match_set_name_values = _coconut_match_temp_2
+                    _coconut_match_set_name_loss = _coconut_match_temp_3
                     _coconut_case_match_check_0 = True
             if _coconut_case_match_check_0:
                 if _coconut_match_set_name_values is not _coconut_sentinel:
-                    values = _coconut_match_temp_0
+                    values = _coconut_match_set_name_values
                 if _coconut_match_set_name_loss is not _coconut_sentinel:
-                    loss = _coconut_match_temp_1
+                    loss = _coconut_match_set_name_loss
             if _coconut_case_match_check_0:
                 if max_gain is not None:
                     raise ValueError("cannot have examples with maximize and examples with minimize")
@@ -195,6 +202,7 @@ def running_best(examples):
         yield best_example
 
 
+
 def best_example(examples):
     """Return the best example seen so far."""
     best = consume(running_best(examples), keep_last=1)
@@ -205,14 +213,17 @@ def best_example(examples):
         return {"values": {}}
 
 
+
 def all_isinstance(objs, types):
     """Return whether all the objects have the desired type(s)."""
     return (all)((map)(_coconut_partial(isinstance, {1: types}, 2), objs))
 
 
+
 def format_err(Error, message, obj):
     """Creates an error with a formatted error message."""
     return Error(message + ": " + repr(obj))
+
 
 
 def sync_file(file_handle):
@@ -221,9 +232,10 @@ def sync_file(file_handle):
     os.fsync(file_handle.fileno())
 
 
+
 def ensure_file(fpath):
     """Ensure that the given file exists."""
-    if sys.version_info >= (3, ):
+    if sys.version_info >= (3,):
         try:
             with open(fpath, "x"):
                 pass
@@ -234,10 +246,12 @@ def ensure_file(fpath):
             pass
 
 
+
 def clear_file(file_handle):
     """Empties the contents of the given file."""
     file_handle.seek(0)
     file_handle.truncate()
+
 
 
 def plot(xs, ys, ax=None, yscale=None, title=None, xlabel=None, ylabel=None, marker=".", markersize=12, linewidth=2, grid=True,):
@@ -259,6 +273,7 @@ def plot(xs, ys, ax=None, yscale=None, title=None, xlabel=None, ylabel=None, mar
     return ax
 
 
+
 @contextmanager
 def open_with_lock(fpath, mode="rb+", timeout=None, **kwargs):
     """Open file with lock."""
@@ -276,6 +291,7 @@ def open_with_lock(fpath, mode="rb+", timeout=None, **kwargs):
                     pass
 
 
+
 def convert_match_errors(func):
     """Re-raise MatchErrors as TypeErrors."""
     @wraps(func)
@@ -287,12 +303,15 @@ def convert_match_errors(func):
             _coconut_raise_from_0 = TypeError("arguments did not match call signature for function {_coconut_format_0}".format(_coconut_format_0=(func_name)))
             _coconut_raise_from_0.__cause__ = err
             raise _coconut_raise_from_0
+
     return match_errors_converted_func
+
 
 
 def printerr(*args):
     """Print to stderr."""
     print(*args, file=sys.stderr)
+
 
 
 class ListProxy(_coconut.object):
@@ -301,6 +320,7 @@ class ListProxy(_coconut.object):
     def __init__(self, old_list, new_list):
         self.old_list = old_list
         self.new_list = new_list
+
 
     def __iter__(self):
         _coconut_yield_from_1 = _coconut.iter(self.new_list)
@@ -313,21 +333,26 @@ class ListProxy(_coconut.object):
 
         _coconut_yield_from_0
 
+
     def __getitem__(self, index):
         return self.new_list[index]
+
 
     def append(self, obj):
         self.new_list.append(obj)
         if obj not in self.old_list:
             self.old_list.append(obj)
 
+
     def __setitem__(self, index, obj):
         self.new_list[index] = obj
         if obj not in self.old_list:
             self.old_list.append(obj)
 
+
     def __repr__(self):
         return "ListProxy(\n\tself.old_list={_coconut_format_0},\n\tself.new_list={_coconut_format_1},\n)".format(_coconut_format_0=(self.old_list), _coconut_format_1=(self.new_list))
+
 
 
 _coconut_call_set_names(ListProxy)
@@ -337,6 +362,7 @@ class DictProxy(_coconut.object):
     def __init__(self, old_dict, new_dict):
         self.old_dict = old_dict
         self.new_dict = new_dict
+
 
     def __iter__(self):
         _coconut_yield_from_3 = _coconut.iter(self.new_dict)
@@ -349,14 +375,18 @@ class DictProxy(_coconut.object):
 
         _coconut_yield_from_2
 
+
     def items(self):
         return self.new_dict.items()
+
 
     def keys(self):
         return self.new_dict.keys()
 
+
     def values(self):
         return self.new_dict.values()
+
 
     def __getitem__(self, key):
         value = self.new_dict[key]
@@ -364,43 +394,59 @@ class DictProxy(_coconut.object):
             self.old_dict[key] = value
         return value
 
+
     def __setitem__(self, key, value):
         self.new_dict[key] = value
         if key not in self.old_dict:
             self.old_dict[key] = value
 
+
     def __repr__(self):
         return "DictProxy(\n\tself.old_dict={_coconut_format_0},\n\tself.new_dict={_coconut_format_1},\n)".format(_coconut_format_0=(self.old_dict), _coconut_format_1=(self.new_dict))
+
 
 
 _coconut_call_set_names(DictProxy)
 @_coconut_mark_as_match
 def mean(*_coconut_match_args, **_coconut_match_kwargs):
     _coconut_match_check_0 = False
+    _coconut_match_set_name_xs = _coconut_sentinel
     _coconut_FunctionMatchError = _coconut_get_function_match_error()
-    if (_coconut.len(_coconut_match_args) == 1) and (_coconut.isinstance(_coconut_match_args[0], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_args[0]) >= 0):
-        xs = _coconut.list(_coconut_match_args[0])
-        if not _coconut_match_kwargs:
-            _coconut_match_check_0 = True
+    if _coconut.len(_coconut_match_args) == 1:
+        if _coconut.isinstance(_coconut_match_args[0], _coconut.abc.Sequence):
+            _coconut_match_temp_4 = _coconut.list(_coconut_match_args[0])
+            _coconut_match_set_name_xs = _coconut_match_temp_4
+            if not _coconut_match_kwargs:
+                _coconut_match_check_0 = True
+    if _coconut_match_check_0:
+        if _coconut_match_set_name_xs is not _coconut_sentinel:
+            xs = _coconut_match_set_name_xs
     if not _coconut_match_check_0:
         raise _coconut_FunctionMatchError('match def mean([] + xs) =', _coconut_match_args)
 
     return sum(xs) / len(xs)
+
 
 @_coconut_addpattern(mean)
 @_coconut_mark_as_match
 def mean(*_coconut_match_args, **_coconut_match_kwargs):
     """Compute the arithmetic mean of the given sequence."""
     _coconut_match_check_1 = False
+    _coconut_match_set_name_xs = _coconut_sentinel
     _coconut_FunctionMatchError = _coconut_get_function_match_error()
-    if (_coconut.len(_coconut_match_args) == 1) and (_coconut.isinstance(_coconut_match_args[0], _coconut.abc.Iterable)):
-        xs = _coconut_match_args[0]
-        if not _coconut_match_kwargs:
-            _coconut_match_check_1 = True
+    if _coconut.len(_coconut_match_args) == 1:
+        if _coconut.isinstance(_coconut_match_args[0], _coconut.abc.Iterable):
+            _coconut_match_set_name_xs = _coconut_match_args[0]
+            if not _coconut_match_kwargs:
+                _coconut_match_check_1 = True
+    if _coconut_match_check_1:
+        if _coconut_match_set_name_xs is not _coconut_sentinel:
+            xs = _coconut_match_set_name_xs
     if not _coconut_match_check_1:
         raise _coconut_FunctionMatchError('addpattern def mean(() :: xs) =', _coconut_match_args)
 
     return (mean)((tuple)(xs))
+
 
 
 def median(xs):

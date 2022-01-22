@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3af381c
+# __coconut_hash__ = 0x32f4468f
 
-# Compiled with Coconut version 2.0.0-a_dev9 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0-a_dev36 [How Not to Be Seen]
 
 """
 The main BBopt interface.
@@ -14,7 +14,7 @@ from __future__ import print_function, absolute_import, unicode_literals, divisi
 import sys as _coconut_sys, os as _coconut_os
 _coconut_file_dir = _coconut_os.path.dirname(_coconut_os.path.abspath(__file__))
 _coconut_cached_module = _coconut_sys.modules.get(str("__coconut__"))
-if _coconut_cached_module is not None and _coconut_os.path.dirname(_coconut_cached_module.__file__) != _coconut_file_dir:
+if _coconut_cached_module is not None and _coconut_os.path.dirname(_coconut_cached_module.__file__) != _coconut_file_dir:  # type: ignore
     del _coconut_sys.modules[str("__coconut__")]
 _coconut_sys.path.insert(0, _coconut_file_dir)
 _coconut_module_name = _coconut_os.path.splitext(_coconut_os.path.basename(_coconut_file_dir))[0]
@@ -32,7 +32,7 @@ if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha(
                     _coconut_v_type.__module__ = _coconut_full_module_name
     _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
-from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _coconut, _coconut_MatchError, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op
+from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_MatchError, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_multi_dim_arr
 _coconut_sys.path.pop(0)
 
 # Compiled Coconut: -----------------------------------------------------------
@@ -93,6 +93,7 @@ def array_param(func, name, shape, kwargs):
 
 # Optimizer:
 
+
 class BlackBoxOptimizer(_coconut.object):
     """Main bbopt optimizer object. See https://github.com/evhub/bbopt for documentation."""
     backend = None
@@ -108,25 +109,26 @@ class BlackBoxOptimizer(_coconut.object):
         _coconut_match_set_name_protocol = _coconut_sentinel
         _coconut_FunctionMatchError = _coconut_get_function_match_error()
         if (_coconut.len(_coconut_match_args) <= 2) and (_coconut.sum((_coconut.len(_coconut_match_args) > 0, "self" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 1, "file" in _coconut_match_kwargs)) == 1):
-            _coconut_match_temp_0 = _coconut_match_args[0] if _coconut.len(_coconut_match_args) > 0 else _coconut_match_kwargs.pop("self")
-            _coconut_match_temp_1 = _coconut_match_args[1] if _coconut.len(_coconut_match_args) > 1 else _coconut_match_kwargs.pop("file")
             _coconut_match_temp_2 = _coconut_match_kwargs.pop("tag") if "tag" in _coconut_match_kwargs else None
             _coconut_match_temp_3 = _coconut_match_kwargs.pop("protocol") if "protocol" in _coconut_match_kwargs else None
-            if ((isinstance)(_coconut_match_temp_1, Str)) and (not _coconut_match_kwargs):
+            _coconut_match_temp_0 = _coconut_match_args[0] if _coconut.len(_coconut_match_args) > 0 else _coconut_match_kwargs.pop("self")
+            _coconut_match_temp_1 = _coconut_match_args[1] if _coconut.len(_coconut_match_args) > 1 else _coconut_match_kwargs.pop("file")
+            _coconut_match_set_name_tag = _coconut_match_temp_2
+            _coconut_match_set_name_protocol = _coconut_match_temp_3
+            if (isinstance)(_coconut_match_temp_1, Str):
                 _coconut_match_set_name_self = _coconut_match_temp_0
                 _coconut_match_set_name_file = _coconut_match_temp_1
-                _coconut_match_set_name_tag = _coconut_match_temp_2
-                _coconut_match_set_name_protocol = _coconut_match_temp_3
-                _coconut_match_check_0 = True
+                if not _coconut_match_kwargs:
+                    _coconut_match_check_0 = True
         if _coconut_match_check_0:
             if _coconut_match_set_name_self is not _coconut_sentinel:
-                self = _coconut_match_temp_0
+                self = _coconut_match_set_name_self
             if _coconut_match_set_name_file is not _coconut_sentinel:
-                file = _coconut_match_temp_1
+                file = _coconut_match_set_name_file
             if _coconut_match_set_name_tag is not _coconut_sentinel:
-                tag = _coconut_match_temp_2
+                tag = _coconut_match_set_name_tag
             if _coconut_match_set_name_protocol is not _coconut_sentinel:
-                protocol = _coconut_match_temp_3
+                protocol = _coconut_match_set_name_protocol
         if not _coconut_match_check_0:
             raise _coconut_FunctionMatchError('match def __init__(self, file `isinstance` Str, *, tag=None, protocol=None):', _coconut_match_args)
 
@@ -145,6 +147,7 @@ class BlackBoxOptimizer(_coconut.object):
 
         self.reload()
 
+
     @convert_match_errors
     @_coconut_addpattern(__init__)
     @_coconut_mark_as_match
@@ -160,30 +163,31 @@ class BlackBoxOptimizer(_coconut.object):
         _coconut_match_set_name_kwargs = _coconut_sentinel
         _coconut_FunctionMatchError = _coconut_get_function_match_error()
         if (_coconut.len(_coconut_match_args) <= 3) and (_coconut.sum((_coconut.len(_coconut_match_args) > 0, "self" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 1, "data_dir" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 2, "data_name" in _coconut_match_kwargs)) == 1):
-            _coconut_match_temp_0 = _coconut_match_args[0] if _coconut.len(_coconut_match_args) > 0 else _coconut_match_kwargs.pop("self")
-            _coconut_match_temp_1 = _coconut_match_args[1] if _coconut.len(_coconut_match_args) > 1 else _coconut_match_kwargs.pop("data_dir")
-            _coconut_match_temp_2 = _coconut_match_args[2] if _coconut.len(_coconut_match_args) > 2 else _coconut_match_kwargs.pop("data_name")
-            if ((isinstance)(_coconut_match_temp_1, Str)) and ((isinstance)(_coconut_match_temp_2, Str)):
-                _coconut_match_set_name_self = _coconut_match_temp_0
-                _coconut_match_set_name_data_dir = _coconut_match_temp_1
-                _coconut_match_set_name_data_name = _coconut_match_temp_2
+            _coconut_match_temp_4 = _coconut_match_args[0] if _coconut.len(_coconut_match_args) > 0 else _coconut_match_kwargs.pop("self")
+            _coconut_match_temp_5 = _coconut_match_args[1] if _coconut.len(_coconut_match_args) > 1 else _coconut_match_kwargs.pop("data_dir")
+            _coconut_match_temp_6 = _coconut_match_args[2] if _coconut.len(_coconut_match_args) > 2 else _coconut_match_kwargs.pop("data_name")
+            if ((isinstance)(_coconut_match_temp_5, Str)) and ((isinstance)(_coconut_match_temp_6, Str)):
+                _coconut_match_set_name_self = _coconut_match_temp_4
+                _coconut_match_set_name_data_dir = _coconut_match_temp_5
+                _coconut_match_set_name_data_name = _coconut_match_temp_6
                 _coconut_match_set_name_kwargs = _coconut_match_kwargs
                 _coconut_match_check_1 = True
         if _coconut_match_check_1:
             if _coconut_match_set_name_self is not _coconut_sentinel:
-                self = _coconut_match_temp_0
+                self = _coconut_match_set_name_self
             if _coconut_match_set_name_data_dir is not _coconut_sentinel:
-                data_dir = _coconut_match_temp_1
+                data_dir = _coconut_match_set_name_data_dir
             if _coconut_match_set_name_data_name is not _coconut_sentinel:
-                data_name = _coconut_match_temp_2
+                data_name = _coconut_match_set_name_data_name
             if _coconut_match_set_name_kwargs is not _coconut_sentinel:
-                kwargs = _coconut_match_kwargs
+                kwargs = _coconut_match_set_name_kwargs
         if not _coconut_match_check_1:
             raise _coconut_FunctionMatchError('addpattern def __init__(self, data_dir `isinstance` Str, data_name `isinstance` Str, **kwargs):', _coconut_match_args)
 
         self.__init__(os.path.join(data_dir, data_name), **kwargs)
 
 # Private utilities:
+
 
     def _loads(self, raw_contents):
         """Load data from the given raw data string."""
@@ -192,6 +196,7 @@ class BlackBoxOptimizer(_coconut.object):
         else:
             return pickle.loads(raw_contents)
 
+
     def _dumps(self, unserialized_data):
         """Dump data to a raw data string."""
         if self.using_json:
@@ -199,10 +204,12 @@ class BlackBoxOptimizer(_coconut.object):
         else:
             return pickle.dumps(unserialized_data, protocol=self.protocol)
 
+
     @property
     def _got_reward(self):
         """Whether we have seen a maximize/minimize call yet."""
         return "loss" in self._current_example or "gain" in self._current_example
+
 
     def _set_reward(self, reward_type, value):
         """Set the gain or loss to the given value."""
@@ -219,6 +226,7 @@ class BlackBoxOptimizer(_coconut.object):
 #  updated with _new_params, so _new_params can safely be cleared
         self._new_params = {}
 
+
     def _add_examples(self, examples):
         """Load the given examples into memory."""
         for ex in examples:
@@ -227,6 +235,7 @@ class BlackBoxOptimizer(_coconut.object):
                     func, args, kwargs = (lambda _coconut_x: self._old_params[name] if _coconut_x is None else _coconut_x)((lambda _coconut_x: None if _coconut_x is None else _coconut_x.get(name))(self._new_params))
                     ex["values"][name] = param_processor.verify_support(name, val, func, *args, **kwargs)
                 self._examples.append(ex)
+
 
     def _load_from(self, df):
         """Load data from the given file."""
@@ -237,22 +246,23 @@ class BlackBoxOptimizer(_coconut.object):
             _coconut_match_set_name_params = _coconut_sentinel
             _coconut_match_set_name_examples = _coconut_sentinel
             if _coconut.isinstance(_coconut_match_to_0, _coconut.abc.Mapping):
-                _coconut_match_temp_0 = _coconut_match_to_0.get("params", _coconut_sentinel)
-                _coconut_match_temp_1 = _coconut_match_to_0.get("examples", _coconut_sentinel)
-                if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut_match_temp_1 is not _coconut_sentinel):
-                    _coconut_match_set_name_params = _coconut_match_temp_0
-                    _coconut_match_set_name_examples = _coconut_match_temp_1
+                _coconut_match_temp_7 = _coconut_match_to_0.get("params", _coconut_sentinel)
+                _coconut_match_temp_8 = _coconut_match_to_0.get("examples", _coconut_sentinel)
+                if (_coconut_match_temp_7 is not _coconut_sentinel) and (_coconut_match_temp_8 is not _coconut_sentinel):
+                    _coconut_match_set_name_params = _coconut_match_temp_7
+                    _coconut_match_set_name_examples = _coconut_match_temp_8
                     _coconut_match_check_2 = True
             if _coconut_match_check_2:
                 if _coconut_match_set_name_params is not _coconut_sentinel:
-                    params = _coconut_match_temp_0
+                    params = _coconut_match_set_name_params
                 if _coconut_match_set_name_examples is not _coconut_sentinel:
-                    examples = _coconut_match_temp_1
+                    examples = _coconut_match_set_name_examples
             if not _coconut_match_check_2:
                 raise _coconut_MatchError('{"params": params, "examples": examples} = self._loads(contents)', _coconut_match_to_0)
 
             self._old_params = params
             self._add_examples(examples)
+
 
     def _load_data(self):
         """Load examples from data file."""
@@ -260,14 +270,16 @@ class BlackBoxOptimizer(_coconut.object):
         with open_with_lock(self.data_file) as df:
             self._load_from(df)
 
+
     def _save_current_data(self):
         """Save examples to data file."""
         assert "timestamp" not in self._current_example, "multiple _save_current_data calls on _current_example = {_coconut_format_0}".format(_coconut_format_0=(self._current_example))
         with open_with_lock(self.data_file) as df:
 # we create the timestamp while we have the lock to ensure its uniqueness
             self._current_example["timestamp"] = time.time()
-            self._add_examples([self._current_example, ])
+            self._add_examples([self._current_example,])
             self._save_to(df)
+
 
     def _save_to(self, df):
         """Save to the given open data file."""
@@ -276,11 +288,13 @@ class BlackBoxOptimizer(_coconut.object):
         ((df.write)((self._dumps)(self.get_data())))
         sync_file(df)
 
+
     def _get_backend(self, backend, *args, **options):
         """Get the given backend, attempting to load from stored backends."""
         def _coconut_lambda_0(backend):
             self._backend_creation_counts[type(backend)] += 1
         return get_backend(self._backend_store, backend, self._examples, self._old_params, *args, _current_backend=self.backend, _on_new_backend=(_coconut_lambda_0), **options)
+
 
     def _get_skopt_backend(self):
         """Get a scikit-optimize backend regardless of whether currently using one."""
@@ -291,12 +305,14 @@ class BlackBoxOptimizer(_coconut.object):
         else:
             return self._get_backend(SkoptBackend)
 
+
     @property
     def _file_name(self):
         """The base name of the given file."""
         return os.path.splitext(os.path.basename(self._file))[0] + ("_" + self._tag if self._tag is not None else "")
 
 # External but undocumented:
+
 
     def reload(self):
         """Completely reload the optimizer."""
@@ -306,10 +322,12 @@ class BlackBoxOptimizer(_coconut.object):
         self._load_data()
         self.run_backend(ServingBackend)
 
+
     def save_data(self):
         """Forcibly saves data."""
         with open_with_lock(self.data_file) as df:
             self._save_to(df)
+
 
     @property
     def metric(self):
@@ -317,10 +335,12 @@ class BlackBoxOptimizer(_coconut.object):
         assert self._examples, "cannot determine metric from empty examples"
         return "gain" if "gain" in self._examples[0] else "loss"
 
+
     @property
     def using_json(self):
         """Whether we are currently saving in json or pickle."""
         return self.protocol == "json"
+
 
     @property
     def num_examples(self):
@@ -328,6 +348,7 @@ class BlackBoxOptimizer(_coconut.object):
         return len(self._examples)
 
 # Public API:
+
 
     def param(self, name, func, *args, **kwargs):
         """Create a black box parameter and return its value."""
@@ -347,19 +368,19 @@ class BlackBoxOptimizer(_coconut.object):
         _coconut_match_set_name_old_args = _coconut_sentinel
         _coconut_match_set_name_old_kwargs = _coconut_sentinel
         if _coconut.isinstance(_coconut_match_to_1, _coconut.abc.Mapping):
-            _coconut_match_temp_0 = _coconut_match_to_1.get(name, _coconut_sentinel)
-            if (_coconut_match_temp_0 is not _coconut_sentinel) and (_coconut.isinstance(_coconut_match_temp_0, _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_temp_0) == 3):
-                _coconut_match_set_name_old_func = _coconut_match_temp_0[0]
-                _coconut_match_set_name_old_args = _coconut_match_temp_0[1]
-                _coconut_match_set_name_old_kwargs = _coconut_match_temp_0[2]
+            _coconut_match_temp_9 = _coconut_match_to_1.get(name, _coconut_sentinel)
+            if (_coconut_match_temp_9 is not _coconut_sentinel) and (_coconut.isinstance(_coconut_match_temp_9, _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_temp_9) == 3):
+                _coconut_match_set_name_old_func = _coconut_match_temp_9[0]
+                _coconut_match_set_name_old_args = _coconut_match_temp_9[1]
+                _coconut_match_set_name_old_kwargs = _coconut_match_temp_9[2]
                 _coconut_match_check_3 = True
         if _coconut_match_check_3:
             if _coconut_match_set_name_old_func is not _coconut_sentinel:
-                old_func = _coconut_match_temp_0[0]
+                old_func = _coconut_match_set_name_old_func
             if _coconut_match_set_name_old_args is not _coconut_sentinel:
-                old_args = _coconut_match_temp_0[1]
+                old_args = _coconut_match_set_name_old_args
             if _coconut_match_set_name_old_kwargs is not _coconut_sentinel:
-                old_kwargs = _coconut_match_temp_0[2]
+                old_kwargs = _coconut_match_set_name_old_kwargs
         if _coconut_match_check_3:
             if (func, args) != (old_func, old_args):
                 printerr("BBopt Warning: detected change in parameter {_coconut_format_0} ({_coconut_format_1} != {_coconut_format_2}) (you may need to delete your old BBopt data)".format(_coconut_format_0=(name), _coconut_format_1=((func, args)), _coconut_format_2=((old_func, old_args))))
@@ -369,6 +390,7 @@ class BlackBoxOptimizer(_coconut.object):
         self._current_example["values"][name] = value
         return value
 
+
     def run_backend(self, backend, *args, **options):
         """Optimize parameters using the given backend."""
         if self._new_params:
@@ -377,10 +399,12 @@ class BlackBoxOptimizer(_coconut.object):
         self._new_params = {}
         self._current_example = {"values": {}}
 
+
     @property
     def algs(self):
         """All algorithms supported by run."""
         return alg_registry.asdict()
+
 
     def run(self, alg=constants.default_alg_sentinel):
         """Optimize parameters using the given algorithm
@@ -394,6 +418,7 @@ class BlackBoxOptimizer(_coconut.object):
             backend, options = alg_registry[alg]
             self.run_backend(backend, **options)
 
+
     def run_meta(self, algs, meta_alg=constants.default_alg_sentinel):
         """Dynamically choose the best algorithm from the given set of algorithms."""
         if meta_alg is constants.default_alg_sentinel:
@@ -403,29 +428,35 @@ class BlackBoxOptimizer(_coconut.object):
         backend, options = alg_registry[alg]
         self.backend = self._get_backend(backend, **options)
 
+
     def remember(self, info):
         """Store a dictionary of information about the current run."""
         if self._got_reward:
             raise ValueError("remember calls must come before maximize/minimize")
         self._current_example.setdefault("memo", {}).update(info)
 
+
     def minimize(self, value):
         """Set the loss of the current run."""
         self._set_reward("loss", value)
 
+
     def maximize(self, value):
         """Set the gain of the current run."""
         self._set_reward("gain", value)
+
 
     @property
     def is_serving(self):
         """Whether we are currently using the serving backend or not."""
         return isinstance(self.backend, ServingBackend) and not self.backend.allow_missing_data
 
+
     @property
     def data_file(self):
         """The path to the file we are saving data to."""
         return os.path.join(os.path.dirname(self._file), self._file_name) + constants.data_file_ext + (".json" if self.using_json else ".pickle")
+
 
     def get_data(self, print_data=False):
         """Get all currently-loaded data as a dictionary containing params and examples."""
@@ -435,10 +466,12 @@ class BlackBoxOptimizer(_coconut.object):
             pprint(data_dict)
         return data_dict
 
+
     def tell_examples(self, examples):
         """Adds the given examples to memory and writes the current memory to disk."""
         self._add_examples(examples)
         self.save_data()
+
 
     def get_current_run(self):
         """Return a dictionary containing the current parameters and reward."""
@@ -446,9 +479,11 @@ class BlackBoxOptimizer(_coconut.object):
             raise ValueError("get_current_run calls must come after run")
         return self._current_example
 
+
     def get_best_run(self):
         """Return a dictionary containing the best parameters and reward computed so far."""
         return best_example(self._examples)
+
 
     get_optimal_run = get_best_run
 
@@ -458,6 +493,7 @@ class BlackBoxOptimizer(_coconut.object):
         return (lambda _coconut_x: None if _coconut_x is None else (int)(_coconut_x))(os.environ.get(constants.run_id_env_var))
 
 # Plotting functions:
+
 
     def plot_convergence(self, ax=None, yscale=None):
         """Plot the best gain/loss over the history of optimization.
@@ -470,6 +506,7 @@ class BlackBoxOptimizer(_coconut.object):
 
         return plot(iterations, best_metrics, ax=ax, yscale=yscale, title="Convergence plot for {_coconut_format_0}".format(_coconut_format_0=(self._file_name)), xlabel="Number of trials $n$", ylabel="Best {_coconut_format_0} after $n$ trials".format(_coconut_format_0=(self.metric)))
 
+
     def plot_history(self, ax=None, yscale=None):
         """Plot the gain/loss of every point in the order in which they were sampled."""
         if not self._examples:
@@ -480,9 +517,12 @@ class BlackBoxOptimizer(_coconut.object):
 
         return plot(iterations, metrics, ax=ax, yscale=yscale, title="History plot for {_coconut_format_0}".format(_coconut_format_0=(self._file_name)), xlabel="Number of trials $n$", ylabel="The {_coconut_format_0} on the $n$th trial".format(_coconut_format_0=(self.metric)))
 
+
     def partial_dependence(self, i_name, j_name=None, *args, **kwargs):
         """Calls skopt.plots.partial_dependence where i_name and j_name are parameter names."""
-        def _coconut_mock_9(self, i_name, j_name=None, *args, **kwargs): return self, i_name, j_name, args, kwargs
+        def _coconut_mock_9(self, i_name, j_name=_coconut_sentinel, *args, **kwargs):
+            if j_name is _coconut_sentinel: j_name = _coconut_recursive_func_27.__defaults__[0]
+            return self, i_name, j_name, args, kwargs
         while True:
             from skopt.plots import partial_dependence
             if not self._examples:
@@ -507,10 +547,12 @@ class BlackBoxOptimizer(_coconut.object):
 
             return None
     _coconut_recursive_func_27 = partial_dependence
+
     def plot_partial_dependence_1D(self, i_name, ax=None, yscale=None, **kwargs):
         """Constructs a 1D partial dependence plot using self.partial_dependence."""
         xi, yi = self.partial_dependence(i_name, **kwargs)
         return plot(xi, yi, ax=ax, yscale=yscale, title="Partial dependence of {_coconut_format_0}".format(_coconut_format_0=(i_name)), xlabel="Values of {_coconut_format_0}".format(_coconut_format_0=(i_name)), ylabel="The loss at each point".format())
+
 
     def get_skopt_result(self):
         """Get a result object usable by skopt.plots functions."""
@@ -518,9 +560,11 @@ class BlackBoxOptimizer(_coconut.object):
             raise ValueError("no existing data available to be plotted")
         return self._get_skopt_backend().result
 
+
     def plot_evaluations(self, *args, **kwargs):
         """Calls skopt.plots.plot_evaluations."""
-        def _coconut_mock_11(self, *args, **kwargs): return self, args, kwargs
+        def _coconut_mock_11(self, *args, **kwargs):
+            return self, args, kwargs
         while True:
             from skopt.plots import plot_evaluations
             try:
@@ -536,9 +580,11 @@ class BlackBoxOptimizer(_coconut.object):
 
             return None
     _coconut_recursive_func_30 = plot_evaluations
+
     def plot_objective(self, *args, **kwargs):
         """Calls skopt.plots.plot_objective."""
-        def _coconut_mock_12(self, *args, **kwargs): return self, args, kwargs
+        def _coconut_mock_12(self, *args, **kwargs):
+            return self, args, kwargs
         while True:
             from skopt.plots import plot_objective
             try:
@@ -554,9 +600,11 @@ class BlackBoxOptimizer(_coconut.object):
 
             return None
     _coconut_recursive_func_31 = plot_objective
+
     def plot_regret(self, *args, **kwargs):
         """Calls skopt.plots.plot_regret."""
-        def _coconut_mock_13(self, *args, **kwargs): return self, args, kwargs
+        def _coconut_mock_13(self, *args, **kwargs):
+            return self, args, kwargs
         while True:
             from skopt.plots import plot_regret
             try:
@@ -574,41 +622,51 @@ class BlackBoxOptimizer(_coconut.object):
 
             return None
     _coconut_recursive_func_32 = plot_regret
+
     def randrange(self, name, *args, **kwargs):
         """Create a new parameter with the given name modeled by random.randrange(*args)."""
         return self.param(name, "randrange", *args, **kwargs)
+
 
     def uniform(self, name, a, b, **kwargs):
         """Create a new parameter with the given name modeled by random.uniform(a, b)."""
         return self.param(name, "uniform", a, b, **kwargs)
 
+
     def triangular(self, name, low, high, mode, **kwargs):
         """Create a new parameter with the given name modeled by random.triangular(low, high, mode)."""
         return self.param(name, "triangular", low, high, mode, **kwargs)
+
 
     def betavariate(self, name, alpha, beta, **kwargs):
         """Create a new parameter with the given name modeled by random.betavariate(alpha, beta)."""
         return self.param(name, "betavariate", alpha, beta, **kwargs)
 
+
     def expovariate(self, name, lambd, **kwargs):
         """Create a new parameter with the given name modeled by random.expovariate(lambd)."""
         return self.param(name, "expovariate", lambd, **kwargs)
+
 
     def gammavariate(self, name, alpha, beta, **kwargs):
         """Create a new parameter with the given name modeled by random.gammavariate(alpha, beta)."""
         return self.param(name, "gammavariate", alpha, beta, **kwargs)
 
+
     def normalvariate(self, name, mu, sigma, **kwargs):
         """Create a new parameter with the given name modeled by random.gauss(mu, sigma)."""
         return self.param(name, "normalvariate", mu, sigma, **kwargs)
+
 
     def vonmisesvariate(self, name, kappa, **kwargs):
         """Create a new parameter with the given name modeled by random.vonmisesvariate(kappa)."""
         return self.param(name, "vonmisesvariate", kappa, **kwargs)
 
+
     def paretovariate(self, name, alpha, **kwargs):
         """Create a new parameter with the given name modeled by random.paretovariate(alpha)."""
         return self.param(name, "paretovariate", alpha, **kwargs)
+
 
     def weibullvariate(self, name, alpha, beta, **kwargs):
         """Create a new parameter with the given name modeled by random.weibullvariate(alpha, beta)."""
@@ -616,9 +674,11 @@ class BlackBoxOptimizer(_coconut.object):
 
 # Choice functions:
 
+
     def _categorical(self, name, num_categories, **kwargs):
         """Create a new parameter with the given name modeled by random.choice(range(num_categories))."""
         return self.param(name, "choice", range(num_categories), **kwargs)
+
 
     def choice(self, name, seq, **kwargs):
         """Create a new parameter with the given name modeled by random.choice(seq)."""
@@ -630,10 +690,12 @@ class BlackBoxOptimizer(_coconut.object):
 
 # Derived random functions:
 
+
     def randint(self, name, a, b, **kwargs):
         """Create a new parameter with the given name modeled by random.randint(a, b)."""
         start, stop = a, b - 1
         return self.randrange(name, start, stop, **kwargs)
+
 
     def random(self, name, **kwargs):
         """Create a new parameter with the given name modeled by random.random().
@@ -643,10 +705,12 @@ class BlackBoxOptimizer(_coconut.object):
             result -= sys.float_info.epsilon
         return result
 
+
     def getrandbits(self, name, k, **kwargs):
         """Create a new parameter with the given name modeled by random.getrandbits(k)."""
         stop = 2**k
         return self.randrange(name, stop, **kwargs)
+
 
     gauss = normalvariate
 
@@ -657,14 +721,17 @@ class BlackBoxOptimizer(_coconut.object):
         log_a, log_b = math.log(min_val), math.log(max_val)
         return math.exp(self.uniform(name, log_a, log_b, **kwargs))
 
+
     def lognormvariate(self, name, mu, sigma, **kwargs):
         """Create a new parameter with the given name modeled by random.lognormvariate(mu, sigma)."""
         kwargs = (param_processor.modify_kwargs)(math.log, kwargs)
         return math.exp(self.normalvariate(name, mu, sigma, **kwargs))
 
+
     def randbool(self, name, **kwargs):
         """Create a new boolean parameter with the given name."""
         return bool(self.choice(name, [False, True], **kwargs))
+
 
     def sample(self, name, population, k, **kwargs):
         """Create a new parameter with the given name modeled by random.sample(population, k)."""
@@ -684,14 +751,17 @@ class BlackBoxOptimizer(_coconut.object):
                 sample.append(sampling_population.pop(ind))
         return sample
 
+
     def shuffled(self, name, population, **kwargs):
         """Create a new parameter with the given name modeled by
         random.shuffle(population) except returned instead of modified in place."""
         return self.sample(name, population, len(population), **kwargs)
 
+
     def shuffle(self, name, population, **kwargs):
         """Create a new parameter with the given name modeled by random.shuffle(population)."""
         population[:] = self.shuffled(name, population, **kwargs)
+
 
     def stdnormal(self, name, **kwargs):
         """Equivalent to bb.normalvariate(name, 0, 1)."""
@@ -699,12 +769,15 @@ class BlackBoxOptimizer(_coconut.object):
 
 # Array-based random functions:
 
+
     def rand(self, name, *shape, **kwargs):
         """Create a new array parameter for the given name and shape modeled by np.random.rand."""
         return array_param(self.random, name, shape, kwargs)
 
+
     def randn(self, name, *shape, **kwargs):
         """Create a new array parameter for the given name and shape modeled by np.random.randn."""
         return array_param(self.stdnormal, name, shape, kwargs)
+
 
 _coconut_call_set_names(BlackBoxOptimizer)

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x2135b4fd
+# __coconut_hash__ = 0x134c8cdd
 
-# Compiled with Coconut version 2.0.0-a_dev9 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0-a_dev36 [How Not to Be Seen]
 
 """
 The scikit-optimize backend. Does black box optimization using scikit-optimize.
@@ -14,7 +14,7 @@ from __future__ import print_function, absolute_import, unicode_literals, divisi
 import sys as _coconut_sys, os as _coconut_os
 _coconut_file_dir = _coconut_os.path.dirname(_coconut_os.path.dirname(_coconut_os.path.abspath(__file__)))
 _coconut_cached_module = _coconut_sys.modules.get(str("__coconut__"))
-if _coconut_cached_module is not None and _coconut_os.path.dirname(_coconut_cached_module.__file__) != _coconut_file_dir:
+if _coconut_cached_module is not None and _coconut_os.path.dirname(_coconut_cached_module.__file__) != _coconut_file_dir:  # type: ignore
     del _coconut_sys.modules[str("__coconut__")]
 _coconut_sys.path.insert(0, _coconut_file_dir)
 _coconut_module_name = _coconut_os.path.splitext(_coconut_os.path.basename(_coconut_file_dir))[0]
@@ -32,7 +32,7 @@ if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha(
                     _coconut_v_type.__module__ = _coconut_full_module_name
     _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
-from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _coconut, _coconut_MatchError, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op
+from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_MatchError, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_multi_dim_arr
 _coconut_sys.path.pop(0)
 
 # Compiled Coconut: -----------------------------------------------------------
@@ -69,6 +69,7 @@ else:
                 result.message = result.message.encode("latin1")
             return old_check_optimize_result(solver, result, *args, **kwargs)
 
+
         sklearn.utils.optimize._check_optimize_result = new_check_optimize_result
         sklearn.gaussian_process._gpr._check_optimize_result = new_check_optimize_result
     except AttributeError:
@@ -76,7 +77,7 @@ else:
 
 # patch sklearn.utils.fixes.sp_version
     try:
-        sklearn.utils.fixes.sp_version < (1, )
+        sklearn.utils.fixes.sp_version < (1,)
     except TypeError:
         Version = type(sklearn.utils.fixes.sp_version)
         old_lt = Version.__lt__
@@ -100,6 +101,7 @@ else:
             Version.__lt__ = __lt__
             if _coconut_name_store_0 is not _coconut_sentinel:
                 __lt__ = _coconut_name_store_0
+
             try:
                 _coconut_name_store_1 = __le__
             except _coconut.NameError:
@@ -116,6 +118,7 @@ else:
             Version.__le__ = __le__
             if _coconut_name_store_1 is not _coconut_sentinel:
                 __le__ = _coconut_name_store_1
+
             try:
                 _coconut_name_store_2 = __gt__
             except _coconut.NameError:
@@ -132,6 +135,7 @@ else:
             Version.__gt__ = __gt__
             if _coconut_name_store_2 is not _coconut_sentinel:
                 __gt__ = _coconut_name_store_2
+
             try:
                 _coconut_name_store_3 = __ge__
             except _coconut.NameError:
@@ -148,6 +152,7 @@ else:
             Version.__ge__ = __ge__
             if _coconut_name_store_3 is not _coconut_sentinel:
                 __ge__ = _coconut_name_store_3
+
         except TypeError:
             pass
 
@@ -159,36 +164,41 @@ def guess_n_initial_points(params):
     return max(len(params), min(len(params) * 2, 10))
 
 
+
 def create_space(name, func, *args):
     """Create a scikit-optimize space for the given parameter."""
     name = py_str(name)
     _coconut_case_match_to_0 = func, args
     _coconut_case_match_check_0 = False
     _coconut_match_set_name_choices = _coconut_sentinel
-    if (_coconut.isinstance(_coconut_case_match_to_0, _coconut.abc.Sequence)) and (_coconut.len(_coconut_case_match_to_0) == 2) and (_coconut_case_match_to_0[0] == "choice") and (_coconut.isinstance(_coconut_case_match_to_0[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_case_match_to_0[1]) == 1):
-        _coconut_match_set_name_choices = _coconut_case_match_to_0[1][0]
-        _coconut_case_match_check_0 = True
+    if _coconut.isinstance(_coconut_case_match_to_0, _coconut.abc.Iterable):
+        _coconut_match_temp_0 = _coconut.tuple(_coconut_case_match_to_0)
+        if (_coconut.len(_coconut_match_temp_0) == 2) and (_coconut_match_temp_0[0] == "choice") and (_coconut.isinstance(_coconut_match_temp_0[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_temp_0[1]) == 1):
+            _coconut_match_set_name_choices = _coconut_match_temp_0[1][0]
+            _coconut_case_match_check_0 = True
     if _coconut_case_match_check_0:
         if _coconut_match_set_name_choices is not _coconut_sentinel:
-            choices = _coconut_case_match_to_0[1][0]
+            choices = _coconut_match_set_name_choices
     if _coconut_case_match_check_0:
         return Categorical(choices, name=name)
     if not _coconut_case_match_check_0:
         _coconut_match_set_name_start = _coconut_sentinel
         _coconut_match_set_name_stop = _coconut_sentinel
         _coconut_match_set_name_step = _coconut_sentinel
-        if (_coconut.isinstance(_coconut_case_match_to_0, _coconut.abc.Sequence)) and (_coconut.len(_coconut_case_match_to_0) == 2) and (_coconut_case_match_to_0[0] == "randrange") and (_coconut.isinstance(_coconut_case_match_to_0[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_case_match_to_0[1]) == 3):
-            _coconut_match_set_name_start = _coconut_case_match_to_0[1][0]
-            _coconut_match_set_name_stop = _coconut_case_match_to_0[1][1]
-            _coconut_match_set_name_step = _coconut_case_match_to_0[1][2]
-            _coconut_case_match_check_0 = True
+        if _coconut.isinstance(_coconut_case_match_to_0, _coconut.abc.Iterable):
+            _coconut_match_temp_1 = _coconut.tuple(_coconut_case_match_to_0)
+            if (_coconut.len(_coconut_match_temp_1) == 2) and (_coconut_match_temp_1[0] == "randrange") and (_coconut.isinstance(_coconut_match_temp_1[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_temp_1[1]) == 3):
+                _coconut_match_set_name_start = _coconut_match_temp_1[1][0]
+                _coconut_match_set_name_stop = _coconut_match_temp_1[1][1]
+                _coconut_match_set_name_step = _coconut_match_temp_1[1][2]
+                _coconut_case_match_check_0 = True
         if _coconut_case_match_check_0:
             if _coconut_match_set_name_start is not _coconut_sentinel:
-                start = _coconut_case_match_to_0[1][0]
+                start = _coconut_match_set_name_start
             if _coconut_match_set_name_stop is not _coconut_sentinel:
-                stop = _coconut_case_match_to_0[1][1]
+                stop = _coconut_match_set_name_stop
             if _coconut_match_set_name_step is not _coconut_sentinel:
-                step = _coconut_case_match_to_0[1][2]
+                step = _coconut_match_set_name_step
         if _coconut_case_match_check_0:
             if step != 1:
                 raise ValueError("the scikit-optimize backend only supports a randrange step size of 1")
@@ -197,18 +207,21 @@ def create_space(name, func, *args):
     if not _coconut_case_match_check_0:
         _coconut_match_set_name_a = _coconut_sentinel
         _coconut_match_set_name_b = _coconut_sentinel
-        if (_coconut.isinstance(_coconut_case_match_to_0, _coconut.abc.Sequence)) and (_coconut.len(_coconut_case_match_to_0) == 2) and (_coconut_case_match_to_0[0] == "uniform") and (_coconut.isinstance(_coconut_case_match_to_0[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_case_match_to_0[1]) == 2):
-            _coconut_match_set_name_a = _coconut_case_match_to_0[1][0]
-            _coconut_match_set_name_b = _coconut_case_match_to_0[1][1]
-            _coconut_case_match_check_0 = True
+        if _coconut.isinstance(_coconut_case_match_to_0, _coconut.abc.Iterable):
+            _coconut_match_temp_2 = _coconut.tuple(_coconut_case_match_to_0)
+            if (_coconut.len(_coconut_match_temp_2) == 2) and (_coconut_match_temp_2[0] == "uniform") and (_coconut.isinstance(_coconut_match_temp_2[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_temp_2[1]) == 2):
+                _coconut_match_set_name_a = _coconut_match_temp_2[1][0]
+                _coconut_match_set_name_b = _coconut_match_temp_2[1][1]
+                _coconut_case_match_check_0 = True
         if _coconut_case_match_check_0:
             if _coconut_match_set_name_a is not _coconut_sentinel:
-                a = _coconut_case_match_to_0[1][0]
+                a = _coconut_match_set_name_a
             if _coconut_match_set_name_b is not _coconut_sentinel:
-                b = _coconut_case_match_to_0[1][1]
+                b = _coconut_match_set_name_b
         if _coconut_case_match_check_0:
             return Real(a, b, name=name)
     raise TypeError("invalid parameter {_coconut_format_0}".format(_coconut_format_0=(name)))
+
 
 
 def create_dimensions(params):
@@ -217,6 +230,7 @@ def create_dimensions(params):
 
 
 # Backend:
+
 
 class SkoptBackend(StandardBackend):
     """The scikit-optimize backend uses scikit-optimize for black box optimization."""
@@ -233,6 +247,7 @@ class SkoptBackend(StandardBackend):
             n_initial_points = guess_n_initial_points(params)
         self.optimizer = Optimizer(create_dimensions(params), base_estimator, n_initial_points=n_initial_points, **options)
 
+
     @override
     def tell_examples(self, new_examples):
         """Special method that allows fast updating of the backend with new examples."""
@@ -242,10 +257,12 @@ class SkoptBackend(StandardBackend):
         current_point = self.optimizer.ask()
         self.current_values = make_values(self.params, current_point)
 
+
     @property
     def space(self):
         """The space over which optimization was performed."""
         return self.optimizer.space
+
 
     @property
     def model(self):
@@ -254,6 +271,7 @@ class SkoptBackend(StandardBackend):
 
 
 # Registered names:
+
 
 _coconut_call_set_names(SkoptBackend)
 SkoptBackend.register()

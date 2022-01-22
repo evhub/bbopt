@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xfbeb8656
+# __coconut_hash__ = 0xa8d8725b
 
-# Compiled with Coconut version 2.0.0-a_dev9 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0-a_dev36 [How Not to Be Seen]
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -10,7 +10,7 @@ from __future__ import print_function, absolute_import, unicode_literals, divisi
 import sys as _coconut_sys, os as _coconut_os
 _coconut_file_dir = _coconut_os.path.dirname(_coconut_os.path.dirname(_coconut_os.path.abspath(__file__)))
 _coconut_cached_module = _coconut_sys.modules.get(str("__coconut__"))
-if _coconut_cached_module is not None and _coconut_os.path.dirname(_coconut_cached_module.__file__) != _coconut_file_dir:
+if _coconut_cached_module is not None and _coconut_os.path.dirname(_coconut_cached_module.__file__) != _coconut_file_dir:  # type: ignore
     del _coconut_sys.modules[str("__coconut__")]
 _coconut_sys.path.insert(0, _coconut_file_dir)
 _coconut_module_name = _coconut_os.path.splitext(_coconut_os.path.basename(_coconut_file_dir))[0]
@@ -28,7 +28,7 @@ if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha(
                     _coconut_v_type.__module__ = _coconut_full_module_name
     _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
-from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _coconut, _coconut_MatchError, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op
+from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_MatchError, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_multi_dim_arr
 _coconut_sys.path.pop(0)
 
 # Compiled Coconut: -----------------------------------------------------------
@@ -120,6 +120,7 @@ def using(path, rem_on_start=True, rem_on_end=False):
                 traceback.print_exc()
 
 
+
 always_ignore_errs = ("DeprecationWarning: numpy.core.umath_tests is an internal NumPy module", "from numpy.core.umath_tests import", "RuntimeWarning: numpy.dtype size changed, may indicate binary incompatibility.", "return f(*args, **kwds)", "UserWarning: The objective has been evaluated at this point before.", 'warnings.warn("The objective has been evaluated', "DeprecationWarning: sklearn.externals.joblib is deprecated", "warnings.warn(msg, category=DeprecationWarning)")
 
 
@@ -140,6 +141,7 @@ def call_test(args, ignore_errs=(), prepend_py=True):
     return stdout
 
 
+
 def get_nums(inputstr, numtype=float):
     """Get only the lines that are numbers."""
     for line in inputstr.splitlines():
@@ -149,10 +151,12 @@ def get_nums(inputstr, numtype=float):
             pass
 
 
+
 def middle_mean(xs):
     """Mean of the middle half of xs."""
     a, b = len(xs) // 4, 3 * len(xs) // 4
     return mean(xs[a:b])
+
 
 
 def stdev(xs):
@@ -161,6 +165,7 @@ def stdev(xs):
 
 
     return mean(((x - mu)**2 for x in xs))**0.5
+
 def assert_improving(data, ave_func=mean, within_stdevs=0.5):
     """Assert that the second half of data is greater/smaller than the first."""
     examples = data["examples"]
@@ -187,6 +192,7 @@ def assert_improving(data, ave_func=mean, within_stdevs=0.5):
         assert second_ave_gain - first_ave_gain > -first_stdev * within_stdevs
 
 
+
 def call_bbopt(fpath, trials=NUM_TRIALS, procs=NUM_PROCS):
     """Call bbopt on the given file."""
     cmd = ["bbopt", fpath]
@@ -198,6 +204,7 @@ def call_bbopt(fpath, trials=NUM_TRIALS, procs=NUM_PROCS):
 
 
 # Tests:
+
 
 class TestExamples(unittest.TestCase):
 
@@ -214,6 +221,7 @@ class TestExamples(unittest.TestCase):
             assert 1 < random_example.x <= 10
             assert random_example.bb.num_examples == NUM_TRIALS
 
+
     def test_skopt(self):
         print("\ntest skopt:")
         with using(skopt_data):
@@ -227,6 +235,7 @@ class TestExamples(unittest.TestCase):
             assert -9 <= skopt_example.y < 21
             assert skopt_example.bb.num_examples == NUM_TRIALS
 
+
     def test_conditional_skopt(self):
         print("\ntest conditional_skopt:")
         with using(conditional_skopt_data):
@@ -239,6 +248,7 @@ class TestExamples(unittest.TestCase):
             assert conditional_skopt_example.x == want
             assert 0 < conditional_skopt_example.x <= 20
             assert conditional_skopt_example.bb.num_examples == NUM_TRIALS
+
 
     if sys.version_info >= (3, 7):
         def test_bask(self):
@@ -254,7 +264,8 @@ class TestExamples(unittest.TestCase):
                 assert 0 < bask_example.x <= 20
                 assert bask_example.bb.num_examples == NUM_TRIALS
 
-    if sys.version_info >= (3, ):
+
+    if sys.version_info >= (3,):
         def test_pysot(self):
             print("\ntest pysot:")
             with using(pysot_data):
@@ -268,6 +279,7 @@ class TestExamples(unittest.TestCase):
                 assert -9 <= pysot_example.best_y < 21
                 assert pysot_example.bb.num_examples == 20
 
+
     def test_hyperopt(self):
         print("\ntest hyperopt:")
         with using(hyperopt_data):
@@ -279,6 +291,7 @@ class TestExamples(unittest.TestCase):
             assert_improving(hyperopt_example.bb.get_data(print_data=True), ave_func=None)
             assert hyperopt_example.y == want
             assert hyperopt_example.bb.num_examples == NUM_TRIALS
+
 
     def test_conditional_hyperopt(self):
         print("\ntest conditional_hyperopt:")
@@ -292,6 +305,7 @@ class TestExamples(unittest.TestCase):
             assert conditional_hyperopt_example.x == want
             assert 0 < conditional_hyperopt_example.x <= 20
             assert conditional_hyperopt_example.bb.num_examples == NUM_TRIALS
+
 
     def test_numpy(self):
         print("\ntest numpy:")
@@ -308,6 +322,7 @@ class TestExamples(unittest.TestCase):
             assert numpy_example.y == want
             assert numpy_example.bb.num_examples == NUM_TRIALS
 
+
     def test_meta(self):
         print("\ntest meta:")
         with using(meta_data):
@@ -320,6 +335,7 @@ class TestExamples(unittest.TestCase):
             assert meta_example.u == want
             assert 0 <= meta_example.u < 1
             assert meta_example.bb.num_examples == NUM_TRIALS
+
 
     def test_any_fast(self):
         print("\ntest any_fast:")
@@ -334,6 +350,7 @@ class TestExamples(unittest.TestCase):
             assert any_fast_example.u == want
             assert any_fast_example.u < 1
             assert any_fast_example.bb.num_examples == NUM_TRIALS
+
 
     def test_mixture(self):
         print("\ntest mixture:")
@@ -352,6 +369,7 @@ class TestExamples(unittest.TestCase):
             assert (len)((set)((map)(_coconut_base_compose(_coconut.operator.itemgetter(("memo")), (_coconut.operator.itemgetter(("alg")), 0)), mixture_example.bb.get_data()["examples"]))) > 1
             assert mixture_example.bb.num_examples == NUM_TRIALS
 
+
     def test_json(self):
         print("\ntest json:")
         with using(json_data):
@@ -366,6 +384,7 @@ class TestExamples(unittest.TestCase):
             assert_improving(json_example.bb.get_data(print_data=True))
             assert json_example.y == want
             assert json_example.bb.num_examples == NUM_TRIALS
+
 
 
 _coconut_call_set_names(TestExamples)
