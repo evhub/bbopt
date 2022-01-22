@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x71ce4918
+# __coconut_hash__ = 0x666876a6
 
 # Compiled with Coconut version 2.0.0-a_dev36 [How Not to Be Seen]
 
@@ -186,9 +186,9 @@ class HyperoptBackend(StandardBackend):
     def setup_backend(self, params, algo=tpe.suggest, rstate=None, show_progressbar=False, **options):
         """Special method to initialize the backend from params."""
         if rstate is None:
-            if sys.version_info >= (3,):
+            try:
                 rstate = np.random.default_rng()
-            else:
+            except AttributeError:
                 rstate = np.random.RandomState()
         self.params = params
 

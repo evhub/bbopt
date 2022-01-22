@@ -394,7 +394,7 @@ class Backend:
         cls.registered_algs.append(alg_name)
 
     @classmethod
-    def register_meta_for_all_algs(cls, alg_name, meta_alg=None):
+    def register_meta_for_all_algs(cls, alg_name, meta_alg=constants.default_alg_sentinel):
         """Register a meta algorithm for all the algs registered on this class."""
         assert cls.registered_algs is not None, "register_meta_for_all_algs requires prior register_alg calls"
         cls.register_meta(alg_name, cls.registered_algs, meta_alg)
