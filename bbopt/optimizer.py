@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x32f4468f
+# __coconut_hash__ = 0x81228bed
 
-# Compiled with Coconut version 2.0.0-a_dev36 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0-a_dev44 [How Not to Be Seen]
 
 """
 The main BBopt interface.
@@ -32,7 +32,7 @@ if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha(
                     _coconut_v_type.__module__ = _coconut_full_module_name
     _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
-from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_MatchError, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_multi_dim_arr
+from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_MatchError, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_multi_dim_arr
 _coconut_sys.path.pop(0)
 
 # Compiled Coconut: -----------------------------------------------------------
@@ -543,9 +543,8 @@ class BlackBoxOptimizer(_coconut.object):
                 continue
             else:
                 return partial_dependence(skopt_backend.space, skopt_backend.model, i, j, *args, **kwargs)
-
-
             return None
+
     _coconut_recursive_func_27 = partial_dependence
 
     def plot_partial_dependence_1D(self, i_name, ax=None, yscale=None, **kwargs):
@@ -576,9 +575,8 @@ class BlackBoxOptimizer(_coconut.object):
                 continue
             else:
                 return plot_evaluations(self.get_skopt_result(), *args, **kwargs)
-
-
             return None
+
     _coconut_recursive_func_30 = plot_evaluations
 
     def plot_objective(self, *args, **kwargs):
@@ -596,9 +594,8 @@ class BlackBoxOptimizer(_coconut.object):
                 continue
             else:
                 return plot_objective(self.get_skopt_result(), *args, **kwargs)
-
-
             return None
+
     _coconut_recursive_func_31 = plot_objective
 
     def plot_regret(self, *args, **kwargs):
@@ -618,9 +615,8 @@ class BlackBoxOptimizer(_coconut.object):
                 return plot_regret(self.get_skopt_result(), *args, **kwargs)
 
 
-# Base random functions:
+        return None
 
-            return None
     _coconut_recursive_func_32 = plot_regret
 
     def randrange(self, name, *args, **kwargs):

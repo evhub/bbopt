@@ -275,7 +275,7 @@ Calls [`skopt.plots.partial_dependence`](https://scikit-optimize.github.io/stabl
 
 #### `plot_partial_dependence_1D`
 
-BlackBoxOptimizer.**plot_partial_dependence_1D**(_i\_name_, _ax_=`None`, _yscale_=`Non`, _sample\_points_=`None`, _n\_samples_=`250`, _n\_points_=`40`)
+BlackBoxOptimizer.**plot_partial_dependence_1D**(_i\_name_, _ax_=`None`, _yscale_=`None`, _sample\_points_=`None`, _n\_samples_=`250`, _n\_points_=`40`)
 
 Plot the partial dependence of _i\_name_ on the given [matplotlib axis](https://matplotlib.org/api/axes_api.html) `ax` and with the given y axis scale `yscale`. See **partial_dependence** for the meaning of the other parameters.
 

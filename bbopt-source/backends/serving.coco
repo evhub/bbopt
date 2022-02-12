@@ -28,7 +28,7 @@ class ServingBackend(Backend):
     @override
     def fallback_func(self, name, func, *args, **kwargs):
         if self.allow_missing_data:
-            return super(ServingBackend, self).fallback_func(name, func, *args, **kwargs)
+            return super().fallback_func(name, func, *args, **kwargs)
         else:
             raise ValueError(f"missing data for parameter {name} while serving and no guess")
 

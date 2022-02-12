@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb75cc0d4
+# __coconut_hash__ = 0x3fd284fb
 
-# Compiled with Coconut version 2.0.0-a_dev36 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0-a_dev44 [How Not to Be Seen]
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -10,8 +10,8 @@ from __future__ import print_function, absolute_import, unicode_literals, divisi
 import sys as _coconut_sys
 if _coconut_sys.version_info < (3,):
     from __builtin__ import chr, filter, hex, input, int, map, object, oct, open, print, range, str, zip, filter, reversed, enumerate, raw_input, xrange
-    py_chr, py_hex, py_input, py_int, py_map, py_object, py_oct, py_open, py_print, py_range, py_str, py_zip, py_filter, py_reversed, py_enumerate, py_raw_input, py_xrange, py_repr = chr, hex, input, int, map, object, oct, open, print, range, str, zip, filter, reversed, enumerate, raw_input, xrange, repr
-    _coconut_py_raw_input, _coconut_py_xrange, _coconut_py_int, _coconut_py_long, _coconut_py_print, _coconut_py_str, _coconut_py_unicode, _coconut_py_repr = raw_input, xrange, int, long, print, str, unicode, repr
+    py_chr, py_hex, py_input, py_int, py_map, py_object, py_oct, py_open, py_print, py_range, py_str, py_super, py_zip, py_filter, py_reversed, py_enumerate, py_raw_input, py_xrange, py_repr = chr, hex, input, int, map, object, oct, open, print, range, str, super, zip, filter, reversed, enumerate, raw_input, xrange, repr
+    _coconut_py_raw_input, _coconut_py_xrange, _coconut_py_int, _coconut_py_long, _coconut_py_print, _coconut_py_str, _coconut_py_super, _coconut_py_unicode, _coconut_py_repr = raw_input, xrange, int, long, print, str, super, unicode, repr
     from future_builtins import *
     chr, str = unichr, unicode
     from io import open
@@ -129,6 +129,15 @@ if _coconut_sys.version_info < (3,):
         finally:
             __builtin__.repr = _coconut_py_repr
     ascii = _coconut_repr = repr
+    @_coconut_wraps(_coconut_py_super)
+    def super(type=None, object_or_type=None):
+        if type is None:
+            if object_or_type is not None:
+                raise _coconut.TypeError("invalid use of super()")
+            frame = _coconut_sys._getframe(1)
+            self = frame.f_locals[frame.f_code.co_varnames[0]]
+            return _coconut_py_super(self.__class__, self)
+        return _coconut_py_super(type, object_or_type)
     def raw_input(*args):
         """Coconut uses Python 3 'input' instead of Python 2 'raw_input'."""
         raise _coconut.NameError("Coconut uses Python 3 'input' instead of Python 2 'raw_input'")
@@ -172,7 +181,7 @@ if _coconut_sys.version_info < (3,):
         _coconut_copy_reg.pickle(_coconut_functools.partial, _coconut_reduce_partial)
 else:
     from builtins import chr, filter, hex, input, int, map, object, oct, open, print, range, str, zip, filter, reversed, enumerate
-    py_chr, py_hex, py_input, py_int, py_map, py_object, py_oct, py_open, py_print, py_range, py_str, py_zip, py_filter, py_reversed, py_enumerate, py_repr = chr, hex, input, int, map, object, oct, open, print, range, str, zip, filter, reversed, enumerate, repr
+    py_chr, py_hex, py_input, py_int, py_map, py_object, py_oct, py_open, py_print, py_range, py_str, py_super, py_zip, py_filter, py_reversed, py_enumerate, py_repr = chr, hex, input, int, map, object, oct, open, print, range, str, super, zip, filter, reversed, enumerate, repr
     _coconut_py_str = str
     exec("_coconut_exec = exec")
     if _coconut_sys.version_info < (3, 7):
@@ -241,7 +250,7 @@ class _coconut(object):
     else:
         abc.Sequence.register(numpy.ndarray)
     abc.Sequence.register(collections.deque)
-    Ellipsis, NotImplemented, NotImplementedError, Exception, AttributeError, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, RuntimeError, all, any, bytes, classmethod, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, locals, map, min, max, next, object, property, range, reversed, set, slice, str, sum, super, tuple, type, vars, zip, repr, print, bytearray = Ellipsis, NotImplemented, NotImplementedError, Exception, AttributeError, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, RuntimeError, all, any, bytes, classmethod, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, locals, map, min, max, next, object, property, range, reversed, set, slice, str, sum, super, tuple, type, vars, zip, staticmethod(repr), staticmethod(print), bytearray
+    Ellipsis, NotImplemented, NotImplementedError, Exception, AttributeError, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, RuntimeError, all, any, bytes, classmethod, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, locals, map, min, max, next, object, property, range, reversed, set, slice, str, sum, super, tuple, type, vars, zip, repr, print, bytearray = Ellipsis, NotImplemented, NotImplementedError, Exception, AttributeError, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, RuntimeError, all, any, bytes, classmethod, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, locals, map, min, max, next, object, property, range, reversed, set, slice, str, sum, staticmethod(super), tuple, type, vars, zip, staticmethod(repr), staticmethod(print), bytearray
 class _coconut_sentinel(object): pass
 class _coconut_base_hashable(object):
     __slots__ = ()
@@ -336,13 +345,16 @@ def _coconut_iter_getitem(iterable, index):
             if result is not _coconut.NotImplemented:
                 return result
     if not _coconut.isinstance(index, _coconut.slice):
+        index = _coconut.operator.index(index)
         if index < 0:
             return _coconut.collections.deque(iterable, maxlen=-index)[0]
         result = _coconut.next(_coconut.itertools.islice(iterable, index, index + 1), _coconut_sentinel)
         if result is _coconut_sentinel:
             raise _coconut.IndexError("$[] index out of range")
         return result
-    start, stop, step = index.start, index.stop, 1 if index.step is None else index.step
+    start = _coconut.operator.index(index.start) if index.start is not None else None
+    stop = _coconut.operator.index(index.stop) if index.stop is not None else None
+    step = _coconut.operator.index(index.step) if index.step is not None else 1
     if step == 0:
         raise _coconut.ValueError("slice step cannot be zero")
     if start is None and stop is None and step == -1:
@@ -459,6 +471,12 @@ def _coconut_none_dubstar_pipe(kws, f): return None if kws is None else f(**kws)
 def _coconut_assert(cond, msg=None):
     if not cond:
         assert False, msg if msg is not None else "(assert) got falsey value " + _coconut.repr(cond)
+def _coconut_raise(exc=None, from_exc=None):
+    if exc is None:
+        raise
+    if from_exc is not None:
+        exc.__cause__ = from_exc
+    raise exc
 def _coconut_bool_and(a, b): return a and b
 def _coconut_bool_or(a, b): return a or b
 def _coconut_none_coalesce(a, b): return b if a is None else a
@@ -860,7 +878,7 @@ class count(_coconut_base_hashable):
         """Count the number of times elem appears in the count."""
         if not self.step:
             return _coconut.float("inf") if elem == self.start else 0
-        return int(elem in self)
+        return _coconut.int(elem in self)
     def index(self, elem):
         """Find the index of elem in the count."""
         if elem not in self:
@@ -885,13 +903,10 @@ class groupsof(_coconut_base_hashable):
     """
     __slots__ = ("group_size", "iter")
     def __init__(self, n, iterable):
-        self.iter = iterable
-        try:
-            self.group_size = _coconut.int(n)
-        except _coconut.ValueError:
-            raise _coconut.TypeError("group size must be an int; not %r" % (n,))
+        self.group_size = _coconut.operator.index(n)
         if self.group_size <= 0:
             raise _coconut.ValueError("group size must be > 0; not %r" % (self.group_size,))
+        self.iter = iterable
     def __iter__(self):
         iterator = _coconut.iter(self.iter)
         loop = True
@@ -1316,16 +1331,6 @@ def all_equal(iterable):
         elif first_item != item:
             return False
     return True
-def match_if(obj, predicate):
-    """Meant to be used in infix pattern-matching expressions to match the left-hand side only if the predicate on the right-hand side holds.
-
-    For example:
-        a `match_if` predicate or b = obj
-
-    The actual definition of match_if is extremely simple:
-        def match_if(obj, predicate) = predicate(obj)
-    """
-    return predicate(obj)
 def collectby(key_func, iterable, value_func=None, reduce_func=None):
     """Collect the items in iterable into a dictionary of lists keyed by key_func(item).
 
