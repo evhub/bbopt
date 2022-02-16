@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3fd284fb
+# __coconut_hash__ = 0xe110fb60
 
-# Compiled with Coconut version 2.0.0-a_dev44 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0-a_dev45 [How Not to Be Seen]
 
 # Coconut Header: -------------------------------------------------------------
 
 from __future__ import print_function, absolute_import, unicode_literals, division
 import sys as _coconut_sys
 if _coconut_sys.version_info < (3,):
-    from __builtin__ import chr, filter, hex, input, int, map, object, oct, open, print, range, str, zip, filter, reversed, enumerate, raw_input, xrange
+    from __builtin__ import chr, hex, input, int, map, object, oct, open, print, range, str, super, zip, filter, reversed, enumerate, raw_input, xrange, repr, long
     py_chr, py_hex, py_input, py_int, py_map, py_object, py_oct, py_open, py_print, py_range, py_str, py_super, py_zip, py_filter, py_reversed, py_enumerate, py_raw_input, py_xrange, py_repr = chr, hex, input, int, map, object, oct, open, print, range, str, super, zip, filter, reversed, enumerate, raw_input, xrange, repr
     _coconut_py_raw_input, _coconut_py_xrange, _coconut_py_int, _coconut_py_long, _coconut_py_print, _coconut_py_str, _coconut_py_super, _coconut_py_unicode, _coconut_py_repr = raw_input, xrange, int, long, print, str, super, unicode, repr
+    from functools import wraps as _coconut_wraps
     from future_builtins import *
     chr, str = unichr, unicode
     from io import open
@@ -96,7 +97,6 @@ if _coconut_sys.version_info < (3,):
             return self.__class__ is other.__class__ and self._args == other._args
     from collections import Sequence as _coconut_Sequence
     _coconut_Sequence.register(range)
-    from functools import wraps as _coconut_wraps
     @_coconut_wraps(_coconut_py_print)
     def print(*args, **kwargs):
         file = kwargs.get("file", _coconut_sys.stdout)
@@ -129,15 +129,6 @@ if _coconut_sys.version_info < (3,):
         finally:
             __builtin__.repr = _coconut_py_repr
     ascii = _coconut_repr = repr
-    @_coconut_wraps(_coconut_py_super)
-    def super(type=None, object_or_type=None):
-        if type is None:
-            if object_or_type is not None:
-                raise _coconut.TypeError("invalid use of super()")
-            frame = _coconut_sys._getframe(1)
-            self = frame.f_locals[frame.f_code.co_varnames[0]]
-            return _coconut_py_super(self.__class__, self)
-        return _coconut_py_super(type, object_or_type)
     def raw_input(*args):
         """Coconut uses Python 3 'input' instead of Python 2 'raw_input'."""
         raise _coconut.NameError("Coconut uses Python 3 'input' instead of Python 2 'raw_input'")
@@ -180,9 +171,10 @@ if _coconut_sys.version_info < (3,):
             return (_coconut_new_partial, (self.func, self.args, self.keywords))
         _coconut_copy_reg.pickle(_coconut_functools.partial, _coconut_reduce_partial)
 else:
-    from builtins import chr, filter, hex, input, int, map, object, oct, open, print, range, str, zip, filter, reversed, enumerate
+    from builtins import chr, hex, input, int, map, object, oct, open, print, range, str, super, zip, filter, reversed, enumerate, repr
     py_chr, py_hex, py_input, py_int, py_map, py_object, py_oct, py_open, py_print, py_range, py_str, py_super, py_zip, py_filter, py_reversed, py_enumerate, py_repr = chr, hex, input, int, map, object, oct, open, print, range, str, super, zip, filter, reversed, enumerate, repr
-    _coconut_py_str = str
+    _coconut_py_str, _coconut_py_super = str, super
+    from functools import wraps as _coconut_wraps
     exec("_coconut_exec = exec")
     if _coconut_sys.version_info < (3, 7):
         def _coconut_default_breakpointhook(*args, **kwargs):
@@ -207,6 +199,20 @@ else:
             return _coconut.getattr(_coconut_sys, "breakpointhook", _coconut_default_breakpointhook)(*args, **kwargs)
     else:
         py_breakpoint = breakpoint
+@_coconut_wraps(_coconut_py_super)
+def _coconut_super(type=None, object_or_type=None):
+    if type is None:
+        if object_or_type is not None:
+            raise _coconut.TypeError("invalid use of super()")
+        frame = _coconut_sys._getframe(1)
+        try:
+            cls = frame.f_locals["__class__"]
+        except _coconut.AttributeError:
+            raise _coconut.RuntimeError("super(): __class__ cell not found")
+        self = frame.f_locals[frame.f_code.co_varnames[0]]
+        return _coconut_py_super(cls, self)
+    return _coconut_py_super(type, object_or_type)
+super = _coconut_super
 class _coconut(object):
     import collections, copy, functools, types, itertools, operator, threading, os, warnings, contextlib, traceback, weakref, multiprocessing, math
     from multiprocessing import dummy as multiprocessing_dummy
