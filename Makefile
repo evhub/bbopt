@@ -16,7 +16,7 @@ force-install-py2: force-build
 
 .PHONY: setup
 setup:
-	pip install -U setuptools pip pytest coconut-develop[watch]
+	pip install -U setuptools wheel pip pytest coconut-develop[watch]
 
 .PHONY: build
 build: clean
