@@ -1,0 +1,117 @@
+"""
+The OpenAI backend. Uses large language models for black box optimization.
+"""
+
+from ast import literal_eval
+
+import openai
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+from bbopt.params import param_processor
+from bbopt.backends.util import StandardBackend
+
+
+# Utilities:
+
+def get_prompt(params, data_points, losses) =
+    '''# black box function to be minimized
+def f({args}) -> float:
+    """
+    parameters:
+{docstring}
+
+    returns:
+        float: the loss
+    """
+    ...  # implementation is unknown
+
+# known values (should converge to function minimum)
+{values}
+assert f('''.format(
+        args=", ".join(
+            "{name}: {type}".format(
+                name=name,
+                type="int" if func == "randrange" else "float",
+            )
+            for name, (func, _, _) in params.items()
+        ),
+        docstring="\n".join(
+            "        {name}: in random.{func}({args})".format(
+                name=name,
+                func=func,
+                args=", ".join(
+                    args :: (k + "=" + v for k, v in kwargs.items())
+                    |> map$(str)
+                ),
+            )
+            for name, (func, args, kwargs) in params.items()
+        ),
+        values="\n".join(
+            "assert f({args}) == {loss}".format(
+                args=", ".join(point.values() |> map$(str)),
+                loss=loss,
+            )
+            for point, loss in zip(data_points, losses)
+        ),
+    )
+
+def get_completion_len(data_points) = max(
+    len(", ".join(point.values() |> map$(str)))
+    for point in data_points
+) + 1
+
+
+# Backend:
+
+class OpenAIBackend(StandardBackend):
+    """OpenAI large language model BBopt backend."""
+    backend_name = "openai"
+    implemented_funcs = (
+        "randrange",
+        "uniform",
+        "normalvariate",
+    )
+
+    def setup_backend(self, params, engine="text-curie-001", debug=False):
+        self.engine = engine
+        self.debug = debug
+
+        self.params = params
+        self.data_points = []
+        self.losses = []
+
+    def tell_data(self, new_data, new_losses):
+        self.data_points += new_data
+        self.losses += new_losses
+
+    def get_next_values(self):
+        prompt = get_prompt(self.params, self.data_points, self.losses)
+        if self.debug:
+            print("== OPENAI API PROMPT ==\n" + prompt)
+        response = openai.Completion.create(
+            engine=self.engine,
+            prompt=prompt,
+            max_tokens=get_completion_len(self.data_points),
+        )
+        try:
+            completion = response["choices"][0]["text"]
+            if self.debug:
+                print("== COMPLETION ==\n" + completion)
+            valstr = completion.split(")", 1)[0].strip()
+            values = literal_eval("(" + valstr + ",)")
+            assert all(
+                param_processor.in_support(name, val, func, *args, **kwargs)
+                for val, (name, (func, args, kwargs)) in zip(
+                    values,
+                    self.params.items(),
+                )
+            )
+        except Exception:
+            raise IOError("OpenAI API call failed with response: " + repr(response))
+        finally:
+            if self.debug:
+                print("== END ==")
+        return values
+
+OpenAIBackend.register()
+OpenAIBackend.register_alg("openai")

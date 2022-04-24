@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # type: ignore
 
-# Compiled with Coconut version 2.0.0-a_dev45 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
 """Built-in Coconut utilities."""
 
@@ -225,6 +225,10 @@ class _coconut(object):
         except ImportError:
             class you_need_to_install_backports_functools_lru_cache(object): pass
             functools.lru_cache = you_need_to_install_backports_functools_lru_cache()
+    if _coconut_sys.version_info < (3,):
+        import copy_reg as copyreg
+    else:
+        import copyreg
     if _coconut_sys.version_info < (3, 4):
         try:
             import trollius as asyncio
@@ -1063,13 +1067,19 @@ class _coconut_base_pattern_func(_coconut_base_hashable):
 def _coconut_mark_as_match(base_func):
     base_func._coconut_is_match = True
     return base_func
-def addpattern(base_func, **kwargs):
-    """Decorator to add a new case to a pattern-matching function (where the new case is checked last)."""
+def addpattern(base_func, new_pattern=None, **kwargs):
+    """Decorator to add a new case to a pattern-matching function (where the new case is checked last).
+
+    Pass allow_any_func=True to allow any object as the base_func rather than just pattern-matching functions.
+    If new_pattern is passed, addpattern(base_func, new_pattern) is equivalent to addpattern(base_func)(new_pattern).
+    """
     allow_any_func = kwargs.pop("allow_any_func", False)
     if not allow_any_func and not _coconut.getattr(base_func, "_coconut_is_match", False):
         _coconut.warnings.warn("Possible misuse of addpattern with non-pattern-matching function " + _coconut.repr(base_func) + " (pass allow_any_func=True to dismiss)", stacklevel=2)
     if kwargs:
         raise _coconut.TypeError("addpattern() got unexpected keyword arguments " + _coconut.repr(kwargs))
+    if new_pattern is not None:
+        return _coconut_base_pattern_func(base_func, new_pattern)
     return _coconut.functools.partial(_coconut_base_pattern_func, base_func)
 _coconut_addpattern = addpattern
 def prepattern(*args, **kwargs):
@@ -1365,7 +1375,16 @@ def _namedtuple_of(**kwargs):
     if _coconut_sys.version_info < (3, 6):
         raise _coconut.RuntimeError("_namedtuple_of is not available on Python < 3.6 (use anonymous namedtuple literals instead)")
     else:
-        return _coconut.collections.namedtuple("_namedtuple_of", kwargs.keys())(*kwargs.values())
+        return _coconut_mk_anon_namedtuple(kwargs.keys(), of_kwargs=kwargs)
+def _coconut_mk_anon_namedtuple(fields, types=None, of_kwargs=None):
+    if types is None:
+        NT = _coconut.collections.namedtuple("_namedtuple_of", fields)
+    else:
+        NT = _coconut.typing.NamedTuple("_namedtuple_of", [(f, t) for f, t in _coconut.zip(fields, types)])
+    _coconut.copyreg.pickle(NT, lambda nt: (_coconut_mk_anon_namedtuple, (nt._fields, types, nt._asdict())))
+    if of_kwargs is None:
+        return NT
+    return NT(**of_kwargs)
 def _coconut_ndim(arr):
     if arr.__class__.__module__ in ('numpy', 'pandas') and _coconut.isinstance(arr, _coconut.numpy.ndarray):
         return arr.ndim
@@ -1399,5 +1418,5 @@ def _coconut_multi_dim_arr(arrs, dim):
     arr_dims.append(dim)
     max_arr_dim = _coconut.max(arr_dims)
     return _coconut_concatenate(arrs, max_arr_dim - dim)
-_coconut_self_match_types = (bool, bytearray, bytes, dict, float, frozenset, int, list, set, str, tuple)
+_coconut_self_match_types = (bool, bytearray, bytes, dict, float, frozenset, int, py_int, list, set, str, py_str, tuple)
 _coconut_MatchError, _coconut_count, _coconut_enumerate, _coconut_filter, _coconut_makedata, _coconut_map, _coconut_reiterable, _coconut_reversed, _coconut_starmap, _coconut_tee, _coconut_zip, TYPE_CHECKING, reduce, takewhile, dropwhile = MatchError, count, enumerate, filter, makedata, map, reiterable, reversed, starmap, tee, zip, False, _coconut.functools.reduce, _coconut.itertools.takewhile, _coconut.itertools.dropwhile

@@ -208,6 +208,7 @@ Supported algorithms are:
 - `"epsilon_greedy"` (`bandit` backend)
 - `"boltzmann_exploration"` (`bandit` backend)
 - `"boltzmann_gumbel_exploration"` (`bandit` backend) (the default _meta\_alg_ in **run_meta**)
+- `"openai"` (`openai` backend)
 
 Additionally, there are also some algorithms of the form `safe_<other_alg>` which use `mixture` to defer to `<other_alg>` if `<other_alg>` supports the parameter definition functions you're using, otherwise default to a suitable replacement.
 
@@ -228,8 +229,9 @@ The base function behind **run**. Instead of specifying an algorithm, **run_back
 - `scikit-optimize` passes the arguments to [`skopt.Optimizer`](https://scikit-optimize.github.io/#skopt.Optimizer),
 - `hyperopt` passes the arguments to [`fmin`](https://github.com/hyperopt/hyperopt/wiki/FMin),
 - `mixture` expects a `distribution` argument to specify the mixture of different algorithms to use, specifically a list of `(alg, weight)` tuples (and also admits a `remove_erroring_algs` bool to automatically remove erroring algorithms),
-- `bayes-skopt` passes the arguments to [`bask.Optimizer`](https://github.com/kiudee/bayes-skopt/blob/master/bask/optimizer.py#L35), and
-- `pySOT` expects a `strategy` (either a strategy class or one of `"SRBF", "EI", "DYCORS", "LCB"`), a `surrogate` (either a surrogate class or one of `"RBF", "GP"`), and a `design` (either an experimental design class or one of `None, "latin_hypercube", "symmetric_latin_hypercube", "two_factorial"`).
+- `bayes-skopt` passes the arguments to [`bask.Optimizer`](https://github.com/kiudee/bayes-skopt/blob/master/bask/optimizer.py#L35),
+- `pySOT` expects a `strategy` (either a strategy class or one of `"SRBF", "EI", "DYCORS", "LCB"`), a `surrogate` (either a surrogate class or one of `"RBF", "GP"`), and a `design` (either an experimental design class or one of `None, "latin_hypercube", "symmetric_latin_hypercube", "two_factorial"`), and
+- `openai` expects an `engine` (the name of the model to use).
 
 _Note: The `bayes-skopt` backend is only available on Python 3.7+ and the `pySOT` backend is only available on Python 3+._
 
@@ -384,7 +386,7 @@ BlackBoxOptimizer.**randrange**(_name_, _start_, _stop_, _step_=`1`, **_kwargs_)
 
 Create a new parameter modeled by [`random.randrange(start, stop, step)`](https://docs.python.org/3/library/random.html#random.randrange).
 
-_Backends which support **randrange**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `random`._
+_Backends which support **randrange**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `openai`, `random`._
 
 #### `randint`
 
@@ -392,7 +394,7 @@ BlackBoxOptimizer.**randint**(_name_, _a_, _b_, **_kwargs_)
 
 Create a new parameter modeled by [`random.randint(a, b)`](https://docs.python.org/3/library/random.html#random.randint), which is equivalent to `random.randrange(a, b-1)`.
 
-_Backends which support **randint**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `random`._
+_Backends which support **randint**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `openai`, `random`._
 
 #### `getrandbits`
 
@@ -400,7 +402,7 @@ BlackBoxOptimizer.**getrandbits**(_name_, _k_, **_kwargs_)
 
 Create a new parameter modeled by [`random.getrandbits(k)`](https://docs.python.org/3/library/random.html#random.getrandbits), which is equivalent to `random.randrange(0, 2**k)`.
 
-_Backends which support **getrandbits**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `random`._
+_Backends which support **getrandbits**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `openai`, `random`._
 
 #### `choice`
 
@@ -416,7 +418,7 @@ BlackBoxOptimizer.**randbool**(_name_, **_kwargs_)
 
 Create a new boolean parameter, modeled by the equivalent of `random.choice([False, True])`.
 
-_Backends which support **randbool**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `random`._
+_Backends which support **randbool**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `openai`, `random`._
 
 #### `sample`
 
@@ -440,7 +442,7 @@ BlackBoxOptimizer.**random**(_name_, **_kwargs_)
 
 Create a new parameter modeled by [`random.random()`](https://docs.python.org/3/library/random.html#random.random), which is equivalent to `random.uniform(0, 1)` except that `1` is disallowed.
 
-_Backends which support **random**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `random`._
+_Backends which support **random**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `openai`, `random`._
 
 #### `uniform`
 
@@ -448,7 +450,7 @@ BlackBoxOptimizer.**uniform**(_name_, _a_, _b_, **_kwargs_)
 
 Create a new parameter modeled by [`random.uniform(a, b)`](https://docs.python.org/3/library/random.html#random.uniform), which uniformly selects a float in the range \[_a_, _b_\].
 
-_Backends which support **uniform**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `random`._
+_Backends which support **uniform**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `openai`, `random`._
 
 #### `loguniform`
 
@@ -460,7 +462,7 @@ math.exp(random.uniform(math.log(min_val), math.log(max_val)))
 ```
 which logarithmically selects a float between _min\_val_ and _max\_val_.
 
-_Backends which support **loguniform**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `random`._
+_Backends which support **loguniform**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `openai`, `random`._
 
 #### `normalvariate`
 
@@ -470,7 +472,7 @@ Create a new parameter modeled by [`random.normalvariate(mu, sigma)`](https://do
 
 A shortcut for the standard normal distribution is also available via `BlackBoxOptimizer.stdnormal`.
 
-_Backends which support **normalvariate**: `hyperopt`, `random`._
+_Backends which support **normalvariate**: `hyperopt`, `openai`, `random`._
 
 #### `lognormvariate`
 
@@ -478,7 +480,7 @@ BlackBoxOptimizer.**lognormvariate**(_name_, _mu_, _sigma_, **_kwargs_)
 
 Create a new parameter modeled by [`random.lognormvariate(mu, sigma)`](https://docs.python.org/3/library/random.html#random.lognormvariate) such that the natural log is a normal distribution with mean _mu_ and standard deviation _sigma_.
 
-_Backends which support **lognormvariate**: `hyperopt`, `random`._
+_Backends which support **lognormvariate**: `hyperopt`, `openai`, `random`._
 
 #### `rand`
 
@@ -486,7 +488,7 @@ BlackBoxOptimizer.**rand**(_name_, *_shape_, **_kwargs_)
 
 Create a new parameter modeled by [`numpy.random.rand(*shape)`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.rand.html#numpy.random.rand), which creates a `numpy` array of the given shape with entries generated uniformly in `[0, 1)`.
 
-_Backends which support **rand**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `random`._
+_Backends which support **rand**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `openai`, `random`._
 
 #### `randn`
 
@@ -494,7 +496,7 @@ BlackBoxOptimizer.**randn**(_name_, *_shape_, **_kwargs_)
 
 Create a new parameter modeled by [`numpy.random.randn(*shape)`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.randn.html#numpy-random-randn), which creates a `numpy` array of the given shape with entries generated according to a standard normal distribution.
 
-_Backends which support **randn**: `hyperopt`, `random`._
+_Backends which support **randn**: `hyperopt`, `openai`, `random`._
 
 #### `param`
 

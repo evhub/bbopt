@@ -311,7 +311,7 @@ class Backend:
     def __new__(cls, examples=None, params=None, *args, **kwargs):
         self = super().__new__(cls)
         if self.tell_examples is not None:
-            self._examples = []
+            self._examples = examples
             self._params = params
             self._args = args
             self._kwargs = kwargs
@@ -319,6 +319,7 @@ class Backend:
 
     def __init__(self, examples=None, params=None, *args, **kwargs):
         """Just call attempt_update by default."""
+        self._examples = []
         result = self.attempt_update(examples, params, *args, **kwargs)
         assert result, f"Backend.__init__: {self.__class__.__name__}.attempt_update(*{args}, **{kwargs}) failed with result {result!r}"
 

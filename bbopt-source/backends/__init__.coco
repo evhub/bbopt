@@ -32,3 +32,8 @@ if sys.version_info >= (3, 7):
     except ImportError:
         traceback.print_exc()
         print("Could not import bayes-skopt backend; backend unavailable (see above error).")
+try:
+    from bbopt.backends.openai import OpenAIBackend
+except ImportError:
+    traceback.print_exc()
+    print("could not import openai backend; backend unavailable (see above error).")

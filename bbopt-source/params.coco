@@ -196,10 +196,13 @@ class ParamProcessor:
         self.placeholder_funcs[func] = placeholder_generator
         self.support_checkers[func] = support_check_func
 
-    def verify_support(self, name, val, func, *args, **kwargs):
+    def in_support(self, name, val, func, *args, **kwargs):
         if func not in self.support_checkers:
             raise ValueError(f"unknown parameter definition function {func} (register with bbopt.params.param_processor.register)")
-        if not self.support_checkers[func](val, *args):
+        return self.support_checkers[func](val, *args)
+
+    def verify_support(self, name, val, func, *args, **kwargs):
+        if not self.in_support(name, val, func, *args, **kwargs):
             printerr(f"BBopt Warning: {val} not in support of {func}(*{args}) for parameter {name} (adjust parameter definition to ensure support is always maximally broad)")
             if constants.use_placeholder_when_outside_support:
                 val = kwargs.get("placeholder_when_missing", self.choose_default_placeholder(name, func, *args, **kwargs))

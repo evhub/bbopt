@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x2eb77927
+# __coconut_hash__ = 0xbf6c9b8
 
-# Compiled with Coconut version 2.0.0-a_dev45 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
 """
 Handles standardizing param calls to use standard library random functions.
@@ -32,7 +32,7 @@ if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha(
                     _coconut_v_type.__module__ = _coconut_full_module_name
     _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
-from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_super, _coconut_MatchError, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_multi_dim_arr
+from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_super, _coconut_MatchError, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_multi_dim_arr, _coconut_mk_anon_namedtuple
 _coconut_sys.path.pop(0)
 
 # Compiled Coconut: -----------------------------------------------------------
@@ -270,10 +270,14 @@ class ParamProcessor(_coconut.object):
         self.support_checkers[func] = support_check_func
 
 
-    def verify_support(self, name, val, func, *args, **kwargs):
+    def in_support(self, name, val, func, *args, **kwargs):
         if func not in self.support_checkers:
             raise ValueError("unknown parameter definition function {_coconut_format_0} (register with bbopt.params.param_processor.register)".format(_coconut_format_0=(func)))
-        if not self.support_checkers[func](val, *args):
+        return self.support_checkers[func](val, *args)
+
+
+    def verify_support(self, name, val, func, *args, **kwargs):
+        if not self.in_support(name, val, func, *args, **kwargs):
             printerr("BBopt Warning: {_coconut_format_0} not in support of {_coconut_format_1}(*{_coconut_format_2}) for parameter {_coconut_format_3} (adjust parameter definition to ensure support is always maximally broad)".format(_coconut_format_0=(val), _coconut_format_1=(func), _coconut_format_2=(args), _coconut_format_3=(name)))
             if constants.use_placeholder_when_outside_support:
                 val = kwargs.get("placeholder_when_missing", self.choose_default_placeholder(name, func, *args, **kwargs))
