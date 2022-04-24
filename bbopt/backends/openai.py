@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7da4b5c1
+# __coconut_hash__ = 0x1e287463
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -39,10 +39,10 @@ _coconut_sys.path.pop(0)
 
 
 
+import os
 from ast import literal_eval
 
 import openai
-openai.api_key = os.getenv("OPENAI_API_KEY")
 
 from bbopt.params import param_processor
 from bbopt.backends.util import StandardBackend
@@ -52,7 +52,7 @@ from bbopt.backends.util import StandardBackend
 
 def get_prompt(params, data_points, losses):
     return '''# black box function to be minimized
-def f({args}) -> float:
+def f({func_params}) -> float:
     """
     parameters:
 {docstring}
@@ -60,11 +60,11 @@ def f({args}) -> float:
     returns:
         float: the loss
     """
-    ...  # implementation is unknown
+    return black_box_function({names})
 
-# known values (should converge to function minimum)
+# known values (should converge to minimum of f)
 {values}
-assert f('''.format(args=", ".join(("{name}: {type}".format(name=name, type="int" if func == "randrange" else "float") for name, (func, _, _) in params.items())), docstring="\n".join(("        {name}: in random.{func}({args})".format(name=name, func=func, args=", ".join((map)(str, _coconut.itertools.chain.from_iterable(_coconut_reiterable(_coconut_func() for _coconut_func in (lambda: args, lambda: (k + "=" + v for k, v in kwargs.items()))))))) for name, (func, args, kwargs) in params.items())), values="\n".join(("assert f({args}) == {loss}".format(args=", ".join((map)(str, point.values())), loss=loss) for point, loss in zip(data_points, losses))))
+assert f('''.format(func_params=", ".join(("{name}: {type}".format(name=name, type="int" if func == "randrange" else "float") for name, (func, _, _) in params.items())), docstring="\n".join(("        {name}: in random.{func}({args})".format(name=name, func=func, args=", ".join((map)(str, _coconut.itertools.chain.from_iterable(_coconut_reiterable(_coconut_func() for _coconut_func in (lambda: args, lambda: (k + "=" + v for k, v in kwargs.items()))))))) for name, (func, args, kwargs) in params.items())), names=", ".join(params), values="\n".join(("assert f({args}) == {loss}".format(args=", ".join((map)(str, point.values())), loss=loss) for point, loss in zip(data_points, losses))))
 
 
 def get_completion_len(data_points):
@@ -79,11 +79,13 @@ class OpenAIBackend(StandardBackend):
     backend_name = "openai"
     implemented_funcs = ("randrange", "uniform", "normalvariate")
 
-    def setup_backend(self, params, engine="text-curie-001", debug=False):
+    def setup_backend(self, params, engine="text-curie-001", api_key=None, debug=False):
+        self.params = params
+
         self.engine = engine
+        openai.api_key = api_key or os.getenv("OPENAI_API_KEY")
         self.debug = debug
 
-        self.params = params
         self.data_points = []
         self.losses = []
 
@@ -111,6 +113,9 @@ class OpenAIBackend(StandardBackend):
             if self.debug:
                 print("== END ==")
         return values
+
+
+# Registered names:
 
 
 _coconut_call_set_names(OpenAIBackend)

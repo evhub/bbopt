@@ -2,10 +2,10 @@
 The OpenAI backend. Uses large language models for black box optimization.
 """
 
+import os
 from ast import literal_eval
 
 import openai
-openai.api_key = os.getenv("OPENAI_API_KEY")
 
 from bbopt.params import param_processor
 from bbopt.backends.util import StandardBackend
@@ -15,7 +15,7 @@ from bbopt.backends.util import StandardBackend
 
 def get_prompt(params, data_points, losses) =
     '''# black box function to be minimized
-def f({args}) -> float:
+def f({func_params}) -> float:
     """
     parameters:
 {docstring}
@@ -23,12 +23,12 @@ def f({args}) -> float:
     returns:
         float: the loss
     """
-    ...  # implementation is unknown
+    return black_box_function({names})
 
-# known values (should converge to function minimum)
+# known values (should converge to minimum of f)
 {values}
 assert f('''.format(
-        args=", ".join(
+        func_params=", ".join(
             "{name}: {type}".format(
                 name=name,
                 type="int" if func == "randrange" else "float",
@@ -46,6 +46,7 @@ assert f('''.format(
             )
             for name, (func, args, kwargs) in params.items()
         ),
+        names=", ".join(params),
         values="\n".join(
             "assert f({args}) == {loss}".format(
                 args=", ".join(point.values() |> map$(str)),
@@ -72,11 +73,13 @@ class OpenAIBackend(StandardBackend):
         "normalvariate",
     )
 
-    def setup_backend(self, params, engine="text-curie-001", debug=False):
+    def setup_backend(self, params, engine="text-curie-001", api_key=None, debug=False):
+        self.params = params
+
         self.engine = engine
+        openai.api_key = api_key or os.getenv("OPENAI_API_KEY")
         self.debug = debug
 
-        self.params = params
         self.data_points = []
         self.losses = []
 
@@ -112,6 +115,9 @@ class OpenAIBackend(StandardBackend):
             if self.debug:
                 print("== END ==")
         return values
+
+
+# Registered names:
 
 OpenAIBackend.register()
 OpenAIBackend.register_alg("openai")

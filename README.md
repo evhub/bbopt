@@ -231,7 +231,7 @@ The base function behind **run**. Instead of specifying an algorithm, **run_back
 - `mixture` expects a `distribution` argument to specify the mixture of different algorithms to use, specifically a list of `(alg, weight)` tuples (and also admits a `remove_erroring_algs` bool to automatically remove erroring algorithms),
 - `bayes-skopt` passes the arguments to [`bask.Optimizer`](https://github.com/kiudee/bayes-skopt/blob/master/bask/optimizer.py#L35),
 - `pySOT` expects a `strategy` (either a strategy class or one of `"SRBF", "EI", "DYCORS", "LCB"`), a `surrogate` (either a surrogate class or one of `"RBF", "GP"`), and a `design` (either an experimental design class or one of `None, "latin_hypercube", "symmetric_latin_hypercube", "two_factorial"`), and
-- `openai` expects an `engine` (the name of the model to use).
+- `openai` expects an `engine` (the name of the model to use) and `api_key` (otherwise uses `OPENAI_API_KEY` env var).
 
 _Note: The `bayes-skopt` backend is only available on Python 3.7+ and the `pySOT` backend is only available on Python 3+._
 
