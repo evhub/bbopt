@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xadfea85c
+# __coconut_hash__ = 0x8a76180e
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -557,7 +557,7 @@ class Backend(_coconut.object):
 
     def param(self, name, func, *args, **kwargs):
         """Default param calls serve_values with self.current_values and self.fallback_func."""
-        assert self.current_values is not None, "Backend subclasses using Backend.param must set current_values"
+        assert self.current_values is not None and (isinstance)(self.current_values, dict), "Backend subclasses using Backend.param must set current_values"
         return serve_values(name, func, args, kwargs, serving_values=self.current_values, fallback_func=self.fallback_func, backend_name=self.backend_name, implemented_funcs=self.implemented_funcs, supported_kwargs=self.supported_kwargs)
 
 

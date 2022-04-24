@@ -354,7 +354,7 @@ class Backend:
 
     def param(self, name, func, *args, **kwargs):
         """Default param calls serve_values with self.current_values and self.fallback_func."""
-        assert self.current_values is not None, "Backend subclasses using Backend.param must set current_values"
+        assert self.current_values is not None and self.current_values `isinstance` dict, "Backend subclasses using Backend.param must set current_values"
         return serve_values(
             name,
             func,

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x1e287463
+# __coconut_hash__ = 0x8c8e0564
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -48,6 +48,18 @@ from bbopt.params import param_processor
 from bbopt.backends.util import StandardBackend
 
 
+# Constants:
+
+DEFAULT_ENGINE = "text-curie-001"
+
+DEFAULT_TEMP = 1.2
+MAX_TEMP = 2
+
+DEFAULT_MAX_RETRIES = 10
+
+MAX_CONTEXT_ERR_PREFIX = "This model's maximum context length is "
+
+
 # Utilities:
 
 def get_prompt(params, data_points, losses):
@@ -62,13 +74,14 @@ def f({func_params}) -> float:
     """
     return black_box_function({names})
 
-# known values (should converge to minimum of f)
+# known values (MUST stay within the bounds, SHOULD fully explore the bounds, SHOULD converge to minimum)
+# bounds: f({domains})
 {values}
-assert f('''.format(func_params=", ".join(("{name}: {type}".format(name=name, type="int" if func == "randrange" else "float") for name, (func, _, _) in params.items())), docstring="\n".join(("        {name}: in random.{func}({args})".format(name=name, func=func, args=", ".join((map)(str, _coconut.itertools.chain.from_iterable(_coconut_reiterable(_coconut_func() for _coconut_func in (lambda: args, lambda: (k + "=" + v for k, v in kwargs.items()))))))) for name, (func, args, kwargs) in params.items())), names=", ".join(params), values="\n".join(("assert f({args}) == {loss}".format(args=", ".join((map)(str, point.values())), loss=loss) for point, loss in zip(data_points, losses))))
+assert f('''.format(func_params=", ".join(("{name}: {type}".format(name=name, type="int" if func == "randrange" else "float") for name, (func, _, _) in params.items())), docstring="\n".join(("        {name}: in random.{func}({args})".format(name=name, func=func, args=", ".join((map)(str, _coconut.itertools.chain.from_iterable(_coconut_reiterable(_coconut_func() for _coconut_func in (lambda: args, lambda: (k + "=" + v for k, v in kwargs.items()))))))) for name, (func, args, kwargs) in params.items())), names=", ".join(params), domains=", ".join(("random.{func}({args})".format(func=func, args=", ".join((map)(str, _coconut.itertools.chain.from_iterable(_coconut_reiterable(_coconut_func() for _coconut_func in (lambda: args, lambda: (k + "=" + v for k, v in kwargs.items()))))))) for name, (func, args, kwargs) in params.items())), values="\n".join(("assert f({args}) == {loss}".format(args=", ".join((map)(str, point.values())), loss=loss) for point, loss in zip(data_points, losses))))
 
 
 def get_completion_len(data_points):
-    return max((len(", ".join((map)(str, point.values()))) for point in data_points)) + 1
+    return max((len(", ".join((map)(str, point.values()))) for point in data_points)) + 5
 
 
 # Backend:
@@ -79,10 +92,14 @@ class OpenAIBackend(StandardBackend):
     backend_name = "openai"
     implemented_funcs = ("randrange", "uniform", "normalvariate")
 
-    def setup_backend(self, params, engine="text-curie-001", api_key=None, debug=False):
+    max_prompt_len = float("inf")
+
+    def setup_backend(self, params, engine=DEFAULT_ENGINE, temperature=DEFAULT_TEMP, max_retries=DEFAULT_MAX_RETRIES, api_key=None, debug=False):
         self.params = params
 
         self.engine = engine
+        self.temp = temperature
+        self.max_retries = max_retries
         openai.api_key = api_key or os.getenv("OPENAI_API_KEY")
         self.debug = debug
 
@@ -95,23 +112,73 @@ class OpenAIBackend(StandardBackend):
         self.losses += new_losses
 
 
-    def get_next_values(self):
-        prompt = get_prompt(self.params, self.data_points, self.losses)
+    def retry_get_values(self, temp=None):
+        if not self.max_retries:
+            raise RuntimeError("Maximum number of OpenAI API retries exceeded.")
         if self.debug:
-            print("== OPENAI API PROMPT ==\n" + prompt)
-        response = openai.Completion.create(engine=self.engine, prompt=prompt, max_tokens=get_completion_len(self.data_points))
+            if temp is None:
+                print("RETRYING with: self.max_prompt_len={_coconut_format_0}".format(_coconut_format_0=(self.max_prompt_len)))
+            else:
+                print("RETRYING with new temperature: {_coconut_format_0} -> {_coconut_format_1}".format(_coconut_format_0=(self.temp), _coconut_format_1=(temp)))
+        old_retries, self.max_retries = self.max_retries, self.max_retries - 1
+        if temp is not None:
+            old_temp, self.temp = self.temp, temp
+        try:
+            return self.get_next_values()
+        finally:
+            self.max_retries = old_retries
+            if temp is not None:
+                self.temp = old_temp
+
+
+    def get_next_values(self):
+# generate prompt
+        prompt = get_prompt(self.params, self.data_points, self.losses)
+        while len(prompt) > self.max_prompt_len:
+            self.data_points.pop(0)
+            self.losses.pop(0)
+        if self.debug:
+            print("\n== PROMPT ==\n" + prompt)
+
+# query api
+        try:
+            response = openai.Completion.create(engine=self.engine, prompt=prompt, temperature=self.temp, max_tokens=get_completion_len(self.data_points) // 2)
+        except openai.error.InvalidRequestError as api_err:
+            if self.debug:
+                print("== END ==")
+            if not str(api_err).startswith(MAX_CONTEXT_ERR_PREFIX):
+                raise
+            if self.max_prompt_len == float("inf"):
+                self.max_prompt_len = len(prompt.rsplit("\n")[0])
+            else:
+                self.max_prompt_len -= get_completion_len(self.data_points)
+            if self.debug:
+                print("ERROR: got max context length error".format())
+            return self.retry_get_values()
+
+# parse response
         try:
             completion = response["choices"][0]["text"]
             if self.debug:
                 print("== COMPLETION ==\n" + completion)
-            valstr = completion.split(")", 1)[0].strip()
-            values = literal_eval("(" + valstr + ",)")
-            assert all((param_processor.in_support(name, val, func, *args, **kwargs) for val, (name, (func, args, kwargs)) in zip(values, self.params.items())))
-        except Exception:
-            raise IOError("OpenAI API call failed with response: " + repr(response))
-        finally:
+            valstr = completion.split(")", 1)[0].strip().replace("\u2212", "-")
+            valvec = literal_eval("(" + valstr + ",)")
+            assert all((param_processor.in_support(name, val, func, *args, **kwargs) for val, (name, (func, args, kwargs)) in zip(valvec, self.params.items()))), "completion value(s) not in support"
+        except BaseException as parse_err:
             if self.debug:
                 print("== END ==")
+            if self.debug:
+                print("ERROR: {_coconut_format_0} for API response:\n{_coconut_format_1}".format(_coconut_format_0=(parse_err), _coconut_format_1=(response)))
+            return self.retry_get_values(temp=(self.temp + DEFAULT_TEMP) / 2)
+        if self.debug:
+            print("== END ==")
+
+# return values
+        values = dict(((name), (val)) for name, val in zip(self.params, valvec))
+        if values in self.data_points:
+            if self.debug:
+                print("ERROR: OpenAI API generated duplicate value")
+            return self.retry_get_values(temp=self.temp + (MAX_TEMP - self.temp) / 2)
         return values
 
 
