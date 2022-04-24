@@ -418,7 +418,7 @@ BlackBoxOptimizer.**randbool**(_name_, **_kwargs_)
 
 Create a new boolean parameter, modeled by the equivalent of `random.choice([False, True])`.
 
-_Backends which support **randbool**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `openai`, `random`._
+_Backends which support **randbool**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `random`._
 
 #### `sample`
 
@@ -546,3 +546,4 @@ Once you've written a BBopt backend as above, you simply need to import it to tr
 - [`serving.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/backends/serving.coco)
 - [`mixture.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/backends/mixture.coco)
 - [`bandit.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/backends/bandit.coco)
+- [`openai.coco`](https://github.com/evhub/bbopt/blob/master/bbopt-source/backends/openai.coco)

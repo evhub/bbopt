@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7d2f3751
+# __coconut_hash__ = 0x9398efec
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -69,8 +69,9 @@ if sys.version_info >= (3, 7):
     except ImportError:
         traceback.print_exc()
         print("Could not import bayes-skopt backend; backend unavailable (see above error).")
-try:
-    from bbopt.backends.openai import OpenAIBackend
-except ImportError:
-    traceback.print_exc()
-    print("could not import openai backend; backend unavailable (see above error).")
+if sys.version_info >= (3,):
+    try:
+        from bbopt.backends.openai import OpenAIBackend
+    except ImportError:
+        traceback.print_exc()
+        print("could not import openai backend; backend unavailable (see above error).")

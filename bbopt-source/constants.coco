@@ -24,7 +24,6 @@ classifiers = (
 requirements = (
     "numpy>=1.15.1",
     "matplotlib>=2.2.5",
-    "openai>=0.6.4",
 )
 extra_requirements = {
     ":python_version>='3.7'": (
@@ -35,6 +34,7 @@ extra_requirements = {
         "portalocker>=2.2.1",
         "hyperopt>=0.2.4",
         "scikit-optimize>=0.8.1",
+        "openai>=0.6.4",
         # highest version supported by bask
         "scikit-learn>=0.23.2",
         # fixes an issue with networkx which is used by hyperopt

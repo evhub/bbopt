@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4fefc219
+# __coconut_hash__ = 0x868f8904
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -53,8 +53,8 @@ github_url = "https://github.com/evhub/bbopt"
 author = "Evan Hubinger"
 author_email = "evanjhub@gmail.com"
 classifiers = ("Development Status :: 5 - Production/Stable", "License :: OSI Approved :: Apache Software License", "Topic :: Software Development :: Libraries :: Python Modules", "Operating System :: OS Independent")
-requirements = ("numpy>=1.15.1", "matplotlib>=2.2.5", "openai>=0.6.4")
-extra_requirements = {":python_version>='3.7'": ("bask>=0.10.6",), ":python_version>='3'": ("pysot>=0.3.3", "portalocker>=2.2.1", "hyperopt>=0.2.4", "scikit-optimize>=0.8.1", "scikit-learn>=0.23.2", "networkx>=2.2", "pymongo>=3.9", "pyspark>=2.4"), ":python_version<'3'": ("futures>=3.3", "scikit-learn>=0.20.4", "scikit-optimize>=0.8.1,<0.9", "portalocker>=1.7.1,<2.0", "hyperopt>=0.1.2,<0.2", "networkx>=1.0,<2.0"), "examples": ("tensorflow>=2.0; python_version>='3'",)}
+requirements = ("numpy>=1.15.1", "matplotlib>=2.2.5")
+extra_requirements = {":python_version>='3.7'": ("bask>=0.10.6",), ":python_version>='3'": ("pysot>=0.3.3", "portalocker>=2.2.1", "hyperopt>=0.2.4", "scikit-optimize>=0.8.1", "openai>=0.6.4", "scikit-learn>=0.23.2", "networkx>=2.2", "pymongo>=3.9", "pyspark>=2.4"), ":python_version<'3'": ("futures>=3.3", "scikit-learn>=0.20.4", "scikit-optimize>=0.8.1,<0.9", "portalocker>=1.7.1,<2.0", "hyperopt>=0.1.2,<0.2", "networkx>=1.0,<2.0"), "examples": ("tensorflow>=2.0; python_version>='3'",)}
 extra_requirements["dev"] = (extra_requirements["examples"] + ("coconut-develop", "pytest>=3.0"))
 
 
