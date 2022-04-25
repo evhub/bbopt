@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa087598
+# __coconut_hash__ = 0x954755d2
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -119,11 +119,11 @@ OPT_FUNCS.append(norm_func)
 
 
 def cond_gain_func(bb):
-    use_high = bb.randbool("use high", guess=False)
+    use_high = bb.randbool("use_high", guess=False)
     if use_high:
-        x = bb.randrange("x high", 10, 20)
+        x = bb.randrange("x_high", 10, 20)
     else:
-        x = bb.randrange("x low", 10)
+        x = bb.randrange("x_low", 10)
     bb.maximize(x)
 
 

@@ -18,11 +18,14 @@ force-install-py2: force-build
 setup:
 	pip install -U setuptools wheel pip pytest coconut-develop[watch]
 
-.PHONY: build
-build: clean
+.PHONY: unclean-build
+unclean-build:
 	coconut setup.coco --and bbopt-source bbopt --no-tco --strict --jobs sys
 	-mkdir "./bbopt/examples"
 	cp -rf "./bbopt-source/examples" "./bbopt/"
+
+.PHONY: build
+build: clean unclean-build
 
 .PHONY: force-build
 force-build: clean
@@ -77,5 +80,5 @@ watch: install
 	coconut bbopt-source bbopt --watch --no-tco --strict --jobs sys
 
 .PHONY: benchmark
-benchmark: install
+benchmark: unclean-build
 	python ./bbopt/benchmarking.py
