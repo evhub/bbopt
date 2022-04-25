@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xefecb81e
+# __coconut_hash__ = 0x81c880b3
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -117,10 +117,7 @@ class MixtureBackend(Backend):
 
     def use_distribution(self, distribution, force=False):
         """Set the distribution to the given distribution."""
-        if distribution == "epsilon_max_greedy":
-            distribution = (("random", constants.eps_greedy_explore_prob), ("max_greedy", 1 - constants.eps_greedy_explore_prob))
-        else:
-            distribution = tuple(distribution)
+        distribution = tuple(((alg, (constants.eps_greedy_explore_prob / (1 - constants.eps_greedy_explore_prob) if weight == "eps_over_one_minus_eps" else weight)) for alg, weight in distribution))
 
         if force or distribution != self.distribution:
             self.cum_probs = get_cum_probs_for(distribution)
@@ -176,18 +173,33 @@ class MixtureBackend(Backend):
         cls.register_alg(new_alg_name, distribution=((base_alg, float("inf")), (fallback_alg, 1)), remove_erroring_algs=True)
 
 
+    @classmethod
+    def register_epsilon_exploration_alg_for(cls, base_alg, new_alg_name=None, eps=None):
+        """Register a version of base_alg with epsilon greedy exploration."""
+        if new_alg_name is None:
+            new_alg_name = base_alg + "_epsilon_exploration"
+        if eps is None:
+            eps = constants.eps_greedy_explore_prob
+        cls.register_alg(new_alg_name, distribution=((base_alg, 1), ("random", "eps_over_one_minus_eps")))
+
+
+
+
 # Registered names:
 
 
 _coconut_call_set_names(MixtureBackend)
 MixtureBackend.register()
-MixtureBackend.register_alg("epsilon_max_greedy", distribution="epsilon_max_greedy")
+
+MixtureBackend.register_epsilon_exploration_alg_for("max_greedy", new_alg_name="epsilon_max_greedy")
+MixtureBackend.register_epsilon_exploration_alg_for("openai")
 
 MixtureBackend.register_safe_alg_for("gaussian_process")
 MixtureBackend.register_safe_alg_for("random_forest")
 MixtureBackend.register_safe_alg_for("extra_trees")
 MixtureBackend.register_safe_alg_for("gradient_boosted_regression_trees")
 
-# we register meta alg mixtures here
-MixtureBackend.register_meta("tpe_or_gp", ("tree_structured_parzen_estimator", "safe_gaussian_process"))
-MixtureBackend.register_meta("any_fast", ("tree_structured_parzen_estimator", "safe_random_forest", "safe_extra_trees", "safe_gradient_boosted_regression_trees"))
+# meta alg mixtures don't care what backend we register them on,
+#  so we just register them here
+Backend.register_meta("tpe_or_gp", ("tree_structured_parzen_estimator", "safe_gaussian_process"))
+Backend.register_meta("any_fast", ("tree_structured_parzen_estimator", "safe_random_forest", "safe_extra_trees", "safe_gradient_boosted_regression_trees"))

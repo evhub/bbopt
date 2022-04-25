@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x8c8e0564
+# __coconut_hash__ = 0x5c9eb0a0
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -50,9 +50,9 @@ from bbopt.backends.util import StandardBackend
 
 # Constants:
 
-DEFAULT_ENGINE = "text-curie-001"
+DEFAULT_ENGINE = "text-davinci-002"
 
-DEFAULT_TEMP = 1.2
+DEFAULT_TEMP = 1.1
 MAX_TEMP = 2
 
 DEFAULT_MAX_RETRIES = 10
@@ -63,6 +63,7 @@ MAX_CONTEXT_ERR_PREFIX = "This model's maximum context length is "
 # Utilities:
 
 def get_prompt(params, data_points, losses):
+    """Get the OpenAI API prompt to use."""
     return '''# black box function to be minimized
 def f({func_params}) -> float:
     """
@@ -77,11 +78,21 @@ def f({func_params}) -> float:
 # known values (MUST stay within the bounds, SHOULD fully explore the bounds, SHOULD converge to minimum)
 # bounds: f({domains})
 {values}
-assert f('''.format(func_params=", ".join(("{name}: {type}".format(name=name, type="int" if func == "randrange" else "float") for name, (func, _, _) in params.items())), docstring="\n".join(("        {name}: in random.{func}({args})".format(name=name, func=func, args=", ".join((map)(str, _coconut.itertools.chain.from_iterable(_coconut_reiterable(_coconut_func() for _coconut_func in (lambda: args, lambda: (k + "=" + v for k, v in kwargs.items()))))))) for name, (func, args, kwargs) in params.items())), names=", ".join(params), domains=", ".join(("random.{func}({args})".format(func=func, args=", ".join((map)(str, _coconut.itertools.chain.from_iterable(_coconut_reiterable(_coconut_func() for _coconut_func in (lambda: args, lambda: (k + "=" + v for k, v in kwargs.items()))))))) for name, (func, args, kwargs) in params.items())), values="\n".join(("assert f({args}) == {loss}".format(args=", ".join((map)(str, point.values())), loss=loss) for point, loss in zip(data_points, losses))))
+assert f('''.format(func_params=", ".join(("{name}: {type}".format(name=name, type=("int" if func == "randrange" else type(args[0][0]).__name__ if func == "choice" and all_equal(map(type, args[0])) else "typing.Any" if func == "choice" else "float")) for name, (func, args, _) in params.items())), docstring="\n".join(("        {name}: in {func}({args})".format(name=name, func=func, args=", ".join((map)(repr, args))) for name, (func, args, _) in params.items())), names=", ".join(params), domains=", ".join(("{func}({args})".format(func=func, args=", ".join((map)(repr, args))) for name, (func, args, _) in params.items())), values="\n".join(("assert f({args}) == {loss}".format(args=", ".join((map)(repr, point.values())), loss=loss) for point, loss in zip(data_points, losses))))
+
 
 
 def get_completion_len(data_points):
-    return max((len(", ".join((map)(str, point.values()))) for point in data_points)) + 5
+    """Get the maximum number of characters in a completion."""
+    return max((len(", ".join((map)(repr, point.values()))) for point in data_points)) + 1
+
+
+
+def to_python(completion, params):
+    """Convert a completion to Python code as best as possible."""
+    for repl, to in _coconut.itertools.chain.from_iterable(_coconut_reiterable(_coconut_func() for _coconut_func in (lambda: (("\u2212", "-"), ("\u2018", "'"), ("\u2019", "'")), lambda: (("{_coconut_format_0}=".format(_coconut_format_0=(name)), "") for name in params)))):
+        completion = completion.replace(repl, to)
+    return completion
 
 
 # Backend:
@@ -90,7 +101,7 @@ def get_completion_len(data_points):
 class OpenAIBackend(StandardBackend):
     """OpenAI large language model BBopt backend."""
     backend_name = "openai"
-    implemented_funcs = ("randrange", "uniform", "normalvariate")
+    implemented_funcs = ("randrange", "uniform", "normalvariate", "choice")
 
     max_prompt_len = float("inf")
 
@@ -142,7 +153,7 @@ class OpenAIBackend(StandardBackend):
 
 # query api
         try:
-            response = openai.Completion.create(engine=self.engine, prompt=prompt, temperature=self.temp, max_tokens=get_completion_len(self.data_points) // 2)
+            response = openai.Completion.create(engine=self.engine, prompt=prompt, temperature=self.temp, max_tokens=get_completion_len(self.data_points))
         except openai.error.InvalidRequestError as api_err:
             if self.debug:
                 print("== END ==")
@@ -161,8 +172,9 @@ class OpenAIBackend(StandardBackend):
             completion = response["choices"][0]["text"]
             if self.debug:
                 print("== COMPLETION ==\n" + completion)
-            valstr = completion.split(")", 1)[0].strip().replace("\u2212", "-")
+            valstr = to_python(completion.split(")", 1)[0].strip(), self.params)
             valvec = literal_eval("(" + valstr + ",)")
+            assert len(valvec) == len(self.params), "got {_coconut_format_0} values, expected {_coconut_format_1}".format(_coconut_format_0=(len(valvec)), _coconut_format_1=(len(self.params)))
             assert all((param_processor.in_support(name, val, func, *args, **kwargs) for val, (name, (func, args, kwargs)) in zip(valvec, self.params.items()))), "completion value(s) not in support"
         except BaseException as parse_err:
             if self.debug:

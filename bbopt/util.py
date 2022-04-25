@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x8c3e1ba
+# __coconut_hash__ = 0x3e06e836
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -254,7 +254,7 @@ def clear_file(file_handle):
 
 
 
-def plot(xs, ys, ax=None, yscale=None, title=None, xlabel=None, ylabel=None, marker=".", markersize=12, linewidth=2, grid=True,):
+def plot(xs, ys, ax=None, yscale=None, title=None, label=None, xlabel=None, ylabel=None, marker=".", markersize=12, linewidth=2, grid=True,):
     """Construct a matplotlib plot with the given parameters."""
     if ax is None:
         from matplotlib import pyplot as plt
@@ -269,7 +269,7 @@ def plot(xs, ys, ax=None, yscale=None, title=None, xlabel=None, ylabel=None, mar
         ax.grid()
     if yscale is not None:
         ax.set_yscale(yscale)
-    ax.plot(xs, ys, marker=marker, markersize=markersize, linewidth=linewidth)
+    ax.plot(xs, ys, label=label, marker=marker, markersize=markersize, linewidth=linewidth)
     return ax
 
 

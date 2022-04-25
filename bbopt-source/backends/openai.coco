@@ -13,9 +13,9 @@ from bbopt.backends.util import StandardBackend
 
 # Constants:
 
-DEFAULT_ENGINE = "text-curie-001"
+DEFAULT_ENGINE = "text-davinci-002"
 
-DEFAULT_TEMP = 1.2
+DEFAULT_TEMP = 1.1
 MAX_TEMP = 2
 
 DEFAULT_MAX_RETRIES = 10
@@ -26,6 +26,7 @@ MAX_CONTEXT_ERR_PREFIX = "This model's maximum context length is "
 # Utilities:
 
 def get_prompt(params, data_points, losses) =
+    """Get the OpenAI API prompt to use."""
     '''# black box function to be minimized
 def f({func_params}) -> float:
     """
@@ -44,45 +45,60 @@ assert f('''.format(
         func_params=", ".join(
             "{name}: {type}".format(
                 name=name,
-                type="int" if func == "randrange" else "float",
-            )
-            for name, (func, _, _) in params.items()
-        ),
-        docstring="\n".join(
-            "        {name}: in random.{func}({args})".format(
-                name=name,
-                func=func,
-                args=", ".join(
-                    args :: (k + "=" + v for k, v in kwargs.items())
-                    |> map$(str)
+                type=(
+                    "int" if func == "randrange"
+                    else type(args[0][0]).__name__ if func == "choice" and all_equal(map(type, args[0]))
+                    else "typing.Any" if func == "choice"
+                    else "float"
                 ),
             )
-            for name, (func, args, kwargs) in params.items()
+            for name, (func, args, _) in params.items()
+        ),
+        docstring="\n".join(
+            "        {name}: in {func}({args})".format(
+                name=name,
+                func=func,
+                args=", ".join(args |> map$(repr)),
+            )
+            for name, (func, args, _) in params.items()
         ),
         names=", ".join(params),
         domains=", ".join(
-            "random.{func}({args})".format(
+            "{func}({args})".format(
                 func=func,
-                args=", ".join(
-                    args :: (k + "=" + v for k, v in kwargs.items())
-                    |> map$(str)
-                ),
+                args=", ".join(args |> map$(repr)),
             )
-            for name, (func, args, kwargs) in params.items()
+            for name, (func, args, _) in params.items()
         ),
         values="\n".join(
             "assert f({args}) == {loss}".format(
-                args=", ".join(point.values() |> map$(str)),
+                args=", ".join(point.values() |> map$(repr)),
                 loss=loss,
             )
             for point, loss in zip(data_points, losses)
         ),
     )
 
-def get_completion_len(data_points) = max(
-    len(", ".join(point.values() |> map$(str)))
-    for point in data_points
-) + 5
+
+def get_completion_len(data_points) =
+    """Get the maximum number of characters in a completion."""
+    max(
+        len(", ".join(point.values() |> map$(repr)))
+        for point in data_points
+    ) + 1
+
+
+def to_python(completion, params):
+    """Convert a completion to Python code as best as possible."""
+    for repl, to in (
+        ("\u2212", "-"),
+        ("\u2018", "'"),
+        ("\u2019", "'"),
+    ) :: (
+        (f"{name}=", "") for name in params
+    ):
+        completion = completion.replace(repl, to)
+    return completion
 
 
 # Backend:
@@ -94,6 +110,7 @@ class OpenAIBackend(StandardBackend):
         "randrange",
         "uniform",
         "normalvariate",
+        "choice",
     )
 
     max_prompt_len = float("inf")
@@ -147,7 +164,7 @@ class OpenAIBackend(StandardBackend):
                 engine=self.engine,
                 prompt=prompt,
                 temperature=self.temp,
-                max_tokens=get_completion_len(self.data_points) // 2,
+                max_tokens=get_completion_len(self.data_points),
             )
         except openai.error.InvalidRequestError as api_err:
             if self.debug:
@@ -167,8 +184,9 @@ class OpenAIBackend(StandardBackend):
             completion = response["choices"][0]["text"]
             if self.debug:
                 print("== COMPLETION ==\n" + completion)
-            valstr = completion.split(")", 1)[0].strip().replace("\u2212", "-")
+            valstr = to_python(completion.split(")", 1)[0].strip(), self.params)
             valvec = literal_eval("(" + valstr + ",)")
+            assert len(valvec) == len(self.params), f"got {len(valvec)} values, expected {len(self.params)}"
             assert all(
                 param_processor.in_support(name, val, func, *args, **kwargs)
                 for val, (name, (func, args, kwargs)) in zip(

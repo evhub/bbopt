@@ -177,6 +177,7 @@ def plot(
     ax=None,
     yscale=None,
     title=None,
+    label=None,
     xlabel=None,
     ylabel=None,
     marker=".",
@@ -198,7 +199,7 @@ def plot(
         ax.grid()
     if yscale is not None:
         ax.set_yscale(yscale)
-    ax.plot(xs, ys, marker=marker, markersize=markersize, linewidth=linewidth)
+    ax.plot(xs, ys, label=label, marker=marker, markersize=markersize, linewidth=linewidth)
     return ax
 
 

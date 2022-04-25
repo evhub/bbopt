@@ -1,0 +1,115 @@
+import math
+
+import numpy as np
+from matplotlib import pyplot as plt
+
+from bbopt import BlackBoxOptimizer
+
+
+# Functions to optimize
+OPT_FUNCS = []
+
+
+def cond_sin_func(bb):
+    dist = bb.choice("dist", ["uniform", "normal"])
+    if dist == "normal":
+        u = bb.normalvariate("x0_n", 0, 1) * math.sin(bb.normalvariate("x1_n", 0, 1))
+    else:
+        u = bb.random("x0_u") * math.sin(bb.random("x1_u"))
+    bb.minimize(u)
+
+OPT_FUNCS.append(cond_sin_func)
+
+
+def trisum_func(bb):
+    x0 = bb.randrange("x0", 1, 11, guess=5)
+    x1 = bb.uniform("x1", 0, 1)
+    x2 = bb.choice("x2", [-10, -1, 0, 1, 10])
+    y = x0 + x1*x2
+    bb.minimize(y)
+
+OPT_FUNCS.append(trisum_func)
+
+
+def numpy_func(bb):
+    x0 = bb.rand("x0", 1, 5, guess=np.zeros((1, 5)))
+    x1 = bb.randn("x1", 5, 1, guess=np.zeros((5, 1)))
+    y = float(x0.dot(x1))
+    bb.minimize(y)
+
+OPT_FUNCS.append(numpy_func)
+
+
+def sample_func(bb):
+    xs = bb.sample("xs", range(10), 5, guess=[3,4,5,6,7])
+    y = bb.choice("y", [1, 10, 100], guess=10)
+    loss = abs(sum(xs) - y)
+    bb.minimize(loss)
+
+OPT_FUNCS.append(sample_func)
+
+
+def sin_prod_func(bb):
+    u = bb.random("x0") * math.sin(bb.random("x1"))
+    bb.minimize(u)
+
+OPT_FUNCS.append(sin_prod_func)
+
+
+def lognorm_func(bb):
+    x0 = bb.loguniform("x0", 1, 10, guess=5)
+    x1 = bb.lognormvariate("x1", 0, 1, guess=1)
+    y = x0 + x1
+    bb.minimize(y)
+
+OPT_FUNCS.append(lognorm_func)
+
+
+def norm_func(bb):
+    x0 = bb.randint("x0", 1, 10, guess=5)
+    x1 = bb.normalvariate("x1", mu=0, sigma=1)
+    x2 = bb.choice("x2", [-10, -1, 0, 1, 10])
+    y = x0 + x1*x2
+    bb.minimize(y)
+
+OPT_FUNCS.append(norm_func)
+
+
+def cond_gain_func(bb):
+    use_high = bb.randbool("use high", guess=False)
+    if use_high:
+        x = bb.randrange("x high", 10, 20)
+    else:
+        x = bb.randrange("x low", 10)
+    bb.maximize(x)
+
+OPT_FUNCS.append(cond_gain_func)
+
+
+# Benchmarking
+
+def benchmark(algs, plot_func="plot_history", n=50):
+    figsize = len(OPT_FUNCS) |> math.sqrt |> math.ceil |> int
+    fig, axs = plt.subplots(figsize, figsize)
+    for i, func in enumerate(OPT_FUNCS):
+        ax = axs[i // figsize, i % figsize]
+        for alg in algs:
+            bb = BlackBoxOptimizer(__file__, tag=f"{func.__name__}_{alg}")
+            if bb.num_examples < n:
+                for _ in range(n - bb.num_examples):
+                    bb.run(alg)
+                    func(bb)
+            getattr(bb, plot_func)(ax, label=alg)
+        ax.set_title(func.__name__)
+        ax.set_xlabel("")
+        ax.legend()
+    plt.show()
+
+
+if __name__ == "__main__":
+    benchmark((
+        "any_fast",
+        "tpe_or_gp",
+        "openai",
+        # "openai_epsilon_exploration",
+    ))

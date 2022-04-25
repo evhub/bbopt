@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa7880995
+# __coconut_hash__ = 0xb8d16508
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -135,7 +135,7 @@ class BlackBoxOptimizer(_coconut.object):
         self._backend_creation_counts = defaultdict(int)
 
         self._file = norm_path(file)
-        self._tag = tag
+        self._tag = (lambda _coconut_x: None if _coconut_x is None else (str)(_coconut_x))(tag)
 
         if protocol is None:
 # auto-detect protocol
@@ -495,7 +495,7 @@ class BlackBoxOptimizer(_coconut.object):
 # Plotting functions:
 
 
-    def plot_convergence(self, ax=None, yscale=None):
+    def plot_convergence(self, ax=None, yscale=None, label=None):
         """Plot the best gain/loss over the history of optimization.
         Based on skopt.plots.plot_convergence."""
         if not self._examples:
@@ -504,10 +504,10 @@ class BlackBoxOptimizer(_coconut.object):
         iterations = range(1, len(self._examples) + 1)
         best_metrics = ((list)((map)(_coconut.operator.itemgetter((self.metric)), (running_best)((sorted_examples)(self._examples)))))
 
-        return plot(iterations, best_metrics, ax=ax, yscale=yscale, title="Convergence plot for {_coconut_format_0}".format(_coconut_format_0=(self._file_name)), xlabel="Number of trials $n$", ylabel="Best {_coconut_format_0} after $n$ trials".format(_coconut_format_0=(self.metric)))
+        return plot(iterations, best_metrics, ax=ax, yscale=yscale, title="Convergence plot for {_coconut_format_0}".format(_coconut_format_0=(self._file_name)), label=("{_coconut_format_0}".format(_coconut_format_0=(self._file_name)) if label is None else label), xlabel="Number of trials $n$", ylabel="Best {_coconut_format_0} after $n$ trials".format(_coconut_format_0=(self.metric)))
 
 
-    def plot_history(self, ax=None, yscale=None):
+    def plot_history(self, ax=None, yscale=None, label=None):
         """Plot the gain/loss of every point in the order in which they were sampled."""
         if not self._examples:
             raise ValueError("no existing data available to be plotted")
@@ -515,7 +515,7 @@ class BlackBoxOptimizer(_coconut.object):
         iterations = range(1, len(self._examples) + 1)
         metrics = ((list)((map)(_coconut.operator.itemgetter((self.metric)), (sorted_examples)(self._examples))))
 
-        return plot(iterations, metrics, ax=ax, yscale=yscale, title="History plot for {_coconut_format_0}".format(_coconut_format_0=(self._file_name)), xlabel="Number of trials $n$", ylabel="The {_coconut_format_0} on the $n$th trial".format(_coconut_format_0=(self.metric)))
+        return plot(iterations, metrics, ax=ax, yscale=yscale, title="History plot for {_coconut_format_0}".format(_coconut_format_0=(self._file_name)), label=("{_coconut_format_0}".format(_coconut_format_0=(self._file_name)) if label is None else label), xlabel="Number of trials $n$", ylabel="The {_coconut_format_0} on the $n$th trial".format(_coconut_format_0=(self.metric)))
 
 
     def partial_dependence(self, i_name, j_name=None, *args, **kwargs):

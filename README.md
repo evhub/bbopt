@@ -212,7 +212,7 @@ Supported algorithms are:
 
 Additionally, there are also some algorithms of the form `safe_<other_alg>` which use `mixture` to defer to `<other_alg>` if `<other_alg>` supports the parameter definition functions you're using, otherwise default to a suitable replacement.
 
-_Note: The `bayes-skopt` backend is only available on Python 3.7+ and the `pySOT` backend is only available on Python 3+._
+_Note: The `bayes-skopt` backend is only available on Python 3.7+ and the `pySOT` and `openai` backends are only available on Python 3+._
 
 #### `run_meta`
 
@@ -233,7 +233,7 @@ The base function behind **run**. Instead of specifying an algorithm, **run_back
 - `pySOT` expects a `strategy` (either a strategy class or one of `"SRBF", "EI", "DYCORS", "LCB"`), a `surrogate` (either a surrogate class or one of `"RBF", "GP"`), and a `design` (either an experimental design class or one of `None, "latin_hypercube", "symmetric_latin_hypercube", "two_factorial"`), and
 - `openai` expects an `engine` (the name of the model to use), `temperature`, `max_retries`, and `api_key` (otherwise uses `OPENAI_API_KEY` env var).
 
-_Note: The `bayes-skopt` backend is only available on Python 3.7+ and the `pySOT` backend is only available on Python 3+._
+_Note: The `bayes-skopt` backend is only available on Python 3.7+ and the `pySOT` and `openai` backends are only available on Python 3+._
 
 #### `minimize`
 

@@ -1,12 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x583a698a
+# __coconut_hash__ = 0x55775f6a
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
-
-"""
-Constants for use across all of BBopt.
-"""
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -37,52 +33,122 @@ _coconut_sys.path.pop(0)
 
 # Compiled Coconut: -----------------------------------------------------------
 
+import math
+
+import numpy as np
+from matplotlib import pyplot as plt
+
+from bbopt import BlackBoxOptimizer
+
+
+# Functions to optimize
+OPT_FUNCS = []
+
+
+def cond_sin_func(bb):
+    dist = bb.choice("dist", ["uniform", "normal"])
+    if dist == "normal":
+        u = bb.normalvariate("x0_n", 0, 1) * math.sin(bb.normalvariate("x1_n", 0, 1))
+    else:
+        u = bb.random("x0_u") * math.sin(bb.random("x1_u"))
+    bb.minimize(u)
+
+
+OPT_FUNCS.append(cond_sin_func)
+
+
+def trisum_func(bb):
+    x0 = bb.randrange("x0", 1, 11, guess=5)
+    x1 = bb.uniform("x1", 0, 1)
+    x2 = bb.choice("x2", [-10, -1, 0, 1, 10])
+    y = x0 + x1 * x2
+    bb.minimize(y)
+
+
+OPT_FUNCS.append(trisum_func)
+
+
+def numpy_func(bb):
+    x0 = bb.rand("x0", 1, 5, guess=np.zeros((1, 5)))
+    x1 = bb.randn("x1", 5, 1, guess=np.zeros((5, 1)))
+    y = float(x0.dot(x1))
+    bb.minimize(y)
+
+
+OPT_FUNCS.append(numpy_func)
+
+
+def sample_func(bb):
+    xs = bb.sample("xs", range(10), 5, guess=[3, 4, 5, 6, 7])
+    y = bb.choice("y", [1, 10, 100], guess=10)
+    loss = abs(sum(xs) - y)
+    bb.minimize(loss)
+
+
+OPT_FUNCS.append(sample_func)
+
+
+def sin_prod_func(bb):
+    u = bb.random("x0") * math.sin(bb.random("x1"))
+    bb.minimize(u)
+
+
+OPT_FUNCS.append(sin_prod_func)
+
+
+def lognorm_func(bb):
+    x0 = bb.loguniform("x0", 1, 10, guess=5)
+    x1 = bb.lognormvariate("x1", 0, 1, guess=1)
+    y = x0 + x1
+    bb.minimize(y)
+
+
+OPT_FUNCS.append(lognorm_func)
+
+
+def norm_func(bb):
+    x0 = bb.randint("x0", 1, 10, guess=5)
+    x1 = bb.normalvariate("x1", mu=0, sigma=1)
+    x2 = bb.choice("x2", [-10, -1, 0, 1, 10])
+    y = x0 + x1 * x2
+    bb.minimize(y)
+
+
+OPT_FUNCS.append(norm_func)
+
+
+def cond_gain_func(bb):
+    use_high = bb.randbool("use high", guess=False)
+    if use_high:
+        x = bb.randrange("x high", 10, 20)
+    else:
+        x = bb.randrange("x low", 10)
+    bb.maximize(x)
+
+
+OPT_FUNCS.append(cond_gain_func)
+
+
+# Benchmarking
+
+def benchmark(algs, plot_func="plot_history", n=50):
+    figsize = (int)((math.ceil)((math.sqrt)(len(OPT_FUNCS))))
+    fig, axs = plt.subplots(figsize, figsize)
+    for i, func in enumerate(OPT_FUNCS):
+        ax = axs[i // figsize, i % figsize]
+        for alg in algs:
+            bb = BlackBoxOptimizer(__file__, tag="{_coconut_format_0}_{_coconut_format_1}".format(_coconut_format_0=(func.__name__), _coconut_format_1=(alg)))
+            if bb.num_examples < n:
+                for _ in range(n - bb.num_examples):
+                    bb.run(alg)
+                    func(bb)
+            getattr(bb, plot_func)(ax, label=alg)
+        ax.set_title(func.__name__)
+        ax.set_xlabel("")
+        ax.legend()
+    plt.show()
 
 
 
-# Installation constants:
-name = "bbopt"
-version = "1.4.0"
-description = "The easiest hyperparameter optimization you'll ever do."
-long_description = """
-See BBopt's GitHub_ for more information.
-
-.. _GitHub: https://github.com/evhub/bbopt
-"""
-github_url = "https://github.com/evhub/bbopt"
-author = "Evan Hubinger"
-author_email = "evanjhub@gmail.com"
-classifiers = ("Development Status :: 5 - Production/Stable", "License :: OSI Approved :: Apache Software License", "Topic :: Software Development :: Libraries :: Python Modules", "Operating System :: OS Independent")
-requirements = ("numpy>=1.15.1", "matplotlib>=2.2.5")
-extra_requirements = {":python_version>='3.7'": ("bask>=0.10.6",), ":python_version>='3'": ("pysot>=0.3.3", "portalocker>=2.2.1", "hyperopt>=0.2.5", "scikit-optimize>=0.8.1", "openai>=0.6.4", "scikit-learn>=0.23.2", "networkx>=2.2", "pymongo>=3.9", "pyspark>=2.4"), ":python_version<'3'": ("futures>=3.3", "scikit-learn>=0.20.4", "scikit-optimize>=0.8.1,<0.9", "portalocker>=1.7.1,<2.0", "hyperopt>=0.1.2,<0.2", "networkx>=1.0,<2.0"), "examples": ("tensorflow>=2.0; python_version>='3'",)}
-extra_requirements["dev"] = (extra_requirements["examples"] + ("coconut-develop", "pytest>=3.0"))
-
-
-# Optimizer constants:
-default_alg = "any_fast"
-default_meta_alg = "boltzmann_gumbel_exploration"
-
-default_protocol = 2
-lock_timeout = 6
-meta_opt_alg_var = "_run_meta_alg"
-data_file_ext = ".bbopt"
-
-use_generic_categories_for_categorical_data = False
-use_placeholder_when_outside_support = False
-
-default_alg_sentinel = object()
-
-
-# CLI constants:
-default_trials = 100
-default_jobs = 4
-
-run_id_env_var = "BBOPT_RUN_ID"
-
-
-# Backend constants:
-default_fallback_backend = "random"
-erroring_backend_errs = (ValueError, TypeError)
-
-eps_greedy_explore_prob = 0.2
-safe_fallback_alg = "tree_structured_parzen_estimator"
+if __name__ == "__main__":
+    benchmark(("any_fast", "tpe_or_gp", "openai"))

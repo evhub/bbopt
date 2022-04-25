@@ -67,7 +67,7 @@ class BlackBoxOptimizer:
         self._backend_creation_counts = defaultdict(int)
 
         self._file = norm_path(file)
-        self._tag = tag
+        self._tag = tag |?> str
 
         if protocol is None:
             # auto-detect protocol
@@ -338,7 +338,7 @@ class BlackBoxOptimizer:
 
     # Plotting functions:
 
-    def plot_convergence(self, ax=None, yscale=None):
+    def plot_convergence(self, ax=None, yscale=None, label=None):
         """Plot the best gain/loss over the history of optimization.
         Based on skopt.plots.plot_convergence."""
         if not self._examples:
@@ -359,11 +359,12 @@ class BlackBoxOptimizer:
             ax=ax,
             yscale=yscale,
             title=f"Convergence plot for {self._file_name}",
+            label=label ?? f"{self._file_name}",
             xlabel="Number of trials $n$",
             ylabel=f"Best {self.metric} after $n$ trials",
         )
 
-    def plot_history(self, ax=None, yscale=None):
+    def plot_history(self, ax=None, yscale=None, label=None):
         """Plot the gain/loss of every point in the order in which they were sampled."""
         if not self._examples:
             raise ValueError("no existing data available to be plotted")
@@ -382,6 +383,7 @@ class BlackBoxOptimizer:
             ax=ax,
             yscale=yscale,
             title=f"History plot for {self._file_name}",
+            label=label ?? f"{self._file_name}",
             xlabel="Number of trials $n$",
             ylabel=f"The {self.metric} on the $n$th trial",
         )

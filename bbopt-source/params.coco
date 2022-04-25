@@ -36,7 +36,10 @@ def handle_randrange(args):
 def handle_choice(args):
     if len(args) != 1 or not isinstance(args[0], Iterable):
         raise format_err(ValueError, "invalid arguments to choice", args)
-    return (list(args[0]),)
+    choices = list(args[0])
+    if not choices:
+        raise format_err(ValueError, "choice requires at least one choice")
+    return (choices,)
 
 
 def handle_uniform(args):

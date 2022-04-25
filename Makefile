@@ -59,14 +59,14 @@ test-keras: install
 .PHONY: clean
 clean:
 	rm -rf ./dist ./build
-	-find . -name '*.pyc' -delete
-	-C:/GnuWin32/bin/find.exe . -name '*.pyc' -delete
-	-find . -name '__pycache__' -delete
-	-C:/GnuWin32/bin/find.exe . -name '__pycache__' -delete
-	-find . -name '*.bbopt.pickle' -delete
-	-C:/GnuWin32/bin/find.exe . -name '*.bbopt.pickle' -delete
-	-find . -name '*.bbopt.json' -delete
-	-C:/GnuWin32/bin/find.exe . -name '*.bbopt.json' -delete
+	-find . -name "*.pyc" -delete
+	-C:/GnuWin32/bin/find.exe . -name "*.pyc" -delete
+	-find . -name "__pycache__" -delete
+	-C:/GnuWin32/bin/find.exe . -name "__pycache__" -delete
+	-find . -name "*.bbopt.pickle" -delete
+	-C:/GnuWin32/bin/find.exe . -name "*.bbopt.pickle" -delete
+	-find . -name "*.bbopt.json" -delete
+	-C:/GnuWin32/bin/find.exe . -name "*.bbopt.json" -delete
 
 .PHONY: wipe
 wipe: clean
@@ -75,3 +75,7 @@ wipe: clean
 .PHONY: watch
 watch: install
 	coconut bbopt-source bbopt --watch --no-tco --strict --jobs sys
+
+.PHONY: benchmark
+benchmark: install
+	python ./bbopt/benchmarking.py

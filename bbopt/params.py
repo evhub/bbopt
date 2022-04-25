@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xbf6c9b8
+# __coconut_hash__ = 0xfadfd4ba
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -76,7 +76,10 @@ def handle_randrange(args):
 def handle_choice(args):
     if len(args) != 1 or not isinstance(args[0], Iterable):
         raise format_err(ValueError, "invalid arguments to choice", args)
-    return (list(args[0]),)
+    choices = list(args[0])
+    if not choices:
+        raise format_err(ValueError, "choice requires at least one choice")
+    return (choices,)
 
 
 
