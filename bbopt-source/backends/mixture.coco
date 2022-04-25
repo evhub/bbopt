@@ -125,11 +125,11 @@ class MixtureBackend(Backend):
             distribution=(
                 # we defer evaluation here so that constants.eps_greedy_explore_prob
                 #  can be modified to change the epsilon
+
                 # calculation that lets us only defer one weight:
                 # (x, y)
                 # x / (x + y) = 1 - eps
                 # y / (x + y) = eps
-
                 # y = eps*x + eps*y
                 # eps*x = (1-eps)*y
                 # y = x * eps/(1-eps)
@@ -152,16 +152,3 @@ MixtureBackend.register_safe_alg_for("gaussian_process")
 MixtureBackend.register_safe_alg_for("random_forest")
 MixtureBackend.register_safe_alg_for("extra_trees")
 MixtureBackend.register_safe_alg_for("gradient_boosted_regression_trees")
-
-# meta alg mixtures don't care what backend we register them on,
-#  so we just register them here
-Backend.register_meta("tpe_or_gp", (
-    "tree_structured_parzen_estimator",
-    "safe_gaussian_process",
-))
-Backend.register_meta("any_fast", (
-    "tree_structured_parzen_estimator",
-    "safe_random_forest",
-    "safe_extra_trees",
-    "safe_gradient_boosted_regression_trees",
-))

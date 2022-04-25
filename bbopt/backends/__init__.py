@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x9398efec
+# __coconut_hash__ = 0x7e38eda1
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -42,7 +42,7 @@ _coconut_sys.path.pop(0)
 sys = _coconut_sys
 import traceback
 
-# import all the other backends to register them
+# import all the backends to register them
 from bbopt.backends.serving import ServingBackend
 from bbopt.backends.random import RandomBackend
 from bbopt.backends.mixture import MixtureBackend
@@ -75,3 +75,8 @@ if sys.version_info >= (3,):
     except ImportError:
         traceback.print_exc()
         print("could not import openai backend; backend unavailable (see above error).")
+
+# meta alg mixtures don't care what backend we register them on,
+#  so we just register them here
+ServingBackend.register_meta("tpe_or_gp", ("tree_structured_parzen_estimator", "safe_gaussian_process"))
+ServingBackend.register_meta("any_fast", ("tree_structured_parzen_estimator", "safe_random_forest", "safe_extra_trees", "safe_gradient_boosted_regression_trees"))

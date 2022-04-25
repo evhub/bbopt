@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xfadfd4ba
+# __coconut_hash__ = 0x5ce9db09
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -264,6 +264,11 @@ class ParamProcessor(_coconut.object):
         self.support_checkers = {}
 
 
+    @property
+    def registered_base_rand_funcs(self):
+        return tuple(self.handlers)
+
+
     def register(self, func, handler, placeholder_generator, support_check_func, replace=False):
         """Register a new parameter definition function. See bbopt.params for examples."""
         if not replace and func in self.handlers:
@@ -327,7 +332,7 @@ class ParamProcessor(_coconut.object):
         return self.placeholder_funcs[func](*args)
 
 
-# Registration:
+# Register base random functions:
 
 
 _coconut_call_set_names(ParamProcessor)

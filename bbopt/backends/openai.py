@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x5c9eb0a0
+# __coconut_hash__ = 0x606af3e3
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -50,7 +50,8 @@ from bbopt.backends.util import StandardBackend
 
 # Constants:
 
-DEFAULT_ENGINE = "text-davinci-002"
+# DEFAULT_ENGINE = "text-davinci-002"
+DEFAULT_ENGINE = "text-curie-001"
 
 DEFAULT_TEMP = 1.1
 MAX_TEMP = 2
@@ -90,7 +91,7 @@ def get_completion_len(data_points):
 
 def to_python(completion, params):
     """Convert a completion to Python code as best as possible."""
-    for repl, to in _coconut.itertools.chain.from_iterable(_coconut_reiterable(_coconut_func() for _coconut_func in (lambda: (("\u2212", "-"), ("\u2018", "'"), ("\u2019", "'")), lambda: (("{_coconut_format_0}=".format(_coconut_format_0=(name)), "") for name in params)))):
+    for repl, to in _coconut.itertools.chain.from_iterable(_coconut_reiterable(_coconut_func() for _coconut_func in (lambda: (("\u2212", "-"), ("\u2018", "'"), ("\u2019", "'"), ("\u201c", '"'), ("\u201d", '"')), lambda: (("{_coconut_format_0}=".format(_coconut_format_0=(name)), "") for name in params)))):
         completion = completion.replace(repl, to)
     return completion
 

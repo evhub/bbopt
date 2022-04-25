@@ -13,7 +13,8 @@ from bbopt.backends.util import StandardBackend
 
 # Constants:
 
-DEFAULT_ENGINE = "text-davinci-002"
+# DEFAULT_ENGINE = "text-davinci-002"
+DEFAULT_ENGINE = "text-curie-001"
 
 DEFAULT_TEMP = 1.1
 MAX_TEMP = 2
@@ -94,6 +95,8 @@ def to_python(completion, params):
         ("\u2212", "-"),
         ("\u2018", "'"),
         ("\u2019", "'"),
+        ("\u201c", '"'),
+        ("\u201d", '"'),
     ) :: (
         (f"{name}=", "") for name in params
     ):

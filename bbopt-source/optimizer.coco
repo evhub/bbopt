@@ -334,7 +334,7 @@ class BlackBoxOptimizer:
     @property
     def run_id(self) =
         """The run ID number if using bbopt CLI."""
-        os.environ.get(constants.run_id_env_var) |?> int
+        os.getenv(constants.run_id_env_var) |?> int
 
     # Plotting functions:
 
@@ -409,7 +409,7 @@ class BlackBoxOptimizer:
             **kwargs,
         )
 
-    def plot_partial_dependence_1D(self, i_name, ax=None, yscale=None, **kwargs):
+    def plot_partial_dependence_1D(self, i_name, ax=None, yscale=None, label=None, **kwargs):
         """Constructs a 1D partial dependence plot using self.partial_dependence."""
         xi, yi = self.partial_dependence(i_name, **kwargs)
         return plot(
@@ -417,7 +417,8 @@ class BlackBoxOptimizer:
             yi,
             ax=ax,
             yscale=yscale,
-            title=f"Partial dependence of {i_name}",
+            title=f"Partial dependence of {i_name} in {self._file_name}",
+            label=label ?? f"{i_name}",
             xlabel=f"Values of {i_name}",
             ylabel=f"The loss at each point",
         )
@@ -555,6 +556,14 @@ class BlackBoxOptimizer:
                 ind = self.randrange(f"{name}[{i}]", len(sampling_population), **proc_kwargs)
                 sample.append(sampling_population.pop(ind))
         return sample
+
+    def samples_with_replacement(self, name, population, **kwargs):
+        """An infinite iterator of samples with replacement from population."""
+        if not isinstance(name, Str):
+            raise TypeError(f"name must be string, not {name}")
+        sampling_population = tuple(population)
+        for i in count():
+            yield self.choice(f"{name}[{i}]", sampling_population, **kwargs)
 
     def shuffled(self, name, population, **kwargs):
         """Create a new parameter with the given name modeled by

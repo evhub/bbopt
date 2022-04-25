@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x81c880b3
+# __coconut_hash__ = 0xd8eb3a17
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -198,8 +198,3 @@ MixtureBackend.register_safe_alg_for("gaussian_process")
 MixtureBackend.register_safe_alg_for("random_forest")
 MixtureBackend.register_safe_alg_for("extra_trees")
 MixtureBackend.register_safe_alg_for("gradient_boosted_regression_trees")
-
-# meta alg mixtures don't care what backend we register them on,
-#  so we just register them here
-Backend.register_meta("tpe_or_gp", ("tree_structured_parzen_estimator", "safe_gaussian_process"))
-Backend.register_meta("any_fast", ("tree_structured_parzen_estimator", "safe_random_forest", "safe_extra_trees", "safe_gradient_boosted_regression_trees"))

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x55775f6a
+# __coconut_hash__ = 0xa087598
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -41,7 +41,8 @@ from matplotlib import pyplot as plt
 from bbopt import BlackBoxOptimizer
 
 
-# Functions to optimize
+# Benchmarks
+
 OPT_FUNCS = []
 
 
@@ -129,7 +130,7 @@ def cond_gain_func(bb):
 OPT_FUNCS.append(cond_gain_func)
 
 
-# Benchmarking
+# Main
 
 def benchmark(algs, plot_func="plot_history", n=50):
     figsize = (int)((math.ceil)((math.sqrt)(len(OPT_FUNCS))))

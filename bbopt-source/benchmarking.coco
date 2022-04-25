@@ -6,7 +6,8 @@ from matplotlib import pyplot as plt
 from bbopt import BlackBoxOptimizer
 
 
-# Functions to optimize
+# Benchmarks
+
 OPT_FUNCS = []
 
 
@@ -86,7 +87,7 @@ def cond_gain_func(bb):
 OPT_FUNCS.append(cond_gain_func)
 
 
-# Benchmarking
+# Main
 
 def benchmark(algs, plot_func="plot_history", n=50):
     figsize = len(OPT_FUNCS) |> math.sqrt |> math.ceil |> int

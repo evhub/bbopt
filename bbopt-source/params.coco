@@ -191,6 +191,9 @@ class ParamProcessor:
         self.placeholder_funcs = {}
         self.support_checkers = {}
 
+    @property
+    def registered_base_rand_funcs(self) = tuple(self.handlers)
+
     def register(self, func, handler, placeholder_generator, support_check_func, replace=False):
         """Register a new parameter definition function. See bbopt.params for examples."""
         if not replace and func in self.handlers:
@@ -248,7 +251,7 @@ class ParamProcessor:
         return self.placeholder_funcs[func](*args)
 
 
-# Registration:
+# Register base random functions:
 
 param_processor = ParamProcessor()
 

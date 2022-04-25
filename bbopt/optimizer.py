@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xb8d16508
+# __coconut_hash__ = 0x66be5c2c
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -490,7 +490,7 @@ class BlackBoxOptimizer(_coconut.object):
     @property
     def run_id(self):
         """The run ID number if using bbopt CLI."""
-        return (lambda _coconut_x: None if _coconut_x is None else (int)(_coconut_x))(os.environ.get(constants.run_id_env_var))
+        return (lambda _coconut_x: None if _coconut_x is None else (int)(_coconut_x))(os.getenv(constants.run_id_env_var))
 
 # Plotting functions:
 
@@ -547,10 +547,10 @@ class BlackBoxOptimizer(_coconut.object):
 
     _coconut_recursive_func_27 = partial_dependence
 
-    def plot_partial_dependence_1D(self, i_name, ax=None, yscale=None, **kwargs):
+    def plot_partial_dependence_1D(self, i_name, ax=None, yscale=None, label=None, **kwargs):
         """Constructs a 1D partial dependence plot using self.partial_dependence."""
         xi, yi = self.partial_dependence(i_name, **kwargs)
-        return plot(xi, yi, ax=ax, yscale=yscale, title="Partial dependence of {_coconut_format_0}".format(_coconut_format_0=(i_name)), xlabel="Values of {_coconut_format_0}".format(_coconut_format_0=(i_name)), ylabel="The loss at each point".format())
+        return plot(xi, yi, ax=ax, yscale=yscale, title="Partial dependence of {_coconut_format_0} in {_coconut_format_1}".format(_coconut_format_0=(i_name), _coconut_format_1=(self._file_name)), label=("{_coconut_format_0}".format(_coconut_format_0=(i_name)) if label is None else label), xlabel="Values of {_coconut_format_0}".format(_coconut_format_0=(i_name)), ylabel="The loss at each point".format())
 
 
     def get_skopt_result(self):
@@ -746,6 +746,15 @@ class BlackBoxOptimizer(_coconut.object):
                 ind = self.randrange("{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(i)), len(sampling_population), **proc_kwargs)
                 sample.append(sampling_population.pop(ind))
         return sample
+
+
+    def samples_with_replacement(self, name, population, **kwargs):
+        """An infinite iterator of samples with replacement from population."""
+        if not isinstance(name, Str):
+            raise TypeError("name must be string, not {_coconut_format_0}".format(_coconut_format_0=(name)))
+        sampling_population = tuple(population)
+        for i in count():
+            yield self.choice("{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(i)), sampling_population, **kwargs)
 
 
     def shuffled(self, name, population, **kwargs):
