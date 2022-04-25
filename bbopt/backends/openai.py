@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x606af3e3
+# __coconut_hash__ = 0x6a2e7ba7
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -79,7 +79,7 @@ def f({func_params}) -> float:
 # known values (MUST stay within the bounds, SHOULD fully explore the bounds, SHOULD converge to minimum)
 # bounds: f({domains})
 {values}
-assert f('''.format(func_params=", ".join(("{name}: {type}".format(name=name, type=("int" if func == "randrange" else type(args[0][0]).__name__ if func == "choice" and all_equal(map(type, args[0])) else "typing.Any" if func == "choice" else "float")) for name, (func, args, _) in params.items())), docstring="\n".join(("        {name}: in {func}({args})".format(name=name, func=func, args=", ".join((map)(repr, args))) for name, (func, args, _) in params.items())), names=", ".join(params), domains=", ".join(("{func}({args})".format(func=func, args=", ".join((map)(repr, args))) for name, (func, args, _) in params.items())), values="\n".join(("assert f({args}) == {loss}".format(args=", ".join((map)(repr, point.values())), loss=loss) for point, loss in zip(data_points, losses))))
+assert f('''.format(func_params=", ".join(("{name}: {type}".format(name=name, type=("int" if func == "randrange" else type(args[0][0]).__name__ if func == "choice" and all_equal(map(type, args[0])) else "typing.Any" if func == "choice" else "float")) for name, (func, args, _) in params.items())), docstring="\n".join(("        {name}: in {func}({args})".format(name=name, func=func, args=", ".join((map)(repr, args))) for name, (func, args, _) in params.items())), names=", ".join(params), domains=", ".join(("{func}({args})".format(func=func, args=", ".join((map)(repr, args))) for name, (func, args, _) in params.items())), values="\n".join(("assert f({args}) == {loss}".format(args=", ".join((map)(repr, (map)(_coconut.functools.partial(_coconut.operator.getitem, point), params))), loss=loss) for point, loss in zip(data_points, losses))))
 
 
 

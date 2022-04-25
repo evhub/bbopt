@@ -73,7 +73,7 @@ assert f('''.format(
         ),
         values="\n".join(
             "assert f({args}) == {loss}".format(
-                args=", ".join(point.values() |> map$(repr)),
+                args=", ".join(params |> map$(point[]) |> map$(repr)),
                 loss=loss,
             )
             for point, loss in zip(data_points, losses)
