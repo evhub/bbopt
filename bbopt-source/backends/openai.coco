@@ -158,6 +158,7 @@ class OpenAIBackend(StandardBackend):
         while len(prompt) > self.max_prompt_len:
             self.data_points.pop(0)
             self.losses.pop(0)
+            prompt = get_prompt(self.params, self.data_points, self.losses)
         if self.debug:
             print("\n== PROMPT ==\n" + prompt)
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x6a2e7ba7
+# __coconut_hash__ = 0x4bdef372
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -149,6 +149,7 @@ class OpenAIBackend(StandardBackend):
         while len(prompt) > self.max_prompt_len:
             self.data_points.pop(0)
             self.losses.pop(0)
+            prompt = get_prompt(self.params, self.data_points, self.losses)
         if self.debug:
             print("\n== PROMPT ==\n" + prompt)
 
