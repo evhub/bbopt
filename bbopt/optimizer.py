@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x1873bf5b
+# __coconut_hash__ = 0x9446acdc
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -289,11 +289,43 @@ class BlackBoxOptimizer(_coconut.object):  #60 (line num in coconut source)
         sync_file(df)  #165 (line num in coconut source)
 
 
-    def _get_backend(self, backend, *args, **options):  #167 (line num in coconut source)
+    @_coconut_mark_as_match  #167 (line num in coconut source)
+    def _get_backend(*_coconut_match_args, **_coconut_match_kwargs):  #167 (line num in coconut source)
         """Get the given backend, attempting to load from stored backends."""  #168 (line num in coconut source)
+        _coconut_match_check_3 = False  #169 (line num in coconut source)
+        _coconut_match_set_name_self = _coconut_sentinel  #169 (line num in coconut source)
+        _coconut_match_set_name_backend = _coconut_sentinel  #169 (line num in coconut source)
+        _coconut_match_set_name_args = _coconut_sentinel  #169 (line num in coconut source)
+        _coconut_match_set_name__in_meta_run = _coconut_sentinel  #169 (line num in coconut source)
+        _coconut_match_set_name_options = _coconut_sentinel  #169 (line num in coconut source)
+        _coconut_FunctionMatchError = _coconut_get_function_match_error()  #169 (line num in coconut source)
+        if (_coconut.sum((_coconut.len(_coconut_match_args) > 0, "self" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 1, "backend" in _coconut_match_kwargs)) == 1):  #169 (line num in coconut source)
+            _coconut_match_set_name_args = _coconut_match_args[2:]  #169 (line num in coconut source)
+            _coconut_match_temp_11 = _coconut_match_kwargs.pop("_in_meta_run") if "_in_meta_run" in _coconut_match_kwargs else False  #169 (line num in coconut source)
+            _coconut_match_temp_9 = _coconut_match_args[0] if _coconut.len(_coconut_match_args) > 0 else _coconut_match_kwargs.pop("self")  #169 (line num in coconut source)
+            _coconut_match_temp_10 = _coconut_match_args[1] if _coconut.len(_coconut_match_args) > 1 else _coconut_match_kwargs.pop("backend")  #169 (line num in coconut source)
+            _coconut_match_set_name__in_meta_run = _coconut_match_temp_11  #169 (line num in coconut source)
+            _coconut_match_set_name_self = _coconut_match_temp_9  #169 (line num in coconut source)
+            _coconut_match_set_name_backend = _coconut_match_temp_10  #169 (line num in coconut source)
+            _coconut_match_set_name_options = _coconut_match_kwargs  #169 (line num in coconut source)
+            _coconut_match_check_3 = True  #169 (line num in coconut source)
+        if _coconut_match_check_3:  #169 (line num in coconut source)
+            if _coconut_match_set_name_self is not _coconut_sentinel:  #169 (line num in coconut source)
+                self = _coconut_match_set_name_self  #169 (line num in coconut source)
+            if _coconut_match_set_name_backend is not _coconut_sentinel:  #169 (line num in coconut source)
+                backend = _coconut_match_set_name_backend  #169 (line num in coconut source)
+            if _coconut_match_set_name_args is not _coconut_sentinel:  #169 (line num in coconut source)
+                args = _coconut_match_set_name_args  #169 (line num in coconut source)
+            if _coconut_match_set_name__in_meta_run is not _coconut_sentinel:  #169 (line num in coconut source)
+                _in_meta_run = _coconut_match_set_name__in_meta_run  #169 (line num in coconut source)
+            if _coconut_match_set_name_options is not _coconut_sentinel:  #169 (line num in coconut source)
+                options = _coconut_match_set_name_options  #169 (line num in coconut source)
+        if not _coconut_match_check_3:  #169 (line num in coconut source)
+            raise _coconut_FunctionMatchError('match def _get_backend(self, backend, *args, _in_meta_run=False, **options) =', _coconut_match_args)  #169 (line num in coconut source)
+
         def _coconut_lambda_0(backend):  #169 (line num in coconut source)
             self._backend_creation_counts[type(backend)] += 1  #169 (line num in coconut source)
-        return get_backend(self._backend_store, backend, self._examples, self._old_params, *args, _current_backend=self.backend, _on_new_backend=(_coconut_lambda_0), **options)  #169 (line num in coconut source)
+        return get_backend(self._backend_store, backend, self._examples, self._old_params if not _in_meta_run else dict(((name), (param)) for name, param in self._old_params.items() if name != constants.meta_opt_alg_var), *args, _current_backend=self.backend, _on_new_backend=(_coconut_lambda_0), **options)  #169 (line num in coconut source)
 
 
     def _get_skopt_backend(self):  #180 (line num in coconut source)
@@ -363,25 +395,25 @@ class BlackBoxOptimizer(_coconut.object):  #60 (line num in coconut source)
         kwargs = param_processor.standardize_kwargs(kwargs)  #237 (line num in coconut source)
 
         _coconut_match_to_1 = self._old_params  #239 (line num in coconut source)
-        _coconut_match_check_3 = False  #239 (line num in coconut source)
+        _coconut_match_check_4 = False  #239 (line num in coconut source)
         _coconut_match_set_name_old_func = _coconut_sentinel  #239 (line num in coconut source)
         _coconut_match_set_name_old_args = _coconut_sentinel  #239 (line num in coconut source)
         _coconut_match_set_name_old_kwargs = _coconut_sentinel  #239 (line num in coconut source)
         if _coconut.isinstance(_coconut_match_to_1, _coconut.abc.Mapping):  #239 (line num in coconut source)
-            _coconut_match_temp_9 = _coconut_match_to_1.get(name, _coconut_sentinel)  #239 (line num in coconut source)
-            if (_coconut_match_temp_9 is not _coconut_sentinel) and (_coconut.isinstance(_coconut_match_temp_9, _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_temp_9) == 3):  #239 (line num in coconut source)
-                _coconut_match_set_name_old_func = _coconut_match_temp_9[0]  #239 (line num in coconut source)
-                _coconut_match_set_name_old_args = _coconut_match_temp_9[1]  #239 (line num in coconut source)
-                _coconut_match_set_name_old_kwargs = _coconut_match_temp_9[2]  #239 (line num in coconut source)
-                _coconut_match_check_3 = True  #239 (line num in coconut source)
-        if _coconut_match_check_3:  #239 (line num in coconut source)
+            _coconut_match_temp_12 = _coconut_match_to_1.get(name, _coconut_sentinel)  #239 (line num in coconut source)
+            if (_coconut_match_temp_12 is not _coconut_sentinel) and (_coconut.isinstance(_coconut_match_temp_12, _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_temp_12) == 3):  #239 (line num in coconut source)
+                _coconut_match_set_name_old_func = _coconut_match_temp_12[0]  #239 (line num in coconut source)
+                _coconut_match_set_name_old_args = _coconut_match_temp_12[1]  #239 (line num in coconut source)
+                _coconut_match_set_name_old_kwargs = _coconut_match_temp_12[2]  #239 (line num in coconut source)
+                _coconut_match_check_4 = True  #239 (line num in coconut source)
+        if _coconut_match_check_4:  #239 (line num in coconut source)
             if _coconut_match_set_name_old_func is not _coconut_sentinel:  #239 (line num in coconut source)
                 old_func = _coconut_match_set_name_old_func  #239 (line num in coconut source)
             if _coconut_match_set_name_old_args is not _coconut_sentinel:  #239 (line num in coconut source)
                 old_args = _coconut_match_set_name_old_args  #239 (line num in coconut source)
             if _coconut_match_set_name_old_kwargs is not _coconut_sentinel:  #239 (line num in coconut source)
                 old_kwargs = _coconut_match_set_name_old_kwargs  #239 (line num in coconut source)
-        if _coconut_match_check_3:  #239 (line num in coconut source)
+        if _coconut_match_check_4:  #239 (line num in coconut source)
             if (func, args) != (old_func, old_args):  #240 (line num in coconut source)
                 printerr("BBopt Warning: detected change in parameter {_coconut_format_0} ({_coconut_format_1} != {_coconut_format_2}) (you may need to delete your old BBopt data)".format(_coconut_format_0=(name), _coconut_format_1=((func, args)), _coconut_format_2=((old_func, old_args))))  #241 (line num in coconut source)
 
@@ -403,386 +435,388 @@ class BlackBoxOptimizer(_coconut.object):  #60 (line num in coconut source)
     @property  #256 (line num in coconut source)
     def algs(self):  #257 (line num in coconut source)
         """All algorithms supported by run."""  #258 (line num in coconut source)
-        return alg_registry.asdict()  #259 (line num in coconut source)
+        algs = alg_registry.asdict()  #259 (line num in coconut source)
+        algs.update(meta_registry.asdict())  #260 (line num in coconut source)
+        return algs  #261 (line num in coconut source)
 
 
-    def run(self, alg=constants.default_alg_sentinel):  #261 (line num in coconut source)
+    def run(self, alg=constants.default_alg_sentinel):  #263 (line num in coconut source)
         """Optimize parameters using the given algorithm
-        (use .algs to get the list of valid algorithms)."""  #263 (line num in coconut source)
-        if alg is constants.default_alg_sentinel:  #264 (line num in coconut source)
-            alg = constants.default_alg  #265 (line num in coconut source)
-        if alg in meta_registry:  #266 (line num in coconut source)
-            algs, meta_alg = meta_registry[alg]  #267 (line num in coconut source)
-            self.run_meta(algs, meta_alg)  #268 (line num in coconut source)
-        else:  #269 (line num in coconut source)
-            backend, options = alg_registry[alg]  #270 (line num in coconut source)
-            self.run_backend(backend, **options)  #271 (line num in coconut source)
+        (use .algs to get the list of valid algorithms)."""  #265 (line num in coconut source)
+        if alg is constants.default_alg_sentinel:  #266 (line num in coconut source)
+            alg = constants.default_alg  #267 (line num in coconut source)
+        if alg in meta_registry:  #268 (line num in coconut source)
+            algs, meta_alg = meta_registry[alg]  #269 (line num in coconut source)
+            self.run_meta(algs, meta_alg)  #270 (line num in coconut source)
+        else:  #271 (line num in coconut source)
+            backend, options = alg_registry[alg]  #272 (line num in coconut source)
+            self.run_backend(backend, **options)  #273 (line num in coconut source)
 
 
-    def run_meta(self, algs, meta_alg=constants.default_alg_sentinel):  #273 (line num in coconut source)
-        """Dynamically choose the best algorithm from the given set of algorithms."""  #274 (line num in coconut source)
-        if meta_alg is constants.default_alg_sentinel:  #275 (line num in coconut source)
-            meta_alg = constants.default_meta_alg  #276 (line num in coconut source)
-        self.run(meta_alg)  #277 (line num in coconut source)
-        alg = self.choice(constants.meta_opt_alg_var, algs)  #278 (line num in coconut source)
-        backend, options = alg_registry[alg]  #279 (line num in coconut source)
-        self.backend = self._get_backend(backend, **options)  #280 (line num in coconut source)
+    def run_meta(self, algs, meta_alg=constants.default_alg_sentinel):  #275 (line num in coconut source)
+        """Dynamically choose the best algorithm from the given set of algorithms."""  #276 (line num in coconut source)
+        if meta_alg is constants.default_alg_sentinel:  #277 (line num in coconut source)
+            meta_alg = constants.default_meta_alg  #278 (line num in coconut source)
+        self.run(meta_alg)  #279 (line num in coconut source)
+        alg = self.choice(constants.meta_opt_alg_var, algs)  #280 (line num in coconut source)
+        backend, options = alg_registry[alg]  #281 (line num in coconut source)
+        self.backend = self._get_backend(backend, _in_meta_run=True, **options)  #282 (line num in coconut source)
 
 
-    def remember(self, info):  #282 (line num in coconut source)
-        """Store a dictionary of information about the current run."""  #283 (line num in coconut source)
-        if self._got_reward:  #284 (line num in coconut source)
-            raise ValueError("remember calls must come before maximize/minimize")  #285 (line num in coconut source)
-        self._current_example.setdefault("memo", {}).update(info)  #286 (line num in coconut source)
+    def remember(self, info):  #284 (line num in coconut source)
+        """Store a dictionary of information about the current run."""  #285 (line num in coconut source)
+        if self._got_reward:  #286 (line num in coconut source)
+            raise ValueError("remember calls must come before maximize/minimize")  #287 (line num in coconut source)
+        self._current_example.setdefault("memo", {}).update(info)  #288 (line num in coconut source)
 
 
-    def minimize(self, value):  #288 (line num in coconut source)
-        """Set the loss of the current run."""  #289 (line num in coconut source)
-        self._set_reward("loss", value)  #290 (line num in coconut source)
+    def minimize(self, value):  #290 (line num in coconut source)
+        """Set the loss of the current run."""  #291 (line num in coconut source)
+        self._set_reward("loss", value)  #292 (line num in coconut source)
 
 
-    def maximize(self, value):  #292 (line num in coconut source)
-        """Set the gain of the current run."""  #293 (line num in coconut source)
-        self._set_reward("gain", value)  #294 (line num in coconut source)
+    def maximize(self, value):  #294 (line num in coconut source)
+        """Set the gain of the current run."""  #295 (line num in coconut source)
+        self._set_reward("gain", value)  #296 (line num in coconut source)
 
 
-    @property  #296 (line num in coconut source)
-    def is_serving(self):  #297 (line num in coconut source)
-        """Whether we are currently using the serving backend or not."""  #298 (line num in coconut source)
-        return isinstance(self.backend, ServingBackend) and not self.backend.allow_missing_data  #299 (line num in coconut source)
+    @property  #298 (line num in coconut source)
+    def is_serving(self):  #299 (line num in coconut source)
+        """Whether we are currently using the serving backend or not."""  #300 (line num in coconut source)
+        return isinstance(self.backend, ServingBackend) and not self.backend.allow_missing_data  #301 (line num in coconut source)
 
 
-    @property  #301 (line num in coconut source)
-    def data_file(self):  #302 (line num in coconut source)
-        """The path to the file we are saving data to."""  #303 (line num in coconut source)
-        return os.path.join(os.path.dirname(self._file), self._file_name) + constants.data_file_ext + (".json" if self.using_json else ".pickle")  #304 (line num in coconut source)
+    @property  #303 (line num in coconut source)
+    def data_file(self):  #304 (line num in coconut source)
+        """The path to the file we are saving data to."""  #305 (line num in coconut source)
+        return os.path.join(os.path.dirname(self._file), self._file_name) + constants.data_file_ext + (".json" if self.using_json else ".pickle")  #306 (line num in coconut source)
 
 
-    def get_data(self, print_data=False):  #306 (line num in coconut source)
-        """Get all currently-loaded data as a dictionary containing params and examples."""  #307 (line num in coconut source)
-        self._old_params.update(self._new_params)  #308 (line num in coconut source)
-        data_dict = {"params": self._old_params, "examples": self._examples}  #309 (line num in coconut source)
-        if print_data:  #313 (line num in coconut source)
-            pprint(data_dict)  #314 (line num in coconut source)
-        return data_dict  #315 (line num in coconut source)
+    def get_data(self, print_data=False):  #308 (line num in coconut source)
+        """Get all currently-loaded data as a dictionary containing params and examples."""  #309 (line num in coconut source)
+        self._old_params.update(self._new_params)  #310 (line num in coconut source)
+        data_dict = {"params": self._old_params, "examples": self._examples}  #311 (line num in coconut source)
+        if print_data:  #315 (line num in coconut source)
+            pprint(data_dict)  #316 (line num in coconut source)
+        return data_dict  #317 (line num in coconut source)
 
 
-    def tell_examples(self, examples):  #317 (line num in coconut source)
-        """Adds the given examples to memory and writes the current memory to disk."""  #318 (line num in coconut source)
-        self._add_examples(examples)  #319 (line num in coconut source)
-        self.save_data()  #320 (line num in coconut source)
+    def tell_examples(self, examples):  #319 (line num in coconut source)
+        """Adds the given examples to memory and writes the current memory to disk."""  #320 (line num in coconut source)
+        self._add_examples(examples)  #321 (line num in coconut source)
+        self.save_data()  #322 (line num in coconut source)
 
 
-    def get_current_run(self):  #322 (line num in coconut source)
-        """Return a dictionary containing the current parameters and reward."""  #323 (line num in coconut source)
-        if self._current_example is None:  #324 (line num in coconut source)
-            raise ValueError("get_current_run calls must come after run")  #325 (line num in coconut source)
-        return self._current_example  #326 (line num in coconut source)
+    def get_current_run(self):  #324 (line num in coconut source)
+        """Return a dictionary containing the current parameters and reward."""  #325 (line num in coconut source)
+        if self._current_example is None:  #326 (line num in coconut source)
+            raise ValueError("get_current_run calls must come after run")  #327 (line num in coconut source)
+        return self._current_example  #328 (line num in coconut source)
 
 
-    def get_best_run(self):  #328 (line num in coconut source)
-        """Return a dictionary containing the best parameters and reward computed so far."""  #329 (line num in coconut source)
-        return best_example(self._examples)  #330 (line num in coconut source)
+    def get_best_run(self):  #330 (line num in coconut source)
+        """Return a dictionary containing the best parameters and reward computed so far."""  #331 (line num in coconut source)
+        return best_example(self._examples)  #332 (line num in coconut source)
 
 
-    get_optimal_run = get_best_run  #332 (line num in coconut source)
+    get_optimal_run = get_best_run  #334 (line num in coconut source)
 
-    @property  #334 (line num in coconut source)
-    def run_id(self):  #335 (line num in coconut source)
-        """The run ID number if using bbopt CLI."""  #336 (line num in coconut source)
-        return (lambda _coconut_x: None if _coconut_x is None else (int)(_coconut_x))(os.getenv(constants.run_id_env_var))  #337 (line num in coconut source)
+    @property  #336 (line num in coconut source)
+    def run_id(self):  #337 (line num in coconut source)
+        """The run ID number if using bbopt CLI."""  #338 (line num in coconut source)
+        return (lambda _coconut_x: None if _coconut_x is None else (int)(_coconut_x))(os.getenv(constants.run_id_env_var))  #339 (line num in coconut source)
 
 # Plotting functions:
 
 
-    def plot_convergence(self, ax=None, yscale=None, label=None):  #341 (line num in coconut source)
+    def plot_convergence(self, ax=None, yscale=None, label=None):  #343 (line num in coconut source)
         """Plot the best gain/loss over the history of optimization.
-        Based on skopt.plots.plot_convergence."""  #343 (line num in coconut source)
-        if not self._examples:  #344 (line num in coconut source)
-            raise ValueError("no existing data available to be plotted")  #345 (line num in coconut source)
+        Based on skopt.plots.plot_convergence."""  #345 (line num in coconut source)
+        if not self._examples:  #346 (line num in coconut source)
+            raise ValueError("no existing data available to be plotted")  #347 (line num in coconut source)
 
-        iterations = range(1, len(self._examples) + 1)  #347 (line num in coconut source)
-        best_metrics = ((list)((map)(_coconut.operator.itemgetter((self.metric)), (running_best)((sorted_examples)(self._examples)))))  #348 (line num in coconut source)
+        iterations = range(1, len(self._examples) + 1)  #349 (line num in coconut source)
+        best_metrics = ((list)((map)(_coconut.operator.itemgetter((self.metric)), (running_best)((sorted_examples)(self._examples)))))  #350 (line num in coconut source)
 
-        return plot(iterations, best_metrics, ax=ax, yscale=yscale, title="Convergence plot for {_coconut_format_0}".format(_coconut_format_0=(self._file_name)), label=("{_coconut_format_0}".format(_coconut_format_0=(self._file_name)) if label is None else label), xlabel="Number of trials $n$", ylabel="Best {_coconut_format_0} after $n$ trials".format(_coconut_format_0=(self.metric)))  #356 (line num in coconut source)
-
-
-    def plot_history(self, ax=None, yscale=None, label=None):  #367 (line num in coconut source)
-        """Plot the gain/loss of every point in the order in which they were sampled."""  #368 (line num in coconut source)
-        if not self._examples:  #369 (line num in coconut source)
-            raise ValueError("no existing data available to be plotted")  #370 (line num in coconut source)
-
-        iterations = range(1, len(self._examples) + 1)  #372 (line num in coconut source)
-        metrics = ((list)((map)(_coconut.operator.itemgetter((self.metric)), (sorted_examples)(self._examples))))  #373 (line num in coconut source)
-
-        return plot(iterations, metrics, ax=ax, yscale=yscale, title="History plot for {_coconut_format_0}".format(_coconut_format_0=(self._file_name)), label=("{_coconut_format_0}".format(_coconut_format_0=(self._file_name)) if label is None else label), xlabel="Number of trials $n$", ylabel="The {_coconut_format_0} on the $n$th trial".format(_coconut_format_0=(self.metric)))  #380 (line num in coconut source)
+        return plot(iterations, best_metrics, ax=ax, yscale=yscale, title="Convergence plot for {_coconut_format_0}".format(_coconut_format_0=(self._file_name)), label=("{_coconut_format_0}".format(_coconut_format_0=(self._file_name)) if label is None else label), xlabel="Number of trials $n$", ylabel="Best {_coconut_format_0} after $n$ trials".format(_coconut_format_0=(self.metric)))  #358 (line num in coconut source)
 
 
-    def partial_dependence(self, i_name, j_name=None, *args, **kwargs):  #391 (line num in coconut source)
-        """Calls skopt.plots.partial_dependence where i_name and j_name are parameter names."""  #392 (line num in coconut source)
-        def _coconut_mock_9(self, i_name, j_name=_coconut_sentinel, *args, **kwargs):  #393 (line num in coconut source)
-            if j_name is _coconut_sentinel: j_name = _coconut_recursive_func_27.__defaults__[0]  #393 (line num in coconut source)
-            return self, i_name, j_name, args, kwargs  #393 (line num in coconut source)
-        while True:  #393 (line num in coconut source)
-            from skopt.plots import partial_dependence  #393 (line num in coconut source)
-            if not self._examples:  #394 (line num in coconut source)
-                raise ValueError("no existing data available to be plotted")  #395 (line num in coconut source)
+    def plot_history(self, ax=None, yscale=None, label=None):  #369 (line num in coconut source)
+        """Plot the gain/loss of every point in the order in which they were sampled."""  #370 (line num in coconut source)
+        if not self._examples:  #371 (line num in coconut source)
+            raise ValueError("no existing data available to be plotted")  #372 (line num in coconut source)
 
-            skopt_backend = self._get_skopt_backend()  #397 (line num in coconut source)
+        iterations = range(1, len(self._examples) + 1)  #374 (line num in coconut source)
+        metrics = ((list)((map)(_coconut.operator.itemgetter((self.metric)), (sorted_examples)(self._examples))))  #375 (line num in coconut source)
 
-            sorted_names = list(sorted(self._old_params))  #399 (line num in coconut source)
-            i = sorted_names.index(i_name)  #400 (line num in coconut source)
-            j = None if j_name is None else sorted_names.index(j_name)  #401 (line num in coconut source)
-
-            try:  #403 (line num in coconut source)
-                _coconut_tre_check_0 = partial_dependence is _coconut_recursive_func_27  #403 (line num in coconut source)
-            except _coconut.NameError:  #403 (line num in coconut source)
-                _coconut_tre_check_0 = False  #403 (line num in coconut source)
-            if _coconut_tre_check_0:  #403 (line num in coconut source)
-                self, i_name, j_name, args, kwargs = _coconut_mock_9(skopt_backend.space, skopt_backend.model, i, j, *args, **kwargs)  #403 (line num in coconut source)
-                continue  #403 (line num in coconut source)
-            else:  #403 (line num in coconut source)
-                return partial_dependence(skopt_backend.space, skopt_backend.model, i, j, *args, **kwargs)  #411 (line num in coconut source)
-            return None  #412 (line num in coconut source)
-
-    _coconut_recursive_func_27 = partial_dependence  #412 (line num in coconut source)
-
-    def plot_partial_dependence_1D(self, i_name, ax=None, yscale=None, label=None, **kwargs):  #412 (line num in coconut source)
-        """Constructs a 1D partial dependence plot using self.partial_dependence."""  #413 (line num in coconut source)
-        xi, yi = self.partial_dependence(i_name, **kwargs)  #414 (line num in coconut source)
-        return plot(xi, yi, ax=ax, yscale=yscale, title="Partial dependence of {_coconut_format_0} in {_coconut_format_1}".format(_coconut_format_0=(i_name), _coconut_format_1=(self._file_name)), label=("{_coconut_format_0}".format(_coconut_format_0=(i_name)) if label is None else label), xlabel="Values of {_coconut_format_0}".format(_coconut_format_0=(i_name)), ylabel="The loss at each point".format())  #415 (line num in coconut source)
+        return plot(iterations, metrics, ax=ax, yscale=yscale, title="History plot for {_coconut_format_0}".format(_coconut_format_0=(self._file_name)), label=("{_coconut_format_0}".format(_coconut_format_0=(self._file_name)) if label is None else label), xlabel="Number of trials $n$", ylabel="The {_coconut_format_0} on the $n$th trial".format(_coconut_format_0=(self.metric)))  #382 (line num in coconut source)
 
 
-    def get_skopt_result(self):  #426 (line num in coconut source)
-        """Get a result object usable by skopt.plots functions."""  #427 (line num in coconut source)
-        if not self._examples:  #428 (line num in coconut source)
-            raise ValueError("no existing data available to be plotted")  #429 (line num in coconut source)
-        return self._get_skopt_backend().result  #430 (line num in coconut source)
+    def partial_dependence(self, i_name, j_name=None, *args, **kwargs):  #393 (line num in coconut source)
+        """Calls skopt.plots.partial_dependence where i_name and j_name are parameter names."""  #394 (line num in coconut source)
+        def _coconut_mock_9(self, i_name, j_name=_coconut_sentinel, *args, **kwargs):  #395 (line num in coconut source)
+            if j_name is _coconut_sentinel: j_name = _coconut_recursive_func_27.__defaults__[0]  #395 (line num in coconut source)
+            return self, i_name, j_name, args, kwargs  #395 (line num in coconut source)
+        while True:  #395 (line num in coconut source)
+            from skopt.plots import partial_dependence  #395 (line num in coconut source)
+            if not self._examples:  #396 (line num in coconut source)
+                raise ValueError("no existing data available to be plotted")  #397 (line num in coconut source)
+
+            skopt_backend = self._get_skopt_backend()  #399 (line num in coconut source)
+
+            sorted_names = list(sorted(self._old_params))  #401 (line num in coconut source)
+            i = sorted_names.index(i_name)  #402 (line num in coconut source)
+            j = None if j_name is None else sorted_names.index(j_name)  #403 (line num in coconut source)
+
+            try:  #405 (line num in coconut source)
+                _coconut_tre_check_0 = partial_dependence is _coconut_recursive_func_27  #405 (line num in coconut source)
+            except _coconut.NameError:  #405 (line num in coconut source)
+                _coconut_tre_check_0 = False  #405 (line num in coconut source)
+            if _coconut_tre_check_0:  #405 (line num in coconut source)
+                self, i_name, j_name, args, kwargs = _coconut_mock_9(skopt_backend.space, skopt_backend.model, i, j, *args, **kwargs)  #405 (line num in coconut source)
+                continue  #405 (line num in coconut source)
+            else:  #405 (line num in coconut source)
+                return partial_dependence(skopt_backend.space, skopt_backend.model, i, j, *args, **kwargs)  #413 (line num in coconut source)
+            return None  #414 (line num in coconut source)
+
+    _coconut_recursive_func_27 = partial_dependence  #414 (line num in coconut source)
+
+    def plot_partial_dependence_1D(self, i_name, ax=None, yscale=None, label=None, **kwargs):  #414 (line num in coconut source)
+        """Constructs a 1D partial dependence plot using self.partial_dependence."""  #415 (line num in coconut source)
+        xi, yi = self.partial_dependence(i_name, **kwargs)  #416 (line num in coconut source)
+        return plot(xi, yi, ax=ax, yscale=yscale, title="Partial dependence of {_coconut_format_0} in {_coconut_format_1}".format(_coconut_format_0=(i_name), _coconut_format_1=(self._file_name)), label=("{_coconut_format_0}".format(_coconut_format_0=(i_name)) if label is None else label), xlabel="Values of {_coconut_format_0}".format(_coconut_format_0=(i_name)), ylabel="The loss at each point".format())  #417 (line num in coconut source)
 
 
-    def plot_evaluations(self, *args, **kwargs):  #432 (line num in coconut source)
-        """Calls skopt.plots.plot_evaluations."""  #433 (line num in coconut source)
-        def _coconut_mock_11(self, *args, **kwargs):  #434 (line num in coconut source)
-            return self, args, kwargs  #434 (line num in coconut source)
-        while True:  #434 (line num in coconut source)
-            from skopt.plots import plot_evaluations  #434 (line num in coconut source)
-            try:  #435 (line num in coconut source)
-                _coconut_tre_check_1 = plot_evaluations is _coconut_recursive_func_30  #435 (line num in coconut source)
-            except _coconut.NameError:  #435 (line num in coconut source)
-                _coconut_tre_check_1 = False  #435 (line num in coconut source)
-            if _coconut_tre_check_1:  #435 (line num in coconut source)
-                self, args, kwargs = _coconut_mock_11(self.get_skopt_result(), *args, **kwargs)  #435 (line num in coconut source)
-                continue  #435 (line num in coconut source)
-            else:  #435 (line num in coconut source)
-                return plot_evaluations(self.get_skopt_result(), *args, **kwargs)  #436 (line num in coconut source)
-            return None  #437 (line num in coconut source)
-
-    _coconut_recursive_func_30 = plot_evaluations  #437 (line num in coconut source)
-
-    def plot_objective(self, *args, **kwargs):  #437 (line num in coconut source)
-        """Calls skopt.plots.plot_objective."""  #438 (line num in coconut source)
-        def _coconut_mock_12(self, *args, **kwargs):  #439 (line num in coconut source)
-            return self, args, kwargs  #439 (line num in coconut source)
-        while True:  #439 (line num in coconut source)
-            from skopt.plots import plot_objective  #439 (line num in coconut source)
-            try:  #440 (line num in coconut source)
-                _coconut_tre_check_2 = plot_objective is _coconut_recursive_func_31  #440 (line num in coconut source)
-            except _coconut.NameError:  #440 (line num in coconut source)
-                _coconut_tre_check_2 = False  #440 (line num in coconut source)
-            if _coconut_tre_check_2:  #440 (line num in coconut source)
-                self, args, kwargs = _coconut_mock_12(self.get_skopt_result(), *args, **kwargs)  #440 (line num in coconut source)
-                continue  #440 (line num in coconut source)
-            else:  #440 (line num in coconut source)
-                return plot_objective(self.get_skopt_result(), *args, **kwargs)  #441 (line num in coconut source)
-            return None  #442 (line num in coconut source)
-
-    _coconut_recursive_func_31 = plot_objective  #442 (line num in coconut source)
-
-    def plot_regret(self, *args, **kwargs):  #442 (line num in coconut source)
-        """Calls skopt.plots.plot_regret."""  #443 (line num in coconut source)
-        def _coconut_mock_13(self, *args, **kwargs):  #444 (line num in coconut source)
-            return self, args, kwargs  #444 (line num in coconut source)
-        while True:  #444 (line num in coconut source)
-            from skopt.plots import plot_regret  #444 (line num in coconut source)
-            try:  #445 (line num in coconut source)
-                _coconut_tre_check_3 = plot_regret is _coconut_recursive_func_32  #445 (line num in coconut source)
-            except _coconut.NameError:  #445 (line num in coconut source)
-                _coconut_tre_check_3 = False  #445 (line num in coconut source)
-            if _coconut_tre_check_3:  #445 (line num in coconut source)
-                self, args, kwargs = _coconut_mock_13(self.get_skopt_result(), *args, **kwargs)  #445 (line num in coconut source)
-                continue  #445 (line num in coconut source)
-            else:  #445 (line num in coconut source)
-                return plot_regret(self.get_skopt_result(), *args, **kwargs)  #445 (line num in coconut source)
+    def get_skopt_result(self):  #428 (line num in coconut source)
+        """Get a result object usable by skopt.plots functions."""  #429 (line num in coconut source)
+        if not self._examples:  #430 (line num in coconut source)
+            raise ValueError("no existing data available to be plotted")  #431 (line num in coconut source)
+        return self._get_skopt_backend().result  #432 (line num in coconut source)
 
 
-        return None  #449 (line num in coconut source)
+    def plot_evaluations(self, *args, **kwargs):  #434 (line num in coconut source)
+        """Calls skopt.plots.plot_evaluations."""  #435 (line num in coconut source)
+        def _coconut_mock_11(self, *args, **kwargs):  #436 (line num in coconut source)
+            return self, args, kwargs  #436 (line num in coconut source)
+        while True:  #436 (line num in coconut source)
+            from skopt.plots import plot_evaluations  #436 (line num in coconut source)
+            try:  #437 (line num in coconut source)
+                _coconut_tre_check_1 = plot_evaluations is _coconut_recursive_func_30  #437 (line num in coconut source)
+            except _coconut.NameError:  #437 (line num in coconut source)
+                _coconut_tre_check_1 = False  #437 (line num in coconut source)
+            if _coconut_tre_check_1:  #437 (line num in coconut source)
+                self, args, kwargs = _coconut_mock_11(self.get_skopt_result(), *args, **kwargs)  #437 (line num in coconut source)
+                continue  #437 (line num in coconut source)
+            else:  #437 (line num in coconut source)
+                return plot_evaluations(self.get_skopt_result(), *args, **kwargs)  #438 (line num in coconut source)
+            return None  #439 (line num in coconut source)
 
-    _coconut_recursive_func_32 = plot_regret  #449 (line num in coconut source)
+    _coconut_recursive_func_30 = plot_evaluations  #439 (line num in coconut source)
 
-    def randrange(self, name, *args, **kwargs):  #449 (line num in coconut source)
-        """Create a new parameter with the given name modeled by random.randrange(*args)."""  #450 (line num in coconut source)
-        return self.param(name, "randrange", *args, **kwargs)  #451 (line num in coconut source)
+    def plot_objective(self, *args, **kwargs):  #439 (line num in coconut source)
+        """Calls skopt.plots.plot_objective."""  #440 (line num in coconut source)
+        def _coconut_mock_12(self, *args, **kwargs):  #441 (line num in coconut source)
+            return self, args, kwargs  #441 (line num in coconut source)
+        while True:  #441 (line num in coconut source)
+            from skopt.plots import plot_objective  #441 (line num in coconut source)
+            try:  #442 (line num in coconut source)
+                _coconut_tre_check_2 = plot_objective is _coconut_recursive_func_31  #442 (line num in coconut source)
+            except _coconut.NameError:  #442 (line num in coconut source)
+                _coconut_tre_check_2 = False  #442 (line num in coconut source)
+            if _coconut_tre_check_2:  #442 (line num in coconut source)
+                self, args, kwargs = _coconut_mock_12(self.get_skopt_result(), *args, **kwargs)  #442 (line num in coconut source)
+                continue  #442 (line num in coconut source)
+            else:  #442 (line num in coconut source)
+                return plot_objective(self.get_skopt_result(), *args, **kwargs)  #443 (line num in coconut source)
+            return None  #444 (line num in coconut source)
 
+    _coconut_recursive_func_31 = plot_objective  #444 (line num in coconut source)
 
-    def uniform(self, name, a, b, **kwargs):  #453 (line num in coconut source)
-        """Create a new parameter with the given name modeled by random.uniform(a, b)."""  #454 (line num in coconut source)
-        return self.param(name, "uniform", a, b, **kwargs)  #455 (line num in coconut source)
-
-
-    def triangular(self, name, low, high, mode, **kwargs):  #457 (line num in coconut source)
-        """Create a new parameter with the given name modeled by random.triangular(low, high, mode)."""  #458 (line num in coconut source)
-        return self.param(name, "triangular", low, high, mode, **kwargs)  #459 (line num in coconut source)
-
-
-    def betavariate(self, name, alpha, beta, **kwargs):  #461 (line num in coconut source)
-        """Create a new parameter with the given name modeled by random.betavariate(alpha, beta)."""  #462 (line num in coconut source)
-        return self.param(name, "betavariate", alpha, beta, **kwargs)  #463 (line num in coconut source)
-
-
-    def expovariate(self, name, lambd, **kwargs):  #465 (line num in coconut source)
-        """Create a new parameter with the given name modeled by random.expovariate(lambd)."""  #466 (line num in coconut source)
-        return self.param(name, "expovariate", lambd, **kwargs)  #467 (line num in coconut source)
-
-
-    def gammavariate(self, name, alpha, beta, **kwargs):  #469 (line num in coconut source)
-        """Create a new parameter with the given name modeled by random.gammavariate(alpha, beta)."""  #470 (line num in coconut source)
-        return self.param(name, "gammavariate", alpha, beta, **kwargs)  #471 (line num in coconut source)
-
-
-    def normalvariate(self, name, mu, sigma, **kwargs):  #473 (line num in coconut source)
-        """Create a new parameter with the given name modeled by random.gauss(mu, sigma)."""  #474 (line num in coconut source)
-        return self.param(name, "normalvariate", mu, sigma, **kwargs)  #475 (line num in coconut source)
-
-
-    def vonmisesvariate(self, name, kappa, **kwargs):  #477 (line num in coconut source)
-        """Create a new parameter with the given name modeled by random.vonmisesvariate(kappa)."""  #478 (line num in coconut source)
-        return self.param(name, "vonmisesvariate", kappa, **kwargs)  #479 (line num in coconut source)
+    def plot_regret(self, *args, **kwargs):  #444 (line num in coconut source)
+        """Calls skopt.plots.plot_regret."""  #445 (line num in coconut source)
+        def _coconut_mock_13(self, *args, **kwargs):  #446 (line num in coconut source)
+            return self, args, kwargs  #446 (line num in coconut source)
+        while True:  #446 (line num in coconut source)
+            from skopt.plots import plot_regret  #446 (line num in coconut source)
+            try:  #447 (line num in coconut source)
+                _coconut_tre_check_3 = plot_regret is _coconut_recursive_func_32  #447 (line num in coconut source)
+            except _coconut.NameError:  #447 (line num in coconut source)
+                _coconut_tre_check_3 = False  #447 (line num in coconut source)
+            if _coconut_tre_check_3:  #447 (line num in coconut source)
+                self, args, kwargs = _coconut_mock_13(self.get_skopt_result(), *args, **kwargs)  #447 (line num in coconut source)
+                continue  #447 (line num in coconut source)
+            else:  #447 (line num in coconut source)
+                return plot_regret(self.get_skopt_result(), *args, **kwargs)  #447 (line num in coconut source)
 
 
-    def paretovariate(self, name, alpha, **kwargs):  #481 (line num in coconut source)
-        """Create a new parameter with the given name modeled by random.paretovariate(alpha)."""  #482 (line num in coconut source)
-        return self.param(name, "paretovariate", alpha, **kwargs)  #483 (line num in coconut source)
+        return None  #451 (line num in coconut source)
+
+    _coconut_recursive_func_32 = plot_regret  #451 (line num in coconut source)
+
+    def randrange(self, name, *args, **kwargs):  #451 (line num in coconut source)
+        """Create a new parameter with the given name modeled by random.randrange(*args)."""  #452 (line num in coconut source)
+        return self.param(name, "randrange", *args, **kwargs)  #453 (line num in coconut source)
 
 
-    def weibullvariate(self, name, alpha, beta, **kwargs):  #485 (line num in coconut source)
-        """Create a new parameter with the given name modeled by random.weibullvariate(alpha, beta)."""  #486 (line num in coconut source)
-        return self.param(name, "weibullvariate", alpha, beta, **kwargs)  #487 (line num in coconut source)
+    def uniform(self, name, a, b, **kwargs):  #455 (line num in coconut source)
+        """Create a new parameter with the given name modeled by random.uniform(a, b)."""  #456 (line num in coconut source)
+        return self.param(name, "uniform", a, b, **kwargs)  #457 (line num in coconut source)
+
+
+    def triangular(self, name, low, high, mode, **kwargs):  #459 (line num in coconut source)
+        """Create a new parameter with the given name modeled by random.triangular(low, high, mode)."""  #460 (line num in coconut source)
+        return self.param(name, "triangular", low, high, mode, **kwargs)  #461 (line num in coconut source)
+
+
+    def betavariate(self, name, alpha, beta, **kwargs):  #463 (line num in coconut source)
+        """Create a new parameter with the given name modeled by random.betavariate(alpha, beta)."""  #464 (line num in coconut source)
+        return self.param(name, "betavariate", alpha, beta, **kwargs)  #465 (line num in coconut source)
+
+
+    def expovariate(self, name, lambd, **kwargs):  #467 (line num in coconut source)
+        """Create a new parameter with the given name modeled by random.expovariate(lambd)."""  #468 (line num in coconut source)
+        return self.param(name, "expovariate", lambd, **kwargs)  #469 (line num in coconut source)
+
+
+    def gammavariate(self, name, alpha, beta, **kwargs):  #471 (line num in coconut source)
+        """Create a new parameter with the given name modeled by random.gammavariate(alpha, beta)."""  #472 (line num in coconut source)
+        return self.param(name, "gammavariate", alpha, beta, **kwargs)  #473 (line num in coconut source)
+
+
+    def normalvariate(self, name, mu, sigma, **kwargs):  #475 (line num in coconut source)
+        """Create a new parameter with the given name modeled by random.gauss(mu, sigma)."""  #476 (line num in coconut source)
+        return self.param(name, "normalvariate", mu, sigma, **kwargs)  #477 (line num in coconut source)
+
+
+    def vonmisesvariate(self, name, kappa, **kwargs):  #479 (line num in coconut source)
+        """Create a new parameter with the given name modeled by random.vonmisesvariate(kappa)."""  #480 (line num in coconut source)
+        return self.param(name, "vonmisesvariate", kappa, **kwargs)  #481 (line num in coconut source)
+
+
+    def paretovariate(self, name, alpha, **kwargs):  #483 (line num in coconut source)
+        """Create a new parameter with the given name modeled by random.paretovariate(alpha)."""  #484 (line num in coconut source)
+        return self.param(name, "paretovariate", alpha, **kwargs)  #485 (line num in coconut source)
+
+
+    def weibullvariate(self, name, alpha, beta, **kwargs):  #487 (line num in coconut source)
+        """Create a new parameter with the given name modeled by random.weibullvariate(alpha, beta)."""  #488 (line num in coconut source)
+        return self.param(name, "weibullvariate", alpha, beta, **kwargs)  #489 (line num in coconut source)
 
 # Choice functions:
 
 
-    def _categorical(self, name, num_categories, **kwargs):  #491 (line num in coconut source)
-        """Create a new parameter with the given name modeled by random.choice(range(num_categories))."""  #492 (line num in coconut source)
-        return self.param(name, "choice", range(num_categories), **kwargs)  #493 (line num in coconut source)
+    def _categorical(self, name, num_categories, **kwargs):  #493 (line num in coconut source)
+        """Create a new parameter with the given name modeled by random.choice(range(num_categories))."""  #494 (line num in coconut source)
+        return self.param(name, "choice", range(num_categories), **kwargs)  #495 (line num in coconut source)
 
 
-    def choice(self, name, seq, **kwargs):  #495 (line num in coconut source)
-        """Create a new parameter with the given name modeled by random.choice(seq)."""  #496 (line num in coconut source)
-        if constants.use_generic_categories_for_categorical_data:  #497 (line num in coconut source)
-            (param_processor.modify_kwargs)(seq.index, kwargs)  #498 (line num in coconut source)
-            return seq[self._categorical(name, len(seq), **kwargs)]  #499 (line num in coconut source)
-        else:  #500 (line num in coconut source)
-            return self.param(name, "choice", seq, **kwargs)  #501 (line num in coconut source)
+    def choice(self, name, seq, **kwargs):  #497 (line num in coconut source)
+        """Create a new parameter with the given name modeled by random.choice(seq)."""  #498 (line num in coconut source)
+        if constants.use_generic_categories_for_categorical_data:  #499 (line num in coconut source)
+            (param_processor.modify_kwargs)(seq.index, kwargs)  #500 (line num in coconut source)
+            return seq[self._categorical(name, len(seq), **kwargs)]  #501 (line num in coconut source)
+        else:  #502 (line num in coconut source)
+            return self.param(name, "choice", seq, **kwargs)  #503 (line num in coconut source)
 
 # Derived random functions:
 
 
-    def randint(self, name, a, b, **kwargs):  #505 (line num in coconut source)
-        """Create a new parameter with the given name modeled by random.randint(a, b)."""  #506 (line num in coconut source)
-        start, stop = a, b - 1  #507 (line num in coconut source)
-        return self.randrange(name, start, stop, **kwargs)  #508 (line num in coconut source)
+    def randint(self, name, a, b, **kwargs):  #507 (line num in coconut source)
+        """Create a new parameter with the given name modeled by random.randint(a, b)."""  #508 (line num in coconut source)
+        start, stop = a, b - 1  #509 (line num in coconut source)
+        return self.randrange(name, start, stop, **kwargs)  #510 (line num in coconut source)
 
 
-    def random(self, name, **kwargs):  #510 (line num in coconut source)
+    def random(self, name, **kwargs):  #512 (line num in coconut source)
         """Create a new parameter with the given name modeled by random.random().
-        Equivalent to random.uniform(0, 1) except that 1 is disallowed."""  #512 (line num in coconut source)
-        result = self.uniform(name, 0, 1, **kwargs)  #513 (line num in coconut source)
-        if result >= 1:  #514 (line num in coconut source)
-            result -= sys.float_info.epsilon  #515 (line num in coconut source)
-        return result  #516 (line num in coconut source)
+        Equivalent to random.uniform(0, 1) except that 1 is disallowed."""  #514 (line num in coconut source)
+        result = self.uniform(name, 0, 1, **kwargs)  #515 (line num in coconut source)
+        if result >= 1:  #516 (line num in coconut source)
+            result -= sys.float_info.epsilon  #517 (line num in coconut source)
+        return result  #518 (line num in coconut source)
 
 
-    def getrandbits(self, name, k, **kwargs):  #518 (line num in coconut source)
-        """Create a new parameter with the given name modeled by random.getrandbits(k)."""  #519 (line num in coconut source)
-        stop = 2**k  #520 (line num in coconut source)
-        return self.randrange(name, stop, **kwargs)  #521 (line num in coconut source)
+    def getrandbits(self, name, k, **kwargs):  #520 (line num in coconut source)
+        """Create a new parameter with the given name modeled by random.getrandbits(k)."""  #521 (line num in coconut source)
+        stop = 2**k  #522 (line num in coconut source)
+        return self.randrange(name, stop, **kwargs)  #523 (line num in coconut source)
 
 
-    gauss = normalvariate  #523 (line num in coconut source)
+    gauss = normalvariate  #525 (line num in coconut source)
 
-    def loguniform(self, name, min_val, max_val, **kwargs):  #525 (line num in coconut source)
+    def loguniform(self, name, min_val, max_val, **kwargs):  #527 (line num in coconut source)
         """Create a new parameter with the given name modeled by
-        math.exp(random.uniform(math.log(min_val), math.log(max_val)))."""  #527 (line num in coconut source)
-        kwargs = (param_processor.modify_kwargs)(math.log, kwargs)  #528 (line num in coconut source)
-        log_a, log_b = math.log(min_val), math.log(max_val)  #529 (line num in coconut source)
-        return math.exp(self.uniform(name, log_a, log_b, **kwargs))  #530 (line num in coconut source)
+        math.exp(random.uniform(math.log(min_val), math.log(max_val)))."""  #529 (line num in coconut source)
+        kwargs = (param_processor.modify_kwargs)(math.log, kwargs)  #530 (line num in coconut source)
+        log_a, log_b = math.log(min_val), math.log(max_val)  #531 (line num in coconut source)
+        return math.exp(self.uniform(name, log_a, log_b, **kwargs))  #532 (line num in coconut source)
 
 
-    def lognormvariate(self, name, mu, sigma, **kwargs):  #532 (line num in coconut source)
-        """Create a new parameter with the given name modeled by random.lognormvariate(mu, sigma)."""  #533 (line num in coconut source)
-        kwargs = (param_processor.modify_kwargs)(math.log, kwargs)  #534 (line num in coconut source)
-        return math.exp(self.normalvariate(name, mu, sigma, **kwargs))  #535 (line num in coconut source)
+    def lognormvariate(self, name, mu, sigma, **kwargs):  #534 (line num in coconut source)
+        """Create a new parameter with the given name modeled by random.lognormvariate(mu, sigma)."""  #535 (line num in coconut source)
+        kwargs = (param_processor.modify_kwargs)(math.log, kwargs)  #536 (line num in coconut source)
+        return math.exp(self.normalvariate(name, mu, sigma, **kwargs))  #537 (line num in coconut source)
 
 
-    def randbool(self, name, **kwargs):  #537 (line num in coconut source)
-        """Create a new boolean parameter with the given name."""  #538 (line num in coconut source)
-        return bool(self.choice(name, [False, True], **kwargs))  #539 (line num in coconut source)
+    def randbool(self, name, **kwargs):  #539 (line num in coconut source)
+        """Create a new boolean parameter with the given name."""  #540 (line num in coconut source)
+        return bool(self.choice(name, [False, True], **kwargs))  #541 (line num in coconut source)
 
 
-    def sample(self, name, population, k, **kwargs):  #541 (line num in coconut source)
-        """Create a new parameter with the given name modeled by random.sample(population, k)."""  #542 (line num in coconut source)
-        if not isinstance(name, Str):  #543 (line num in coconut source)
-            raise TypeError("name must be string, not {_coconut_format_0}".format(_coconut_format_0=(name)))  #544 (line num in coconut source)
-        sampling_population = [x for x in population]  #545 (line num in coconut source)
-        sample = []  #546 (line num in coconut source)
-        for i in range(k):  #547 (line num in coconut source)
-            if len(sampling_population) <= 1:  #548 (line num in coconut source)
-                sample.append(sampling_population[0])  #549 (line num in coconut source)
-            else:  #550 (line num in coconut source)
-                def _coconut_lambda_1(val):  #551 (line num in coconut source)
-                    elem = _coconut_iter_getitem(val, i)  #551 (line num in coconut source)
-                    return sampling_population.index(elem) if elem in sampling_population else 0  #551 (line num in coconut source)
-                proc_kwargs = (param_processor.modify_kwargs)(_coconut_lambda_1, kwargs)  #551 (line num in coconut source)
-                ind = self.randrange("{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(i)), len(sampling_population), **proc_kwargs)  #556 (line num in coconut source)
-                sample.append(sampling_population.pop(ind))  #557 (line num in coconut source)
-        return sample  #558 (line num in coconut source)
+    def sample(self, name, population, k, **kwargs):  #543 (line num in coconut source)
+        """Create a new parameter with the given name modeled by random.sample(population, k)."""  #544 (line num in coconut source)
+        if not isinstance(name, Str):  #545 (line num in coconut source)
+            raise TypeError("name must be string, not {_coconut_format_0}".format(_coconut_format_0=(name)))  #546 (line num in coconut source)
+        sampling_population = [x for x in population]  #547 (line num in coconut source)
+        sample = []  #548 (line num in coconut source)
+        for i in range(k):  #549 (line num in coconut source)
+            if len(sampling_population) <= 1:  #550 (line num in coconut source)
+                sample.append(sampling_population[0])  #551 (line num in coconut source)
+            else:  #552 (line num in coconut source)
+                def _coconut_lambda_1(val):  #553 (line num in coconut source)
+                    elem = _coconut_iter_getitem(val, i)  #553 (line num in coconut source)
+                    return sampling_population.index(elem) if elem in sampling_population else 0  #553 (line num in coconut source)
+                proc_kwargs = (param_processor.modify_kwargs)(_coconut_lambda_1, kwargs)  #553 (line num in coconut source)
+                ind = self.randrange("{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(i)), len(sampling_population), **proc_kwargs)  #558 (line num in coconut source)
+                sample.append(sampling_population.pop(ind))  #559 (line num in coconut source)
+        return sample  #560 (line num in coconut source)
 
 
-    def samples_with_replacement(self, name, population, **kwargs):  #560 (line num in coconut source)
-        """An infinite iterator of samples with replacement from population."""  #561 (line num in coconut source)
-        if not isinstance(name, Str):  #562 (line num in coconut source)
-            raise TypeError("name must be string, not {_coconut_format_0}".format(_coconut_format_0=(name)))  #563 (line num in coconut source)
-        sampling_population = tuple(population)  #564 (line num in coconut source)
-        for i in count():  #565 (line num in coconut source)
-            yield self.choice("{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(i)), sampling_population, **kwargs)  #566 (line num in coconut source)
+    def samples_with_replacement(self, name, population, **kwargs):  #562 (line num in coconut source)
+        """An infinite iterator of samples with replacement from population."""  #563 (line num in coconut source)
+        if not isinstance(name, Str):  #564 (line num in coconut source)
+            raise TypeError("name must be string, not {_coconut_format_0}".format(_coconut_format_0=(name)))  #565 (line num in coconut source)
+        sampling_population = tuple(population)  #566 (line num in coconut source)
+        for i in count():  #567 (line num in coconut source)
+            yield self.choice("{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(i)), sampling_population, **kwargs)  #568 (line num in coconut source)
 
 
-    def shuffled(self, name, population, **kwargs):  #568 (line num in coconut source)
+    def shuffled(self, name, population, **kwargs):  #570 (line num in coconut source)
         """Create a new parameter with the given name modeled by
-        random.shuffle(population) except returned instead of modified in place."""  #570 (line num in coconut source)
-        return self.sample(name, population, len(population), **kwargs)  #571 (line num in coconut source)
+        random.shuffle(population) except returned instead of modified in place."""  #572 (line num in coconut source)
+        return self.sample(name, population, len(population), **kwargs)  #573 (line num in coconut source)
 
 
-    def shuffle(self, name, population, **kwargs):  #573 (line num in coconut source)
-        """Create a new parameter with the given name modeled by random.shuffle(population)."""  #574 (line num in coconut source)
-        population[:] = self.shuffled(name, population, **kwargs)  #575 (line num in coconut source)
+    def shuffle(self, name, population, **kwargs):  #575 (line num in coconut source)
+        """Create a new parameter with the given name modeled by random.shuffle(population)."""  #576 (line num in coconut source)
+        population[:] = self.shuffled(name, population, **kwargs)  #577 (line num in coconut source)
 
 
-    def stdnormal(self, name, **kwargs):  #577 (line num in coconut source)
-        """Equivalent to bb.normalvariate(name, 0, 1)."""  #578 (line num in coconut source)
-        return self.normalvariate(name, 0, 1, **kwargs)  #579 (line num in coconut source)
+    def stdnormal(self, name, **kwargs):  #579 (line num in coconut source)
+        """Equivalent to bb.normalvariate(name, 0, 1)."""  #580 (line num in coconut source)
+        return self.normalvariate(name, 0, 1, **kwargs)  #581 (line num in coconut source)
 
 # Array-based random functions:
 
 
-    def rand(self, name, *shape, **kwargs):  #583 (line num in coconut source)
-        """Create a new array parameter for the given name and shape modeled by np.random.rand."""  #584 (line num in coconut source)
-        return array_param(self.random, name, shape, kwargs)  #585 (line num in coconut source)
+    def rand(self, name, *shape, **kwargs):  #585 (line num in coconut source)
+        """Create a new array parameter for the given name and shape modeled by np.random.rand."""  #586 (line num in coconut source)
+        return array_param(self.random, name, shape, kwargs)  #587 (line num in coconut source)
 
 
-    def randn(self, name, *shape, **kwargs):  #587 (line num in coconut source)
-        """Create a new array parameter for the given name and shape modeled by np.random.randn."""  #588 (line num in coconut source)
-        return array_param(self.stdnormal, name, shape, kwargs)  #589 (line num in coconut source)
+    def randn(self, name, *shape, **kwargs):  #589 (line num in coconut source)
+        """Create a new array parameter for the given name and shape modeled by np.random.randn."""  #590 (line num in coconut source)
+        return array_param(self.stdnormal, name, shape, kwargs)  #591 (line num in coconut source)
 
 
-_coconut_call_set_names(BlackBoxOptimizer)  #591 (line num in coconut source)
+_coconut_call_set_names(BlackBoxOptimizer)  #593 (line num in coconut source)

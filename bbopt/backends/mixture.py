@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xebbf7b34
+# __coconut_hash__ = 0x2de03025
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -117,70 +117,68 @@ class MixtureBackend(Backend):  #18 (line num in coconut source)
 
     def use_distribution(self, distribution, force=False):  #41 (line num in coconut source)
         """Set the distribution to the given distribution."""  #42 (line num in coconut source)
-        distribution = tuple(((alg, (constants.eps_greedy_explore_prob / (1 - constants.eps_greedy_explore_prob) if weight == "eps_over_one_minus_eps" else weight)) for alg, weight in distribution))  #43 (line num in coconut source)
+        distribution = tuple(((alg, weight() if callable(weight) else weight) for alg, weight in distribution))  #43 (line num in coconut source)
 
-        if force or distribution != self.distribution:  #54 (line num in coconut source)
-            self.cum_probs = get_cum_probs_for(distribution)  #55 (line num in coconut source)
-            self.distribution = distribution  #56 (line num in coconut source)
+        if force or distribution != self.distribution:  #48 (line num in coconut source)
+            self.cum_probs = get_cum_probs_for(distribution)  #49 (line num in coconut source)
+            self.distribution = distribution  #50 (line num in coconut source)
 
 
-    def select_new_backend(self):  #58 (line num in coconut source)
-        """Randomly select a new backend."""  #59 (line num in coconut source)
+    def select_new_backend(self):  #52 (line num in coconut source)
+        """Randomly select a new backend."""  #53 (line num in coconut source)
 # randomly select algorithm
-        self.selected_alg = random_from_cum_probs(self.cum_probs)  #61 (line num in coconut source)
-        if self.selected_alg is None:  #62 (line num in coconut source)
-            raise ValueError("could not select backend from distribution: {_coconut_format_0}".format(_coconut_format_0=(self.distribution)))  #63 (line num in coconut source)
+        self.selected_alg = random_from_cum_probs(self.cum_probs)  #55 (line num in coconut source)
+        if self.selected_alg is None:  #56 (line num in coconut source)
+            raise ValueError("could not select backend from distribution: {_coconut_format_0}".format(_coconut_format_0=(self.distribution)))  #57 (line num in coconut source)
 
 # initialize backend
-        self.selected_backend, options = alg_registry[self.selected_alg]  #66 (line num in coconut source)
-        try:  #67 (line num in coconut source)
-            self.current_backend = get_backend(self.backend_store, self.selected_backend, self.examples, self.params, **options)  #68 (line num in coconut source)
-        except constants.erroring_backend_errs:  #75 (line num in coconut source)
-            if not self.remove_erroring_algs:  #76 (line num in coconut source)
-                raise  #77 (line num in coconut source)
-            self.reselect_backend()  #78 (line num in coconut source)
+        self.selected_backend, options = alg_registry[self.selected_alg]  #60 (line num in coconut source)
+        try:  #61 (line num in coconut source)
+            self.current_backend = get_backend(self.backend_store, self.selected_backend, self.examples, self.params, **options)  #62 (line num in coconut source)
+        except constants.erroring_backend_errs:  #69 (line num in coconut source)
+            if not self.remove_erroring_algs:  #70 (line num in coconut source)
+                raise  #71 (line num in coconut source)
+            self.reselect_backend()  #72 (line num in coconut source)
 
 
-    def reselect_backend(self):  #80 (line num in coconut source)
-        """Choose a new backend when the current one errors."""  #81 (line num in coconut source)
-        new_distribution = []  #82 (line num in coconut source)
-        for alg, weight in self.distribution:  #83 (line num in coconut source)
-            if alg != self.selected_alg:  #84 (line num in coconut source)
-                new_distribution.append((alg, weight))  #85 (line num in coconut source)
-        self.cum_probs = get_cum_probs_for(new_distribution)  #86 (line num in coconut source)
-        self.select_new_backend()  #87 (line num in coconut source)
+    def reselect_backend(self):  #74 (line num in coconut source)
+        """Choose a new backend when the current one errors."""  #75 (line num in coconut source)
+        new_distribution = []  #76 (line num in coconut source)
+        for alg, weight in self.distribution:  #77 (line num in coconut source)
+            if alg != self.selected_alg:  #78 (line num in coconut source)
+                new_distribution.append((alg, weight))  #79 (line num in coconut source)
+        self.cum_probs = get_cum_probs_for(new_distribution)  #80 (line num in coconut source)
+        self.select_new_backend()  #81 (line num in coconut source)
 
 
-    @override  #89 (line num in coconut source)
-    def param(self, name, func, *args, **kwargs):  #90 (line num in coconut source)
-        """Defer parameter selection to the selected backend."""  #91 (line num in coconut source)
-        try:  #92 (line num in coconut source)
-            return self.current_backend.param(name, func, *args, **kwargs)  #93 (line num in coconut source)
-        except constants.erroring_backend_errs:  #94 (line num in coconut source)
-            if not self.remove_erroring_algs:  #95 (line num in coconut source)
-                raise  #96 (line num in coconut source)
-            self.reselect_backend()  #97 (line num in coconut source)
-        return self.param(name, func, *args, **kwargs)  #98 (line num in coconut source)
+    @override  #83 (line num in coconut source)
+    def param(self, name, func, *args, **kwargs):  #84 (line num in coconut source)
+        """Defer parameter selection to the selected backend."""  #85 (line num in coconut source)
+        try:  #86 (line num in coconut source)
+            return self.current_backend.param(name, func, *args, **kwargs)  #87 (line num in coconut source)
+        except constants.erroring_backend_errs:  #88 (line num in coconut source)
+            if not self.remove_erroring_algs:  #89 (line num in coconut source)
+                raise  #90 (line num in coconut source)
+            self.reselect_backend()  #91 (line num in coconut source)
+        return self.param(name, func, *args, **kwargs)  #92 (line num in coconut source)
 
 
-    @classmethod  #100 (line num in coconut source)
-    def register_safe_alg_for(cls, base_alg, new_alg_name=None, fallback_alg=None):  #101 (line num in coconut source)
-        """Register a version of base_alg that defaults to the fallback if base_alg fails."""  #102 (line num in coconut source)
-        if new_alg_name is None:  #103 (line num in coconut source)
-            new_alg_name = "safe_" + base_alg  #104 (line num in coconut source)
-        if fallback_alg is None:  #105 (line num in coconut source)
-            fallback_alg = constants.safe_fallback_alg  #106 (line num in coconut source)
-        cls.register_alg(new_alg_name, distribution=((base_alg, float("inf")), (fallback_alg, 1)), remove_erroring_algs=True)  #107 (line num in coconut source)
+    @classmethod  #94 (line num in coconut source)
+    def register_safe_alg_for(cls, base_alg, new_alg_name=None, fallback_alg=None):  #95 (line num in coconut source)
+        """Register a version of base_alg that defaults to the fallback if base_alg fails."""  #96 (line num in coconut source)
+        if new_alg_name is None:  #97 (line num in coconut source)
+            new_alg_name = "safe_" + base_alg  #98 (line num in coconut source)
+        if fallback_alg is None:  #99 (line num in coconut source)
+            fallback_alg = constants.safe_fallback_alg  #100 (line num in coconut source)
+        cls.register_alg(new_alg_name, distribution=((base_alg, float("inf")), (fallback_alg, 1)), remove_erroring_algs=True)  #101 (line num in coconut source)
 
 
-    @classmethod  #116 (line num in coconut source)
-    def register_epsilon_exploration_alg_for(cls, base_alg, new_alg_name=None, eps=None):  #117 (line num in coconut source)
-        """Register a version of base_alg with epsilon greedy exploration."""  #118 (line num in coconut source)
-        if new_alg_name is None:  #119 (line num in coconut source)
-            new_alg_name = base_alg + "_epsilon_exploration"  #120 (line num in coconut source)
-        if eps is None:  #121 (line num in coconut source)
-            eps = constants.eps_greedy_explore_prob  #122 (line num in coconut source)
-        cls.register_alg(new_alg_name, distribution=((base_alg, 1), ("random", "eps_over_one_minus_eps")))  #123 (line num in coconut source)
+    @classmethod  #110 (line num in coconut source)
+    def register_epsilon_exploration_alg_for(cls, base_alg, new_alg_name=None, eps=None):  #111 (line num in coconut source)
+        """Register a version of base_alg with epsilon greedy exploration."""  #112 (line num in coconut source)
+        if new_alg_name is None:  #113 (line num in coconut source)
+            new_alg_name = "epsilon_" + base_alg  #114 (line num in coconut source)
+        cls.register_alg(new_alg_name, distribution=((base_alg, lambda _=None: 1 - ((constants.eps_greedy_explore_prob if eps is None else eps))), ("random", lambda _=None: (constants.eps_greedy_explore_prob if eps is None else eps))))  #115 (line num in coconut source)
 
 
 
@@ -188,13 +186,12 @@ class MixtureBackend(Backend):  #18 (line num in coconut source)
 # Registered names:
 
 
-_coconut_call_set_names(MixtureBackend)  #146 (line num in coconut source)
-MixtureBackend.register()  #146 (line num in coconut source)
+_coconut_call_set_names(MixtureBackend)  #130 (line num in coconut source)
+MixtureBackend.register()  #130 (line num in coconut source)
 
-MixtureBackend.register_epsilon_exploration_alg_for("max_greedy", new_alg_name="epsilon_max_greedy")  #148 (line num in coconut source)
-MixtureBackend.register_epsilon_exploration_alg_for("openai")  #149 (line num in coconut source)
+MixtureBackend.register_epsilon_exploration_alg_for("max_greedy")  #132 (line num in coconut source)
 
-MixtureBackend.register_safe_alg_for("gaussian_process")  #151 (line num in coconut source)
-MixtureBackend.register_safe_alg_for("random_forest")  #152 (line num in coconut source)
-MixtureBackend.register_safe_alg_for("extra_trees")  #153 (line num in coconut source)
-MixtureBackend.register_safe_alg_for("gradient_boosted_regression_trees")  #154 (line num in coconut source)
+MixtureBackend.register_safe_alg_for("gaussian_process")  #134 (line num in coconut source)
+MixtureBackend.register_safe_alg_for("random_forest")  #135 (line num in coconut source)
+MixtureBackend.register_safe_alg_for("extra_trees")  #136 (line num in coconut source)
+MixtureBackend.register_safe_alg_for("gradient_boosted_regression_trees")  #137 (line num in coconut source)

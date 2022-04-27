@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa087b07f
+# __coconut_hash__ = 0x3e47557b
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -241,3 +241,5 @@ class OpenAIBackend(StandardBackend):  #101 (line num in coconut source)
 _coconut_call_set_names(OpenAIBackend)  #236 (line num in coconut source)
 OpenAIBackend.register()  #236 (line num in coconut source)
 OpenAIBackend.register_alg("openai")  #237 (line num in coconut source)
+
+OpenAIBackend.register_meta("smart_openai", ("openai", "tree_structured_parzen_estimator", "safe_gaussian_process"))  #239 (line num in coconut source)

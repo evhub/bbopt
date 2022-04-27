@@ -164,13 +164,13 @@ class BlackBoxOptimizer:
             |> df.write)
         sync_file(df)
 
-    def _get_backend(self, backend, *args, **options) =
+    match def _get_backend(self, backend, *args, _in_meta_run=False, **options) =
         """Get the given backend, attempting to load from stored backends."""
         get_backend(
             self._backend_store,
             backend,
             self._examples,
-            self._old_params,
+            self._old_params if not _in_meta_run else {name: param for name, param in self._old_params.items() if name != constants.meta_opt_alg_var},
             *args,
             _current_backend=self.backend,
             _on_new_backend=(def backend -> self._backend_creation_counts[type(backend)] += 1),
@@ -254,9 +254,11 @@ class BlackBoxOptimizer:
         self._current_example = {"values": {}}
 
     @property
-    def algs(self) =
+    def algs(self):
         """All algorithms supported by run."""
-        alg_registry.asdict()
+        algs = alg_registry.asdict()
+        algs.update(meta_registry.asdict())
+        return algs
 
     def run(self, alg=constants.default_alg_sentinel):
         """Optimize parameters using the given algorithm
@@ -277,7 +279,7 @@ class BlackBoxOptimizer:
         self.run(meta_alg)
         alg = self.choice(constants.meta_opt_alg_var, algs)
         backend, options = alg_registry[alg]
-        self.backend = self._get_backend(backend, **options)
+        self.backend = self._get_backend(backend, _in_meta_run=True, **options)
 
     def remember(self, info):
         """Store a dictionary of information about the current run."""

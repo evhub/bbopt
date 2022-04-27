@@ -174,12 +174,6 @@ Start optimizing using the given black box optimization algorithm. Use **algs** 
 
 If this method is never called, or called with `alg="serving"`, BBopt will just serve the best parameters found so far, which is how the basic boilerplate works. Note that, if no saved parameter data is found, and a _guess_ is present, BBopt will use that, which is a good way of distributing your parameter values without including all your saved parameter data.
 
-In addition to supporting all algorithms in **algs**, **run** also supports the following pseudo-algorithms which defer to **run_meta**:
-- `"any_fast"` (same as calling **run_meta** with a suite of algorithms selected for their speed except that some algorithms are ignored if unsupported parameter definition functions are used, e.g. `normalvariate` for `scikit-optimize`) (used if **run** is called with no args)
-- `"any_hyperopt"` (equivalent to calling **run_meta** with all `hyperopt` algorithms)
-- `"any_skopt"` (equivalent to calling **run_meta** with all `scikit-optimize` algorithms)
-- `"any_pysot"` (equivalent to calling **run_meta** with all `pySOT` algorithms)
-
 #### `algs`
 
 BlackBoxOptimizer.**algs**
@@ -211,6 +205,12 @@ Supported algorithms are:
 - `"openai"` (`openai` backend)
 
 Additionally, there are also some algorithms of the form `safe_<other_alg>` which use `mixture` to defer to `<other_alg>` if `<other_alg>` supports the parameter definition functions you're using, otherwise default to a suitable replacement.
+
+**algs** also includes the following pseudo-algorithms which defer to **run_meta**:
+- `"any_fast"` (same as calling **run_meta** with a suite of algorithms selected for their speed except that some algorithms are ignored if unsupported parameter definition functions are used, e.g. `normalvariate` for `scikit-optimize`) (used if **run** is called with no args)
+- `"any_hyperopt"` (equivalent to calling **run_meta** with all `hyperopt` algorithms)
+- `"any_skopt"` (equivalent to calling **run_meta** with all `scikit-optimize` algorithms)
+- `"any_pysot"` (equivalent to calling **run_meta** with all `pySOT` algorithms)
 
 _Note: The `bayes-skopt` backend is only available on Python 3.7+ and the `pySOT` and `openai` backends are only available on Python 3+._
 

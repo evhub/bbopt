@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xfa9fda7a
+# __coconut_hash__ = 0x29e50a71
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -132,7 +132,7 @@ OPT_FUNCS.append(cond_gain_func)  #87 (line num in coconut source)
 
 # Main
 
-def benchmark(algs, plot_func="plot_history", n=50):  #92 (line num in coconut source)
+def benchmark(algs, plot_func="plot_convergence", n=50):  #92 (line num in coconut source)
     figsize = (int)((math.ceil)((math.sqrt)(len(OPT_FUNCS))))  #93 (line num in coconut source)
     fig, axs = plt.subplots(figsize, figsize)  #94 (line num in coconut source)
     for i, func in enumerate(OPT_FUNCS):  #95 (line num in coconut source)
@@ -152,4 +152,4 @@ def benchmark(algs, plot_func="plot_history", n=50):  #92 (line num in coconut s
 
 
 if __name__ == "__main__":  #110 (line num in coconut source)
-    benchmark(("any_fast", "tpe_or_gp", "openai_epsilon_exploration"))  #111 (line num in coconut source)
+    benchmark(("any_fast", "tpe_or_gp", "tree_structured_parzen_estimator", "safe_gaussian_process", "safe_random_forest", "safe_extra_trees", "safe_gradient_boosted_regression_trees"))  #111 (line num in coconut source)
