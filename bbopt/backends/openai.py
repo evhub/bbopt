@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xc4bb298e
+# __coconut_hash__ = 0xa087b07f
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -79,7 +79,7 @@ def get_completion_len(data_points):  #73 (line num in coconut source)
 
 def to_python(completion, params):  #81 (line num in coconut source)
     """Convert a completion to Python code as best as possible."""  #82 (line num in coconut source)
-    completion = completion.strip("(),")  #83 (line num in coconut source)
+    completion = completion.strip("(,")  #83 (line num in coconut source)
     for repl, to in _coconut.itertools.chain.from_iterable(_coconut_reiterable(_coconut_func() for _coconut_func in (lambda: (("\u2212", "-"), ("\u2018", "'"), ("\u2019", "'"), ("\u201c", '"'), ("\u201d", '"')), lambda: (("{_coconut_format_0}=".format(_coconut_format_0=(name)), "") for name in params), lambda: (("{_coconut_format_0}:".format(_coconut_format_0=(name)), "") for name in params)))):  #84 (line num in coconut source)
         completion = completion.replace(repl, to)  #95 (line num in coconut source)
     return completion  #96 (line num in coconut source)
@@ -230,7 +230,7 @@ class OpenAIBackend(StandardBackend):  #101 (line num in coconut source)
         values = dict(((name), (val)) for name, val in zip(self.params, legal_values))  #226 (line num in coconut source)
         if values in self.data_points:  #227 (line num in coconut source)
             if self.debug:  #228 (line num in coconut source)
-                print("ERROR: OpenAI API generated duplicate value")  #229 (line num in coconut source)
+                print("ERROR: got duplicate point: {_coconut_format_0!r}".format(_coconut_format_0=(legal_values)))  #229 (line num in coconut source)
             return self.retry_get_values(temp=self.temp + (constants.openai_max_temp - self.temp) / 2)  #230 (line num in coconut source)
         return values  #231 (line num in coconut source)
 

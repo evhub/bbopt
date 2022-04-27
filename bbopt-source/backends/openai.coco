@@ -80,7 +80,7 @@ def get_completion_len(data_points) =
 
 def to_python(completion, params):
     """Convert a completion to Python code as best as possible."""
-    completion = completion.strip("(),")
+    completion = completion.strip("(,")
     for repl, to in (
         ("\u2212", "-"),
         ("\u2018", "'"),
@@ -226,7 +226,7 @@ class OpenAIBackend(StandardBackend):
         values = {name: val for name, val in zip(self.params, legal_values)}
         if values in self.data_points:
             if self.debug:
-                print("ERROR: OpenAI API generated duplicate value")
+                print(f"ERROR: got duplicate point: {legal_values!r}")
             return self.retry_get_values(temp=self.temp + (constants.openai_max_temp - self.temp) / 2)
         return values
 
