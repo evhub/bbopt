@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf021969f
+# __coconut_hash__ = 0x90a21ce1
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 

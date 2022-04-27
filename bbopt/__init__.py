@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x8609abf4
+# __coconut_hash__ = 0xa2e0334a
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -52,5 +52,5 @@ _coconut_sys.path.pop(0)
 
 
 
-from bbopt.backends import *  # register backends
-from bbopt.optimizer import *  # make optimizer available
+from bbopt.backends import *  # register backends  #18 (line num in coconut source)
+from bbopt.optimizer import *  # make optimizer available  #19 (line num in coconut source)

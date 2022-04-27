@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xea18149f
+# __coconut_hash__ = 0x6cd4599a
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -33,45 +33,45 @@ _coconut_sys.path.pop(0)
 
 # Compiled Coconut: -----------------------------------------------------------
 
-import unittest
+import unittest  #1 (line num in coconut source)
 
-from bbopt import constants
+from bbopt import constants  #3 (line num in coconut source)
 
 
 # Utilities:
 
-def is_hashable(obj):
-    """Determine if obj is hashable."""
-    try:
-        hash(obj)
-    except Exception:
-        return False
-    else:
-        return True
+def is_hashable(obj):  #8 (line num in coconut source)
+    """Determine if obj is hashable."""  #9 (line num in coconut source)
+    try:  #10 (line num in coconut source)
+        hash(obj)  #11 (line num in coconut source)
+    except Exception:  #12 (line num in coconut source)
+        return False  #13 (line num in coconut source)
+    else:  #14 (line num in coconut source)
+        return True  #15 (line num in coconut source)
 
 
 
-def assert_dict_or_callable_or_hashable(name, obj):
-    """Assert obj is hashable, or for dicts apply recursively to values."""
-    if isinstance(obj, dict):
-        for val in obj.values():
-            assert_dict_or_callable_or_hashable(name, val)
-    elif not callable(obj):
-        assert is_hashable(obj), "Constant " + name + " contains unhashable values"
+def assert_dict_or_callable_or_hashable(name, obj):  #18 (line num in coconut source)
+    """Assert obj is hashable, or for dicts apply recursively to values."""  #19 (line num in coconut source)
+    if isinstance(obj, dict):  #20 (line num in coconut source)
+        for val in obj.values():  #21 (line num in coconut source)
+            assert_dict_or_callable_or_hashable(name, val)  #22 (line num in coconut source)
+    elif not callable(obj):  #23 (line num in coconut source)
+        assert is_hashable(obj), "Constant " + name + " contains unhashable values"  #24 (line num in coconut source)
 
 
 # Tests:
 
 
-class TestConstants(unittest.TestCase):
+class TestConstants(unittest.TestCase):  #29 (line num in coconut source)
 
-    def test_immutable(self):
-        for name, value in vars(constants).items():
-            if not name.startswith("__"):
-                assert not isinstance(value, list), "Constant " + name + " should be tuple, not list"
-                assert not isinstance(value, set), "Constant " + name + " should be frozenset, not set"
-                if "sentinel" not in name.lower():
-                    assert_dict_or_callable_or_hashable(name, value)
+    def test_immutable(self):  #31 (line num in coconut source)
+        for name, value in vars(constants).items():  #32 (line num in coconut source)
+            if not name.startswith("__"):  #33 (line num in coconut source)
+                assert not isinstance(value, list), "Constant " + name + " should be tuple, not list"  #34 (line num in coconut source)
+                assert not isinstance(value, set), "Constant " + name + " should be frozenset, not set"  #35 (line num in coconut source)
+                if "sentinel" not in name.lower():  #36 (line num in coconut source)
+                    assert_dict_or_callable_or_hashable(name, value)  #37 (line num in coconut source)
 
 
-_coconut_call_set_names(TestConstants)
+_coconut_call_set_names(TestConstants)  #38 (line num in coconut source)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd8eb3a17
+# __coconut_hash__ = 0xebbf7b34
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -39,148 +39,148 @@ _coconut_sys.path.pop(0)
 
 
 
-from bbopt import constants
-from bbopt.util import convert_match_errors
-from bbopt.registry import alg_registry
-from bbopt.backends.util import Backend
-from bbopt.backends.util import get_backend
-from bbopt.backends.util import get_cum_probs_for
-from bbopt.backends.util import random_from_cum_probs
+from bbopt import constants  #5 (line num in coconut source)
+from bbopt.util import convert_match_errors  #6 (line num in coconut source)
+from bbopt.registry import alg_registry  #7 (line num in coconut source)
+from bbopt.backends.util import Backend  #8 (line num in coconut source)
+from bbopt.backends.util import get_backend  #8 (line num in coconut source)
+from bbopt.backends.util import get_cum_probs_for  #8 (line num in coconut source)
+from bbopt.backends.util import random_from_cum_probs  #8 (line num in coconut source)
 
 
 # Backend:
 
-class MixtureBackend(Backend):
+class MixtureBackend(Backend):  #18 (line num in coconut source)
     """Mixture backend. Takes in a distribution over different possible algorithms
     of the form [(algorithm, weight)]. The properties selected_alg and selected_backend
-    can be used to retrieve which alg/backend is currently being used."""
+    can be used to retrieve which alg/backend is currently being used."""  #21 (line num in coconut source)
 
-    backend_name = "mixture"
-    request_backend_store = True
-    remove_erroring_algs = None
+    backend_name = "mixture"  #23 (line num in coconut source)
+    request_backend_store = True  #24 (line num in coconut source)
+    remove_erroring_algs = None  #25 (line num in coconut source)
 
-    @override
-    @convert_match_errors
-    @_coconut_mark_as_match
-    def attempt_update(*_coconut_match_args, **_coconut_match_kwargs):
-        """Special method that allows fast updating of the backend."""
-        _coconut_match_check_0 = False
-        _coconut_match_set_name_self = _coconut_sentinel
-        _coconut_match_set_name_examples = _coconut_sentinel
-        _coconut_match_set_name_params = _coconut_sentinel
-        _coconut_match_set_name_distribution = _coconut_sentinel
-        _coconut_match_set_name_remove_erroring_algs = _coconut_sentinel
-        _coconut_match_set_name__backend_store = _coconut_sentinel
-        _coconut_FunctionMatchError = _coconut_get_function_match_error()
-        if (_coconut.len(_coconut_match_args) <= 5) and (_coconut.sum((_coconut.len(_coconut_match_args) > 0, "self" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 1, "examples" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 2, "params" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 3, "distribution" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 4, "remove_erroring_algs" in _coconut_match_kwargs)) <= 1):
-            _coconut_match_temp_5 = _coconut_match_kwargs.pop("_backend_store") if "_backend_store" in _coconut_match_kwargs else _coconut_sentinel
-            if _coconut_match_temp_5 is not _coconut_sentinel:
-                _coconut_match_temp_0 = _coconut_match_args[0] if _coconut.len(_coconut_match_args) > 0 else _coconut_match_kwargs.pop("self")
-                _coconut_match_temp_1 = _coconut_match_args[1] if _coconut.len(_coconut_match_args) > 1 else _coconut_match_kwargs.pop("examples")
-                _coconut_match_temp_2 = _coconut_match_args[2] if _coconut.len(_coconut_match_args) > 2 else _coconut_match_kwargs.pop("params")
-                _coconut_match_temp_3 = _coconut_match_args[3] if _coconut.len(_coconut_match_args) > 3 else _coconut_match_kwargs.pop("distribution")
-                _coconut_match_temp_4 = _coconut_match_args[4] if _coconut.len(_coconut_match_args) > 4 else _coconut_match_kwargs.pop("remove_erroring_algs") if "remove_erroring_algs" in _coconut_match_kwargs else False
-                _coconut_match_set_name__backend_store = _coconut_match_temp_5
-                _coconut_match_set_name_self = _coconut_match_temp_0
-                _coconut_match_set_name_examples = _coconut_match_temp_1
-                _coconut_match_set_name_params = _coconut_match_temp_2
-                _coconut_match_set_name_distribution = _coconut_match_temp_3
-                _coconut_match_set_name_remove_erroring_algs = _coconut_match_temp_4
-                if not _coconut_match_kwargs:
-                    _coconut_match_check_0 = True
-        if _coconut_match_check_0:
-            if _coconut_match_set_name_self is not _coconut_sentinel:
-                self = _coconut_match_set_name_self
-            if _coconut_match_set_name_examples is not _coconut_sentinel:
-                examples = _coconut_match_set_name_examples
-            if _coconut_match_set_name_params is not _coconut_sentinel:
-                params = _coconut_match_set_name_params
-            if _coconut_match_set_name_distribution is not _coconut_sentinel:
-                distribution = _coconut_match_set_name_distribution
-            if _coconut_match_set_name_remove_erroring_algs is not _coconut_sentinel:
-                remove_erroring_algs = _coconut_match_set_name_remove_erroring_algs
-            if _coconut_match_set_name__backend_store is not _coconut_sentinel:
-                _backend_store = _coconut_match_set_name__backend_store
-        if not _coconut_match_check_0:
-            raise _coconut_FunctionMatchError('match def attempt_update(self, examples, params, distribution, remove_erroring_algs=False, *, _backend_store):', _coconut_match_args)
+    @override  #27 (line num in coconut source)
+    @convert_match_errors  #28 (line num in coconut source)
+    @_coconut_mark_as_match  #29 (line num in coconut source)
+    def attempt_update(*_coconut_match_args, **_coconut_match_kwargs):  #29 (line num in coconut source)
+        """Special method that allows fast updating of the backend."""  #30 (line num in coconut source)
+        _coconut_match_check_0 = False  #31 (line num in coconut source)
+        _coconut_match_set_name_self = _coconut_sentinel  #31 (line num in coconut source)
+        _coconut_match_set_name_examples = _coconut_sentinel  #31 (line num in coconut source)
+        _coconut_match_set_name_params = _coconut_sentinel  #31 (line num in coconut source)
+        _coconut_match_set_name_distribution = _coconut_sentinel  #31 (line num in coconut source)
+        _coconut_match_set_name_remove_erroring_algs = _coconut_sentinel  #31 (line num in coconut source)
+        _coconut_match_set_name__backend_store = _coconut_sentinel  #31 (line num in coconut source)
+        _coconut_FunctionMatchError = _coconut_get_function_match_error()  #31 (line num in coconut source)
+        if (_coconut.len(_coconut_match_args) <= 5) and (_coconut.sum((_coconut.len(_coconut_match_args) > 0, "self" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 1, "examples" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 2, "params" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 3, "distribution" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 4, "remove_erroring_algs" in _coconut_match_kwargs)) <= 1):  #31 (line num in coconut source)
+            _coconut_match_temp_5 = _coconut_match_kwargs.pop("_backend_store") if "_backend_store" in _coconut_match_kwargs else _coconut_sentinel  #31 (line num in coconut source)
+            if _coconut_match_temp_5 is not _coconut_sentinel:  #31 (line num in coconut source)
+                _coconut_match_temp_0 = _coconut_match_args[0] if _coconut.len(_coconut_match_args) > 0 else _coconut_match_kwargs.pop("self")  #31 (line num in coconut source)
+                _coconut_match_temp_1 = _coconut_match_args[1] if _coconut.len(_coconut_match_args) > 1 else _coconut_match_kwargs.pop("examples")  #31 (line num in coconut source)
+                _coconut_match_temp_2 = _coconut_match_args[2] if _coconut.len(_coconut_match_args) > 2 else _coconut_match_kwargs.pop("params")  #31 (line num in coconut source)
+                _coconut_match_temp_3 = _coconut_match_args[3] if _coconut.len(_coconut_match_args) > 3 else _coconut_match_kwargs.pop("distribution")  #31 (line num in coconut source)
+                _coconut_match_temp_4 = _coconut_match_args[4] if _coconut.len(_coconut_match_args) > 4 else _coconut_match_kwargs.pop("remove_erroring_algs") if "remove_erroring_algs" in _coconut_match_kwargs else False  #31 (line num in coconut source)
+                _coconut_match_set_name__backend_store = _coconut_match_temp_5  #31 (line num in coconut source)
+                _coconut_match_set_name_self = _coconut_match_temp_0  #31 (line num in coconut source)
+                _coconut_match_set_name_examples = _coconut_match_temp_1  #31 (line num in coconut source)
+                _coconut_match_set_name_params = _coconut_match_temp_2  #31 (line num in coconut source)
+                _coconut_match_set_name_distribution = _coconut_match_temp_3  #31 (line num in coconut source)
+                _coconut_match_set_name_remove_erroring_algs = _coconut_match_temp_4  #31 (line num in coconut source)
+                if not _coconut_match_kwargs:  #31 (line num in coconut source)
+                    _coconut_match_check_0 = True  #31 (line num in coconut source)
+        if _coconut_match_check_0:  #31 (line num in coconut source)
+            if _coconut_match_set_name_self is not _coconut_sentinel:  #31 (line num in coconut source)
+                self = _coconut_match_set_name_self  #31 (line num in coconut source)
+            if _coconut_match_set_name_examples is not _coconut_sentinel:  #31 (line num in coconut source)
+                examples = _coconut_match_set_name_examples  #31 (line num in coconut source)
+            if _coconut_match_set_name_params is not _coconut_sentinel:  #31 (line num in coconut source)
+                params = _coconut_match_set_name_params  #31 (line num in coconut source)
+            if _coconut_match_set_name_distribution is not _coconut_sentinel:  #31 (line num in coconut source)
+                distribution = _coconut_match_set_name_distribution  #31 (line num in coconut source)
+            if _coconut_match_set_name_remove_erroring_algs is not _coconut_sentinel:  #31 (line num in coconut source)
+                remove_erroring_algs = _coconut_match_set_name_remove_erroring_algs  #31 (line num in coconut source)
+            if _coconut_match_set_name__backend_store is not _coconut_sentinel:  #31 (line num in coconut source)
+                _backend_store = _coconut_match_set_name__backend_store  #31 (line num in coconut source)
+        if not _coconut_match_check_0:  #31 (line num in coconut source)
+            raise _coconut_FunctionMatchError('match def attempt_update(self, examples, params, distribution, remove_erroring_algs=False, *, _backend_store):', _coconut_match_args)  #31 (line num in coconut source)
 
-        self.use_distribution(distribution, force=remove_erroring_algs != self.remove_erroring_algs)
+        self.use_distribution(distribution, force=remove_erroring_algs != self.remove_erroring_algs)  #31 (line num in coconut source)
 
-        self.examples = examples
-        self.params = params
-        self.remove_erroring_algs = remove_erroring_algs
-        self.backend_store = _backend_store
+        self.examples = examples  #33 (line num in coconut source)
+        self.params = params  #34 (line num in coconut source)
+        self.remove_erroring_algs = remove_erroring_algs  #35 (line num in coconut source)
+        self.backend_store = _backend_store  #36 (line num in coconut source)
 
-        self.select_new_backend()
-        return True
-
-
-    def use_distribution(self, distribution, force=False):
-        """Set the distribution to the given distribution."""
-        distribution = tuple(((alg, (constants.eps_greedy_explore_prob / (1 - constants.eps_greedy_explore_prob) if weight == "eps_over_one_minus_eps" else weight)) for alg, weight in distribution))
-
-        if force or distribution != self.distribution:
-            self.cum_probs = get_cum_probs_for(distribution)
-            self.distribution = distribution
+        self.select_new_backend()  #38 (line num in coconut source)
+        return True  #39 (line num in coconut source)
 
 
-    def select_new_backend(self):
-        """Randomly select a new backend."""
+    def use_distribution(self, distribution, force=False):  #41 (line num in coconut source)
+        """Set the distribution to the given distribution."""  #42 (line num in coconut source)
+        distribution = tuple(((alg, (constants.eps_greedy_explore_prob / (1 - constants.eps_greedy_explore_prob) if weight == "eps_over_one_minus_eps" else weight)) for alg, weight in distribution))  #43 (line num in coconut source)
+
+        if force or distribution != self.distribution:  #54 (line num in coconut source)
+            self.cum_probs = get_cum_probs_for(distribution)  #55 (line num in coconut source)
+            self.distribution = distribution  #56 (line num in coconut source)
+
+
+    def select_new_backend(self):  #58 (line num in coconut source)
+        """Randomly select a new backend."""  #59 (line num in coconut source)
 # randomly select algorithm
-        self.selected_alg = random_from_cum_probs(self.cum_probs)
-        if self.selected_alg is None:
-            raise ValueError("could not select backend from distribution: {_coconut_format_0}".format(_coconut_format_0=(self.distribution)))
+        self.selected_alg = random_from_cum_probs(self.cum_probs)  #61 (line num in coconut source)
+        if self.selected_alg is None:  #62 (line num in coconut source)
+            raise ValueError("could not select backend from distribution: {_coconut_format_0}".format(_coconut_format_0=(self.distribution)))  #63 (line num in coconut source)
 
 # initialize backend
-        self.selected_backend, options = alg_registry[self.selected_alg]
-        try:
-            self.current_backend = get_backend(self.backend_store, self.selected_backend, self.examples, self.params, **options)
-        except constants.erroring_backend_errs:
-            if not self.remove_erroring_algs:
-                raise
-            self.reselect_backend()
+        self.selected_backend, options = alg_registry[self.selected_alg]  #66 (line num in coconut source)
+        try:  #67 (line num in coconut source)
+            self.current_backend = get_backend(self.backend_store, self.selected_backend, self.examples, self.params, **options)  #68 (line num in coconut source)
+        except constants.erroring_backend_errs:  #75 (line num in coconut source)
+            if not self.remove_erroring_algs:  #76 (line num in coconut source)
+                raise  #77 (line num in coconut source)
+            self.reselect_backend()  #78 (line num in coconut source)
 
 
-    def reselect_backend(self):
-        """Choose a new backend when the current one errors."""
-        new_distribution = []
-        for alg, weight in self.distribution:
-            if alg != self.selected_alg:
-                new_distribution.append((alg, weight))
-        self.cum_probs = get_cum_probs_for(new_distribution)
-        self.select_new_backend()
+    def reselect_backend(self):  #80 (line num in coconut source)
+        """Choose a new backend when the current one errors."""  #81 (line num in coconut source)
+        new_distribution = []  #82 (line num in coconut source)
+        for alg, weight in self.distribution:  #83 (line num in coconut source)
+            if alg != self.selected_alg:  #84 (line num in coconut source)
+                new_distribution.append((alg, weight))  #85 (line num in coconut source)
+        self.cum_probs = get_cum_probs_for(new_distribution)  #86 (line num in coconut source)
+        self.select_new_backend()  #87 (line num in coconut source)
 
 
-    @override
-    def param(self, name, func, *args, **kwargs):
-        """Defer parameter selection to the selected backend."""
-        try:
-            return self.current_backend.param(name, func, *args, **kwargs)
-        except constants.erroring_backend_errs:
-            if not self.remove_erroring_algs:
-                raise
-            self.reselect_backend()
-        return self.param(name, func, *args, **kwargs)
+    @override  #89 (line num in coconut source)
+    def param(self, name, func, *args, **kwargs):  #90 (line num in coconut source)
+        """Defer parameter selection to the selected backend."""  #91 (line num in coconut source)
+        try:  #92 (line num in coconut source)
+            return self.current_backend.param(name, func, *args, **kwargs)  #93 (line num in coconut source)
+        except constants.erroring_backend_errs:  #94 (line num in coconut source)
+            if not self.remove_erroring_algs:  #95 (line num in coconut source)
+                raise  #96 (line num in coconut source)
+            self.reselect_backend()  #97 (line num in coconut source)
+        return self.param(name, func, *args, **kwargs)  #98 (line num in coconut source)
 
 
-    @classmethod
-    def register_safe_alg_for(cls, base_alg, new_alg_name=None, fallback_alg=None):
-        """Register a version of base_alg that defaults to the fallback if base_alg fails."""
-        if new_alg_name is None:
-            new_alg_name = "safe_" + base_alg
-        if fallback_alg is None:
-            fallback_alg = constants.safe_fallback_alg
-        cls.register_alg(new_alg_name, distribution=((base_alg, float("inf")), (fallback_alg, 1)), remove_erroring_algs=True)
+    @classmethod  #100 (line num in coconut source)
+    def register_safe_alg_for(cls, base_alg, new_alg_name=None, fallback_alg=None):  #101 (line num in coconut source)
+        """Register a version of base_alg that defaults to the fallback if base_alg fails."""  #102 (line num in coconut source)
+        if new_alg_name is None:  #103 (line num in coconut source)
+            new_alg_name = "safe_" + base_alg  #104 (line num in coconut source)
+        if fallback_alg is None:  #105 (line num in coconut source)
+            fallback_alg = constants.safe_fallback_alg  #106 (line num in coconut source)
+        cls.register_alg(new_alg_name, distribution=((base_alg, float("inf")), (fallback_alg, 1)), remove_erroring_algs=True)  #107 (line num in coconut source)
 
 
-    @classmethod
-    def register_epsilon_exploration_alg_for(cls, base_alg, new_alg_name=None, eps=None):
-        """Register a version of base_alg with epsilon greedy exploration."""
-        if new_alg_name is None:
-            new_alg_name = base_alg + "_epsilon_exploration"
-        if eps is None:
-            eps = constants.eps_greedy_explore_prob
-        cls.register_alg(new_alg_name, distribution=((base_alg, 1), ("random", "eps_over_one_minus_eps")))
+    @classmethod  #116 (line num in coconut source)
+    def register_epsilon_exploration_alg_for(cls, base_alg, new_alg_name=None, eps=None):  #117 (line num in coconut source)
+        """Register a version of base_alg with epsilon greedy exploration."""  #118 (line num in coconut source)
+        if new_alg_name is None:  #119 (line num in coconut source)
+            new_alg_name = base_alg + "_epsilon_exploration"  #120 (line num in coconut source)
+        if eps is None:  #121 (line num in coconut source)
+            eps = constants.eps_greedy_explore_prob  #122 (line num in coconut source)
+        cls.register_alg(new_alg_name, distribution=((base_alg, 1), ("random", "eps_over_one_minus_eps")))  #123 (line num in coconut source)
 
 
 
@@ -188,13 +188,13 @@ class MixtureBackend(Backend):
 # Registered names:
 
 
-_coconut_call_set_names(MixtureBackend)
-MixtureBackend.register()
+_coconut_call_set_names(MixtureBackend)  #146 (line num in coconut source)
+MixtureBackend.register()  #146 (line num in coconut source)
 
-MixtureBackend.register_epsilon_exploration_alg_for("max_greedy", new_alg_name="epsilon_max_greedy")
-MixtureBackend.register_epsilon_exploration_alg_for("openai")
+MixtureBackend.register_epsilon_exploration_alg_for("max_greedy", new_alg_name="epsilon_max_greedy")  #148 (line num in coconut source)
+MixtureBackend.register_epsilon_exploration_alg_for("openai")  #149 (line num in coconut source)
 
-MixtureBackend.register_safe_alg_for("gaussian_process")
-MixtureBackend.register_safe_alg_for("random_forest")
-MixtureBackend.register_safe_alg_for("extra_trees")
-MixtureBackend.register_safe_alg_for("gradient_boosted_regression_trees")
+MixtureBackend.register_safe_alg_for("gaussian_process")  #151 (line num in coconut source)
+MixtureBackend.register_safe_alg_for("random_forest")  #152 (line num in coconut source)
+MixtureBackend.register_safe_alg_for("extra_trees")  #153 (line num in coconut source)
+MixtureBackend.register_safe_alg_for("gradient_boosted_regression_trees")  #154 (line num in coconut source)

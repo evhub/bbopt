@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x4d2c2f58
+# __coconut_hash__ = 0xc6a59ad9
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -39,172 +39,172 @@ _coconut_sys.path.pop(0)
 
 
 
-import random
-import math
+import random  #5 (line num in coconut source)
+import math  #6 (line num in coconut source)
 
-import numpy as np
+import numpy as np  #8 (line num in coconut source)
 
-from bbopt import constants
-from bbopt.util import mean
-from bbopt.backends.util import Backend
-from bbopt.backends.util import get_named_data_points_and_losses
-from bbopt.backends.util import marginalize
+from bbopt import constants  #10 (line num in coconut source)
+from bbopt.util import mean  #11 (line num in coconut source)
+from bbopt.backends.util import Backend  #12 (line num in coconut source)
+from bbopt.backends.util import get_named_data_points_and_losses  #12 (line num in coconut source)
+from bbopt.backends.util import marginalize  #12 (line num in coconut source)
 
 
 # Backend:
 
-class BanditBackend(Backend):
-    """The bandit backend implements simple multi-armed bandit algorithms."""
-    backend_name = "bandit"
+class BanditBackend(Backend):  #21 (line num in coconut source)
+    """The bandit backend implements simple multi-armed bandit algorithms."""  #22 (line num in coconut source)
+    backend_name = "bandit"  #23 (line num in coconut source)
 
-    def __init__(self, *args, **options):
-        self.init_fallback_backend()
-        __class__ = BanditBackend
+    def __init__(self, *args, **options):  #25 (line num in coconut source)
+        self.init_fallback_backend()  #26 (line num in coconut source)
+        __class__ = BanditBackend  #27 (line num in coconut source)
 
-        super().__init__(*args, **options)
+        super().__init__(*args, **options)  #27 (line num in coconut source)
 
 
-    @override
-    def attempt_update(self, examples, params, bandit_alg, eps=None, temp=None):
-        """Update the bandit algorithm with new parameters."""
-        self.bandit_alg = bandit_alg
+    @override  #29 (line num in coconut source)
+    def attempt_update(self, examples, params, bandit_alg, eps=None, temp=None):  #30 (line num in coconut source)
+        """Update the bandit algorithm with new parameters."""  #31 (line num in coconut source)
+        self.bandit_alg = bandit_alg  #32 (line num in coconut source)
 
-        if len(examples) <= 1:
-            self.named_data_points = self.losses = None
-            return True
+        if len(examples) <= 1:  #34 (line num in coconut source)
+            self.named_data_points = self.losses = None  #35 (line num in coconut source)
+            return True  #36 (line num in coconut source)
 
-        self.named_data_points, self.losses = get_named_data_points_and_losses(examples, params)
+        self.named_data_points, self.losses = get_named_data_points_and_losses(examples, params)  #38 (line num in coconut source)
 
-        if bandit_alg == "greedy":
-            if eps is None:
-                eps = constants.eps_greedy_explore_prob
-            assert temp is None, "temp parameter not supported for bandit_alg={_coconut_format_0}".format(_coconut_format_0=(bandit_alg))
+        if bandit_alg == "greedy":  #40 (line num in coconut source)
+            if eps is None:  #41 (line num in coconut source)
+                eps = constants.eps_greedy_explore_prob  #42 (line num in coconut source)
+            assert temp is None, "temp parameter not supported for bandit_alg={_coconut_format_0}".format(_coconut_format_0=(bandit_alg))  #43 (line num in coconut source)
 
-        elif bandit_alg.startswith("boltzmann"):
-            if eps is None:
+        elif bandit_alg.startswith("boltzmann"):  #45 (line num in coconut source)
+            if eps is None:  #46 (line num in coconut source)
 # make sure we cover the full space before doing our bandit algorithm
-                eps = 1 / math.sqrt(len(self.losses) - 1)
-            if temp is None:
-                temp = (np.std)((np.asarray)(self.losses), ddof=1)
+                eps = 1 / math.sqrt(len(self.losses) - 1)  #48 (line num in coconut source)
+            if temp is None:  #49 (line num in coconut source)
+                temp = (np.std)((np.asarray)(self.losses), ddof=1)  #50 (line num in coconut source)
 
-        else:
-            raise ValueError("invalid multi-armed bandit algorithm: {_coconut_format_0}".format(_coconut_format_0=(bandit_alg)))
+        else:  #52 (line num in coconut source)
+            raise ValueError("invalid multi-armed bandit algorithm: {_coconut_format_0}".format(_coconut_format_0=(bandit_alg)))  #53 (line num in coconut source)
 
-        self.eps = eps
-        self.temp = temp
+        self.eps = eps  #55 (line num in coconut source)
+        self.temp = temp  #56 (line num in coconut source)
 
-        return True
+        return True  #58 (line num in coconut source)
 
 
-    @override
-    def param(self, name, *args, **kwargs):
-        """Get a value for the given parameter."""
-        if self.losses is None or random.random() < self.eps:
-            rand_val = self.fallback_backend.param(name, *args, **kwargs)
+    @override  #60 (line num in coconut source)
+    def param(self, name, *args, **kwargs):  #61 (line num in coconut source)
+        """Get a value for the given parameter."""  #62 (line num in coconut source)
+        if self.losses is None or random.random() < self.eps:  #63 (line num in coconut source)
+            rand_val = self.fallback_backend.param(name, *args, **kwargs)  #64 (line num in coconut source)
 
 # attempt to reroll once if we've already seen the value
-            if self.named_data_points is not None:
-                if any((point[name] == rand_val for point in self.named_data_points)):
-                    rand_val = self.fallback_backend.param(name, *args, **kwargs)
+            if self.named_data_points is not None:  #67 (line num in coconut source)
+                if any((point[name] == rand_val for point in self.named_data_points)):  #68 (line num in coconut source)
+                    rand_val = self.fallback_backend.param(name, *args, **kwargs)  #69 (line num in coconut source)
 
-            return rand_val
+            return rand_val  #71 (line num in coconut source)
 
-        elif self.bandit_alg == "greedy":
-            marginals = marginalize(self.named_data_points, self.losses, name)
-            @_coconut_mark_as_match
-            def _coconut_lambda_0(*_coconut_match_args, **_coconut_match_kwargs):
-                _coconut_match_check_0 = False
-                _coconut_match_set_name_val = _coconut_sentinel
-                _coconut_match_set_name_loss = _coconut_sentinel
-                _coconut_FunctionMatchError = _coconut_get_function_match_error()
-                if _coconut.len(_coconut_match_args) == 1:
-                    if (_coconut.isinstance(_coconut_match_args[0], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_args[0]) == 2):
-                        _coconut_match_set_name_val = _coconut_match_args[0][0]
-                        _coconut_match_set_name_loss = _coconut_match_args[0][1]
-                        if not _coconut_match_kwargs:
-                            _coconut_match_check_0 = True
-                if _coconut_match_check_0:
-                    if _coconut_match_set_name_val is not _coconut_sentinel:
-                        val = _coconut_match_set_name_val
-                    if _coconut_match_set_name_loss is not _coconut_sentinel:
-                        loss = _coconut_match_set_name_loss
-                if not _coconut_match_check_0:
-                    raise _coconut_FunctionMatchError('best_val, min_loss = min(marginals, key=def ((val, loss)) -> loss)', _coconut_match_args)
-                return loss
-            best_val, min_loss = min(marginals, key=_coconut_lambda_0)
-            return best_val
+        elif self.bandit_alg == "greedy":  #73 (line num in coconut source)
+            marginals = marginalize(self.named_data_points, self.losses, name)  #74 (line num in coconut source)
+            @_coconut_mark_as_match  #75 (line num in coconut source)
+            def _coconut_lambda_0(*_coconut_match_args, **_coconut_match_kwargs):  #75 (line num in coconut source)
+                _coconut_match_check_0 = False  #75 (line num in coconut source)
+                _coconut_match_set_name_val = _coconut_sentinel  #75 (line num in coconut source)
+                _coconut_match_set_name_loss = _coconut_sentinel  #75 (line num in coconut source)
+                _coconut_FunctionMatchError = _coconut_get_function_match_error()  #75 (line num in coconut source)
+                if _coconut.len(_coconut_match_args) == 1:  #75 (line num in coconut source)
+                    if (_coconut.isinstance(_coconut_match_args[0], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_args[0]) == 2):  #75 (line num in coconut source)
+                        _coconut_match_set_name_val = _coconut_match_args[0][0]  #75 (line num in coconut source)
+                        _coconut_match_set_name_loss = _coconut_match_args[0][1]  #75 (line num in coconut source)
+                        if not _coconut_match_kwargs:  #75 (line num in coconut source)
+                            _coconut_match_check_0 = True  #75 (line num in coconut source)
+                if _coconut_match_check_0:  #75 (line num in coconut source)
+                    if _coconut_match_set_name_val is not _coconut_sentinel:  #75 (line num in coconut source)
+                        val = _coconut_match_set_name_val  #75 (line num in coconut source)
+                    if _coconut_match_set_name_loss is not _coconut_sentinel:  #75 (line num in coconut source)
+                        loss = _coconut_match_set_name_loss  #75 (line num in coconut source)
+                if not _coconut_match_check_0:  #75 (line num in coconut source)
+                    raise _coconut_FunctionMatchError('best_val, min_loss = min(marginals, key=def ((val, loss)) -> loss)', _coconut_match_args)  #75 (line num in coconut source)
+                return loss  #75 (line num in coconut source)
+            best_val, min_loss = min(marginals, key=_coconut_lambda_0)  #75 (line num in coconut source)
+            return best_val  #76 (line num in coconut source)
 
-        else:
-            marginals = marginalize(self.named_data_points, self.losses, name, ave_func=lambda losses: (mean(losses), len(losses)))
-            @_coconut_mark_as_match
-            def _coconut_lambda_1(*_coconut_match_args, **_coconut_match_kwargs):
-                _coconut_match_check_1 = False
-                _coconut_match_set_name_val = _coconut_sentinel
-                _coconut_match_set_name_loss = _coconut_sentinel
-                _coconut_match_set_name_N = _coconut_sentinel
-                _coconut_FunctionMatchError = _coconut_get_function_match_error()
-                if (_coconut.len(_coconut_match_args) == 2) and ("val" not in _coconut_match_kwargs):
-                    if (_coconut.isinstance(_coconut_match_args[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_args[1]) == 2):
-                        _coconut_match_temp_0 = _coconut_match_args[0] if _coconut.len(_coconut_match_args) > 0 else _coconut_match_kwargs.pop("val")
-                        _coconut_match_set_name_loss = _coconut_match_args[1][0]
-                        _coconut_match_set_name_N = _coconut_match_args[1][1]
-                        _coconut_match_set_name_val = _coconut_match_temp_0
-                        if not _coconut_match_kwargs:
-                            _coconut_match_check_1 = True
-                if _coconut_match_check_1:
-                    if _coconut_match_set_name_val is not _coconut_sentinel:
-                        val = _coconut_match_set_name_val
-                    if _coconut_match_set_name_loss is not _coconut_sentinel:
-                        loss = _coconut_match_set_name_loss
-                    if _coconut_match_set_name_N is not _coconut_sentinel:
-                        N = _coconut_match_set_name_N
-                if not _coconut_match_check_1:
-                    raise _coconut_FunctionMatchError('xs = marginals |> starmap$(def (val, (loss, N)) -> -loss) |> np.asarray', _coconut_match_args)
-                return -loss
-            xs = (np.asarray)((starmap)(_coconut_lambda_1, marginals))
-            zs = self.temp * np.random.gumbel(size=xs.shape)
+        else:  #78 (line num in coconut source)
+            marginals = marginalize(self.named_data_points, self.losses, name, ave_func=lambda losses: (mean(losses), len(losses)))  #79 (line num in coconut source)
+            @_coconut_mark_as_match  #80 (line num in coconut source)
+            def _coconut_lambda_1(*_coconut_match_args, **_coconut_match_kwargs):  #80 (line num in coconut source)
+                _coconut_match_check_1 = False  #80 (line num in coconut source)
+                _coconut_match_set_name_val = _coconut_sentinel  #80 (line num in coconut source)
+                _coconut_match_set_name_loss = _coconut_sentinel  #80 (line num in coconut source)
+                _coconut_match_set_name_N = _coconut_sentinel  #80 (line num in coconut source)
+                _coconut_FunctionMatchError = _coconut_get_function_match_error()  #80 (line num in coconut source)
+                if (_coconut.len(_coconut_match_args) == 2) and ("val" not in _coconut_match_kwargs):  #80 (line num in coconut source)
+                    if (_coconut.isinstance(_coconut_match_args[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_args[1]) == 2):  #80 (line num in coconut source)
+                        _coconut_match_temp_0 = _coconut_match_args[0] if _coconut.len(_coconut_match_args) > 0 else _coconut_match_kwargs.pop("val")  #80 (line num in coconut source)
+                        _coconut_match_set_name_loss = _coconut_match_args[1][0]  #80 (line num in coconut source)
+                        _coconut_match_set_name_N = _coconut_match_args[1][1]  #80 (line num in coconut source)
+                        _coconut_match_set_name_val = _coconut_match_temp_0  #80 (line num in coconut source)
+                        if not _coconut_match_kwargs:  #80 (line num in coconut source)
+                            _coconut_match_check_1 = True  #80 (line num in coconut source)
+                if _coconut_match_check_1:  #80 (line num in coconut source)
+                    if _coconut_match_set_name_val is not _coconut_sentinel:  #80 (line num in coconut source)
+                        val = _coconut_match_set_name_val  #80 (line num in coconut source)
+                    if _coconut_match_set_name_loss is not _coconut_sentinel:  #80 (line num in coconut source)
+                        loss = _coconut_match_set_name_loss  #80 (line num in coconut source)
+                    if _coconut_match_set_name_N is not _coconut_sentinel:  #80 (line num in coconut source)
+                        N = _coconut_match_set_name_N  #80 (line num in coconut source)
+                if not _coconut_match_check_1:  #80 (line num in coconut source)
+                    raise _coconut_FunctionMatchError('xs = marginals |> starmap$(def (val, (loss, N)) -> -loss) |> np.asarray', _coconut_match_args)  #80 (line num in coconut source)
+                return -loss  #80 (line num in coconut source)
+            xs = (np.asarray)((starmap)(_coconut_lambda_1, marginals))  #80 (line num in coconut source)
+            zs = self.temp * np.random.gumbel(size=xs.shape)  #81 (line num in coconut source)
 
-            if self.bandit_alg == "boltzmann_gumbel":
-                @_coconut_mark_as_match
-                def _coconut_lambda_2(*_coconut_match_args, **_coconut_match_kwargs):
-                    _coconut_match_check_2 = False
-                    _coconut_match_set_name_val = _coconut_sentinel
-                    _coconut_match_set_name_loss = _coconut_sentinel
-                    _coconut_match_set_name_N = _coconut_sentinel
-                    _coconut_FunctionMatchError = _coconut_get_function_match_error()
-                    if (_coconut.len(_coconut_match_args) == 2) and ("val" not in _coconut_match_kwargs):
-                        if (_coconut.isinstance(_coconut_match_args[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_args[1]) == 2):
-                            _coconut_match_temp_1 = _coconut_match_args[0] if _coconut.len(_coconut_match_args) > 0 else _coconut_match_kwargs.pop("val")
-                            _coconut_match_set_name_loss = _coconut_match_args[1][0]
-                            _coconut_match_set_name_N = _coconut_match_args[1][1]
-                            _coconut_match_set_name_val = _coconut_match_temp_1
-                            if not _coconut_match_kwargs:
-                                _coconut_match_check_2 = True
-                    if _coconut_match_check_2:
-                        if _coconut_match_set_name_val is not _coconut_sentinel:
-                            val = _coconut_match_set_name_val
-                        if _coconut_match_set_name_loss is not _coconut_sentinel:
-                            loss = _coconut_match_set_name_loss
-                        if _coconut_match_set_name_N is not _coconut_sentinel:
-                            N = _coconut_match_set_name_N
-                    if not _coconut_match_check_2:
-                        raise _coconut_FunctionMatchError('ns = marginals |> starmap$(def (val, (loss, N)) -> N) |> np.asarray', _coconut_match_args)
-                    return N
-                ns = (np.asarray)((starmap)(_coconut_lambda_2, marginals))
-                zs /= np.sqrt(ns)
-            else:
-                assert self.bandit_alg == "boltzmann", "invalid boltzmann bandit algorithm: {_coconut_format_0}".format(_coconut_format_0=(self.bandit_alg))
+            if self.bandit_alg == "boltzmann_gumbel":  #83 (line num in coconut source)
+                @_coconut_mark_as_match  #84 (line num in coconut source)
+                def _coconut_lambda_2(*_coconut_match_args, **_coconut_match_kwargs):  #84 (line num in coconut source)
+                    _coconut_match_check_2 = False  #84 (line num in coconut source)
+                    _coconut_match_set_name_val = _coconut_sentinel  #84 (line num in coconut source)
+                    _coconut_match_set_name_loss = _coconut_sentinel  #84 (line num in coconut source)
+                    _coconut_match_set_name_N = _coconut_sentinel  #84 (line num in coconut source)
+                    _coconut_FunctionMatchError = _coconut_get_function_match_error()  #84 (line num in coconut source)
+                    if (_coconut.len(_coconut_match_args) == 2) and ("val" not in _coconut_match_kwargs):  #84 (line num in coconut source)
+                        if (_coconut.isinstance(_coconut_match_args[1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_args[1]) == 2):  #84 (line num in coconut source)
+                            _coconut_match_temp_1 = _coconut_match_args[0] if _coconut.len(_coconut_match_args) > 0 else _coconut_match_kwargs.pop("val")  #84 (line num in coconut source)
+                            _coconut_match_set_name_loss = _coconut_match_args[1][0]  #84 (line num in coconut source)
+                            _coconut_match_set_name_N = _coconut_match_args[1][1]  #84 (line num in coconut source)
+                            _coconut_match_set_name_val = _coconut_match_temp_1  #84 (line num in coconut source)
+                            if not _coconut_match_kwargs:  #84 (line num in coconut source)
+                                _coconut_match_check_2 = True  #84 (line num in coconut source)
+                    if _coconut_match_check_2:  #84 (line num in coconut source)
+                        if _coconut_match_set_name_val is not _coconut_sentinel:  #84 (line num in coconut source)
+                            val = _coconut_match_set_name_val  #84 (line num in coconut source)
+                        if _coconut_match_set_name_loss is not _coconut_sentinel:  #84 (line num in coconut source)
+                            loss = _coconut_match_set_name_loss  #84 (line num in coconut source)
+                        if _coconut_match_set_name_N is not _coconut_sentinel:  #84 (line num in coconut source)
+                            N = _coconut_match_set_name_N  #84 (line num in coconut source)
+                    if not _coconut_match_check_2:  #84 (line num in coconut source)
+                        raise _coconut_FunctionMatchError('ns = marginals |> starmap$(def (val, (loss, N)) -> N) |> np.asarray', _coconut_match_args)  #84 (line num in coconut source)
+                    return N  #84 (line num in coconut source)
+                ns = (np.asarray)((starmap)(_coconut_lambda_2, marginals))  #84 (line num in coconut source)
+                zs /= np.sqrt(ns)  #85 (line num in coconut source)
+            else:  #86 (line num in coconut source)
+                assert self.bandit_alg == "boltzmann", "invalid bandit algorithm: {_coconut_format_0}".format(_coconut_format_0=(self.bandit_alg))  #87 (line num in coconut source)
 
-            best_i = np.argmax(xs + zs)
-            return marginals[best_i][0]
+            best_i = np.argmax(xs + zs)  #89 (line num in coconut source)
+            return marginals[best_i][0]  #90 (line num in coconut source)
 
 
 # Registered names:
 
 
-_coconut_call_set_names(BanditBackend)
-BanditBackend.register()
+_coconut_call_set_names(BanditBackend)  #95 (line num in coconut source)
+BanditBackend.register()  #95 (line num in coconut source)
 
-BanditBackend.register_alg("epsilon_greedy", bandit_alg="greedy")
-BanditBackend.register_alg("boltzmann_exploration", bandit_alg="boltzmann")
-BanditBackend.register_alg("boltzmann_gumbel_exploration", bandit_alg="boltzmann_gumbel")
+BanditBackend.register_alg("epsilon_greedy", bandit_alg="greedy")  #97 (line num in coconut source)
+BanditBackend.register_alg("boltzmann_exploration", bandit_alg="boltzmann")  #98 (line num in coconut source)
+BanditBackend.register_alg("boltzmann_gumbel_exploration", bandit_alg="boltzmann_gumbel")  #99 (line num in coconut source)

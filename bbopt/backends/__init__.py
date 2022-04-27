@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7e38eda1
+# __coconut_hash__ = 0x1d66607f
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -39,44 +39,44 @@ _coconut_sys.path.pop(0)
 
 
 
-sys = _coconut_sys
-import traceback
+sys = _coconut_sys  #5 (line num in coconut source)
+import traceback  #6 (line num in coconut source)
 
 # import all the backends to register them
-from bbopt.backends.serving import ServingBackend
-from bbopt.backends.random import RandomBackend
-from bbopt.backends.mixture import MixtureBackend
-from bbopt.backends.bandit import BanditBackend
-try:
-    from bbopt.backends.skopt import SkoptBackend
-except ImportError:
-    traceback.print_exc()
-    print("Could not import scikit-optimize backend; backend unavailable (see above error).")
-try:
-    from bbopt.backends.hyperopt import HyperoptBackend
-except ImportError:
-    traceback.print_exc()
-    print("Could not import hyperopt backend; backend unavailable (see above error).")
-if sys.version_info >= (3,):
-    try:
-        from bbopt.backends.pysot import PySOTBackend
-    except ImportError:
-        traceback.print_exc()
-        print("Could not import pySOT backend; backend unavailable (see above error).")
-if sys.version_info >= (3, 7):
-    try:
-        from bbopt.backends.bask import BaskBackend
-    except ImportError:
-        traceback.print_exc()
-        print("Could not import bayes-skopt backend; backend unavailable (see above error).")
-if sys.version_info >= (3,):
-    try:
-        from bbopt.backends.openai import OpenAIBackend
-    except ImportError:
-        traceback.print_exc()
-        print("could not import openai backend; backend unavailable (see above error).")
+from bbopt.backends.serving import ServingBackend  #9 (line num in coconut source)
+from bbopt.backends.random import RandomBackend  #10 (line num in coconut source)
+from bbopt.backends.mixture import MixtureBackend  #11 (line num in coconut source)
+from bbopt.backends.bandit import BanditBackend  #12 (line num in coconut source)
+try:  #13 (line num in coconut source)
+    from bbopt.backends.skopt import SkoptBackend  #14 (line num in coconut source)
+except ImportError:  #15 (line num in coconut source)
+    traceback.print_exc()  #16 (line num in coconut source)
+    print("Could not import scikit-optimize backend; backend unavailable (see above error).")  #17 (line num in coconut source)
+try:  #18 (line num in coconut source)
+    from bbopt.backends.hyperopt import HyperoptBackend  #19 (line num in coconut source)
+except ImportError:  #20 (line num in coconut source)
+    traceback.print_exc()  #21 (line num in coconut source)
+    print("Could not import hyperopt backend; backend unavailable (see above error).")  #22 (line num in coconut source)
+if sys.version_info >= (3,):  #23 (line num in coconut source)
+    try:  #24 (line num in coconut source)
+        from bbopt.backends.pysot import PySOTBackend  #25 (line num in coconut source)
+    except ImportError:  #26 (line num in coconut source)
+        traceback.print_exc()  #27 (line num in coconut source)
+        print("Could not import pySOT backend; backend unavailable (see above error).")  #28 (line num in coconut source)
+if sys.version_info >= (3, 7):  #29 (line num in coconut source)
+    try:  #30 (line num in coconut source)
+        from bbopt.backends.bask import BaskBackend  #31 (line num in coconut source)
+    except ImportError:  #32 (line num in coconut source)
+        traceback.print_exc()  #33 (line num in coconut source)
+        print("Could not import bayes-skopt backend; backend unavailable (see above error).")  #34 (line num in coconut source)
+if sys.version_info >= (3,):  #35 (line num in coconut source)
+    try:  #36 (line num in coconut source)
+        from bbopt.backends.openai import OpenAIBackend  #37 (line num in coconut source)
+    except ImportError:  #38 (line num in coconut source)
+        traceback.print_exc()  #39 (line num in coconut source)
+        print("could not import openai backend; backend unavailable (see above error).")  #40 (line num in coconut source)
 
 # meta alg mixtures don't care what backend we register them on,
 #  so we just register them here
-ServingBackend.register_meta("tpe_or_gp", ("tree_structured_parzen_estimator", "safe_gaussian_process"))
-ServingBackend.register_meta("any_fast", ("tree_structured_parzen_estimator", "safe_random_forest", "safe_extra_trees", "safe_gradient_boosted_regression_trees"))
+ServingBackend.register_meta("tpe_or_gp", ("tree_structured_parzen_estimator", "safe_gaussian_process"))  #44 (line num in coconut source)
+ServingBackend.register_meta("any_fast", ("tree_structured_parzen_estimator", "safe_random_forest", "safe_extra_trees", "safe_gradient_boosted_regression_trees"))  #48 (line num in coconut source)

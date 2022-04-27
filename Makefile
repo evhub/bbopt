@@ -20,7 +20,7 @@ setup:
 
 .PHONY: unclean-build
 unclean-build:
-	coconut setup.coco --and bbopt-source bbopt --no-tco --strict --jobs sys
+	coconut setup.coco --and bbopt-source bbopt --no-tco --line-numbers --strict --jobs sys
 	-mkdir "./bbopt/examples"
 	cp -rf "./bbopt-source/examples" "./bbopt/"
 
@@ -29,7 +29,7 @@ build: clean unclean-build
 
 .PHONY: force-build
 force-build: clean
-	coconut setup.coco --and bbopt-source bbopt --force --no-tco --strict --jobs sys
+	coconut setup.coco --and bbopt-source bbopt --force --no-tco --line-numbers --strict --jobs sys
 	-mkdir "./bbopt/examples"
 	cp -rf "./bbopt-source/examples" "./bbopt/"
 
@@ -77,7 +77,7 @@ wipe: clean
 
 .PHONY: watch
 watch: install
-	coconut bbopt-source bbopt --watch --no-tco --strict --jobs sys
+	coconut bbopt-source bbopt --watch --no-tco --line-numbers --strict --jobs sys
 
 .PHONY: benchmark
 benchmark: unclean-build

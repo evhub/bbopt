@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd2b7f9be
+# __coconut_hash__ = 0x7a3e5726
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -39,8 +39,8 @@ _coconut_sys.path.pop(0)
 
 
 
-from bbopt.cli import main
+from bbopt.cli import main  #5 (line num in coconut source)
 
 
-if __name__ == "__main__":
-    main()
+if __name__ == "__main__":  #8 (line num in coconut source)
+    main()  #9 (line num in coconut source)

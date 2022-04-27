@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x2d0d784a
+# __coconut_hash__ = 0x2887181c
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -1421,13 +1421,13 @@ _coconut_MatchError, _coconut_count, _coconut_enumerate, _coconut_filter, _cocon
 
 # Compiled Coconut: -----------------------------------------------------------
 
-import setuptools
+import setuptools  #1 (line num in coconut source)
 
-sys = _coconut_sys
-import os.path
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "bbopt"))
+sys = _coconut_sys  #3 (line num in coconut source)
+import os.path  #4 (line num in coconut source)
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "bbopt"))  #5 (line num in coconut source)
 
-import constants
+import constants  #7 (line num in coconut source)
 
 
-setuptools.setup(name=constants.name, version=constants.version, description=constants.description, long_description=constants.long_description, url=constants.github_url, author=constants.author, author_email=constants.author_email, classifiers=(list)(constants.classifiers), packages=setuptools.find_packages(), install_requires=(list)(constants.requirements), extras_require=(fmap)(lambda k, v: (k, list(v)), constants.extra_requirements), entry_points={"console_scripts": ["bbopt = bbopt.cli:main",]})
+setuptools.setup(name=constants.name, version=constants.version, description=constants.description, long_description=constants.long_description, url=constants.github_url, author=constants.author, author_email=constants.author_email, classifiers=(list)(constants.classifiers), packages=setuptools.find_packages(), install_requires=(list)(constants.requirements), extras_require=(fmap)(lambda k, v: (k, list(v)), constants.extra_requirements), entry_points={"console_scripts": ["bbopt = bbopt.cli:main",]})  #10 (line num in coconut source)

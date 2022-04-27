@@ -84,7 +84,7 @@ class BanditBackend(Backend):
                 ns = marginals |> starmap$(def (val, (loss, N)) -> N) |> np.asarray
                 zs /= np.sqrt(ns)
             else:
-                assert self.bandit_alg == "boltzmann", f"invalid boltzmann bandit algorithm: {self.bandit_alg}"
+                assert self.bandit_alg == "boltzmann", f"invalid bandit algorithm: {self.bandit_alg}"
 
             best_i = np.argmax(xs + zs)
             return marginals[best_i][0]

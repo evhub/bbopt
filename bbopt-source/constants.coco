@@ -5,7 +5,7 @@ Constants for use across all of BBopt.
 
 # Installation constants:
 name = "bbopt"
-version = "1.4.0"
+version = "1.4.1"
 description = "The easiest hyperparameter optimization you'll ever do."
 long_description = """
 See BBopt's GitHub_ for more information.
@@ -96,3 +96,14 @@ erroring_backend_errs = (ValueError, TypeError)
 
 eps_greedy_explore_prob = 0.2
 safe_fallback_alg = "tree_structured_parzen_estimator"
+
+
+# OpenAI constants:
+openai_default_engine = "text-curie-001"
+
+openai_default_temp = 1.1
+openai_max_temp = 2
+
+openai_default_max_retries = 10
+
+openai_max_context_err_prefix = "This model's maximum context length is "

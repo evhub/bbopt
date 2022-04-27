@@ -166,7 +166,8 @@ def support_check_gammavariate(val, alpha, beta) =
 
 
 def support_check_normalvariate(val, mu, sigma) =
-    True
+    # just check for comparability with mu
+    val >= mu or val < mu
 
 
 def support_check_vonmisesvariate(val, mu, kappa) =
@@ -205,7 +206,10 @@ class ParamProcessor:
     def in_support(self, name, val, func, *args, **kwargs):
         if func not in self.support_checkers:
             raise ValueError(f"unknown parameter definition function {func} (register with bbopt.params.param_processor.register)")
-        return self.support_checkers[func](val, *args)
+        try:
+            return self.support_checkers[func](val, *args)
+        except TypeError:
+            return False
 
     def verify_support(self, name, val, func, *args, **kwargs):
         if not self.in_support(name, val, func, *args, **kwargs):
