@@ -89,7 +89,7 @@ OPT_FUNCS.append(cond_gain_func)
 
 # Main
 
-def benchmark(algs, plot_func="plot_convergence", n=50):
+def benchmark(algs, plot_func="plot_convergence", n=25):
     figsize = len(OPT_FUNCS) |> math.sqrt |> math.ceil |> int
     fig, axs = plt.subplots(figsize, figsize)
     for i, func in enumerate(OPT_FUNCS):
@@ -109,11 +109,7 @@ def benchmark(algs, plot_func="plot_convergence", n=50):
 
 if __name__ == "__main__":
     benchmark((
-        "any_fast",
         "tpe_or_gp",
         "tree_structured_parzen_estimator",
         "safe_gaussian_process",
-        "safe_random_forest",
-        "safe_extra_trees",
-        "safe_gradient_boosted_regression_trees",
     ))

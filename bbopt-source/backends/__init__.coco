@@ -5,6 +5,8 @@ Backends contains all of bbopt's different backends.
 import sys
 import traceback
 
+from bbopt.util import printerr
+
 # import all the backends to register them
 from bbopt.backends.serving import ServingBackend
 from bbopt.backends.random import RandomBackend
@@ -14,30 +16,30 @@ try:
     from bbopt.backends.skopt import SkoptBackend
 except ImportError:
     traceback.print_exc()
-    print("Could not import scikit-optimize backend; backend unavailable (see above error).")
+    printerr("Could not import scikit-optimize backend; backend unavailable (see above error).")
 try:
     from bbopt.backends.hyperopt import HyperoptBackend
 except ImportError:
     traceback.print_exc()
-    print("Could not import hyperopt backend; backend unavailable (see above error).")
+    printerr("Could not import hyperopt backend; backend unavailable (see above error).")
 if sys.version_info >= (3,):
     try:
         from bbopt.backends.pysot import PySOTBackend
     except ImportError:
         traceback.print_exc()
-        print("Could not import pySOT backend; backend unavailable (see above error).")
+        printerr("Could not import pySOT backend; backend unavailable (see above error).")
 if sys.version_info >= (3, 7):
     try:
         from bbopt.backends.bask import BaskBackend
     except ImportError:
         traceback.print_exc()
-        print("Could not import bayes-skopt backend; backend unavailable (see above error).")
+        printerr("Could not import bayes-skopt backend; backend unavailable (see above error).")
 if sys.version_info >= (3,):
     try:
         from bbopt.backends.openai import OpenAIBackend
     except ImportError:
         traceback.print_exc()
-        print("could not import openai backend; backend unavailable (see above error).")
+        printerr("Could not import openai backend; backend unavailable (see above error).")
 
 # meta alg mixtures don't care what backend we register them on,
 #  so we just register them here
