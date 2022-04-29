@@ -13,6 +13,7 @@ from coconut.command.util import call_output
 from bbopt.util import (
     mean,
     median,
+    stdev,
 )
 
 
@@ -126,12 +127,6 @@ def middle_mean(xs) =
     """Mean of the middle half of xs."""
     a, b = len(xs)//4, 3*len(xs)//4
     mean(xs[a:b])
-
-
-def stdev(xs) =
-    """Standard deviation of xs."""
-    mean((x - mu)**2 for x in xs)**0.5 where:
-        mu = mean(xs)
 
 
 def assert_improving(data, ave_func=mean, within_stdevs=0.5):

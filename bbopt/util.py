@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf022c73
+# __coconut_hash__ = 0x527c1a0d
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -453,3 +453,12 @@ def median(xs):  #309 (line num in coconut source)
     """Compute the median of the given sequence."""  #310 (line num in coconut source)
     sorted_xs = (tuple)((sorted)(xs))  #311 (line num in coconut source)
     return mean((sorted_xs[len(sorted_xs) // 2], sorted_xs[(len(sorted_xs) + 1) // 2]))  #312 (line num in coconut source)
+
+
+
+def stdev(xs):  #318 (line num in coconut source)
+    """Standard deviation of xs."""  #319 (line num in coconut source)
+    mu = mean(xs)  #321 (line num in coconut source)
+    xs = tuple(xs)  #322 (line num in coconut source)
+
+    return mean(((x - mu)**2 for x in xs))**0.5  #324 (line num in coconut source)

@@ -101,7 +101,7 @@ safe_fallback_alg = "tree_structured_parzen_estimator"
 # OpenAI constants:
 openai_default_engine = "text-curie-001"
 
-openai_default_temp = 1.1
+openai_default_temp = 1
 openai_max_temp = 2
 
 openai_default_max_retries = 10

@@ -313,3 +313,10 @@ def median(xs):
         sorted_xs[len(sorted_xs)//2],
         sorted_xs[(len(sorted_xs) + 1)//2],
     ))
+
+
+def stdev(xs) =
+    """Standard deviation of xs."""
+    mean((x - mu)**2 for x in xs)**0.5 where:
+        mu = mean(xs)
+        xs = tuple(xs)

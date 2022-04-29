@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa89049b3
+# __coconut_hash__ = 0x64d1a213
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -132,7 +132,7 @@ OPT_FUNCS.append(cond_gain_func)  #87 (line num in coconut source)
 
 # Main
 
-def benchmark(algs, plot_func="plot_convergence", n=25):  #92 (line num in coconut source)
+def benchmark(algs, plot_func="plot_convergence", n=10):  #92 (line num in coconut source)
     figsize = (int)((math.ceil)((math.sqrt)(len(OPT_FUNCS))))  #93 (line num in coconut source)
     fig, axs = plt.subplots(figsize, figsize)  #94 (line num in coconut source)
     for i, func in enumerate(OPT_FUNCS):  #95 (line num in coconut source)
@@ -141,15 +141,18 @@ def benchmark(algs, plot_func="plot_convergence", n=25):  #92 (line num in cocon
             bb = BlackBoxOptimizer(__file__, tag="{_coconut_format_0}_{_coconut_format_1}".format(_coconut_format_0=(func.__name__), _coconut_format_1=(alg)))  #98 (line num in coconut source)
             if bb.num_examples < n:  #99 (line num in coconut source)
                 for _ in range(n - bb.num_examples):  #100 (line num in coconut source)
-                    bb.run(alg)  #101 (line num in coconut source)
-                    func(bb)  #102 (line num in coconut source)
-            getattr(bb, plot_func)(ax, label=alg)  #103 (line num in coconut source)
-        ax.set_title(func.__name__)  #104 (line num in coconut source)
-        ax.set_xlabel("")  #105 (line num in coconut source)
-        ax.legend()  #106 (line num in coconut source)
-    plt.show()  #107 (line num in coconut source)
+                    if isinstance(alg, tuple):  #101 (line num in coconut source)
+                        bb.run_meta(alg)  #102 (line num in coconut source)
+                    else:  #103 (line num in coconut source)
+                        bb.run(alg)  #104 (line num in coconut source)
+                    func(bb)  #105 (line num in coconut source)
+            getattr(bb, plot_func)(ax, label=str(alg))  #106 (line num in coconut source)
+        ax.set_title(func.__name__)  #107 (line num in coconut source)
+        ax.set_xlabel("")  #108 (line num in coconut source)
+        ax.legend()  #109 (line num in coconut source)
+    plt.show()  #110 (line num in coconut source)
 
 
 
-if __name__ == "__main__":  #110 (line num in coconut source)
-    benchmark(("tpe_or_gp", "tree_structured_parzen_estimator", "safe_gaussian_process"))  #111 (line num in coconut source)
+if __name__ == "__main__":  #113 (line num in coconut source)
+    benchmark(("tpe_or_gp", "tree_structured_parzen_estimator", "safe_gaussian_process", ("openai", "safe_gaussian_process")))  #114 (line num in coconut source)
