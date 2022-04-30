@@ -4,6 +4,7 @@ Utilities for use in BBopt backends.
 
 import random
 
+from collections import OrderedDict
 from collections.abc import Iterable
 
 from bbopt import constants
@@ -23,6 +24,11 @@ from bbopt.registry import (
 
 
 # Utilities:
+
+def sorted_params(params) =
+    """Get an OrderedDict of params in sorted order."""
+    params |> sorted_items |> OrderedDict
+
 
 @convert_match_errors
 match def _init_backend(backend_cls, examples, params, *args, _attempt_to_update_backend=None, _on_new_backend=None, **options):

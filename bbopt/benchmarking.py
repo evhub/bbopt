@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x64d1a213
+# __coconut_hash__ = 0x2666b168
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -80,7 +80,7 @@ OPT_FUNCS.append(numpy_func)  #41 (line num in coconut source)
 
 
 def sample_func(bb):  #44 (line num in coconut source)
-    xs = bb.sample("xs", range(10), 5, guess=[3, 4, 5, 6, 7])  #45 (line num in coconut source)
+    xs = bb.unshuffled_sample("xs", range(10), 5, guess=[3, 4, 5, 6, 7])  #45 (line num in coconut source)
     y = bb.choice("y", [1, 10, 100], guess=10)  #46 (line num in coconut source)
     loss = abs(sum(xs) - y)  #47 (line num in coconut source)
     bb.minimize(loss)  #48 (line num in coconut source)
@@ -155,4 +155,4 @@ def benchmark(algs, plot_func="plot_convergence", n=10):  #92 (line num in cocon
 
 
 if __name__ == "__main__":  #113 (line num in coconut source)
-    benchmark(("tpe_or_gp", "tree_structured_parzen_estimator", "safe_gaussian_process", ("openai", "safe_gaussian_process")))  #114 (line num in coconut source)
+    benchmark(("tpe_or_gp", "tree_structured_parzen_estimator", "safe_gaussian_process", ("openai_debug", "safe_gaussian_process")))  #114 (line num in coconut source)

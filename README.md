@@ -131,7 +131,7 @@ Some examples of BBopt in action:
       - [`choice`](#choice)
       - [`randbool`](#randbool)
       - [`sample`](#sample)
-      - [`shuffled`](#shuffled)
+      - [`shuffle`](#shuffle)
       - [`random`](#random)
       - [`uniform`](#uniform)
       - [`loguniform`](#loguniform)
@@ -426,15 +426,17 @@ BlackBoxOptimizer.**sample**(_name_, _population_, _k_, **_kwargs_)
 
 Create a new parameter modeled by [`random.sample(population, k)`](https://docs.python.org/3/library/random.html#random.sample), which chooses _k_ elements from _population_.
 
+By default, the ordering of elements in the result is random. If random ordering is not important and you're happy to have the same ordering as in _population_, `BlackBoxOptimizer.unshuffled_sample` is recommended instead.
+
 _Backends which support **sample**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `random`._
 
-#### `shuffled`
+#### `shuffle`
 
-BlackBoxOptimizer.**shuffled**(_name_, _population_, **_kwargs_)
+BlackBoxOptimizer.**shuffle**(_name_, _population_, **_kwargs_)
 
-Create a new parameter modeled by [`random.shuffle(population)`](https://docs.python.org/3/library/random.html#random.shuffle) except that it returns the shuffled list instead of shuffling it in place. An in-place version as `BlackBoxOptimizer.shuffle` is also supported.
+Create a new parameter modeled by [`random.shuffle(population)`](https://docs.python.org/3/library/random.html#random.shuffle). A version that returns the shuffled list instead of shuffling it in place is also supported as `BlackBoxOptimizer.shuffled`.
 
-_Backends which support **shuffled**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `random`._
+_Backends which support **shuffle**: `scikit-optimize`, `hyperopt`, `bayes-skopt`, `pySOT`, `random`._
 
 #### `random`
 

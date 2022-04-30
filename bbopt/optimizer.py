@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x9446acdc
+# __coconut_hash__ = 0x639ac126
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -764,59 +764,81 @@ class BlackBoxOptimizer(_coconut.object):  #60 (line num in coconut source)
 
 
     def sample(self, name, population, k, **kwargs):  #543 (line num in coconut source)
-        """Create a new parameter with the given name modeled by random.sample(population, k)."""  #544 (line num in coconut source)
-        if not isinstance(name, Str):  #545 (line num in coconut source)
-            raise TypeError("name must be string, not {_coconut_format_0}".format(_coconut_format_0=(name)))  #546 (line num in coconut source)
-        sampling_population = [x for x in population]  #547 (line num in coconut source)
-        sample = []  #548 (line num in coconut source)
-        for i in range(k):  #549 (line num in coconut source)
-            if len(sampling_population) <= 1:  #550 (line num in coconut source)
-                sample.append(sampling_population[0])  #551 (line num in coconut source)
-            else:  #552 (line num in coconut source)
-                def _coconut_lambda_1(val):  #553 (line num in coconut source)
-                    elem = _coconut_iter_getitem(val, i)  #553 (line num in coconut source)
-                    return sampling_population.index(elem) if elem in sampling_population else 0  #553 (line num in coconut source)
-                proc_kwargs = (param_processor.modify_kwargs)(_coconut_lambda_1, kwargs)  #553 (line num in coconut source)
-                ind = self.randrange("{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(i)), len(sampling_population), **proc_kwargs)  #558 (line num in coconut source)
-                sample.append(sampling_population.pop(ind))  #559 (line num in coconut source)
-        return sample  #560 (line num in coconut source)
+        """Create a new parameter with the given name modeled by random.sample(population, k).
+        Ordering of elements in the result is random."""  #545 (line num in coconut source)
+        if not isinstance(name, Str):  #546 (line num in coconut source)
+            raise TypeError("name must be string, not {_coconut_format_0}".format(_coconut_format_0=(name)))  #547 (line num in coconut source)
+        sampling_population = [x for x in population]  #548 (line num in coconut source)
+        sample = []  #549 (line num in coconut source)
+        for i in range(k):  #550 (line num in coconut source)
+            if len(sampling_population) <= 1:  #551 (line num in coconut source)
+                sample.append(sampling_population[0])  #552 (line num in coconut source)
+            else:  #553 (line num in coconut source)
+                def _coconut_lambda_1(val):  #554 (line num in coconut source)
+                    elem = _coconut_iter_getitem(val, i)  #554 (line num in coconut source)
+                    return sampling_population.index(elem) if elem in sampling_population else 0  #554 (line num in coconut source)
+                proc_kwargs = (param_processor.modify_kwargs)(_coconut_lambda_1, kwargs)  #554 (line num in coconut source)
+                ind = self.randrange("{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(i)), len(sampling_population), **proc_kwargs)  #559 (line num in coconut source)
+                sample.append(sampling_population.pop(ind))  #560 (line num in coconut source)
+        return sample  #561 (line num in coconut source)
 
 
-    def samples_with_replacement(self, name, population, **kwargs):  #562 (line num in coconut source)
-        """An infinite iterator of samples with replacement from population."""  #563 (line num in coconut source)
-        if not isinstance(name, Str):  #564 (line num in coconut source)
-            raise TypeError("name must be string, not {_coconut_format_0}".format(_coconut_format_0=(name)))  #565 (line num in coconut source)
-        sampling_population = tuple(population)  #566 (line num in coconut source)
-        for i in count():  #567 (line num in coconut source)
-            yield self.choice("{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(i)), sampling_population, **kwargs)  #568 (line num in coconut source)
+    def unshuffled_sample(self, name, population, k, **kwargs):  #563 (line num in coconut source)
+        """Create a new parameter with the given name modeled by random.sample(population, k).
+        Ordering of elements in the result is the same as in population."""  #565 (line num in coconut source)
+        if not isinstance(name, Str):  #566 (line num in coconut source)
+            raise TypeError("name must be string, not {_coconut_format_0}".format(_coconut_format_0=(name)))  #567 (line num in coconut source)
+        population = tuple(population)  #568 (line num in coconut source)
+        sample = []  #569 (line num in coconut source)
+        for i, x in enumerate(population):  #570 (line num in coconut source)
+            if len(sample) == k:  #571 (line num in coconut source)
+                break  #572 (line num in coconut source)
+            if len(population) - i == k - len(sample):  #573 (line num in coconut source)
+                sample += population[i:]  #574 (line num in coconut source)
+                break  #575 (line num in coconut source)
+            proc_kwargs = (param_processor.modify_kwargs)(lambda val: 1 if x in val else 0, kwargs)  #576 (line num in coconut source)
+            if "placeholder_when_missing" not in proc_kwargs:  #579 (line num in coconut source)
+                proc_kwargs["placeholder_when_missing"] = 0  #580 (line num in coconut source)
+            if self.uniform("{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(i)), 0, 1, **proc_kwargs) >= 1 - (k - len(sample)) / (len(population) - i):  #581 (line num in coconut source)
+                sample.append(x)  #587 (line num in coconut source)
+        return sample  #588 (line num in coconut source)
 
 
-    def shuffled(self, name, population, **kwargs):  #570 (line num in coconut source)
+    def samples_with_replacement(self, name, population, **kwargs):  #590 (line num in coconut source)
+        """An infinite iterator of samples with replacement from population."""  #591 (line num in coconut source)
+        if not isinstance(name, Str):  #592 (line num in coconut source)
+            raise TypeError("name must be string, not {_coconut_format_0}".format(_coconut_format_0=(name)))  #593 (line num in coconut source)
+        population = tuple(population)  #594 (line num in coconut source)
+        for i in count():  #595 (line num in coconut source)
+            yield self.choice("{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(i)), population, **kwargs)  #596 (line num in coconut source)
+
+
+    def shuffled(self, name, population, **kwargs):  #598 (line num in coconut source)
         """Create a new parameter with the given name modeled by
-        random.shuffle(population) except returned instead of modified in place."""  #572 (line num in coconut source)
-        return self.sample(name, population, len(population), **kwargs)  #573 (line num in coconut source)
+        random.shuffle(population) except returned instead of modified in place."""  #600 (line num in coconut source)
+        return self.sample(name, population, len(population), **kwargs)  #601 (line num in coconut source)
 
 
-    def shuffle(self, name, population, **kwargs):  #575 (line num in coconut source)
-        """Create a new parameter with the given name modeled by random.shuffle(population)."""  #576 (line num in coconut source)
-        population[:] = self.shuffled(name, population, **kwargs)  #577 (line num in coconut source)
+    def shuffle(self, name, population, **kwargs):  #603 (line num in coconut source)
+        """Create a new parameter with the given name modeled by random.shuffle(population)."""  #604 (line num in coconut source)
+        population[:] = self.shuffled(name, population, **kwargs)  #605 (line num in coconut source)
 
 
-    def stdnormal(self, name, **kwargs):  #579 (line num in coconut source)
-        """Equivalent to bb.normalvariate(name, 0, 1)."""  #580 (line num in coconut source)
-        return self.normalvariate(name, 0, 1, **kwargs)  #581 (line num in coconut source)
+    def stdnormal(self, name, **kwargs):  #607 (line num in coconut source)
+        """Equivalent to bb.normalvariate(name, 0, 1)."""  #608 (line num in coconut source)
+        return self.normalvariate(name, 0, 1, **kwargs)  #609 (line num in coconut source)
 
 # Array-based random functions:
 
 
-    def rand(self, name, *shape, **kwargs):  #585 (line num in coconut source)
-        """Create a new array parameter for the given name and shape modeled by np.random.rand."""  #586 (line num in coconut source)
-        return array_param(self.random, name, shape, kwargs)  #587 (line num in coconut source)
+    def rand(self, name, *shape, **kwargs):  #613 (line num in coconut source)
+        """Create a new array parameter for the given name and shape modeled by np.random.rand."""  #614 (line num in coconut source)
+        return array_param(self.random, name, shape, kwargs)  #615 (line num in coconut source)
 
 
-    def randn(self, name, *shape, **kwargs):  #589 (line num in coconut source)
-        """Create a new array parameter for the given name and shape modeled by np.random.randn."""  #590 (line num in coconut source)
-        return array_param(self.stdnormal, name, shape, kwargs)  #591 (line num in coconut source)
+    def randn(self, name, *shape, **kwargs):  #617 (line num in coconut source)
+        """Create a new array parameter for the given name and shape modeled by np.random.randn."""  #618 (line num in coconut source)
+        return array_param(self.stdnormal, name, shape, kwargs)  #619 (line num in coconut source)
 
 
-_coconut_call_set_names(BlackBoxOptimizer)  #593 (line num in coconut source)
+_coconut_call_set_names(BlackBoxOptimizer)  #621 (line num in coconut source)

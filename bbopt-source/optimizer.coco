@@ -541,7 +541,8 @@ class BlackBoxOptimizer:
         return bool(self.choice(name, [False, True], **kwargs))
 
     def sample(self, name, population, k, **kwargs):
-        """Create a new parameter with the given name modeled by random.sample(population, k)."""
+        """Create a new parameter with the given name modeled by random.sample(population, k).
+        Ordering of elements in the result is random."""
         if not isinstance(name, Str):
             raise TypeError(f"name must be string, not {name}")
         sampling_population = [x for x in population]
@@ -559,13 +560,40 @@ class BlackBoxOptimizer:
                 sample.append(sampling_population.pop(ind))
         return sample
 
+    def unshuffled_sample(self, name, population, k, **kwargs):
+        """Create a new parameter with the given name modeled by random.sample(population, k).
+        Ordering of elements in the result is the same as in population."""
+        if not isinstance(name, Str):
+            raise TypeError(f"name must be string, not {name}")
+        population = tuple(population)
+        sample = []
+        for i, x in enumerate(population):
+            if len(sample) == k:
+                break
+            if len(population) - i == k - len(sample):
+                sample += population[i:]
+                break
+            proc_kwargs = kwargs |> param_processor.modify_kwargs$(
+                val -> 1 if x in val else 0
+            )
+            if "placeholder_when_missing" not in proc_kwargs:
+                proc_kwargs["placeholder_when_missing"] = 0
+            if self.uniform(
+                f"{name}[{i}]",
+                0,
+                1,
+                **proc_kwargs,
+            ) >= 1 - (k - len(sample))/(len(population) - i):
+                sample.append(x)
+        return sample
+
     def samples_with_replacement(self, name, population, **kwargs):
         """An infinite iterator of samples with replacement from population."""
         if not isinstance(name, Str):
             raise TypeError(f"name must be string, not {name}")
-        sampling_population = tuple(population)
+        population = tuple(population)
         for i in count():
-            yield self.choice(f"{name}[{i}]", sampling_population, **kwargs)
+            yield self.choice(f"{name}[{i}]", population, **kwargs)
 
     def shuffled(self, name, population, **kwargs):
         """Create a new parameter with the given name modeled by

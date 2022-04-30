@@ -42,7 +42,7 @@ OPT_FUNCS.append(numpy_func)
 
 
 def sample_func(bb):
-    xs = bb.sample("xs", range(10), 5, guess=[3,4,5,6,7])
+    xs = bb.unshuffled_sample("xs", range(10), 5, guess=[3,4,5,6,7])
     y = bb.choice("y", [1, 10, 100], guess=10)
     loss = abs(sum(xs) - y)
     bb.minimize(loss)
@@ -115,5 +115,5 @@ if __name__ == "__main__":
         "tpe_or_gp",
         "tree_structured_parzen_estimator",
         "safe_gaussian_process",
-        ("openai", "safe_gaussian_process"),
+        ("openai_debug", "safe_gaussian_process"),
     ))
