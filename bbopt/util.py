@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x527c1a0d
+# __coconut_hash__ = 0x4ea8d30f
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -461,4 +461,12 @@ def stdev(xs):  #318 (line num in coconut source)
     mu = mean(xs)  #321 (line num in coconut source)
     xs = tuple(xs)  #322 (line num in coconut source)
 
-    return mean(((x - mu)**2 for x in xs))**0.5  #324 (line num in coconut source)
+
+    return mean(((x - mu)**2 for x in xs))**0.5  #325 (line num in coconut source)
+
+def mean_abs_dev(xs):  #325 (line num in coconut source)
+    """Mean absolute deviation of xs."""  #326 (line num in coconut source)
+    mu = mean(xs)  #328 (line num in coconut source)
+    xs = tuple(xs)  #329 (line num in coconut source)
+
+    return mean((abs(x - mu) for x in xs))  #331 (line num in coconut source)

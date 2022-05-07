@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x2666b168
+# __coconut_hash__ = 0x78bdba2f
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -155,4 +155,4 @@ def benchmark(algs, plot_func="plot_convergence", n=10):  #92 (line num in cocon
 
 
 if __name__ == "__main__":  #113 (line num in coconut source)
-    benchmark(("tpe_or_gp", "tree_structured_parzen_estimator", "safe_gaussian_process", ("openai_debug", "safe_gaussian_process")))  #114 (line num in coconut source)
+    benchmark(("safe_gaussian_process", "openai", ("openai", "safe_gaussian_process")))  #114 (line num in coconut source)

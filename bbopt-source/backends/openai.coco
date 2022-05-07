@@ -8,7 +8,7 @@ from ast import literal_eval
 import openai
 
 from bbopt import constants
-from bbopt.util import printerr, stdev, mean
+from bbopt.util import printerr, mean_abs_dev, mean
 from bbopt.params import param_processor
 from bbopt.backends.util import StandardBackend, sorted_params
 
@@ -62,8 +62,8 @@ def f({func_params}) -> float:
             for name, (func, args, _) in params.items()
         ),
         values="".join(
-            "{loss} == f({args})\n".format(
-                args=", ".join(params |> map$(point[]) |> map$(repr)),
+            "{loss} == f({named_args})\n".format(
+                named_args=", ".join(params |> map$(name -> f"{name}={point[name]!r}")),
                 loss=loss,
             )
             for point, loss in zip(data_points, losses)
@@ -72,23 +72,16 @@ def f({func_params}) -> float:
     )
 
 
-def to_python(completion, params):
-    """Convert a completion to Python code as best as possible."""
-    completion = completion.strip("(,")
-    for repl, to in (
-        ("\u2212", "-"),
-        ("\u2018", "'"),
-        ("\u2019", "'"),
-        ("\u201c", '"'),
-        ("\u201d", '"'),
-        ("\u221e", 'float("inf")'),
-    ) :: (
-        (f"{name}=", "") for name in params
-    ) :: (
-        (f"{name}:", "") for name in params
-    ):
-        completion = completion.replace(repl, to)
-    return completion
+def is_int(x) = int(x) == x
+
+
+def typed(average):
+    """Get a typed version of average."""
+    def typed_average(xs) =
+        int(round(mu)) if all(xs |> map$(is_int)) else mu where:
+            xs = tuple(xs)
+            mu = mean(xs)
+    return typed_average
 
 
 def get_loss_eps(typical_loss):
@@ -143,19 +136,59 @@ class OpenAIBackend(StandardBackend):
                 self.params,
                 self.data_points,
                 self.losses,
-                hoped_for_loss=min(self.losses) - stdev(self.losses) - get_loss_eps(mean(self.losses)),
+                # all terms are structured to ensure that they don't use too many more sig figs than the loss
+                hoped_for_loss=min(self.losses) - (typed mean_abs_dev)(self.losses) - get_loss_eps((typed mean)(self.losses)),
             )
-            + ", ".join(self.cached_values |> map$(repr))
+            + ", ".join(zip(self.params, self.cached_values) |> starmap$((name, vals) -> f"{name}={vals!r}"))
             # only "," not ", " since the prompt shouldn't end in a space
             + ("," if self.cached_values else "")
         )
 
+    @property
+    def expected_params(self) =
+        """The parameters that are expected to be in the prompt."""
+        self.params.keys()$[len(self.cached_values):]
+
     def get_completion_len(self) =
         """Get the maximum number of characters in a completion."""
         max(
-            len(", ".join(self.params |> map$(point[]) |> map$(repr)))
+            len(", ".join(", ".join(self.expected_params |> map$(name -> f"{name}={point[name]!r}"))))
             for point in self.data_points
         ) + 1
+
+    def to_python(self, completion):
+        """Convert a completion to Python code as best as possible."""
+        completion = completion.strip(",")
+        for repl, to in (
+            ("\u2212", "-"),
+            ("\u2018", "'"),
+            ("\u2019", "'"),
+            ("\u201c", '"'),
+            ("\u201d", '"'),
+            ("\u221e", 'float("inf")'),
+        ) :: (
+            (f"{name}:", "{name}=") for name in self.params
+        ):
+            completion = completion.replace(repl, to)
+
+        # treat as dictionary
+        if all(f"{name}=" in completion for name in self.expected_params):
+            for name in self.expected_params:
+                completion = completion.replace(f"{name}=", f'"{name}":')
+            completion = "{" + completion + "}"
+            if self.debug:
+                print("== PYTHON ==\n" + completion)
+            valdict = literal_eval(completion)
+            return tuple(valdict[name] for name in self.expected_params)
+
+        # treat as tuple
+        else:
+            for name in self.params:
+                completion = completion.replace(f"{name}=", "")
+            completion = "(" + completion + ",)"
+            if self.debug:
+                print("== PYTHON ==\n" + completion)
+            return literal_eval(completion)
 
     def get_next_values(self):
         # generate prompt
@@ -193,8 +226,7 @@ class OpenAIBackend(StandardBackend):
             completion = response["choices"][0]["text"]
             if self.debug:
                 print("== COMPLETION ==\n" + completion)
-            valstr = to_python(completion.split(")", 1)[0].strip(), self.params)
-            valvec = literal_eval("(" + valstr + ",)")
+            valvec = self.to_python(completion.split(")", 1)[0].strip())
         except BaseException as parse_err:
             if self.debug:
                 print("== END ==")
@@ -231,7 +263,9 @@ class OpenAIBackend(StandardBackend):
     def retry_get_values(self, temp=None, cached_values=None):
         """Used in get_next_values to keep track of recursive calls."""
         if not self.max_retries:
-            printerr(f"BBopt Warning: Maximum number of OpenAI API retries exceeded on:\n== PROMPT ==\n{self.get_prompt()}\n== END ==")
+            if self.debug:
+                print()
+            printerr(f"BBopt Warning: Maximum number of OpenAI API retries exceeded for {self.engine} on:\n== PROMPT ==\n{self.get_prompt()}\n== END ==")
             return {}  # return empty values so that the fallback random backend will be used instead
         if self.debug:
             if temp is None:
@@ -260,3 +294,4 @@ class OpenAIBackend(StandardBackend):
 OpenAIBackend.register()
 OpenAIBackend.register_alg("openai")
 OpenAIBackend.register_alg("openai_debug", debug=True)
+OpenAIBackend.register_alg("openai_davinci", engine=constants.openai_davinci_engine)

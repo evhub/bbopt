@@ -100,6 +100,7 @@ safe_fallback_alg = "tree_structured_parzen_estimator"
 
 # OpenAI constants:
 openai_default_engine = "text-curie-001"
+openai_davinci_engine = "text-davinci-002"
 
 openai_default_temp = 1
 openai_max_temp = 2

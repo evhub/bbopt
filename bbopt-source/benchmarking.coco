@@ -112,8 +112,13 @@ def benchmark(algs, plot_func="plot_convergence", n=10):
 
 if __name__ == "__main__":
     benchmark((
-        "tpe_or_gp",
-        "tree_structured_parzen_estimator",
+        # "tpe_or_gp",
+        # "tree_structured_parzen_estimator",
         "safe_gaussian_process",
-        ("openai_debug", "safe_gaussian_process"),
+        "openai",
+        ("openai", "safe_gaussian_process"),
+        # "openai_debug",
+        # ("openai_debug", "safe_gaussian_process"),
+        # "openai_davinci",
+        # ("openai_davinci", "safe_gaussian_process"),
     ))

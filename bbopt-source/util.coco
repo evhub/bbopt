@@ -320,3 +320,10 @@ def stdev(xs) =
     mean((x - mu)**2 for x in xs)**0.5 where:
         mu = mean(xs)
         xs = tuple(xs)
+
+
+def mean_abs_dev(xs) =
+    """Mean absolute deviation of xs."""
+    mean((abs(x - mu) for x in xs)) where:
+        mu = mean(xs)
+        xs = tuple(xs)

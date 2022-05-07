@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xec6da173
+# __coconut_hash__ = 0x93a0969e
 
 # Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
 
@@ -90,10 +90,11 @@ safe_fallback_alg = "tree_structured_parzen_estimator"  #98 (line num in coconut
 
 # OpenAI constants:
 openai_default_engine = "text-curie-001"  #102 (line num in coconut source)
+openai_davinci_engine = "text-davinci-002"  #103 (line num in coconut source)
 
-openai_default_temp = 1  #104 (line num in coconut source)
-openai_max_temp = 2  #105 (line num in coconut source)
+openai_default_temp = 1  #105 (line num in coconut source)
+openai_max_temp = 2  #106 (line num in coconut source)
 
-openai_default_max_retries = 10  #107 (line num in coconut source)
+openai_default_max_retries = 10  #108 (line num in coconut source)
 
-openai_max_context_err_prefix = "This model's maximum context length is "  #109 (line num in coconut source)
+openai_max_context_err_prefix = "This model's maximum context length is "  #110 (line num in coconut source)
