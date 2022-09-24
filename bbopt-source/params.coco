@@ -246,7 +246,7 @@ class ParamProcessor:
 
     def standardize_kwargs(self, kwargs):
         """Standardizes param keyword args."""
-        return kwargs |> fmap$((k, v) -> denumpy_all((k, v)))
+        return kwargs |> fmap$(def ((k, v)) -> denumpy_all((k, v)))
 
     def choose_default_placeholder(self, name, func, *args, **kwargs):
         """Choose a default placeholder_when_missing value for the given parameter."""

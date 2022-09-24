@@ -18,7 +18,7 @@ setuptools.setup(
     classifiers=constants.classifiers |> list,
     packages=setuptools.find_packages(),
     install_requires=constants.requirements |> list,
-    extras_require=constants.extra_requirements |> fmap$((k, v) -> (k, list(v))),
+    extras_require=constants.extra_requirements |> fmap$(def ((k, v)) -> (k, list(v))),
     entry_points={
         "console_scripts": [
             "bbopt = bbopt.cli:main",

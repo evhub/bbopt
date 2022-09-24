@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x2445771f
+# __coconut_hash__ = 0x9e3ad24a
 
-# Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0-a_dev63 [How Not to Be Seen]
 
 """
 Handles standardizing param calls to use standard library random functions.
@@ -32,17 +32,17 @@ if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha(
                     _coconut_v_type.__module__ = _coconut_full_module_name
     _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
-from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_super, _coconut_MatchError, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_multi_dim_arr, _coconut_mk_anon_namedtuple
+from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_super, _coconut_MatchError, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_multi_dim_arr, _coconut_mk_anon_namedtuple, _coconut_matmul
 _coconut_sys.path.pop(0)
 
 # Compiled Coconut: -----------------------------------------------------------
 
 
 
-if _coconut_sys.version_info < (3, 3):  #5 (line num in coconut source)
-    from collections import Iterable  #5 (line num in coconut source)
-else:  #5 (line num in coconut source)
+if _coconut_sys.version_info >= (3, 3):  #5 (line num in coconut source)
     from collections.abc import Iterable  #5 (line num in coconut source)
+else:  #5 (line num in coconut source)
+    from collections import Iterable  #5 (line num in coconut source)
 from math import pi  #6 (line num in coconut source)
 from math import log as ln  #6 (line num in coconut source)
 
@@ -326,7 +326,27 @@ class ParamProcessor(_coconut.object):  #187 (line num in coconut source)
 
     def standardize_kwargs(self, kwargs):  #247 (line num in coconut source)
         """Standardizes param keyword args."""  #248 (line num in coconut source)
-        return (fmap)(lambda k, v: denumpy_all((k, v)), kwargs)  #249 (line num in coconut source)
+        @_coconut_mark_as_match  #249 (line num in coconut source)
+        def _coconut_lambda_0(*_coconut_match_args, **_coconut_match_kwargs):  #249 (line num in coconut source)
+            _coconut_match_check_0 = False  #249 (line num in coconut source)
+            _coconut_match_set_name_k = _coconut_sentinel  #249 (line num in coconut source)
+            _coconut_match_set_name_v = _coconut_sentinel  #249 (line num in coconut source)
+            _coconut_FunctionMatchError = _coconut_get_function_match_error()  #249 (line num in coconut source)
+            if _coconut.len(_coconut_match_args) == 1:  #249 (line num in coconut source)
+                if (_coconut.isinstance(_coconut_match_args[0], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_args[0]) == 2):  #249 (line num in coconut source)
+                    _coconut_match_set_name_k = _coconut_match_args[0][0]  #249 (line num in coconut source)
+                    _coconut_match_set_name_v = _coconut_match_args[0][1]  #249 (line num in coconut source)
+                    if not _coconut_match_kwargs:  #249 (line num in coconut source)
+                        _coconut_match_check_0 = True  #249 (line num in coconut source)
+            if _coconut_match_check_0:  #249 (line num in coconut source)
+                if _coconut_match_set_name_k is not _coconut_sentinel:  #249 (line num in coconut source)
+                    k = _coconut_match_set_name_k  #249 (line num in coconut source)
+                if _coconut_match_set_name_v is not _coconut_sentinel:  #249 (line num in coconut source)
+                    v = _coconut_match_set_name_v  #249 (line num in coconut source)
+            if not _coconut_match_check_0:  #249 (line num in coconut source)
+                raise _coconut_FunctionMatchError('return kwargs |> fmap$(def ((k, v)) -> denumpy_all((k, v)))', _coconut_match_args)  #249 (line num in coconut source)
+            return denumpy_all((k, v))  #249 (line num in coconut source)
+        return (fmap)(_coconut_lambda_0, kwargs)  #249 (line num in coconut source)
 
 
     def choose_default_placeholder(self, name, func, *args, **kwargs):  #251 (line num in coconut source)

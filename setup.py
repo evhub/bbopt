@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x2887181c
+# __coconut_hash__ = 0x2d92b194
 
-# Compiled with Coconut version 2.0.0-a_dev53 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0-a_dev63 [How Not to Be Seen]
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -342,7 +342,12 @@ def _coconut_iter_getitem_special_case(iterable, start, stop, step):
             yield cached_item
         cache.append(item)
 def _coconut_iter_getitem(iterable, index):
-    """Some code taken from more_itertools under the terms of its MIT license."""
+    """Iterator slicing works just like sequence slicing, including support for negative indices and slices, and support for `slice` objects in the same way as can be done with normal slicing.
+
+    Coconut's iterator slicing is very similar to Python's `itertools.islice`, but unlike `itertools.islice`, Coconut's iterator slicing supports negative indices, and will preferentially call an object's `__iter_getitem__` (Coconut-specific magic method, preferred) or `__getitem__` (general Python magic method), if they exist. Coconut's iterator slicing is also optimized to work well with all of Coconut's built-in objects, only computing the elements of each that are actually necessary to extract the desired slice.
+
+    Some code taken from more_itertools under the terms of its MIT license.
+    """
     obj_iter_getitem = _coconut.getattr(iterable, "__iter_getitem__", None)
     if obj_iter_getitem is None:
         obj_iter_getitem = _coconut.getattr(iterable, "__getitem__", None)
@@ -463,38 +468,127 @@ class _coconut_base_compose(_coconut_base_hashable):
             return _coconut.types.MethodType(self, obj, objtype)
         else:
             return _coconut.types.MethodType(self, obj)
-def _coconut_forward_compose(func, *funcs): return _coconut_base_compose(func, *((f, 0) for f in funcs))
-def _coconut_back_compose(*funcs): return _coconut_forward_compose(*_coconut.reversed(funcs))
-def _coconut_forward_star_compose(func, *funcs): return _coconut_base_compose(func, *((f, 1) for f in funcs))
-def _coconut_back_star_compose(*funcs): return _coconut_forward_star_compose(*_coconut.reversed(funcs))
-def _coconut_forward_dubstar_compose(func, *funcs): return _coconut_base_compose(func, *((f, 2) for f in funcs))
-def _coconut_back_dubstar_compose(*funcs): return _coconut_forward_dubstar_compose(*_coconut.reversed(funcs))
-def _coconut_pipe(x, f): return f(x)
-def _coconut_star_pipe(xs, f): return f(*xs)
-def _coconut_dubstar_pipe(kws, f): return f(**kws)
-def _coconut_back_pipe(f, x): return f(x)
-def _coconut_back_star_pipe(f, xs): return f(*xs)
-def _coconut_back_dubstar_pipe(f, kws): return f(**kws)
-def _coconut_none_pipe(x, f): return None if x is None else f(x)
-def _coconut_none_star_pipe(xs, f): return None if xs is None else f(*xs)
-def _coconut_none_dubstar_pipe(kws, f): return None if kws is None else f(**kws)
+def _coconut_forward_compose(func, *funcs):
+    """Forward composition operator (..>).
+
+    (..>)(f, g) is effectively equivalent to (*args, **kwargs) -> g(f(*args, **kwargs))."""
+    return _coconut_base_compose(func, *((f, 0) for f in funcs))
+def _coconut_back_compose(*funcs):
+    """Backward composition operator (<..).
+
+    (<..)(f, g) is effectively equivalent to (*args, **kwargs) -> f(g(*args, **kwargs))."""
+    return _coconut_forward_compose(*_coconut.reversed(funcs))
+def _coconut_forward_star_compose(func, *funcs):
+    """Forward star composition operator (..*>).
+
+    (..*>)(f, g) is effectively equivalent to (*args, **kwargs) -> g(*f(*args, **kwargs))."""
+    return _coconut_base_compose(func, *((f, 1) for f in funcs))
+def _coconut_back_star_compose(*funcs):
+    """Backward star composition operator (<*..).
+
+    (<*..)(f, g) is effectively equivalent to (*args, **kwargs) -> f(*g(*args, **kwargs))."""
+    return _coconut_forward_star_compose(*_coconut.reversed(funcs))
+def _coconut_forward_dubstar_compose(func, *funcs):
+    """Forward double star composition operator (..**>).
+
+    (..**>)(f, g) is effectively equivalent to (*args, **kwargs) -> g(**f(*args, **kwargs))."""
+    return _coconut_base_compose(func, *((f, 2) for f in funcs))
+def _coconut_back_dubstar_compose(*funcs):
+    """Backward double star composition operator (<**..).
+
+    (<**..)(f, g) is effectively equivalent to (*args, **kwargs) -> f(**g(*args, **kwargs))."""
+    return _coconut_forward_dubstar_compose(*_coconut.reversed(funcs))
+def _coconut_pipe(x, f):
+    """Pipe operator (|>). Equivalent to (x, f) -> f(x)."""
+    return f(x)
+def _coconut_star_pipe(xs, f):
+    """Star pipe operator (*|>). Equivalent to (xs, f) -> f(*xs)."""
+    return f(*xs)
+def _coconut_dubstar_pipe(kws, f):
+    """Double star pipe operator (**|>). Equivalent to (kws, f) -> f(**kws)."""
+    return f(**kws)
+def _coconut_back_pipe(f, x):
+    """Backward pipe operator (<|). Equivalent to (f, x) -> f(x)."""
+    return f(x)
+def _coconut_back_star_pipe(f, xs):
+    """Backward star pipe operator (<*|). Equivalent to (f, xs) -> f(*xs)."""
+    return f(*xs)
+def _coconut_back_dubstar_pipe(f, kws):
+    """Backward double star pipe operator (<**|). Equivalent to (f, kws) -> f(**kws)."""
+    return f(**kws)
+def _coconut_none_pipe(x, f):
+    """Nullable pipe operator (|?>). Equivalent to (x, f) -> f(x) if x is not None else None."""
+    return None if x is None else f(x)
+def _coconut_none_star_pipe(xs, f):
+    """Nullable star pipe operator (|?*>). Equivalent to (xs, f) -> f(*xs) if xs is not None else None."""
+    return None if xs is None else f(*xs)
+def _coconut_none_dubstar_pipe(kws, f):
+    """Nullable double star pipe operator (|?**>). Equivalent to (kws, f) -> f(**kws) if kws is not None else None."""
+    return None if kws is None else f(**kws)
 def _coconut_assert(cond, msg=None):
+    """Assert operator (assert). Asserts condition with optional message."""
     if not cond:
         assert False, msg if msg is not None else "(assert) got falsey value " + _coconut.repr(cond)
 def _coconut_raise(exc=None, from_exc=None):
+    """Raise operator (raise). Raises exception with optional cause."""
     if exc is None:
         raise
     if from_exc is not None:
         exc.__cause__ = from_exc
     raise exc
-def _coconut_bool_and(a, b): return a and b
-def _coconut_bool_or(a, b): return a or b
-def _coconut_none_coalesce(a, b): return b if a is None else a
+def _coconut_bool_and(a, b):
+    """Boolean and operator (and). Equivalent to (a, b) -> a and b."""
+    return a and b
+def _coconut_bool_or(a, b):
+    """Boolean or operator (or). Equivalent to (a, b) -> a or b."""
+    return a or b
+def _coconut_none_coalesce(a, b):
+    """None coalescing operator (??). Equivalent to (a, b) -> a if a is not None else b."""
+    return b if a is None else a
 def _coconut_minus(a, b=_coconut_sentinel):
+    """Minus operator (-). Effectively equivalent to (a, b=None) -> a - b if b is not None else -a."""
     if b is _coconut_sentinel:
         return -a
     return a - b
-def _coconut_comma_op(*args): return args
+def _coconut_comma_op(*args):
+    """Comma operator (,). Equivalent to (*args) -> args."""
+    return args
+if _coconut_sys.version_info < (3, 5):
+    def _coconut_matmul(a, b, **kwargs):
+        """Matrix multiplication operator (@). Implements operator.matmul on any Python version."""
+        in_place = kwargs.pop("in_place", False)
+        if kwargs:
+            raise _coconut.TypeError("_coconut_matmul() got unexpected keyword arguments " + _coconut.repr(kwargs))
+        if in_place and _coconut.hasattr(a, "__imatmul__"):
+            try:
+                result = a.__imatmul__(b)
+            except _coconut.NotImplementedError:
+                pass
+            else:
+                if result is not _coconut.NotImplemented:
+                    return result
+        if _coconut.hasattr(a, "__matmul__"):
+            try:
+                result = a.__matmul__(b)
+            except _coconut.NotImplementedError:
+                pass
+            else:
+                if result is not _coconut.NotImplemented:
+                    return result
+        if _coconut.hasattr(b, "__rmatmul__"):
+            try:
+                result = b.__rmatmul__(a)
+            except _coconut.NotImplementedError:
+                pass
+            else:
+                if result is not _coconut.NotImplemented:
+                    return result
+        if "numpy" in (a.__class__.__module__, b.__class__.__module__):
+            from numpy import matmul
+            return matmul(a, b)
+        raise _coconut.TypeError("unsupported operand type(s) for @: " + _coconut.repr(_coconut.type(a)) + " and " + _coconut.repr(_coconut.type(b)))
+else:
+    _coconut_matmul = _coconut.operator.matmul
 @_coconut.functools.wraps(_coconut.itertools.tee)
 def tee(iterable, n=2):
     if n >= 0 and _coconut.isinstance(iterable, (_coconut.tuple, _coconut.frozenset)):
@@ -1084,22 +1178,26 @@ def prepattern(*args, **kwargs):
     """Deprecated feature 'prepattern' disabled by --strict compilation; use 'addpattern' instead."""
     raise _coconut.NameError("deprecated feature 'prepattern' disabled by --strict compilation; use 'addpattern' instead")
 class _coconut_partial(_coconut_base_hashable):
-    __slots__ = ("func", "_argdict", "_arglen", "_stargs", "keywords")
+    __slots__ = ("func", "_argdict", "_arglen", "_pos_kwargs", "_stargs", "keywords")
     if hasattr(_coconut.functools.partial, "__doc__"):
         __doc__ = _coconut.functools.partial.__doc__
-    def __init__(self, _coconut_func, _coconut_argdict, _coconut_arglen, *args, **kwargs):
+    def __init__(self, _coconut_func, _coconut_argdict, _coconut_arglen, _coconut_pos_kwargs, *args, **kwargs):
         self.func = _coconut_func
         self._argdict = _coconut_argdict
         self._arglen = _coconut_arglen
+        self._pos_kwargs = _coconut_pos_kwargs
         self._stargs = args
         self.keywords = kwargs
     def __reduce__(self):
-        return (self.__class__, (self.func, self._argdict, self._arglen) + self._stargs, self.keywords)
+        return (self.__class__, (self.func, self._argdict, self._arglen, self._pos_kwargs) + self._stargs, self.keywords)
     def __setstate__(self, keywords):
         self.keywords = keywords
     @property
     def args(self):
         return _coconut.tuple(self._argdict.get(i) for i in _coconut.range(self._arglen)) + self._stargs
+    @property
+    def required_nargs(self):
+        return self._arglen - _coconut.len(self._argdict) + len(self._pos_kwargs)
     def __call__(self, *args, **kwargs):
         callargs = []
         argind = 0
@@ -1107,14 +1205,23 @@ class _coconut_partial(_coconut_base_hashable):
             if i in self._argdict:
                 callargs.append(self._argdict[i])
             elif argind >= _coconut.len(args):
-                raise _coconut.TypeError("expected at least " + _coconut.str(self._arglen - _coconut.len(self._argdict)) + " argument(s) to " + _coconut.repr(self))
+                raise _coconut.TypeError("expected at least " + _coconut.str(self.required_nargs) + " argument(s) to " + _coconut.repr(self))
             else:
                 callargs.append(args[argind])
                 argind += 1
+        for k in self._pos_kwargs:
+            if k in kwargs:
+                raise _coconut.TypeError(_coconut.repr(k) + " is an invalid keyword argument for " + _coconut.repr(self))
+            elif argind >= _coconut.len(args):
+                raise _coconut.TypeError("expected at least " + _coconut.str(self.required_nargs) + " argument(s) to " + _coconut.repr(self))
+            else:
+                kwargs[k] = args[argind]
+                argind += 1
         callargs += self._stargs
         callargs += args[argind:]
-        kwargs.update(self.keywords)
-        return self.func(*callargs, **kwargs)
+        callkwargs = self.keywords.copy()
+        callkwargs.update(kwargs)
+        return self.func(*callargs, **callkwargs)
     def __repr__(self):
         args = []
         for i in _coconut.range(self._arglen):
@@ -1124,6 +1231,8 @@ class _coconut_partial(_coconut_base_hashable):
                 args.append("?")
         for arg in self._stargs:
             args.append(_coconut.repr(arg))
+        for k in self._pos_kwargs:
+            args.append(k + "=?")
         for k, v in self.keywords.items():
             args.append(k + "=" + _coconut.repr(v))
         return "%r$(%s)" % (self.func, ", ".join(args))
@@ -1167,11 +1276,34 @@ def makedata(data_type, *args):
 def datamaker(*args, **kwargs):
     """Deprecated feature 'datamaker' disabled by --strict compilation; use 'makedata' instead."""
     raise _coconut.NameError("deprecated feature 'datamaker' disabled by --strict compilation; use 'makedata' instead")
-def fmap(func, obj):
+if _coconut_sys.version_info < (3, 3):
+    _coconut_amap = None
+else:
+    class _coconut_amap(_coconut_base_hashable):
+        __slots__ = ("func", "aiter")
+        def __init__(self, func, aiter):
+            self.func = func
+            self.aiter = aiter.__aiter__()
+        def __reduce__(self):
+            return (self.__class__, (self.func, self.aiter))
+        def __aiter__(self):
+            return self
+        if _coconut_sys.version_info < (3, 5):
+            _coconut_exec("""@_coconut.asyncio.coroutine
+            def __anext__(self):
+                result = yield from self.aiter.__anext__()
+                return self.func(result)""")
+        else:
+            _coconut_exec("async def __anext__(self): return self.func(await self.aiter.__anext__())")
+def fmap(func, obj, **kwargs):
     """fmap(func, obj) creates a copy of obj with func applied to its contents.
+    Supports asynchronous iterables. For numpy arrays, uses np.vectorize.
 
-    Override by defining obj.__fmap__(func). For numpy arrays, uses np.vectorize.
+    Override by defining obj.__fmap__(func).
     """
+    starmap_over_mappings = kwargs.pop("starmap_over_mappings", False)
+    if kwargs:
+        raise _coconut.TypeError("fmap() got unexpected keyword arguments " + _coconut.repr(kwargs))
     obj_fmap = _coconut.getattr(obj, "__fmap__", None)
     if obj_fmap is not None:
         try:
@@ -1183,7 +1315,12 @@ def fmap(func, obj):
                 return result
     if obj.__class__.__module__ in ('numpy', 'pandas'):
         return _coconut.numpy.vectorize(func)(obj)
-    return _coconut_makedata(obj.__class__, *(_coconut_starmap(func, obj.items()) if _coconut.isinstance(obj, _coconut.abc.Mapping) else _coconut_map(func, obj)))
+    if _coconut.hasattr(obj, "__aiter__") and _coconut_amap is not None:
+        return _coconut_amap(func, obj)
+    if starmap_over_mappings:
+        return _coconut_makedata(obj.__class__, *(_coconut_starmap(func, obj.items()) if _coconut.isinstance(obj, _coconut.abc.Mapping) else _coconut_map(func, obj)))
+    else:
+        return _coconut_makedata(obj.__class__, *_coconut_map(func, obj.items() if _coconut.isinstance(obj, _coconut.abc.Mapping) else obj))
 def memoize(maxsize=None, *args, **kwargs):
     """Decorator that memoizes a function, preventing it from being recomputed
     if it is called multiple times with the same arguments."""
@@ -1430,4 +1567,24 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "bbo
 import constants  #7 (line num in coconut source)
 
 
-setuptools.setup(name=constants.name, version=constants.version, description=constants.description, long_description=constants.long_description, url=constants.github_url, author=constants.author, author_email=constants.author_email, classifiers=(list)(constants.classifiers), packages=setuptools.find_packages(), install_requires=(list)(constants.requirements), extras_require=(fmap)(lambda k, v: (k, list(v)), constants.extra_requirements), entry_points={"console_scripts": ["bbopt = bbopt.cli:main",]})  #10 (line num in coconut source)
+@_coconut_mark_as_match  #10 (line num in coconut source)
+def _coconut_lambda_0(*_coconut_match_args, **_coconut_match_kwargs):  #10 (line num in coconut source)
+    _coconut_match_check_0 = False  #10 (line num in coconut source)
+    _coconut_match_set_name_k = _coconut_sentinel  #10 (line num in coconut source)
+    _coconut_match_set_name_v = _coconut_sentinel  #10 (line num in coconut source)
+    _coconut_FunctionMatchError = _coconut_get_function_match_error()  #10 (line num in coconut source)
+    if _coconut.len(_coconut_match_args) == 1:  #10 (line num in coconut source)
+        if (_coconut.isinstance(_coconut_match_args[0], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_args[0]) == 2):  #10 (line num in coconut source)
+            _coconut_match_set_name_k = _coconut_match_args[0][0]  #10 (line num in coconut source)
+            _coconut_match_set_name_v = _coconut_match_args[0][1]  #10 (line num in coconut source)
+            if not _coconut_match_kwargs:  #10 (line num in coconut source)
+                _coconut_match_check_0 = True  #10 (line num in coconut source)
+    if _coconut_match_check_0:  #10 (line num in coconut source)
+        if _coconut_match_set_name_k is not _coconut_sentinel:  #10 (line num in coconut source)
+            k = _coconut_match_set_name_k  #10 (line num in coconut source)
+        if _coconut_match_set_name_v is not _coconut_sentinel:  #10 (line num in coconut source)
+            v = _coconut_match_set_name_v  #10 (line num in coconut source)
+    if not _coconut_match_check_0:  #10 (line num in coconut source)
+        raise _coconut_FunctionMatchError('extras_require=constants.extra_requirements |> fmap$(def ((k, v)) -> (k, list(v))),', _coconut_match_args)  #10 (line num in coconut source)
+    return (k, list(v))  #10 (line num in coconut source)
+setuptools.setup(name=constants.name, version=constants.version, description=constants.description, long_description=constants.long_description, url=constants.github_url, author=constants.author, author_email=constants.author_email, classifiers=(list)(constants.classifiers), packages=setuptools.find_packages(), install_requires=(list)(constants.requirements), extras_require=(fmap)(_coconut_lambda_0, constants.extra_requirements), entry_points={"console_scripts": ["bbopt = bbopt.cli:main",]})  #10 (line num in coconut source)
