@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x92d67e1
+# __coconut_hash__ = 0x70ba5cdc
 
-# Compiled with Coconut version 2.0.0-a_dev63 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0-a_dev65 [How Not to Be Seen]
 
 """
 The backend and algorithm registries.

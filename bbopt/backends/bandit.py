@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa262fc0e
+# __coconut_hash__ = 0x208fd47d
 
-# Compiled with Coconut version 2.0.0-a_dev63 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0-a_dev65 [How Not to Be Seen]
 
 """
 The bandit backend. Implementations of simple multi-armed bandit algorithms, primarily for run_meta.

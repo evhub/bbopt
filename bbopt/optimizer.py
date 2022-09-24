@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x8d5fc0f6
+# __coconut_hash__ = 0xc0ef3eb3
 
-# Compiled with Coconut version 2.0.0-a_dev63 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0-a_dev65 [How Not to Be Seen]
 
 """
 The main BBopt interface.

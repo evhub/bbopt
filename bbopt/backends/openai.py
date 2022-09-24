@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3dcd1fda
+# __coconut_hash__ = 0xc18ffd3b
 
-# Compiled with Coconut version 2.0.0-a_dev63 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0-a_dev65 [How Not to Be Seen]
 
 """
 The OpenAI backend. Uses large language models for black box optimization.

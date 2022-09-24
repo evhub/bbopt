@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # type: ignore
 
-# Compiled with Coconut version 2.0.0-a_dev63 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0-a_dev65 [How Not to Be Seen]
 
 """Built-in Coconut utilities."""
 
@@ -1005,7 +1005,7 @@ class count(_coconut_base_hashable):
 class groupsof(_coconut_base_hashable):
     """groupsof(n, iterable) splits iterable into groups of size n.
 
-    If the length of the iterable is not divisible by n, the last group may be of size < n.
+    If the length of the iterable is not divisible by n, the last group will be of size < n.
     """
     __slots__ = ("group_size", "iter")
     def __init__(self, n, iterable):
@@ -1266,8 +1266,7 @@ class starmap(_coconut_base_hashable, _coconut.itertools.starmap):
         return _coconut.iter(_coconut.itertools.starmap(self.func, self.iter))
     def __fmap__(self, func):
         return self.__class__(_coconut_forward_compose(self.func, func), self.iter)
-def makedata(data_type, *args):
-    """Construct an object of the given data_type containing the given arguments."""
+def _coconut_base_makedata(data_type, args):
     if _coconut.hasattr(data_type, "_make") and _coconut.issubclass(data_type, _coconut.tuple):
         return data_type._make(args)
     if _coconut.issubclass(data_type, (_coconut.range, _coconut.abc.Iterator)):
@@ -1275,6 +1274,9 @@ def makedata(data_type, *args):
     if _coconut.issubclass(data_type, _coconut.str):
         return "".join(args)
     return data_type(args)
+def makedata(data_type, *args):
+    """Construct an object of the given data_type containing the given arguments."""
+    return _coconut_base_makedata(data_type, args)
 def datamaker(*args, **kwargs):
     """Deprecated feature 'datamaker' disabled by --strict compilation; use 'makedata' instead."""
     raise _coconut.NameError("deprecated feature 'datamaker' disabled by --strict compilation; use 'makedata' instead")
@@ -1299,7 +1301,7 @@ else:
             _coconut_exec("async def __anext__(self): return self.func(await self.aiter.__anext__())")
 def fmap(func, obj, **kwargs):
     """fmap(func, obj) creates a copy of obj with func applied to its contents.
-    Supports asynchronous iterables. For numpy arrays, uses np.vectorize.
+    Supports asynchronous iterables, mappings (maps over .items()), and numpy arrays (uses np.vectorize).
 
     Override by defining obj.__fmap__(func).
     """
@@ -1320,9 +1322,9 @@ def fmap(func, obj, **kwargs):
     if _coconut.hasattr(obj, "__aiter__") and _coconut_amap is not None:
         return _coconut_amap(func, obj)
     if starmap_over_mappings:
-        return _coconut_makedata(obj.__class__, *(_coconut_starmap(func, obj.items()) if _coconut.isinstance(obj, _coconut.abc.Mapping) else _coconut_map(func, obj)))
+        return _coconut_base_makedata(obj.__class__, _coconut_starmap(func, obj.items()) if _coconut.isinstance(obj, _coconut.abc.Mapping) else _coconut_map(func, obj))
     else:
-        return _coconut_makedata(obj.__class__, *_coconut_map(func, obj.items() if _coconut.isinstance(obj, _coconut.abc.Mapping) else obj))
+        return _coconut_base_makedata(obj.__class__, _coconut_map(func, obj.items() if _coconut.isinstance(obj, _coconut.abc.Mapping) else obj))
 def memoize(maxsize=None, *args, **kwargs):
     """Decorator that memoizes a function, preventing it from being recomputed
     if it is called multiple times with the same arguments."""
@@ -1556,4 +1558,4 @@ def _coconut_multi_dim_arr(arrs, dim):
     max_arr_dim = _coconut.max(arr_dims)
     return _coconut_concatenate(arrs, max_arr_dim - dim)
 _coconut_self_match_types = (bool, bytearray, bytes, dict, float, frozenset, int, py_int, list, set, str, py_str, tuple)
-_coconut_MatchError, _coconut_count, _coconut_enumerate, _coconut_filter, _coconut_makedata, _coconut_map, _coconut_reiterable, _coconut_reversed, _coconut_starmap, _coconut_tee, _coconut_zip, TYPE_CHECKING, reduce, takewhile, dropwhile = MatchError, count, enumerate, filter, makedata, map, reiterable, reversed, starmap, tee, zip, False, _coconut.functools.reduce, _coconut.itertools.takewhile, _coconut.itertools.dropwhile
+_coconut_MatchError, _coconut_count, _coconut_enumerate, _coconut_filter, _coconut_map, _coconut_reiterable, _coconut_reversed, _coconut_starmap, _coconut_tee, _coconut_zip, TYPE_CHECKING, reduce, takewhile, dropwhile = MatchError, count, enumerate, filter, map, reiterable, reversed, starmap, tee, zip, False, _coconut.functools.reduce, _coconut.itertools.takewhile, _coconut.itertools.dropwhile
