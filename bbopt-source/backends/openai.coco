@@ -17,7 +17,7 @@ from bbopt.backends.util import StandardBackend, sorted_params
 
 def get_prompt(params, data_points, losses, hoped_for_loss) =
     """Get the base OpenAI API prompt."""
-    '''# black box function to be minimized
+    r'''# black box function to be minimized
 def f({func_params}) -> float:
     """
     parameters:

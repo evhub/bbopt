@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3df335f0
+# __coconut_hash__ = 0xf5557f4d
 
-# Compiled with Coconut version 2.0.0-a_dev65 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0 [How Not to Be Seen]
 
 """
 The random backend. Does not use existing data, simply spits out random valid values.
@@ -39,34 +39,34 @@ _coconut_sys.path.pop(0)
 
 
 
-import random  #5 (line num in coconut source)
+import random  #5 (line in Coconut source)
 
-from bbopt.backends.util import Backend  #7 (line num in coconut source)
+from bbopt.backends.util import Backend  #7 (line in Coconut source)
 
 
 # Backend:
 
-class RandomBackend(Backend):  #12 (line num in coconut source)
-    """The random backend chooses parameter values randomly."""  #13 (line num in coconut source)
-    backend_name = "random"  #14 (line num in coconut source)
-    random_functions = {"randrange": random.randrange, "choice": random.choice, "uniform": random.uniform, "triangular": random.triangular, "betavariate": random.betavariate, "expovariate": random.expovariate, "gammavariate": random.gammavariate, "normalvariate": random.gauss, "vonmisesvariate": random.vonmisesvariate, "paretovariate": random.paretovariate, "weibullvariate": random.weibullvariate}  # gauss is more efficient than normalvariate  #15 (line num in coconut source)
+class RandomBackend(Backend):  #12 (line in Coconut source)
+    """The random backend chooses parameter values randomly."""  #13 (line in Coconut source)
+    backend_name = "random"  #14 (line in Coconut source)
+    random_functions = {"randrange": random.randrange, "choice": random.choice, "uniform": random.uniform, "triangular": random.triangular, "betavariate": random.betavariate, "expovariate": random.expovariate, "gammavariate": random.gammavariate, "normalvariate": random.gauss, "vonmisesvariate": random.vonmisesvariate, "paretovariate": random.paretovariate, "weibullvariate": random.weibullvariate}  # gauss is more efficient than normalvariate  #15 (line in Coconut source)
 
-    @override  #29 (line num in coconut source)
-    def param(self, name, func, *args, **kwargs):  #30 (line num in coconut source)
-        if func not in self.random_functions:  #31 (line num in coconut source)
-            raise ValueError("unknown random function {_coconut_format_0}".format(_coconut_format_0=(name)))  #32 (line num in coconut source)
-        return self.random_functions[func](*args)  #33 (line num in coconut source)
+    @override  #29 (line in Coconut source)
+    def param(self, name, func, *args, **kwargs):  #30 (line in Coconut source)
+        if func not in self.random_functions:  #31 (line in Coconut source)
+            raise ValueError("unknown random function {_coconut_format_0}".format(_coconut_format_0=(name)))  #32 (line in Coconut source)
+        return self.random_functions[func](*args)  #33 (line in Coconut source)
 
 
-    @override  #35 (line num in coconut source)
-    def attempt_update(self, examples, params):  #36 (line num in coconut source)
-        """The random backend requires no modifications to be updated with new parameters."""  #37 (line num in coconut source)
-        return True  #38 (line num in coconut source)
+    @override  #35 (line in Coconut source)
+    def attempt_update(self, examples, params):  #36 (line in Coconut source)
+        """The random backend requires no modifications to be updated with new parameters."""  #37 (line in Coconut source)
+        return True  #38 (line in Coconut source)
 
 
 # Registered names:
 
 
-_coconut_call_set_names(RandomBackend)  #43 (line num in coconut source)
-RandomBackend.register()  #43 (line num in coconut source)
-RandomBackend.register_alg("random")  #44 (line num in coconut source)
+_coconut_call_set_names(RandomBackend)  #43 (line in Coconut source)
+RandomBackend.register()  #43 (line in Coconut source)
+RandomBackend.register_alg("random")  #44 (line in Coconut source)

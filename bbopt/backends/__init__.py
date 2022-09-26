@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xf583057e
+# __coconut_hash__ = 0xfd4d4ff7
 
-# Compiled with Coconut version 2.0.0-a_dev65 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0 [How Not to Be Seen]
 
 """
 Backends contains all of bbopt's different backends.
@@ -39,46 +39,46 @@ _coconut_sys.path.pop(0)
 
 
 
-sys = _coconut_sys  #5 (line num in coconut source)
-import traceback  #6 (line num in coconut source)
+sys = _coconut_sys  #5 (line in Coconut source)
+import traceback  #6 (line in Coconut source)
 
-from bbopt.util import printerr  #8 (line num in coconut source)
+from bbopt.util import printerr  #8 (line in Coconut source)
 
 # import all the backends to register them
-from bbopt.backends.serving import ServingBackend  #11 (line num in coconut source)
-from bbopt.backends.random import RandomBackend  #12 (line num in coconut source)
-from bbopt.backends.mixture import MixtureBackend  #13 (line num in coconut source)
-from bbopt.backends.bandit import BanditBackend  #14 (line num in coconut source)
-try:  #15 (line num in coconut source)
-    from bbopt.backends.skopt import SkoptBackend  #16 (line num in coconut source)
-except ImportError:  #17 (line num in coconut source)
-    traceback.print_exc()  #18 (line num in coconut source)
-    printerr("Could not import scikit-optimize backend; backend unavailable (see above error).")  #19 (line num in coconut source)
-try:  #20 (line num in coconut source)
-    from bbopt.backends.hyperopt import HyperoptBackend  #21 (line num in coconut source)
-except ImportError:  #22 (line num in coconut source)
-    traceback.print_exc()  #23 (line num in coconut source)
-    printerr("Could not import hyperopt backend; backend unavailable (see above error).")  #24 (line num in coconut source)
-if sys.version_info >= (3,):  #25 (line num in coconut source)
-    try:  #26 (line num in coconut source)
-        from bbopt.backends.pysot import PySOTBackend  #27 (line num in coconut source)
-    except ImportError:  #28 (line num in coconut source)
-        traceback.print_exc()  #29 (line num in coconut source)
-        printerr("Could not import pySOT backend; backend unavailable (see above error).")  #30 (line num in coconut source)
-if sys.version_info >= (3, 7):  #31 (line num in coconut source)
-    try:  #32 (line num in coconut source)
-        from bbopt.backends.bask import BaskBackend  #33 (line num in coconut source)
-    except ImportError:  #34 (line num in coconut source)
-        traceback.print_exc()  #35 (line num in coconut source)
-        printerr("Could not import bayes-skopt backend; backend unavailable (see above error).")  #36 (line num in coconut source)
-if sys.version_info >= (3,):  #37 (line num in coconut source)
-    try:  #38 (line num in coconut source)
-        from bbopt.backends.openai import OpenAIBackend  #39 (line num in coconut source)
-    except ImportError:  #40 (line num in coconut source)
-        traceback.print_exc()  #41 (line num in coconut source)
-        printerr("Could not import openai backend; backend unavailable (see above error).")  #42 (line num in coconut source)
+from bbopt.backends.serving import ServingBackend  #11 (line in Coconut source)
+from bbopt.backends.random import RandomBackend  #12 (line in Coconut source)
+from bbopt.backends.mixture import MixtureBackend  #13 (line in Coconut source)
+from bbopt.backends.bandit import BanditBackend  #14 (line in Coconut source)
+try:  #15 (line in Coconut source)
+    from bbopt.backends.skopt import SkoptBackend  #16 (line in Coconut source)
+except ImportError:  #17 (line in Coconut source)
+    traceback.print_exc()  #18 (line in Coconut source)
+    printerr("Could not import scikit-optimize backend; backend unavailable (see above error).")  #19 (line in Coconut source)
+try:  #20 (line in Coconut source)
+    from bbopt.backends.hyperopt import HyperoptBackend  #21 (line in Coconut source)
+except ImportError:  #22 (line in Coconut source)
+    traceback.print_exc()  #23 (line in Coconut source)
+    printerr("Could not import hyperopt backend; backend unavailable (see above error).")  #24 (line in Coconut source)
+if sys.version_info >= (3,):  #25 (line in Coconut source)
+    try:  #26 (line in Coconut source)
+        from bbopt.backends.pysot import PySOTBackend  #27 (line in Coconut source)
+    except ImportError:  #28 (line in Coconut source)
+        traceback.print_exc()  #29 (line in Coconut source)
+        printerr("Could not import pySOT backend; backend unavailable (see above error).")  #30 (line in Coconut source)
+if sys.version_info >= (3, 7):  #31 (line in Coconut source)
+    try:  #32 (line in Coconut source)
+        from bbopt.backends.bask import BaskBackend  #33 (line in Coconut source)
+    except ImportError:  #34 (line in Coconut source)
+        traceback.print_exc()  #35 (line in Coconut source)
+        printerr("Could not import bayes-skopt backend; backend unavailable (see above error).")  #36 (line in Coconut source)
+if sys.version_info >= (3,):  #37 (line in Coconut source)
+    try:  #38 (line in Coconut source)
+        from bbopt.backends.openai import OpenAIBackend  #39 (line in Coconut source)
+    except ImportError:  #40 (line in Coconut source)
+        traceback.print_exc()  #41 (line in Coconut source)
+        printerr("Could not import openai backend; backend unavailable (see above error).")  #42 (line in Coconut source)
 
 # meta alg mixtures don't care what backend we register them on,
 #  so we just register them here
-ServingBackend.register_meta("tpe_or_gp", ("tree_structured_parzen_estimator", "safe_gaussian_process"))  #46 (line num in coconut source)
-ServingBackend.register_meta("any_fast", ("tree_structured_parzen_estimator", "safe_random_forest", "safe_extra_trees", "safe_gradient_boosted_regression_trees"))  #50 (line num in coconut source)
+ServingBackend.register_meta("tpe_or_gp", ("tree_structured_parzen_estimator", "safe_gaussian_process"))  #46 (line in Coconut source)
+ServingBackend.register_meta("any_fast", ("tree_structured_parzen_estimator", "safe_random_forest", "safe_extra_trees", "safe_gradient_boosted_regression_trees"))  #50 (line in Coconut source)

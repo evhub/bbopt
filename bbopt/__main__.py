@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x16e64bb6
+# __coconut_hash__ = 0x8a7556f8
 
-# Compiled with Coconut version 2.0.0-a_dev65 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0 [How Not to Be Seen]
 
 """
 Endpoint for the BBopt CLI.
@@ -39,8 +39,8 @@ _coconut_sys.path.pop(0)
 
 
 
-from bbopt.cli import main  #5 (line num in coconut source)
+from bbopt.cli import main  #5 (line in Coconut source)
 
 
-if __name__ == "__main__":  #8 (line num in coconut source)
-    main()  #9 (line num in coconut source)
+if __name__ == "__main__":  #8 (line in Coconut source)
+    main()  #9 (line in Coconut source)

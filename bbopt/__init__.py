@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xa17f3520
+# __coconut_hash__ = 0x54f94e8a
 
-# Compiled with Coconut version 2.0.0-a_dev65 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0 [How Not to Be Seen]
 
 """
 BBopt black box optimization frontend
@@ -52,5 +52,5 @@ _coconut_sys.path.pop(0)
 
 
 
-from bbopt.backends import *  # register backends  #18 (line num in coconut source)
-from bbopt.optimizer import *  # make optimizer available  #19 (line num in coconut source)
+from bbopt.backends import *  # register backends  #18 (line in Coconut source)
+from bbopt.optimizer import *  # make optimizer available  #19 (line in Coconut source)

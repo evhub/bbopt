@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x3e2db250
+# __coconut_hash__ = 0xe280f5da
 
-# Compiled with Coconut version 2.0.0-a_dev65 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0 [How Not to Be Seen]
 
 """
 The serving backend. Selects the best existing data point.
@@ -39,48 +39,48 @@ _coconut_sys.path.pop(0)
 
 
 
-from bbopt.util import best_example  #5 (line num in coconut source)
-from bbopt.backends.util import Backend  #6 (line num in coconut source)
+from bbopt.util import best_example  #5 (line in Coconut source)
+from bbopt.backends.util import Backend  #6 (line in Coconut source)
 
 
 # Backend:
 
-class ServingBackend(Backend):  #11 (line num in coconut source)
-    """The serving backend uses the parameter values from the best example."""  #12 (line num in coconut source)
-    backend_name = "serving"  #13 (line num in coconut source)
+class ServingBackend(Backend):  #11 (line in Coconut source)
+    """The serving backend uses the parameter values from the best example."""  #12 (line in Coconut source)
+    backend_name = "serving"  #13 (line in Coconut source)
 
-    @override  #15 (line num in coconut source)
-    def attempt_update(self, examples, params, allow_missing_data=False):  #16 (line num in coconut source)
-        """Update the serving backend with new parameters."""  #17 (line num in coconut source)
+    @override  #15 (line in Coconut source)
+    def attempt_update(self, examples, params, allow_missing_data=False):  #16 (line in Coconut source)
+        """Update the serving backend with new parameters."""  #17 (line in Coconut source)
 # since we're serving, ignore params and just extract the best example
-        self.current_values = best_example(examples)["values"]  #19 (line num in coconut source)
+        self.current_values = best_example(examples)["values"]  #19 (line in Coconut source)
 
 # set new allow_missing_data and call init_fallback_backend if necessary
-        self.allow_missing_data = allow_missing_data  #22 (line num in coconut source)
-        if not self.fallback_backend and self.allow_missing_data:  #23 (line num in coconut source)
-            self.init_fallback_backend()  #24 (line num in coconut source)
+        self.allow_missing_data = allow_missing_data  #22 (line in Coconut source)
+        if not self.fallback_backend and self.allow_missing_data:  #23 (line in Coconut source)
+            self.init_fallback_backend()  #24 (line in Coconut source)
 
-        return True  #26 (line num in coconut source)
+        return True  #26 (line in Coconut source)
 
 
-    @override  #28 (line num in coconut source)
-    def fallback_func(self, name, func, *args, **kwargs):  #29 (line num in coconut source)
-        if self.allow_missing_data:  #30 (line num in coconut source)
-            __class__ = ServingBackend  #31 (line num in coconut source)
+    @override  #28 (line in Coconut source)
+    def fallback_func(self, name, func, *args, **kwargs):  #29 (line in Coconut source)
+        if self.allow_missing_data:  #30 (line in Coconut source)
+            __class__ = ServingBackend  #31 (line in Coconut source)
 
-            return super().fallback_func(name, func, *args, **kwargs)  #31 (line num in coconut source)
-        else:  #32 (line num in coconut source)
-            raise ValueError("missing data for parameter {_coconut_format_0} while serving and no guess".format(_coconut_format_0=(name)))  #33 (line num in coconut source)
+            return super().fallback_func(name, func, *args, **kwargs)  #31 (line in Coconut source)
+        else:  #32 (line in Coconut source)
+            raise ValueError("missing data for parameter {_coconut_format_0} while serving and no guess".format(_coconut_format_0=(name)))  #33 (line in Coconut source)
 
 
 # Registered names:
 
 
-_coconut_call_set_names(ServingBackend)  #38 (line num in coconut source)
-ServingBackend.register()  #38 (line num in coconut source)
+_coconut_call_set_names(ServingBackend)  #38 (line in Coconut source)
+ServingBackend.register()  #38 (line in Coconut source)
 
 # allow_missing_data=False not included to help bb._backend_store
-ServingBackend.register_alg(None)  #41 (line num in coconut source)
-ServingBackend.register_alg("serving")  #42 (line num in coconut source)
+ServingBackend.register_alg(None)  #41 (line in Coconut source)
+ServingBackend.register_alg("serving")  #42 (line in Coconut source)
 
-ServingBackend.register_alg("max_greedy", allow_missing_data=True)  #44 (line num in coconut source)
+ServingBackend.register_alg("max_greedy", allow_missing_data=True)  #44 (line in Coconut source)

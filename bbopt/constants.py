@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x7ddf3505
+# __coconut_hash__ = 0x541cb607
 
-# Compiled with Coconut version 2.0.0-a_dev65 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0 [How Not to Be Seen]
 
 """
 Constants for use across all of BBopt.
@@ -41,60 +41,60 @@ _coconut_sys.path.pop(0)
 
 
 # Installation constants:
-name = "bbopt"  #7 (line num in coconut source)
-version = "1.4.2"  #8 (line num in coconut source)
-description = "The easiest hyperparameter optimization you'll ever do."  #9 (line num in coconut source)
+name = "bbopt"  #7 (line in Coconut source)
+version = "1.4.2"  #8 (line in Coconut source)
+description = "The easiest hyperparameter optimization you'll ever do."  #9 (line in Coconut source)
 long_description = """
 See BBopt's GitHub_ for more information.
 
 .. _GitHub: https://github.com/evhub/bbopt
-"""  #14 (line num in coconut source)
-github_url = "https://github.com/evhub/bbopt"  #15 (line num in coconut source)
-author = "Evan Hubinger"  #16 (line num in coconut source)
-author_email = "evanjhub@gmail.com"  #17 (line num in coconut source)
-classifiers = ("Development Status :: 5 - Production/Stable", "License :: OSI Approved :: Apache Software License", "Topic :: Software Development :: Libraries :: Python Modules", "Operating System :: OS Independent")  #18 (line num in coconut source)
-requirements = ("numpy>=1.15.1", "matplotlib>=2.2.5")  #24 (line num in coconut source)
-extra_requirements = {":python_version>='3.7'": ("bask>=0.10.6",), ":python_version>='3'": ("pysot>=0.3.3", "portalocker>=2.2.1", "hyperopt>=0.2.5", "scikit-optimize>=0.8.1", "openai>=0.6.4", "scikit-learn>=0.23.2", "networkx>=2.2", "pymongo>=3.9", "pyspark>=2.4"), ":python_version<'3'": ("futures>=3.3", "scikit-learn>=0.20.4", "scikit-optimize>=0.8.1,<0.9", "portalocker>=1.7.1,<2.0", "hyperopt>=0.1.2,<0.2", "networkx>=1.0,<2.0"), "examples": ("tensorflow>=2.0; python_version>='3'",)}  #28 (line num in coconut source)
-extra_requirements["dev"] = (extra_requirements["examples"] + ("coconut-develop", "pytest>=3.0"))  #62 (line num in coconut source)
+"""  #14 (line in Coconut source)
+github_url = "https://github.com/evhub/bbopt"  #15 (line in Coconut source)
+author = "Evan Hubinger"  #16 (line in Coconut source)
+author_email = "evanjhub@gmail.com"  #17 (line in Coconut source)
+classifiers = ("Development Status :: 5 - Production/Stable", "License :: OSI Approved :: Apache Software License", "Topic :: Software Development :: Libraries :: Python Modules", "Operating System :: OS Independent")  #18 (line in Coconut source)
+requirements = ("numpy>=1.15.1", "matplotlib>=2.2.5")  #24 (line in Coconut source)
+extra_requirements = {":python_version>='3.7'": ("bask>=0.10.6",), ":python_version>='3'": ("pysot>=0.3.3", "portalocker>=2.2.1", "hyperopt>=0.2.5", "scikit-optimize>=0.8.1", "openai>=0.6.4", "scikit-learn>=0.23.2", "networkx>=2.2", "pymongo>=3.9", "pyspark>=2.4"), ":python_version<'3'": ("futures>=3.3", "scikit-learn>=0.20.4", "scikit-optimize>=0.8.1,<0.9", "portalocker>=1.7.1,<2.0", "hyperopt>=0.1.2,<0.2", "networkx>=1.0,<2.0"), "examples": ("tensorflow>=2.0; python_version>='3'",)}  #28 (line in Coconut source)
+extra_requirements["dev"] = (extra_requirements["examples"] + ("coconut-develop", "pytest>=3.0"))  #62 (line in Coconut source)
 
 
 # Optimizer constants:
-default_alg = "any_fast"  #72 (line num in coconut source)
-default_meta_alg = "boltzmann_gumbel_exploration"  #73 (line num in coconut source)
+default_alg = "any_fast"  #72 (line in Coconut source)
+default_meta_alg = "boltzmann_gumbel_exploration"  #73 (line in Coconut source)
 
-default_protocol = 2  #75 (line num in coconut source)
-lock_timeout = 6  #76 (line num in coconut source)
-meta_opt_alg_var = "_run_meta_alg"  #77 (line num in coconut source)
-data_file_ext = ".bbopt"  #78 (line num in coconut source)
+default_protocol = 2  #75 (line in Coconut source)
+lock_timeout = 6  #76 (line in Coconut source)
+meta_opt_alg_var = "_run_meta_alg"  #77 (line in Coconut source)
+data_file_ext = ".bbopt"  #78 (line in Coconut source)
 
-use_generic_categories_for_categorical_data = False  #80 (line num in coconut source)
-use_placeholder_when_outside_support = False  #81 (line num in coconut source)
+use_generic_categories_for_categorical_data = False  #80 (line in Coconut source)
+use_placeholder_when_outside_support = False  #81 (line in Coconut source)
 
-default_alg_sentinel = object()  #83 (line num in coconut source)
+default_alg_sentinel = object()  #83 (line in Coconut source)
 
 
 # CLI constants:
-default_trials = 100  #87 (line num in coconut source)
-default_jobs = 4  #88 (line num in coconut source)
+default_trials = 100  #87 (line in Coconut source)
+default_jobs = 4  #88 (line in Coconut source)
 
-run_id_env_var = "BBOPT_RUN_ID"  #90 (line num in coconut source)
+run_id_env_var = "BBOPT_RUN_ID"  #90 (line in Coconut source)
 
 
 # Backend constants:
-default_fallback_backend = "random"  #94 (line num in coconut source)
-erroring_backend_errs = (ValueError, TypeError)  #95 (line num in coconut source)
+default_fallback_backend = "random"  #94 (line in Coconut source)
+erroring_backend_errs = (ValueError, TypeError)  #95 (line in Coconut source)
 
-eps_greedy_explore_prob = 0.2  #97 (line num in coconut source)
-safe_fallback_alg = "tree_structured_parzen_estimator"  #98 (line num in coconut source)
+eps_greedy_explore_prob = 0.2  #97 (line in Coconut source)
+safe_fallback_alg = "tree_structured_parzen_estimator"  #98 (line in Coconut source)
 
 
 # OpenAI constants:
-openai_default_engine = "text-curie-001"  #102 (line num in coconut source)
-openai_davinci_engine = "text-davinci-002"  #103 (line num in coconut source)
+openai_default_engine = "text-curie-001"  #102 (line in Coconut source)
+openai_davinci_engine = "text-davinci-002"  #103 (line in Coconut source)
 
-openai_default_temp = 1  #105 (line num in coconut source)
-openai_max_temp = 2  #106 (line num in coconut source)
+openai_default_temp = 1  #105 (line in Coconut source)
+openai_max_temp = 2  #106 (line in Coconut source)
 
-openai_default_max_retries = 10  #108 (line num in coconut source)
+openai_default_max_retries = 10  #108 (line in Coconut source)
 
-openai_max_context_err_prefix = "This model's maximum context length is "  #110 (line num in coconut source)
+openai_max_context_err_prefix = "This model's maximum context length is "  #110 (line in Coconut source)

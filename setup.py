@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x5c05523
+# __coconut_hash__ = 0x4501e0db
 
-# Compiled with Coconut version 2.0.0-a_dev65 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0 [How Not to Be Seen]
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -259,6 +259,7 @@ class _coconut(object):
         numpy = you_need_to_install_numpy()
     else:
         abc.Sequence.register(numpy.ndarray)
+    numpy_modules = ('numpy', 'pandas', 'jaxlib.xla_extension')
     abc.Sequence.register(collections.deque)
     Ellipsis, NotImplemented, NotImplementedError, Exception, AttributeError, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, RuntimeError, all, any, bytes, classmethod, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, locals, map, min, max, next, object, property, range, reversed, set, slice, str, sum, super, tuple, type, vars, zip, repr, print, bytearray = Ellipsis, NotImplemented, NotImplementedError, Exception, AttributeError, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, RuntimeError, all, any, bytes, classmethod, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, locals, map, min, max, next, object, property, range, reversed, set, slice, str, sum, staticmethod(super), tuple, type, vars, zip, staticmethod(repr), staticmethod(print), bytearray
 class _coconut_sentinel(object): pass
@@ -756,7 +757,7 @@ class _coconut_parallel_concurrent_map_func_wrapper(_coconut_base_hashable):
         self.map_cls.get_pool_stack().append(None)
         try:
             if self.star:
-                assert _coconut.len(args) == 1, "internal parallel/concurrent map error"
+                assert _coconut.len(args) == 1, "internal parallel/concurrent map error (you should report this at https://github.com/evhub/coconut/issues/new)"
                 return self.func(*args[0], **kwargs)
             else:
                 return self.func(*args, **kwargs)
@@ -765,7 +766,7 @@ class _coconut_parallel_concurrent_map_func_wrapper(_coconut_base_hashable):
             _coconut.traceback.print_exc()
             raise
         finally:
-            assert self.map_cls.get_pool_stack().pop() is None, "internal parallel/concurrent map error"
+            assert self.map_cls.get_pool_stack().pop() is None, "internal parallel/concurrent map error (you should report this at https://github.com/evhub/coconut/issues/new)"
 class _coconut_base_parallel_concurrent_map(map):
     __slots__ = ("result", "chunksize")
     @classmethod
@@ -960,7 +961,7 @@ class count(_coconut_base_hashable):
     def __contains__(self, elem):
         if not self.step:
             return elem == self.start
-        if elem < self.start:
+        if self.step > 0 and elem < self.start or self.step < 0 and elem > self.start:
             return False
         return (elem - self.start) % self.step == 0
     def __getitem__(self, index):
@@ -1069,7 +1070,7 @@ class recursive_iterator(_coconut_base_hashable):
             self.tee_store[key], to_return = _coconut_tee(it)
         return to_return
     def __repr__(self):
-        return "@recursive_iterator(%r)" % (self.func,)
+        return "recursive_iterator(%r)" % (self.func,)
     def __reduce__(self):
         return (self.__class__, (self.func,))
     def __get__(self, obj, objtype=None):
@@ -1285,18 +1286,22 @@ else:
         __slots__ = ("func", "aiter")
         def __init__(self, func, aiter):
             self.func = func
-            self.aiter = aiter.__aiter__()
+            self.aiter = aiter
         def __reduce__(self):
             return (self.__class__, (self.func, self.aiter))
         def __aiter__(self):
             return self
         if _coconut_sys.version_info < (3, 5):
-            _coconut_exec("""@_coconut.asyncio.coroutine
-            def __anext__(self):
+            _coconut_anext_ns = {}
+            _coconut_exec("""def __anext__(self):
                 result = yield from self.aiter.__anext__()
-                return self.func(result)""")
+                return self.func(result)""", _coconut_anext_ns)
+            __anext__ = _coconut.asyncio.coroutine(_coconut_anext_ns["__anext__"])
         else:
-            _coconut_exec("async def __anext__(self): return self.func(await self.aiter.__anext__())")
+            _coconut_anext_ns = {}
+            _coconut_exec("""async def __anext__(self):
+                return self.func(await self.aiter.__anext__())""", _coconut_anext_ns)
+            __anext__ = _coconut_anext_ns["__anext__"]
 def fmap(func, obj, **kwargs):
     """fmap(func, obj) creates a copy of obj with func applied to its contents.
     Supports asynchronous iterables, mappings (maps over .items()), and numpy arrays (uses np.vectorize).
@@ -1315,10 +1320,17 @@ def fmap(func, obj, **kwargs):
         else:
             if result is not _coconut.NotImplemented:
                 return result
-    if obj.__class__.__module__ in ('numpy', 'pandas'):
+    if obj.__class__.__module__ in _coconut.numpy_modules:
         return _coconut.numpy.vectorize(func)(obj)
-    if _coconut.hasattr(obj, "__aiter__") and _coconut_amap is not None:
-        return _coconut_amap(func, obj)
+    obj_aiter = _coconut.getattr(obj, "__aiter__", None)
+    if obj_aiter is not None and _coconut_amap is not None:
+        try:
+            aiter = obj_aiter()
+        except _coconut.NotImplementedError:
+            pass
+        else:
+            if aiter is not _coconut.NotImplemented:
+                return _coconut_amap(func, aiter)
     if starmap_over_mappings:
         return _coconut_base_makedata(obj.__class__, _coconut_starmap(func, obj.items()) if _coconut.isinstance(obj, _coconut.abc.Mapping) else _coconut_map(func, obj))
     else:
@@ -1523,7 +1535,7 @@ def _coconut_mk_anon_namedtuple(fields, types=None, of_kwargs=None):
         return NT
     return NT(**of_kwargs)
 def _coconut_ndim(arr):
-    if arr.__class__.__module__ in ('numpy', 'pandas') and _coconut.isinstance(arr, _coconut.numpy.ndarray):
+    if (arr.__class__.__module__ in _coconut.numpy_modules or _coconut.hasattr(arr.__class__, "__matconcat__")) and _coconut.hasattr(arr, "ndim"):
         return arr.ndim
     if not _coconut.isinstance(arr, _coconut.abc.Sequence):
         return 0
@@ -1538,14 +1550,22 @@ def _coconut_ndim(arr):
         inner_arr = inner_arr[0]
     return arr_dim
 def _coconut_expand_arr(arr, new_dims):
-    if arr.__class__.__module__ in ('numpy', 'pandas') and _coconut.isinstance(arr, _coconut.numpy.ndarray):
+    if (arr.__class__.__module__ in _coconut.numpy_modules or _coconut.hasattr(arr.__class__, "__matconcat__")) and _coconut.hasattr(arr, "reshape"):
         return arr.reshape((1,) * new_dims + arr.shape)
     for _ in _coconut.range(new_dims):
         arr = [arr]
     return arr
 def _coconut_concatenate(arrs, axis):
-    if _coconut.any(a.__class__.__module__ in ('numpy', 'pandas') for a in arrs):
-        return _coconut.numpy.concatenate(arrs, axis)
+    matconcat = None
+    for a in arrs:
+        if a.__class__.__module__ in _coconut.numpy_modules:
+            matconcat = _coconut.numpy.concatenate
+            break
+        if _coconut.hasattr(a.__class__, "__matconcat__"):
+            matconcat = a.__class__.__matconcat__
+            break
+    if matconcat is not None:
+        return matconcat(arrs, axis)
     if not axis:
         return _coconut.list(_coconut.itertools.chain.from_iterable(arrs))
     return [_coconut_concatenate(rows, axis - 1) for rows in _coconut.zip(*arrs)]
@@ -1560,33 +1580,33 @@ _coconut_MatchError, _coconut_count, _coconut_enumerate, _coconut_filter, _cocon
 
 # Compiled Coconut: -----------------------------------------------------------
 
-import setuptools  #1 (line num in coconut source)
+import setuptools  #1 (line in Coconut source)
 
-sys = _coconut_sys  #3 (line num in coconut source)
-import os.path  #4 (line num in coconut source)
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "bbopt"))  #5 (line num in coconut source)
+sys = _coconut_sys  #3 (line in Coconut source)
+import os.path  #4 (line in Coconut source)
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "bbopt"))  #5 (line in Coconut source)
 
-import constants  #7 (line num in coconut source)
+import constants  #7 (line in Coconut source)
 
 
-@_coconut_mark_as_match  #10 (line num in coconut source)
-def _coconut_lambda_0(*_coconut_match_args, **_coconut_match_kwargs):  #10 (line num in coconut source)
-    _coconut_match_check_0 = False  #10 (line num in coconut source)
-    _coconut_match_set_name_k = _coconut_sentinel  #10 (line num in coconut source)
-    _coconut_match_set_name_v = _coconut_sentinel  #10 (line num in coconut source)
-    _coconut_FunctionMatchError = _coconut_get_function_match_error()  #10 (line num in coconut source)
-    if _coconut.len(_coconut_match_args) == 1:  #10 (line num in coconut source)
-        if (_coconut.isinstance(_coconut_match_args[0], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_args[0]) == 2):  #10 (line num in coconut source)
-            _coconut_match_set_name_k = _coconut_match_args[0][0]  #10 (line num in coconut source)
-            _coconut_match_set_name_v = _coconut_match_args[0][1]  #10 (line num in coconut source)
-            if not _coconut_match_kwargs:  #10 (line num in coconut source)
-                _coconut_match_check_0 = True  #10 (line num in coconut source)
-    if _coconut_match_check_0:  #10 (line num in coconut source)
-        if _coconut_match_set_name_k is not _coconut_sentinel:  #10 (line num in coconut source)
-            k = _coconut_match_set_name_k  #10 (line num in coconut source)
-        if _coconut_match_set_name_v is not _coconut_sentinel:  #10 (line num in coconut source)
-            v = _coconut_match_set_name_v  #10 (line num in coconut source)
-    if not _coconut_match_check_0:  #10 (line num in coconut source)
-        raise _coconut_FunctionMatchError('extras_require=constants.extra_requirements |> fmap$(def ((k, v)) -> (k, list(v))),', _coconut_match_args)  #10 (line num in coconut source)
-    return (k, list(v))  #10 (line num in coconut source)
-setuptools.setup(name=constants.name, version=constants.version, description=constants.description, long_description=constants.long_description, url=constants.github_url, author=constants.author, author_email=constants.author_email, classifiers=(list)(constants.classifiers), packages=setuptools.find_packages(), install_requires=(list)(constants.requirements), extras_require=(fmap)(_coconut_lambda_0, constants.extra_requirements), entry_points={"console_scripts": ["bbopt = bbopt.cli:main",]})  #10 (line num in coconut source)
+@_coconut_mark_as_match  #10 (line in Coconut source)
+def _coconut_lambda_0(*_coconut_match_args, **_coconut_match_kwargs):  #10 (line in Coconut source)
+    _coconut_match_check_0 = False  #10 (line in Coconut source)
+    _coconut_match_set_name_k = _coconut_sentinel  #10 (line in Coconut source)
+    _coconut_match_set_name_v = _coconut_sentinel  #10 (line in Coconut source)
+    _coconut_FunctionMatchError = _coconut_get_function_match_error()  #10 (line in Coconut source)
+    if _coconut.len(_coconut_match_args) == 1:  #10 (line in Coconut source)
+        if (_coconut.isinstance(_coconut_match_args[0], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_args[0]) == 2):  #10 (line in Coconut source)
+            _coconut_match_set_name_k = _coconut_match_args[0][0]  #10 (line in Coconut source)
+            _coconut_match_set_name_v = _coconut_match_args[0][1]  #10 (line in Coconut source)
+            if not _coconut_match_kwargs:  #10 (line in Coconut source)
+                _coconut_match_check_0 = True  #10 (line in Coconut source)
+    if _coconut_match_check_0:  #10 (line in Coconut source)
+        if _coconut_match_set_name_k is not _coconut_sentinel:  #10 (line in Coconut source)
+            k = _coconut_match_set_name_k  #10 (line in Coconut source)
+        if _coconut_match_set_name_v is not _coconut_sentinel:  #10 (line in Coconut source)
+            v = _coconut_match_set_name_v  #10 (line in Coconut source)
+    if not _coconut_match_check_0:  #10 (line in Coconut source)
+        raise _coconut_FunctionMatchError('extras_require=constants.extra_requirements |> fmap$(def ((k, v)) -> (k, list(v))),', _coconut_match_args)  #10 (line in Coconut source)
+    return (k, list(v))  #10 (line in Coconut source)
+setuptools.setup(name=constants.name, version=constants.version, description=constants.description, long_description=constants.long_description, url=constants.github_url, author=constants.author, author_email=constants.author_email, classifiers=(list)(constants.classifiers), packages=setuptools.find_packages(), install_requires=(list)(constants.requirements), extras_require=(fmap)(_coconut_lambda_0, constants.extra_requirements), entry_points={"console_scripts": ["bbopt = bbopt.cli:main",]})  #10 (line in Coconut source)

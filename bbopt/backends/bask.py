@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xfe8b68a8
+# __coconut_hash__ = 0xac0fa04f
 
-# Compiled with Coconut version 2.0.0-a_dev65 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0 [How Not to Be Seen]
 
 """
 The bayes-skopt backend. Does black-box optimization with the bask fork of scikit-optimize.
@@ -39,32 +39,32 @@ _coconut_sys.path.pop(0)
 
 
 
-from bask import Optimizer  #5 (line num in coconut source)
+from bask import Optimizer  #5 (line in Coconut source)
 
-from bbopt.backends.skopt import SkoptBackend  #7 (line num in coconut source)
-from bbopt.backends.skopt import create_dimensions  #7 (line num in coconut source)
-from bbopt.backends.skopt import guess_n_initial_points  #7 (line num in coconut source)
+from bbopt.backends.skopt import SkoptBackend  #7 (line in Coconut source)
+from bbopt.backends.skopt import create_dimensions  #7 (line in Coconut source)
+from bbopt.backends.skopt import guess_n_initial_points  #7 (line in Coconut source)
 
 
 # Backend:
 
-class BaskBackend(SkoptBackend):  #16 (line num in coconut source)
-    """The bask backend uses bayes-skopt for black box optimization."""  #17 (line num in coconut source)
-    backend_name = "bayes-skopt"  #18 (line num in coconut source)
+class BaskBackend(SkoptBackend):  #16 (line in Coconut source)
+    """The bask backend uses bayes-skopt for black box optimization."""  #17 (line in Coconut source)
+    backend_name = "bayes-skopt"  #18 (line in Coconut source)
 
-    @override  #20 (line num in coconut source)
-    def setup_backend(self, params, n_initial_points=None, **options):  #21 (line num in coconut source)
-        """Special method to initialize the backend from params."""  #22 (line num in coconut source)
-        self.params = params  #23 (line num in coconut source)
-        if n_initial_points is None:  #24 (line num in coconut source)
-            n_initial_points = guess_n_initial_points(params)  #25 (line num in coconut source)
-        self.optimizer = Optimizer(create_dimensions(params), n_initial_points=n_initial_points, **options)  #26 (line num in coconut source)
+    @override  #20 (line in Coconut source)
+    def setup_backend(self, params, n_initial_points=None, **options):  #21 (line in Coconut source)
+        """Special method to initialize the backend from params."""  #22 (line in Coconut source)
+        self.params = params  #23 (line in Coconut source)
+        if n_initial_points is None:  #24 (line in Coconut source)
+            n_initial_points = guess_n_initial_points(params)  #25 (line in Coconut source)
+        self.optimizer = Optimizer(create_dimensions(params), n_initial_points=n_initial_points, **options)  #26 (line in Coconut source)
 
 
 # Registered names:
 
 
-_coconut_call_set_names(BaskBackend)  #35 (line num in coconut source)
-BaskBackend.register()  #35 (line num in coconut source)
-BaskBackend.register_alias("bask")  #36 (line num in coconut source)
-BaskBackend.register_alg("bask_gaussian_process")  #37 (line num in coconut source)
+_coconut_call_set_names(BaskBackend)  #35 (line in Coconut source)
+BaskBackend.register()  #35 (line in Coconut source)
+BaskBackend.register_alias("bask")  #36 (line in Coconut source)
+BaskBackend.register_alg("bask_gaussian_process")  #37 (line in Coconut source)

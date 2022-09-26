@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x53f65215
+# __coconut_hash__ = 0x8102e892
 
-# Compiled with Coconut version 2.0.0-a_dev65 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0 [How Not to Be Seen]
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -33,126 +33,126 @@ _coconut_sys.path.pop(0)
 
 # Compiled Coconut: -----------------------------------------------------------
 
-import math  #1 (line num in coconut source)
+import math  #1 (line in Coconut source)
 
-import numpy as np  #3 (line num in coconut source)
-from matplotlib import pyplot as plt  #4 (line num in coconut source)
+import numpy as np  #3 (line in Coconut source)
+from matplotlib import pyplot as plt  #4 (line in Coconut source)
 
-from bbopt import BlackBoxOptimizer  #6 (line num in coconut source)
+from bbopt import BlackBoxOptimizer  #6 (line in Coconut source)
 
 
 # Benchmarks
 
-OPT_FUNCS = []  #11 (line num in coconut source)
+OPT_FUNCS = []  #11 (line in Coconut source)
 
 
-def cond_sin_func(bb):  #14 (line num in coconut source)
-    dist = bb.choice("dist", ["uniform", "normal"])  #15 (line num in coconut source)
-    if dist == "normal":  #16 (line num in coconut source)
-        u = bb.normalvariate("x0_n", 0, 1) * math.sin(bb.normalvariate("x1_n", 0, 1))  #17 (line num in coconut source)
-    else:  #18 (line num in coconut source)
-        u = bb.random("x0_u") * math.sin(bb.random("x1_u"))  #19 (line num in coconut source)
-    bb.minimize(u)  #20 (line num in coconut source)
+def cond_sin_func(bb):  #14 (line in Coconut source)
+    dist = bb.choice("dist", ["uniform", "normal"])  #15 (line in Coconut source)
+    if dist == "normal":  #16 (line in Coconut source)
+        u = bb.normalvariate("x0_n", 0, 1) * math.sin(bb.normalvariate("x1_n", 0, 1))  #17 (line in Coconut source)
+    else:  #18 (line in Coconut source)
+        u = bb.random("x0_u") * math.sin(bb.random("x1_u"))  #19 (line in Coconut source)
+    bb.minimize(u)  #20 (line in Coconut source)
 
 
-OPT_FUNCS.append(cond_sin_func)  #22 (line num in coconut source)
+OPT_FUNCS.append(cond_sin_func)  #22 (line in Coconut source)
 
 
-def trisum_func(bb):  #25 (line num in coconut source)
-    x0 = bb.randrange("x0", 1, 11, guess=5)  #26 (line num in coconut source)
-    x1 = bb.uniform("x1", 0, 1)  #27 (line num in coconut source)
-    x2 = bb.choice("x2", [-10, -1, 0, 1, 10])  #28 (line num in coconut source)
-    y = x0 + x1 * x2  #29 (line num in coconut source)
-    bb.minimize(y)  #30 (line num in coconut source)
+def trisum_func(bb):  #25 (line in Coconut source)
+    x0 = bb.randrange("x0", 1, 11, guess=5)  #26 (line in Coconut source)
+    x1 = bb.uniform("x1", 0, 1)  #27 (line in Coconut source)
+    x2 = bb.choice("x2", [-10, -1, 0, 1, 10])  #28 (line in Coconut source)
+    y = x0 + x1 * x2  #29 (line in Coconut source)
+    bb.minimize(y)  #30 (line in Coconut source)
 
 
-OPT_FUNCS.append(trisum_func)  #32 (line num in coconut source)
+OPT_FUNCS.append(trisum_func)  #32 (line in Coconut source)
 
 
-def numpy_func(bb):  #35 (line num in coconut source)
-    x0 = bb.rand("x0", 1, 5, guess=np.zeros((1, 5)))  #36 (line num in coconut source)
-    x1 = bb.randn("x1", 5, 1, guess=np.zeros((5, 1)))  #37 (line num in coconut source)
-    y = float(x0.dot(x1))  #38 (line num in coconut source)
-    bb.minimize(y)  #39 (line num in coconut source)
+def numpy_func(bb):  #35 (line in Coconut source)
+    x0 = bb.rand("x0", 1, 5, guess=np.zeros((1, 5)))  #36 (line in Coconut source)
+    x1 = bb.randn("x1", 5, 1, guess=np.zeros((5, 1)))  #37 (line in Coconut source)
+    y = float(x0.dot(x1))  #38 (line in Coconut source)
+    bb.minimize(y)  #39 (line in Coconut source)
 
 
-OPT_FUNCS.append(numpy_func)  #41 (line num in coconut source)
+OPT_FUNCS.append(numpy_func)  #41 (line in Coconut source)
 
 
-def sample_func(bb):  #44 (line num in coconut source)
-    xs = bb.unshuffled_sample("xs", range(10), 5, guess=[3, 4, 5, 6, 7])  #45 (line num in coconut source)
-    y = bb.choice("y", [1, 10, 100], guess=10)  #46 (line num in coconut source)
-    loss = abs(sum(xs) - y)  #47 (line num in coconut source)
-    bb.minimize(loss)  #48 (line num in coconut source)
+def sample_func(bb):  #44 (line in Coconut source)
+    xs = bb.unshuffled_sample("xs", range(10), 5, guess=[3, 4, 5, 6, 7])  #45 (line in Coconut source)
+    y = bb.choice("y", [1, 10, 100], guess=10)  #46 (line in Coconut source)
+    loss = abs(sum(xs) - y)  #47 (line in Coconut source)
+    bb.minimize(loss)  #48 (line in Coconut source)
 
 
-OPT_FUNCS.append(sample_func)  #50 (line num in coconut source)
+OPT_FUNCS.append(sample_func)  #50 (line in Coconut source)
 
 
-def sin_prod_func(bb):  #53 (line num in coconut source)
-    u = bb.random("x0") * math.sin(bb.random("x1"))  #54 (line num in coconut source)
-    bb.minimize(u)  #55 (line num in coconut source)
+def sin_prod_func(bb):  #53 (line in Coconut source)
+    u = bb.random("x0") * math.sin(bb.random("x1"))  #54 (line in Coconut source)
+    bb.minimize(u)  #55 (line in Coconut source)
 
 
-OPT_FUNCS.append(sin_prod_func)  #57 (line num in coconut source)
+OPT_FUNCS.append(sin_prod_func)  #57 (line in Coconut source)
 
 
-def lognorm_func(bb):  #60 (line num in coconut source)
-    x0 = bb.loguniform("x0", 1, 10, guess=5)  #61 (line num in coconut source)
-    x1 = bb.lognormvariate("x1", 0, 1, guess=1)  #62 (line num in coconut source)
-    y = x0 + x1  #63 (line num in coconut source)
-    bb.minimize(y)  #64 (line num in coconut source)
+def lognorm_func(bb):  #60 (line in Coconut source)
+    x0 = bb.loguniform("x0", 1, 10, guess=5)  #61 (line in Coconut source)
+    x1 = bb.lognormvariate("x1", 0, 1, guess=1)  #62 (line in Coconut source)
+    y = x0 + x1  #63 (line in Coconut source)
+    bb.minimize(y)  #64 (line in Coconut source)
 
 
-OPT_FUNCS.append(lognorm_func)  #66 (line num in coconut source)
+OPT_FUNCS.append(lognorm_func)  #66 (line in Coconut source)
 
 
-def norm_func(bb):  #69 (line num in coconut source)
-    x0 = bb.randint("x0", 1, 10, guess=5)  #70 (line num in coconut source)
-    x1 = bb.normalvariate("x1", mu=0, sigma=1)  #71 (line num in coconut source)
-    x2 = bb.choice("x2", [-10, -1, 0, 1, 10])  #72 (line num in coconut source)
-    y = x0 + x1 * x2  #73 (line num in coconut source)
-    bb.minimize(y)  #74 (line num in coconut source)
+def norm_func(bb):  #69 (line in Coconut source)
+    x0 = bb.randint("x0", 1, 10, guess=5)  #70 (line in Coconut source)
+    x1 = bb.normalvariate("x1", mu=0, sigma=1)  #71 (line in Coconut source)
+    x2 = bb.choice("x2", [-10, -1, 0, 1, 10])  #72 (line in Coconut source)
+    y = x0 + x1 * x2  #73 (line in Coconut source)
+    bb.minimize(y)  #74 (line in Coconut source)
 
 
-OPT_FUNCS.append(norm_func)  #76 (line num in coconut source)
+OPT_FUNCS.append(norm_func)  #76 (line in Coconut source)
 
 
-def cond_gain_func(bb):  #79 (line num in coconut source)
-    use_high = bb.randbool("use_high", guess=False)  #80 (line num in coconut source)
-    if use_high:  #81 (line num in coconut source)
-        x = bb.uniform("x_high", 10, 20)  #82 (line num in coconut source)
-    else:  #83 (line num in coconut source)
-        x = bb.randrange("x_low", 10)  #84 (line num in coconut source)
-    bb.maximize(x)  #85 (line num in coconut source)
+def cond_gain_func(bb):  #79 (line in Coconut source)
+    use_high = bb.randbool("use_high", guess=False)  #80 (line in Coconut source)
+    if use_high:  #81 (line in Coconut source)
+        x = bb.uniform("x_high", 10, 20)  #82 (line in Coconut source)
+    else:  #83 (line in Coconut source)
+        x = bb.randrange("x_low", 10)  #84 (line in Coconut source)
+    bb.maximize(x)  #85 (line in Coconut source)
 
 
-OPT_FUNCS.append(cond_gain_func)  #87 (line num in coconut source)
+OPT_FUNCS.append(cond_gain_func)  #87 (line in Coconut source)
 
 
 # Main
 
-def benchmark(algs, plot_func="plot_convergence", n=10):  #92 (line num in coconut source)
-    figsize = (int)((math.ceil)((math.sqrt)(len(OPT_FUNCS))))  #93 (line num in coconut source)
-    fig, axs = plt.subplots(figsize, figsize)  #94 (line num in coconut source)
-    for i, func in enumerate(OPT_FUNCS):  #95 (line num in coconut source)
-        ax = axs[i // figsize, i % figsize]  #96 (line num in coconut source)
-        for alg in algs:  #97 (line num in coconut source)
-            bb = BlackBoxOptimizer(__file__, tag="{_coconut_format_0}_{_coconut_format_1}".format(_coconut_format_0=(func.__name__), _coconut_format_1=(alg)))  #98 (line num in coconut source)
-            if bb.num_examples < n:  #99 (line num in coconut source)
-                for _ in range(n - bb.num_examples):  #100 (line num in coconut source)
-                    if isinstance(alg, tuple):  #101 (line num in coconut source)
-                        bb.run_meta(alg)  #102 (line num in coconut source)
-                    else:  #103 (line num in coconut source)
-                        bb.run(alg)  #104 (line num in coconut source)
-                    func(bb)  #105 (line num in coconut source)
-            getattr(bb, plot_func)(ax, label=str(alg))  #106 (line num in coconut source)
-        ax.set_title(func.__name__)  #107 (line num in coconut source)
-        ax.set_xlabel("")  #108 (line num in coconut source)
-        ax.legend()  #109 (line num in coconut source)
-    plt.show()  #110 (line num in coconut source)
+def benchmark(algs, plot_func="plot_convergence", n=10):  #92 (line in Coconut source)
+    figsize = (int)((math.ceil)((math.sqrt)(len(OPT_FUNCS))))  #93 (line in Coconut source)
+    fig, axs = plt.subplots(figsize, figsize)  #94 (line in Coconut source)
+    for i, func in enumerate(OPT_FUNCS):  #95 (line in Coconut source)
+        ax = axs[i // figsize, i % figsize]  #96 (line in Coconut source)
+        for alg in algs:  #97 (line in Coconut source)
+            bb = BlackBoxOptimizer(__file__, tag="{_coconut_format_0}_{_coconut_format_1}".format(_coconut_format_0=(func.__name__), _coconut_format_1=(alg)))  #98 (line in Coconut source)
+            if bb.num_examples < n:  #99 (line in Coconut source)
+                for _ in range(n - bb.num_examples):  #100 (line in Coconut source)
+                    if isinstance(alg, tuple):  #101 (line in Coconut source)
+                        bb.run_meta(alg)  #102 (line in Coconut source)
+                    else:  #103 (line in Coconut source)
+                        bb.run(alg)  #104 (line in Coconut source)
+                    func(bb)  #105 (line in Coconut source)
+            getattr(bb, plot_func)(ax, label=str(alg))  #106 (line in Coconut source)
+        ax.set_title(func.__name__)  #107 (line in Coconut source)
+        ax.set_xlabel("")  #108 (line in Coconut source)
+        ax.legend()  #109 (line in Coconut source)
+    plt.show()  #110 (line in Coconut source)
 
 
 
-if __name__ == "__main__":  #113 (line num in coconut source)
-    benchmark(("safe_gaussian_process", "openai", ("openai", "safe_gaussian_process")))  #114 (line num in coconut source)
+if __name__ == "__main__":  #113 (line in Coconut source)
+    benchmark(("safe_gaussian_process", "openai", ("openai", "safe_gaussian_process")))  #114 (line in Coconut source)
