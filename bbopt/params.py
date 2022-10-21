@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x9a496e28
+# __coconut_hash__ = 0x1a930b1a
 
-# Compiled with Coconut version 2.0.0 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0-post_dev23 [How Not to Be Seen]
 
 """
 Handles standardizing param calls to use standard library random functions.
@@ -39,10 +39,17 @@ _coconut_sys.path.pop(0)
 
 
 
-if _coconut_sys.version_info >= (3, 3):  #5 (line in Coconut source)
+try:  #5 (line in Coconut source)
+    _coconut_sys_0 = sys  #5 (line in Coconut source)
+except _coconut.NameError:  #5 (line in Coconut source)
+    _coconut_sys_0 = _coconut_sentinel  #5 (line in Coconut source)
+sys = _coconut_sys  #5 (line in Coconut source)
+if sys.version_info >= (3, 3):  #5 (line in Coconut source)
     from collections.abc import Iterable  #5 (line in Coconut source)
 else:  #5 (line in Coconut source)
     from collections import Iterable  #5 (line in Coconut source)
+if _coconut_sys_0 is not _coconut_sentinel:  #5 (line in Coconut source)
+    sys = _coconut_sys_0  #5 (line in Coconut source)
 from math import pi  #6 (line in Coconut source)
 from math import log as ln  #6 (line in Coconut source)
 

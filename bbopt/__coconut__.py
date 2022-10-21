@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # type: ignore
 
-# Compiled with Coconut version 2.0.0 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0-post_dev23 [How Not to Be Seen]
 
 """Built-in Coconut utilities."""
 
@@ -257,14 +257,17 @@ class _coconut(object):
     try:
         import numpy
     except ImportError:
-        class you_need_to_install_numpy(object): pass
+        class you_need_to_install_numpy(object):
+            __slots__ = ()
         numpy = you_need_to_install_numpy()
     else:
         abc.Sequence.register(numpy.ndarray)
     numpy_modules = ('numpy', 'pandas', 'jaxlib.xla_extension')
+    jax_numpy_modules = ('jaxlib.xla_extension',)
     abc.Sequence.register(collections.deque)
-    Ellipsis, NotImplemented, NotImplementedError, Exception, AttributeError, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, RuntimeError, all, any, bytes, classmethod, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, locals, map, min, max, next, object, property, range, reversed, set, slice, str, sum, super, tuple, type, vars, zip, repr, print, bytearray = Ellipsis, NotImplemented, NotImplementedError, Exception, AttributeError, ImportError, IndexError, KeyError, NameError, TypeError, ValueError, StopIteration, RuntimeError, all, any, bytes, classmethod, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, locals, map, min, max, next, object, property, range, reversed, set, slice, str, sum, staticmethod(super), tuple, type, vars, zip, staticmethod(repr), staticmethod(print), bytearray
-class _coconut_sentinel(object): pass
+    Ellipsis, NotImplemented, NotImplementedError, Exception, AttributeError, ImportError, IndexError, NameError, TypeError, ValueError, StopIteration, RuntimeError, all, any, bytes, classmethod, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, locals, map, min, max, next, object, property, range, reversed, set, slice, str, sum, super, tuple, type, vars, zip, repr, print, bytearray = Ellipsis, NotImplemented, NotImplementedError, Exception, AttributeError, ImportError, IndexError, NameError, TypeError, ValueError, StopIteration, RuntimeError, all, any, bytes, classmethod, dict, enumerate, filter, float, frozenset, getattr, hasattr, hash, id, int, isinstance, issubclass, iter, len, list, locals, map, min, max, next, object, property, range, reversed, set, slice, str, sum, staticmethod(super), tuple, type, vars, zip, staticmethod(repr), staticmethod(print), bytearray
+class _coconut_sentinel(object):
+    __slots__ = ()
 class _coconut_base_hashable(object):
     __slots__ = ()
     def __reduce_ex__(self, _):
@@ -622,7 +625,7 @@ class reiterable(_coconut_base_hashable):
     def __len__(self):
         return _coconut.len(self.iter)
     def __repr__(self):
-        return "reiterable(%r)" % (self.iter,)
+        return "reiterable(%s)" % (_coconut.repr(self.iter),)
     def __reduce__(self):
         return (self.__class__, (self.iter,))
     def __copy__(self):
@@ -701,7 +704,7 @@ class flatten(_coconut_base_hashable):
     def __reversed__(self):
         return self.__class__(_coconut_reversed(_coconut_map(_coconut_reversed, self.iter)))
     def __repr__(self):
-        return "flatten(%r)" % (self.iter,)
+        return "flatten(%s)" % (_coconut.repr(self.iter),)
     def __reduce__(self):
         return (self.__class__, (self.iter,))
     def __contains__(self, elem):
@@ -932,20 +935,78 @@ class enumerate(_coconut_base_hashable, _coconut.enumerate):
         new_enumerate.iter = iterable
         new_enumerate.start = start
         return new_enumerate
+    def __repr__(self):
+        return "enumerate(%s, %r)" % (_coconut.repr(self.iter), self.start)
+    def __fmap__(self, func):
+        return _coconut_map(func, self)
+    def __reduce__(self):
+        return (self.__class__, (self.iter, self.start))
+    def __iter__(self):
+        return _coconut.iter(_coconut.enumerate(self.iter, self.start))
     def __getitem__(self, index):
         if _coconut.isinstance(index, _coconut.slice):
             return self.__class__(_coconut_iter_getitem(self.iter, index), self.start + (0 if index.start is None else index.start if index.start >= 0 else _coconut.len(self.iter) + index.start))
         return (self.start + index, _coconut_iter_getitem(self.iter, index))
     def __len__(self):
         return _coconut.len(self.iter)
+class multi_enumerate(_coconut_base_hashable):
+    """Enumerate an iterable of iterables. Works like enumerate, but indexes
+    through inner iterables and produces a tuple index representing the index
+    in each inner iterable. Supports indexing.
+
+    For numpy arrays, effectively equivalent to:
+        it = np.nditer(iterable, flags=["multi_index"])
+        for x in it:
+            yield it.multi_index, x
+
+    Also supports len for numpy arrays.
+    """
+    __slots__ = ("iter",)
+    def __init__(self, iterable):
+        self.iter = iterable
     def __repr__(self):
-        return "enumerate(%s, %r)" % (_coconut.repr(self.iter), self.start)
-    def __reduce__(self):
-        return (self.__class__, (self.iter, self.start))
-    def __iter__(self):
-        return _coconut.iter(_coconut.enumerate(self.iter, self.start))
+        return "multi_enumerate(%s)" % (_coconut.repr(self.iter),)
     def __fmap__(self, func):
         return _coconut_map(func, self)
+    def __reduce__(self):
+        return (self.__class__, (self.iter,))
+    @property
+    def is_numpy(self):
+        return self.iter.__class__.__module__ in _coconut.numpy_modules
+    def __iter__(self):
+        if self.is_numpy:
+            it = _coconut.numpy.nditer(self.iter, flags=["multi_index"])
+            for x in it:
+                yield it.multi_index, x
+        else:
+            ind = [-1]
+            its = [_coconut.iter(self.iter)]
+            while its:
+                ind[-1] += 1
+                try:
+                    x = _coconut.next(its[-1])
+                except _coconut.StopIteration:
+                    ind.pop()
+                    its.pop()
+                else:
+                    if _coconut.isinstance(x, _coconut.abc.Iterable):
+                        ind.append(-1)
+                        its.append(_coconut.iter(x))
+                    else:
+                        yield _coconut.tuple(ind), x
+    def __getitem__(self, index):
+        if self.is_numpy and not _coconut.isinstance(index, _coconut.slice):
+            multi_ind = []
+            for i in _coconut.reversed(self.iter.shape):
+                multi_ind.append(index % i)
+                index //= i
+            multi_ind = _coconut.tuple(_coconut.reversed(multi_ind))
+            return multi_ind, self.iter[multi_ind]
+        return _coconut_iter_getitem(_coconut.iter(self), index)
+    def __len__(self):
+        if self.is_numpy:
+            return self.iter.size
+        return _coconut.NotImplemented
 class count(_coconut_base_hashable):
     """count(start, step) returns an infinite iterator starting at start and increasing by step.
 
@@ -967,19 +1028,21 @@ class count(_coconut_base_hashable):
             return False
         return (elem - self.start) % self.step == 0
     def __getitem__(self, index):
-        if _coconut.isinstance(index, _coconut.slice) and (index.start is None or index.start >= 0) and (index.stop is None or index.stop >= 0):
-            new_start, new_step = self.start, self.step
-            if self.step and index.start is not None:
-                new_start += self.step * index.start
-            if self.step and index.step is not None:
-                new_step *= index.step
-            if index.stop is None:
-                return self.__class__(new_start, new_step)
-            if self.step and _coconut.isinstance(self.start, _coconut.int) and _coconut.isinstance(self.step, _coconut.int):
-                return _coconut.range(new_start, self.start + self.step * index.stop, new_step)
-            return _coconut_map(self.__getitem__, _coconut.range(index.start if index.start is not None else 0, index.stop, index.step if index.step is not None else 1))
+        if _coconut.isinstance(index, _coconut.slice):
+            if (index.start is None or index.start >= 0) and (index.stop is None or index.stop >= 0):
+                new_start, new_step = self.start, self.step
+                if self.step and index.start is not None:
+                    new_start += self.step * index.start
+                if self.step and index.step is not None:
+                    new_step *= index.step
+                if index.stop is None:
+                    return self.__class__(new_start, new_step)
+                if self.step and _coconut.isinstance(self.start, _coconut.int) and _coconut.isinstance(self.step, _coconut.int):
+                    return _coconut.range(new_start, self.start + self.step * index.stop, new_step)
+                return _coconut_map(self.__getitem__, _coconut.range(index.start if index.start is not None else 0, index.stop, index.step if index.step is not None else 1))
+            raise _coconut.IndexError("count() indices must be positive")
         if index < 0:
-            raise _coconut.IndexError("count indices must be positive")
+            raise _coconut.IndexError("count() indices must be positive")
         return self.start + self.step * index if self.step else self.start
     def count(self, elem):
         """Count the number of times elem appears in the count."""
@@ -1030,7 +1093,7 @@ class groupsof(_coconut_base_hashable):
     def __len__(self):
         return _coconut.int(_coconut.math.ceil(_coconut.len(self.iter) / self.group_size))
     def __repr__(self):
-        return "groupsof(%r)" % (self.iter,)
+        return "groupsof(%s)" % (_coconut.repr(self.iter),)
     def __reduce__(self):
         return (self.__class__, (self.group_size, self.iter))
     def __fmap__(self, func):
@@ -1260,7 +1323,7 @@ class starmap(_coconut_base_hashable, _coconut.itertools.starmap):
     def __len__(self):
         return _coconut.len(self.iter)
     def __repr__(self):
-        return "starmap(%r, %r)" % (self.func, self.iter)
+        return "starmap(%r, %s)" % (self.func, _coconut.repr(self.iter))
     def __reduce__(self):
         return (self.__class__, (self.func, self.iter))
     def __iter__(self):
@@ -1322,6 +1385,9 @@ def fmap(func, obj, **kwargs):
         else:
             if result is not _coconut.NotImplemented:
                 return result
+    if obj.__class__.__module__ in _coconut.jax_numpy_modules:
+        import jax.numpy as jnp
+        return jnp.vectorize(func)(obj)
     if obj.__class__.__module__ in _coconut.numpy_modules:
         return _coconut.numpy.vectorize(func)(obj)
     obj_aiter = _coconut.getattr(obj, "__aiter__", None)
@@ -1560,6 +1626,9 @@ def _coconut_expand_arr(arr, new_dims):
 def _coconut_concatenate(arrs, axis):
     matconcat = None
     for a in arrs:
+        if a.__class__.__module__ in _coconut.jax_numpy_modules:
+            from jax.numpy import concatenate as matconcat
+            break
         if a.__class__.__module__ in _coconut.numpy_modules:
             matconcat = _coconut.numpy.concatenate
             break

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x1fb518be
+# __coconut_hash__ = 0xe6ea50a0
 
-# Compiled with Coconut version 2.0.0 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0-post_dev23 [How Not to Be Seen]
 
 # Coconut Header: -------------------------------------------------------------
 
@@ -41,10 +41,17 @@ import shutil  #5 (line in Coconut source)
 import unittest  #6 (line in Coconut source)
 import traceback  #7 (line in Coconut source)
 from contextlib import contextmanager  #8 (line in Coconut source)
-if _coconut_sys.version_info >= (3, 4):  #9 (line in Coconut source)
+try:  #9 (line in Coconut source)
+    _coconut_sys_0 = sys  #9 (line in Coconut source)
+except _coconut.NameError:  #9 (line in Coconut source)
+    _coconut_sys_0 = _coconut_sentinel  #9 (line in Coconut source)
+sys = _coconut_sys  #9 (line in Coconut source)
+if sys.version_info >= (3, 4):  #9 (line in Coconut source)
     from importlib import reload  #9 (line in Coconut source)
 else:  #9 (line in Coconut source)
     from imp import reload  #9 (line in Coconut source)
+if _coconut_sys_0 is not _coconut_sentinel:  #9 (line in Coconut source)
+    sys = _coconut_sys_0  #9 (line in Coconut source)
 
 from coconut.command.util import call_output  #11 (line in Coconut source)
 

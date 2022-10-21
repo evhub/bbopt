@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xbc8f8b37
+# __coconut_hash__ = 0x272cc540
 
-# Compiled with Coconut version 2.0.0 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0-post_dev23 [How Not to Be Seen]
 
 """
 Utilities for use across all of bbopt.
@@ -41,14 +41,28 @@ _coconut_sys.path.pop(0)
 
 import os  #5 (line in Coconut source)
 sys = _coconut_sys  #6 (line in Coconut source)
-if _coconut_sys.version_info >= (3, 3):  #7 (line in Coconut source)
+try:  #7 (line in Coconut source)
+    _coconut_sys_0 = sys  #7 (line in Coconut source)
+except _coconut.NameError:  #7 (line in Coconut source)
+    _coconut_sys_0 = _coconut_sentinel  #7 (line in Coconut source)
+sys = _coconut_sys  #7 (line in Coconut source)
+if sys.version_info >= (3, 3):  #7 (line in Coconut source)
     from collections.abc import Mapping  #7 (line in Coconut source)
 else:  #7 (line in Coconut source)
     from collections import Mapping  #7 (line in Coconut source)
-if _coconut_sys.version_info >= (3, 3):  #7 (line in Coconut source)
+if _coconut_sys_0 is not _coconut_sentinel:  #7 (line in Coconut source)
+    sys = _coconut_sys_0  #7 (line in Coconut source)
+try:  #7 (line in Coconut source)
+    _coconut_sys_1 = sys  #7 (line in Coconut source)
+except _coconut.NameError:  #7 (line in Coconut source)
+    _coconut_sys_1 = _coconut_sentinel  #7 (line in Coconut source)
+sys = _coconut_sys  #7 (line in Coconut source)
+if sys.version_info >= (3, 3):  #7 (line in Coconut source)
     from collections.abc import Iterable  #7 (line in Coconut source)
 else:  #7 (line in Coconut source)
     from collections import Iterable  #7 (line in Coconut source)
+if _coconut_sys_1 is not _coconut_sentinel:  #7 (line in Coconut source)
+    sys = _coconut_sys_1  #7 (line in Coconut source)
 from contextlib import contextmanager  #8 (line in Coconut source)
 from functools import wraps  #9 (line in Coconut source)
 

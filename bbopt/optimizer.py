@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xcac248b5
+# __coconut_hash__ = 0xd96b7fd6
 
-# Compiled with Coconut version 2.0.0 [How Not to Be Seen]
+# Compiled with Coconut version 2.0.0-post_dev23 [How Not to Be Seen]
 
 """
 The main BBopt interface.
@@ -42,10 +42,17 @@ _coconut_sys.path.pop(0)
 import os  #5 (line in Coconut source)
 sys = _coconut_sys  #6 (line in Coconut source)
 import json  #7 (line in Coconut source)
-if _coconut_sys.version_info >= (3,):  #8 (line in Coconut source)
+try:  #8 (line in Coconut source)
+    _coconut_sys_0 = sys  #8 (line in Coconut source)
+except _coconut.NameError:  #8 (line in Coconut source)
+    _coconut_sys_0 = _coconut_sentinel  #8 (line in Coconut source)
+sys = _coconut_sys  #8 (line in Coconut source)
+if sys.version_info >= (3,):  #8 (line in Coconut source)
     import pickle  #8 (line in Coconut source)
 else:  #8 (line in Coconut source)
     import cPickle as pickle  #8 (line in Coconut source)
+if _coconut_sys_0 is not _coconut_sentinel:  #8 (line in Coconut source)
+    sys = _coconut_sys_0  #8 (line in Coconut source)
 import math  #9 (line in Coconut source)
 import itertools  #10 (line in Coconut source)
 import time  #11 (line in Coconut source)
