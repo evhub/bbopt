@@ -8,35 +8,35 @@ import traceback
 from bbopt.util import printerr
 
 # import all the backends to register them
-from bbopt.backends.serving import ServingBackend
-from bbopt.backends.random import RandomBackend
-from bbopt.backends.mixture import MixtureBackend
-from bbopt.backends.bandit import BanditBackend
+from bbopt.backends.serving import ServingBackend  # NOQA
+from bbopt.backends.random import RandomBackend  # NOQA  # NOQA
+from bbopt.backends.mixture import MixtureBackend  # NOQA
+from bbopt.backends.bandit import BanditBackend  # NOQA
 try:
-    from bbopt.backends.skopt import SkoptBackend
+    from bbopt.backends.skopt import SkoptBackend  # NOQA
 except ImportError:
     traceback.print_exc()
     printerr("Could not import scikit-optimize backend; backend unavailable (see above error).")
 try:
-    from bbopt.backends.hyperopt import HyperoptBackend
+    from bbopt.backends.hyperopt import HyperoptBackend  # NOQA
 except ImportError:
     traceback.print_exc()
     printerr("Could not import hyperopt backend; backend unavailable (see above error).")
 if sys.version_info >= (3,):
     try:
-        from bbopt.backends.pysot import PySOTBackend
+        from bbopt.backends.pysot import PySOTBackend  # NOQA
     except ImportError:
         traceback.print_exc()
         printerr("Could not import pySOT backend; backend unavailable (see above error).")
 if sys.version_info >= (3, 7):
     try:
-        from bbopt.backends.bask import BaskBackend
+        from bbopt.backends.bask import BaskBackend  # NOQA
     except ImportError:
         traceback.print_exc()
         printerr("Could not import bayes-skopt backend; backend unavailable (see above error).")
 if sys.version_info >= (3,):
     try:
-        from bbopt.backends.openai import OpenAIBackend
+        from bbopt.backends.openai import OpenAIBackend  # NOQA
     except ImportError:
         traceback.print_exc()
         printerr("Could not import openai backend; backend unavailable (see above error).")

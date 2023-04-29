@@ -97,7 +97,7 @@ class BBoptOptimizationProblem(OptimizationProblem):
         self.int_var |>= np.array
         self.cont_var |>= np.array
 
-    def eval(self, xs):
+    def \eval(self, xs):
         """Set got_values to the given values."""
         self.__check_input__(xs)
         self.got_values = {}

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0xd96b7fd6
+# __coconut_hash__ = 0x9fc368cf
 
-# Compiled with Coconut version 2.0.0-post_dev23 [How Not to Be Seen]
+# Compiled with Coconut version 3.0.0-a_dev36
 
 """
 The main BBopt interface.
@@ -11,29 +11,36 @@ The main BBopt interface.
 # Coconut Header: -------------------------------------------------------------
 
 from __future__ import print_function, absolute_import, unicode_literals, division
-import sys as _coconut_sys, os as _coconut_os
+import sys as _coconut_sys
+_coconut_header_info = ('3.0.0-a_dev36', '', True)
+import os as _coconut_os
+_coconut_cached__coconut__ = _coconut_sys.modules.get(str('__coconut__'))
 _coconut_file_dir = _coconut_os.path.dirname(_coconut_os.path.abspath(__file__))
-_coconut_cached_module = _coconut_sys.modules.get(str("__coconut__"))
-if _coconut_cached_module is not None and _coconut_os.path.dirname(_coconut_cached_module.__file__) != _coconut_file_dir:  # type: ignore
-    del _coconut_sys.modules[str("__coconut__")]
-_coconut_sys.path.insert(0, _coconut_file_dir)
-_coconut_module_name = _coconut_os.path.splitext(_coconut_os.path.basename(_coconut_file_dir))[0]
-if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha() or c.isdigit() for c in _coconut_module_name) and "__init__.py" in _coconut_os.listdir(_coconut_file_dir):
-    _coconut_full_module_name = str(_coconut_module_name + ".__coconut__")
-    import __coconut__ as _coconut__coconut__
-    _coconut__coconut__.__name__ = _coconut_full_module_name
-    for _coconut_v in vars(_coconut__coconut__).values():
-        if getattr(_coconut_v, "__module__", None) == str("__coconut__"):
-            try:
-                _coconut_v.__module__ = _coconut_full_module_name
-            except AttributeError:
-                _coconut_v_type = type(_coconut_v)
-                if getattr(_coconut_v_type, "__module__", None) == str("__coconut__"):
-                    _coconut_v_type.__module__ = _coconut_full_module_name
-    _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
+_coconut_pop_path = False
+if _coconut_cached__coconut__ is None or getattr(_coconut_cached__coconut__, "_coconut_header_info", None) != _coconut_header_info and _coconut_os.path.dirname(_coconut_cached__coconut__.__file__ or "") != _coconut_file_dir:
+    if _coconut_cached__coconut__ is not None:
+        _coconut_sys.modules[str('_coconut_cached__coconut__')] = _coconut_cached__coconut__
+        del _coconut_sys.modules[str('__coconut__')]
+    _coconut_sys.path.insert(0, _coconut_file_dir)
+    _coconut_pop_path = True
+    _coconut_module_name = _coconut_os.path.splitext(_coconut_os.path.basename(_coconut_file_dir))[0]
+    if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha() or c.isdigit() for c in _coconut_module_name) and "__init__.py" in _coconut_os.listdir(_coconut_file_dir):
+        _coconut_full_module_name = str(_coconut_module_name + ".__coconut__")
+        import __coconut__ as _coconut__coconut__
+        _coconut__coconut__.__name__ = _coconut_full_module_name
+        for _coconut_v in vars(_coconut__coconut__).values():
+            if getattr(_coconut_v, "__module__", None) == str('__coconut__'):
+                try:
+                    _coconut_v.__module__ = _coconut_full_module_name
+                except AttributeError:
+                    _coconut_v_type = type(_coconut_v)
+                    if getattr(_coconut_v_type, "__module__", None) == str('__coconut__'):
+                        _coconut_v_type.__module__ = _coconut_full_module_name
+        _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
-from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_super, _coconut_MatchError, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_multi_dim_arr, _coconut_mk_anon_namedtuple, _coconut_matmul
-_coconut_sys.path.pop(0)
+from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_Expected, _coconut_MatchError, _coconut_SupportsAdd, _coconut_SupportsMinus, _coconut_SupportsMul, _coconut_SupportsPow, _coconut_SupportsTruediv, _coconut_SupportsFloordiv, _coconut_SupportsMod, _coconut_SupportsAnd, _coconut_SupportsXor, _coconut_SupportsOr, _coconut_SupportsLshift, _coconut_SupportsRshift, _coconut_SupportsMatmul, _coconut_SupportsInv, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_multi_dim_arr, _coconut_mk_anon_namedtuple, _coconut_matmul, _coconut_py_str, _coconut_flatten, _coconut_multiset, _coconut_back_none_pipe, _coconut_back_none_star_pipe, _coconut_back_none_dubstar_pipe, _coconut_forward_none_compose, _coconut_back_none_compose, _coconut_forward_none_star_compose, _coconut_back_none_star_compose, _coconut_forward_none_dubstar_compose, _coconut_back_none_dubstar_compose, _coconut_call_or_coefficient, _coconut_in, _coconut_not_in
+if _coconut_pop_path:
+    _coconut_sys.path.pop(0)
 
 # Compiled Coconut: -----------------------------------------------------------
 
@@ -43,7 +50,7 @@ import os  #5 (line in Coconut source)
 sys = _coconut_sys  #6 (line in Coconut source)
 import json  #7 (line in Coconut source)
 try:  #8 (line in Coconut source)
-    _coconut_sys_0 = sys  #8 (line in Coconut source)
+    _coconut_sys_0 = sys  # type: ignore  #8 (line in Coconut source)
 except _coconut.NameError:  #8 (line in Coconut source)
     _coconut_sys_0 = _coconut_sentinel  #8 (line in Coconut source)
 sys = _coconut_sys  #8 (line in Coconut source)
@@ -108,13 +115,15 @@ class BlackBoxOptimizer(_coconut.object):  #60 (line in Coconut source)
     _current_example = None  #64 (line in Coconut source)
 
     @_coconut_mark_as_match  #66 (line in Coconut source)
-    def __init__(*_coconut_match_args, **_coconut_match_kwargs):  #66 (line in Coconut source)
+    def __init__(_coconut_match_first_arg=_coconut_sentinel, *_coconut_match_args, **_coconut_match_kwargs):  #66 (line in Coconut source)
         _coconut_match_check_0 = False  #66 (line in Coconut source)
         _coconut_match_set_name_self = _coconut_sentinel  #66 (line in Coconut source)
         _coconut_match_set_name_file = _coconut_sentinel  #66 (line in Coconut source)
         _coconut_match_set_name_tag = _coconut_sentinel  #66 (line in Coconut source)
         _coconut_match_set_name_protocol = _coconut_sentinel  #66 (line in Coconut source)
         _coconut_FunctionMatchError = _coconut_get_function_match_error()  #66 (line in Coconut source)
+        if _coconut_match_first_arg is not _coconut_sentinel:  #66 (line in Coconut source)
+            _coconut_match_args = (_coconut_match_first_arg,) + _coconut_match_args  #66 (line in Coconut source)
         if (_coconut.len(_coconut_match_args) <= 2) and (_coconut.sum((_coconut.len(_coconut_match_args) > 0, "self" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 1, "file" in _coconut_match_kwargs)) == 1):  #66 (line in Coconut source)
             _coconut_match_temp_2 = _coconut_match_kwargs.pop("tag") if "tag" in _coconut_match_kwargs else None  #66 (line in Coconut source)
             _coconut_match_temp_3 = _coconut_match_kwargs.pop("protocol") if "protocol" in _coconut_match_kwargs else None  #66 (line in Coconut source)
@@ -155,10 +164,14 @@ class BlackBoxOptimizer(_coconut.object):  #60 (line in Coconut source)
         self.reload()  #80 (line in Coconut source)
 
 
+    try:  #82 (line in Coconut source)
+        _coconut_addpattern_0 = _coconut_addpattern(__init__)  # type: ignore  #82 (line in Coconut source)
+    except _coconut.NameError:  #82 (line in Coconut source)
+        _coconut_addpattern_0 = lambda f: f  #82 (line in Coconut source)
     @convert_match_errors  #82 (line in Coconut source)
-    @_coconut_addpattern(__init__)  #83 (line in Coconut source)
+    @_coconut_addpattern_0  #83 (line in Coconut source)
     @_coconut_mark_as_match  #83 (line in Coconut source)
-    def __init__(*_coconut_match_args, **_coconut_match_kwargs):  #83 (line in Coconut source)
+    def __init__(_coconut_match_first_arg=_coconut_sentinel, *_coconut_match_args, **_coconut_match_kwargs):  #83 (line in Coconut source)
         """
         Construct a new BlackBoxOptimizer. You must either pass file=__file__ or
         both data_dir="/path/to/some/dir" and data_name="my_project_name".
@@ -169,6 +182,8 @@ class BlackBoxOptimizer(_coconut.object):  #60 (line in Coconut source)
         _coconut_match_set_name_data_name = _coconut_sentinel  #88 (line in Coconut source)
         _coconut_match_set_name_kwargs = _coconut_sentinel  #88 (line in Coconut source)
         _coconut_FunctionMatchError = _coconut_get_function_match_error()  #88 (line in Coconut source)
+        if _coconut_match_first_arg is not _coconut_sentinel:  #88 (line in Coconut source)
+            _coconut_match_args = (_coconut_match_first_arg,) + _coconut_match_args  #88 (line in Coconut source)
         if (_coconut.len(_coconut_match_args) <= 3) and (_coconut.sum((_coconut.len(_coconut_match_args) > 0, "self" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 1, "data_dir" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 2, "data_name" in _coconut_match_kwargs)) == 1):  #88 (line in Coconut source)
             _coconut_match_temp_4 = _coconut_match_args[0] if _coconut.len(_coconut_match_args) > 0 else _coconut_match_kwargs.pop("self")  #88 (line in Coconut source)
             _coconut_match_temp_5 = _coconut_match_args[1] if _coconut.len(_coconut_match_args) > 1 else _coconut_match_kwargs.pop("data_dir")  #88 (line in Coconut source)
@@ -231,7 +246,7 @@ class BlackBoxOptimizer(_coconut.object):  #60 (line in Coconut source)
             self._save_current_data()  #121 (line in Coconut source)
 # _save_current_data ensures that _old_params has already been
 #  updated with _new_params, so _new_params can safely be cleared
-        self._new_params = {}  #124 (line in Coconut source)
+        self._new_params = _coconut.dict()  #124 (line in Coconut source)
 
 
     def _add_examples(self, examples):  #126 (line in Coconut source)
@@ -297,7 +312,7 @@ class BlackBoxOptimizer(_coconut.object):  #60 (line in Coconut source)
 
 
     @_coconut_mark_as_match  #167 (line in Coconut source)
-    def _get_backend(*_coconut_match_args, **_coconut_match_kwargs):  #167 (line in Coconut source)
+    def _get_backend(_coconut_match_first_arg=_coconut_sentinel, *_coconut_match_args, **_coconut_match_kwargs):  #167 (line in Coconut source)
         """Get the given backend, attempting to load from stored backends."""  #168 (line in Coconut source)
         _coconut_match_check_3 = False  #169 (line in Coconut source)
         _coconut_match_set_name_self = _coconut_sentinel  #169 (line in Coconut source)
@@ -306,6 +321,8 @@ class BlackBoxOptimizer(_coconut.object):  #60 (line in Coconut source)
         _coconut_match_set_name__in_meta_run = _coconut_sentinel  #169 (line in Coconut source)
         _coconut_match_set_name_options = _coconut_sentinel  #169 (line in Coconut source)
         _coconut_FunctionMatchError = _coconut_get_function_match_error()  #169 (line in Coconut source)
+        if _coconut_match_first_arg is not _coconut_sentinel:  #169 (line in Coconut source)
+            _coconut_match_args = (_coconut_match_first_arg,) + _coconut_match_args  #169 (line in Coconut source)
         if (_coconut.sum((_coconut.len(_coconut_match_args) > 0, "self" in _coconut_match_kwargs)) == 1) and (_coconut.sum((_coconut.len(_coconut_match_args) > 1, "backend" in _coconut_match_kwargs)) == 1):  #169 (line in Coconut source)
             _coconut_match_set_name_args = _coconut_match_args[2:]  #169 (line in Coconut source)
             _coconut_match_temp_11 = _coconut_match_kwargs.pop("_in_meta_run") if "_in_meta_run" in _coconut_match_kwargs else False  #169 (line in Coconut source)
@@ -332,7 +349,8 @@ class BlackBoxOptimizer(_coconut.object):  #60 (line in Coconut source)
 
         def _coconut_lambda_0(backend):  #169 (line in Coconut source)
             self._backend_creation_counts[type(backend)] += 1  #169 (line in Coconut source)
-        return get_backend(self._backend_store, backend, self._examples, self._old_params if not _in_meta_run else dict(((name), (param)) for name, param in self._old_params.items() if name != constants.meta_opt_alg_var), *args, _current_backend=self.backend, _on_new_backend=(_coconut_lambda_0), **options)  #169 (line in Coconut source)
+
+        return get_backend(self._backend_store, backend, self._examples, self._old_params if not _in_meta_run else _coconut.dict(((name), (param)) for name, param in self._old_params.items() if name != constants.meta_opt_alg_var), *args, _current_backend=self.backend, _on_new_backend=(_coconut_lambda_0), **options)  #169 (line in Coconut source)
 
 
     def _get_skopt_backend(self):  #180 (line in Coconut source)
@@ -356,7 +374,7 @@ class BlackBoxOptimizer(_coconut.object):  #60 (line in Coconut source)
     def reload(self):  #196 (line in Coconut source)
         """Completely reload the optimizer."""  #197 (line in Coconut source)
         self._backend_store = defaultdict(list)  #198 (line in Coconut source)
-        self._old_params = {}  #199 (line in Coconut source)
+        self._old_params = _coconut.dict()  #199 (line in Coconut source)
         self._examples = []  #200 (line in Coconut source)
         self._load_data()  #201 (line in Coconut source)
         self.run_backend(ServingBackend)  #202 (line in Coconut source)
@@ -435,8 +453,8 @@ class BlackBoxOptimizer(_coconut.object):  #60 (line in Coconut source)
         if self._new_params:  #250 (line in Coconut source)
             raise ValueError("run must come before parameter definitions or after maximize/minimize")  #251 (line in Coconut source)
         self.backend = self._get_backend(backend, *args, **options)  #252 (line in Coconut source)
-        self._new_params = {}  #253 (line in Coconut source)
-        self._current_example = {"values": {}}  #254 (line in Coconut source)
+        self._new_params = _coconut.dict()  #253 (line in Coconut source)
+        self._current_example = _coconut.dict((("values", _coconut.dict()),))  #254 (line in Coconut source)
 
 
     @property  #256 (line in Coconut source)
@@ -474,7 +492,7 @@ class BlackBoxOptimizer(_coconut.object):  #60 (line in Coconut source)
         """Store a dictionary of information about the current run."""  #285 (line in Coconut source)
         if self._got_reward:  #286 (line in Coconut source)
             raise ValueError("remember calls must come before maximize/minimize")  #287 (line in Coconut source)
-        self._current_example.setdefault("memo", {}).update(info)  #288 (line in Coconut source)
+        self._current_example.setdefault("memo", _coconut.dict()).update(info)  #288 (line in Coconut source)
 
 
     def minimize(self, value):  #290 (line in Coconut source)
@@ -502,7 +520,7 @@ class BlackBoxOptimizer(_coconut.object):  #60 (line in Coconut source)
     def get_data(self, print_data=False):  #308 (line in Coconut source)
         """Get all currently-loaded data as a dictionary containing params and examples."""  #309 (line in Coconut source)
         self._old_params.update(self._new_params)  #310 (line in Coconut source)
-        data_dict = {"params": self._old_params, "examples": self._examples}  #311 (line in Coconut source)
+        data_dict = _coconut.dict((("params", self._old_params), ("examples", self._examples)))  #311 (line in Coconut source)
         if print_data:  #315 (line in Coconut source)
             pprint(data_dict)  #316 (line in Coconut source)
         return data_dict  #317 (line in Coconut source)
@@ -561,32 +579,18 @@ class BlackBoxOptimizer(_coconut.object):  #60 (line in Coconut source)
 
     def partial_dependence(self, i_name, j_name=None, *args, **kwargs):  #393 (line in Coconut source)
         """Calls skopt.plots.partial_dependence where i_name and j_name are parameter names."""  #394 (line in Coconut source)
-        def _coconut_mock_9(self, i_name, j_name=_coconut_sentinel, *args, **kwargs):  #395 (line in Coconut source)
-            if j_name is _coconut_sentinel: j_name = _coconut_recursive_func_27.__defaults__[0]  #395 (line in Coconut source)
-            return self, i_name, j_name, args, kwargs  #395 (line in Coconut source)
-        while True:  #395 (line in Coconut source)
-            from skopt.plots import partial_dependence  #395 (line in Coconut source)
-            if not self._examples:  #396 (line in Coconut source)
-                raise ValueError("no existing data available to be plotted")  #397 (line in Coconut source)
+        from skopt.plots import partial_dependence  #395 (line in Coconut source)
+        if not self._examples:  #396 (line in Coconut source)
+            raise ValueError("no existing data available to be plotted")  #397 (line in Coconut source)
 
-            skopt_backend = self._get_skopt_backend()  #399 (line in Coconut source)
+        skopt_backend = self._get_skopt_backend()  #399 (line in Coconut source)
 
-            sorted_names = list(sorted(self._old_params))  #401 (line in Coconut source)
-            i = sorted_names.index(i_name)  #402 (line in Coconut source)
-            j = None if j_name is None else sorted_names.index(j_name)  #403 (line in Coconut source)
+        sorted_names = list(sorted(self._old_params))  #401 (line in Coconut source)
+        i = sorted_names.index(i_name)  #402 (line in Coconut source)
+        j = None if j_name is None else sorted_names.index(j_name)  #403 (line in Coconut source)
 
-            try:  #405 (line in Coconut source)
-                _coconut_tre_check_0 = partial_dependence is _coconut_recursive_func_27  #405 (line in Coconut source)
-            except _coconut.NameError:  #405 (line in Coconut source)
-                _coconut_tre_check_0 = False  #405 (line in Coconut source)
-            if _coconut_tre_check_0:  #405 (line in Coconut source)
-                self, i_name, j_name, args, kwargs = _coconut_mock_9(skopt_backend.space, skopt_backend.model, i, j, *args, **kwargs)  #405 (line in Coconut source)
-                continue  #405 (line in Coconut source)
-            else:  #405 (line in Coconut source)
-                return partial_dependence(skopt_backend.space, skopt_backend.model, i, j, *args, **kwargs)  #413 (line in Coconut source)
-            return None  #414 (line in Coconut source)
+        return partial_dependence(skopt_backend.space, skopt_backend.model, i, j, *args, **kwargs)  #405 (line in Coconut source)
 
-    _coconut_recursive_func_27 = partial_dependence  #414 (line in Coconut source)
 
     def plot_partial_dependence_1D(self, i_name, ax=None, yscale=None, label=None, **kwargs):  #414 (line in Coconut source)
         """Constructs a 1D partial dependence plot using self.partial_dependence."""  #415 (line in Coconut source)
@@ -603,62 +607,23 @@ class BlackBoxOptimizer(_coconut.object):  #60 (line in Coconut source)
 
     def plot_evaluations(self, *args, **kwargs):  #434 (line in Coconut source)
         """Calls skopt.plots.plot_evaluations."""  #435 (line in Coconut source)
-        def _coconut_mock_11(self, *args, **kwargs):  #436 (line in Coconut source)
-            return self, args, kwargs  #436 (line in Coconut source)
-        while True:  #436 (line in Coconut source)
-            from skopt.plots import plot_evaluations  #436 (line in Coconut source)
-            try:  #437 (line in Coconut source)
-                _coconut_tre_check_1 = plot_evaluations is _coconut_recursive_func_30  #437 (line in Coconut source)
-            except _coconut.NameError:  #437 (line in Coconut source)
-                _coconut_tre_check_1 = False  #437 (line in Coconut source)
-            if _coconut_tre_check_1:  #437 (line in Coconut source)
-                self, args, kwargs = _coconut_mock_11(self.get_skopt_result(), *args, **kwargs)  #437 (line in Coconut source)
-                continue  #437 (line in Coconut source)
-            else:  #437 (line in Coconut source)
-                return plot_evaluations(self.get_skopt_result(), *args, **kwargs)  #438 (line in Coconut source)
-            return None  #439 (line in Coconut source)
+        from skopt.plots import plot_evaluations  #436 (line in Coconut source)
+        return plot_evaluations(self.get_skopt_result(), *args, **kwargs)  #437 (line in Coconut source)
 
-    _coconut_recursive_func_30 = plot_evaluations  #439 (line in Coconut source)
 
     def plot_objective(self, *args, **kwargs):  #439 (line in Coconut source)
         """Calls skopt.plots.plot_objective."""  #440 (line in Coconut source)
-        def _coconut_mock_12(self, *args, **kwargs):  #441 (line in Coconut source)
-            return self, args, kwargs  #441 (line in Coconut source)
-        while True:  #441 (line in Coconut source)
-            from skopt.plots import plot_objective  #441 (line in Coconut source)
-            try:  #442 (line in Coconut source)
-                _coconut_tre_check_2 = plot_objective is _coconut_recursive_func_31  #442 (line in Coconut source)
-            except _coconut.NameError:  #442 (line in Coconut source)
-                _coconut_tre_check_2 = False  #442 (line in Coconut source)
-            if _coconut_tre_check_2:  #442 (line in Coconut source)
-                self, args, kwargs = _coconut_mock_12(self.get_skopt_result(), *args, **kwargs)  #442 (line in Coconut source)
-                continue  #442 (line in Coconut source)
-            else:  #442 (line in Coconut source)
-                return plot_objective(self.get_skopt_result(), *args, **kwargs)  #443 (line in Coconut source)
-            return None  #444 (line in Coconut source)
+        from skopt.plots import plot_objective  #441 (line in Coconut source)
+        return plot_objective(self.get_skopt_result(), *args, **kwargs)  #442 (line in Coconut source)
 
-    _coconut_recursive_func_31 = plot_objective  #444 (line in Coconut source)
 
     def plot_regret(self, *args, **kwargs):  #444 (line in Coconut source)
         """Calls skopt.plots.plot_regret."""  #445 (line in Coconut source)
-        def _coconut_mock_13(self, *args, **kwargs):  #446 (line in Coconut source)
-            return self, args, kwargs  #446 (line in Coconut source)
-        while True:  #446 (line in Coconut source)
-            from skopt.plots import plot_regret  #446 (line in Coconut source)
-            try:  #447 (line in Coconut source)
-                _coconut_tre_check_3 = plot_regret is _coconut_recursive_func_32  #447 (line in Coconut source)
-            except _coconut.NameError:  #447 (line in Coconut source)
-                _coconut_tre_check_3 = False  #447 (line in Coconut source)
-            if _coconut_tre_check_3:  #447 (line in Coconut source)
-                self, args, kwargs = _coconut_mock_13(self.get_skopt_result(), *args, **kwargs)  #447 (line in Coconut source)
-                continue  #447 (line in Coconut source)
-            else:  #447 (line in Coconut source)
-                return plot_regret(self.get_skopt_result(), *args, **kwargs)  #447 (line in Coconut source)
+        from skopt.plots import plot_regret  #446 (line in Coconut source)
+        return plot_regret(self.get_skopt_result(), *args, **kwargs)  #447 (line in Coconut source)
 
+# Base random functions:
 
-        return None  #451 (line in Coconut source)
-
-    _coconut_recursive_func_32 = plot_regret  #451 (line in Coconut source)
 
     def randrange(self, name, *args, **kwargs):  #451 (line in Coconut source)
         """Create a new parameter with the given name modeled by random.randrange(*args)."""  #452 (line in Coconut source)
@@ -784,6 +749,7 @@ class BlackBoxOptimizer(_coconut.object):  #60 (line in Coconut source)
                 def _coconut_lambda_1(val):  #554 (line in Coconut source)
                     elem = _coconut_iter_getitem(val, i)  #554 (line in Coconut source)
                     return sampling_population.index(elem) if elem in sampling_population else 0  #554 (line in Coconut source)
+
                 proc_kwargs = (param_processor.modify_kwargs)(_coconut_lambda_1, kwargs)  #554 (line in Coconut source)
                 ind = self.randrange("{_coconut_format_0}[{_coconut_format_1}]".format(_coconut_format_0=(name), _coconut_format_1=(i)), len(sampling_population), **proc_kwargs)  #559 (line in Coconut source)
                 sample.append(sampling_population.pop(ind))  #560 (line in Coconut source)

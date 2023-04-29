@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# __coconut_hash__ = 0x5946d6be
+# __coconut_hash__ = 0x7250bfbc
 
-# Compiled with Coconut version 2.0.0-post_dev23 [How Not to Be Seen]
+# Compiled with Coconut version 3.0.0-a_dev36
 
 """
 The OpenAI backend. Uses large language models for black box optimization.
@@ -11,29 +11,36 @@ The OpenAI backend. Uses large language models for black box optimization.
 # Coconut Header: -------------------------------------------------------------
 
 from __future__ import print_function, absolute_import, unicode_literals, division
-import sys as _coconut_sys, os as _coconut_os
+import sys as _coconut_sys
+_coconut_header_info = ('3.0.0-a_dev36', '', True)
+import os as _coconut_os
+_coconut_cached__coconut__ = _coconut_sys.modules.get(str('__coconut__'))
 _coconut_file_dir = _coconut_os.path.dirname(_coconut_os.path.dirname(_coconut_os.path.abspath(__file__)))
-_coconut_cached_module = _coconut_sys.modules.get(str("__coconut__"))
-if _coconut_cached_module is not None and _coconut_os.path.dirname(_coconut_cached_module.__file__) != _coconut_file_dir:  # type: ignore
-    del _coconut_sys.modules[str("__coconut__")]
-_coconut_sys.path.insert(0, _coconut_file_dir)
-_coconut_module_name = _coconut_os.path.splitext(_coconut_os.path.basename(_coconut_file_dir))[0]
-if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha() or c.isdigit() for c in _coconut_module_name) and "__init__.py" in _coconut_os.listdir(_coconut_file_dir):
-    _coconut_full_module_name = str(_coconut_module_name + ".__coconut__")
-    import __coconut__ as _coconut__coconut__
-    _coconut__coconut__.__name__ = _coconut_full_module_name
-    for _coconut_v in vars(_coconut__coconut__).values():
-        if getattr(_coconut_v, "__module__", None) == str("__coconut__"):
-            try:
-                _coconut_v.__module__ = _coconut_full_module_name
-            except AttributeError:
-                _coconut_v_type = type(_coconut_v)
-                if getattr(_coconut_v_type, "__module__", None) == str("__coconut__"):
-                    _coconut_v_type.__module__ = _coconut_full_module_name
-    _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
+_coconut_pop_path = False
+if _coconut_cached__coconut__ is None or getattr(_coconut_cached__coconut__, "_coconut_header_info", None) != _coconut_header_info and _coconut_os.path.dirname(_coconut_cached__coconut__.__file__ or "") != _coconut_file_dir:
+    if _coconut_cached__coconut__ is not None:
+        _coconut_sys.modules[str('_coconut_cached__coconut__')] = _coconut_cached__coconut__
+        del _coconut_sys.modules[str('__coconut__')]
+    _coconut_sys.path.insert(0, _coconut_file_dir)
+    _coconut_pop_path = True
+    _coconut_module_name = _coconut_os.path.splitext(_coconut_os.path.basename(_coconut_file_dir))[0]
+    if _coconut_module_name and _coconut_module_name[0].isalpha() and all(c.isalpha() or c.isdigit() for c in _coconut_module_name) and "__init__.py" in _coconut_os.listdir(_coconut_file_dir):
+        _coconut_full_module_name = str(_coconut_module_name + ".__coconut__")
+        import __coconut__ as _coconut__coconut__
+        _coconut__coconut__.__name__ = _coconut_full_module_name
+        for _coconut_v in vars(_coconut__coconut__).values():
+            if getattr(_coconut_v, "__module__", None) == str('__coconut__'):
+                try:
+                    _coconut_v.__module__ = _coconut_full_module_name
+                except AttributeError:
+                    _coconut_v_type = type(_coconut_v)
+                    if getattr(_coconut_v_type, "__module__", None) == str('__coconut__'):
+                        _coconut_v_type.__module__ = _coconut_full_module_name
+        _coconut_sys.modules[_coconut_full_module_name] = _coconut__coconut__
 from __coconut__ import *
-from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_super, _coconut_MatchError, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_multi_dim_arr, _coconut_mk_anon_namedtuple, _coconut_matmul
-_coconut_sys.path.pop(0)
+from __coconut__ import _coconut_call_set_names, _coconut_handle_cls_kwargs, _coconut_handle_cls_stargs, _namedtuple_of, _coconut, _coconut_Expected, _coconut_MatchError, _coconut_SupportsAdd, _coconut_SupportsMinus, _coconut_SupportsMul, _coconut_SupportsPow, _coconut_SupportsTruediv, _coconut_SupportsFloordiv, _coconut_SupportsMod, _coconut_SupportsAnd, _coconut_SupportsXor, _coconut_SupportsOr, _coconut_SupportsLshift, _coconut_SupportsRshift, _coconut_SupportsMatmul, _coconut_SupportsInv, _coconut_iter_getitem, _coconut_base_compose, _coconut_forward_compose, _coconut_back_compose, _coconut_forward_star_compose, _coconut_back_star_compose, _coconut_forward_dubstar_compose, _coconut_back_dubstar_compose, _coconut_pipe, _coconut_star_pipe, _coconut_dubstar_pipe, _coconut_back_pipe, _coconut_back_star_pipe, _coconut_back_dubstar_pipe, _coconut_none_pipe, _coconut_none_star_pipe, _coconut_none_dubstar_pipe, _coconut_bool_and, _coconut_bool_or, _coconut_none_coalesce, _coconut_minus, _coconut_map, _coconut_partial, _coconut_get_function_match_error, _coconut_base_pattern_func, _coconut_addpattern, _coconut_sentinel, _coconut_assert, _coconut_raise, _coconut_mark_as_match, _coconut_reiterable, _coconut_self_match_types, _coconut_dict_merge, _coconut_exec, _coconut_comma_op, _coconut_multi_dim_arr, _coconut_mk_anon_namedtuple, _coconut_matmul, _coconut_py_str, _coconut_flatten, _coconut_multiset, _coconut_back_none_pipe, _coconut_back_none_star_pipe, _coconut_back_none_dubstar_pipe, _coconut_forward_none_compose, _coconut_back_none_compose, _coconut_forward_none_star_compose, _coconut_back_none_star_compose, _coconut_forward_none_dubstar_compose, _coconut_back_none_dubstar_compose, _coconut_call_or_coefficient, _coconut_in, _coconut_not_in
+if _coconut_pop_path:
+    _coconut_sys.path.pop(0)
 
 # Compiled Coconut: -----------------------------------------------------------
 
@@ -136,7 +143,7 @@ class OpenAIBackend(StandardBackend):  #96 (line in Coconut source)
 
     def get_prompt(self):  #132 (line in Coconut source)
         """Get the OpenAI API prompt to use."""  #133 (line in Coconut source)
-        return (get_prompt(self.params, self.data_points, self.losses, hoped_for_loss=min(self.losses) - (typed(mean_abs_dev))(self.losses) - get_loss_eps((typed(mean))(self.losses))) + ", ".join((starmap)(lambda name, vals: "{_coconut_format_0}={_coconut_format_1!r}".format(_coconut_format_0=(name), _coconut_format_1=(vals)), zip(self.params, self.cached_values))) + ("," if self.cached_values else ""))  #134 (line in Coconut source)
+        return (get_prompt(self.params, self.data_points, self.losses, hoped_for_loss=min(self.losses) - (_coconut_call_or_coefficient(typed, mean_abs_dev))(self.losses) - get_loss_eps((_coconut_call_or_coefficient(typed, mean))(self.losses))) + ", ".join((starmap)(lambda name, vals: "{_coconut_format_0}={_coconut_format_1!r}".format(_coconut_format_0=(name), _coconut_format_1=(vals)), zip(self.params, self.cached_values))) + ("," if self.cached_values else ""))  #134 (line in Coconut source)
 
 
     @property  #147 (line in Coconut source)
@@ -153,7 +160,7 @@ class OpenAIBackend(StandardBackend):  #96 (line in Coconut source)
     def to_python(self, completion):  #159 (line in Coconut source)
         """Convert a completion to Python code as best as possible."""  #160 (line in Coconut source)
         completion = completion.strip(",")  #161 (line in Coconut source)
-        for repl, to in _coconut.itertools.chain.from_iterable(_coconut_reiterable(_coconut_func() for _coconut_func in (lambda: (("\u2212", "-"), ("\u2018", "'"), ("\u2019", "'"), ("\u201c", '"'), ("\u201d", '"'), ("\u221e", 'float("inf")')), lambda: (("{_coconut_format_0}:".format(_coconut_format_0=(name)), "{name}=") for name in self.params)))):  #162 (line in Coconut source)
+        for repl, to in _coconut_flatten(_coconut_reiterable(_coconut_func() for _coconut_func in (lambda: (("\u2212", "-"), ("\u2018", "'"), ("\u2019", "'"), ("\u201c", '"'), ("\u201d", '"'), ("\u221e", 'float("inf")')), lambda: (("{_coconut_format_0}:".format(_coconut_format_0=(name)), "{name}=") for name in self.params)))):  #162 (line in Coconut source)
             completion = completion.replace(repl, to)  #172 (line in Coconut source)
 
 # treat as dictionary
@@ -217,7 +224,8 @@ class OpenAIBackend(StandardBackend):  #96 (line in Coconut source)
         if self.debug:  #236 (line in Coconut source)
             print("== END ==")  #237 (line in Coconut source)
         @_coconut_mark_as_match  #238 (line in Coconut source)
-        def _coconut_lambda_0(*_coconut_match_args, **_coconut_match_kwargs):  #238 (line in Coconut source)
+        @_coconut_mark_as_match  #238 (line in Coconut source)
+        def _coconut_lambda_0(_coconut_match_first_arg=_coconut_sentinel, *_coconut_match_args, **_coconut_match_kwargs):  #238 (line in Coconut source)
             _coconut_match_check_0 = False  #238 (line in Coconut source)
             _coconut_match_set_name_val = _coconut_sentinel  #238 (line in Coconut source)
             _coconut_match_set_name_name = _coconut_sentinel  #238 (line in Coconut source)
@@ -225,6 +233,8 @@ class OpenAIBackend(StandardBackend):  #96 (line in Coconut source)
             _coconut_match_set_name_args = _coconut_sentinel  #238 (line in Coconut source)
             _coconut_match_set_name_kwargs = _coconut_sentinel  #238 (line in Coconut source)
             _coconut_FunctionMatchError = _coconut_get_function_match_error()  #238 (line in Coconut source)
+            if _coconut_match_first_arg is not _coconut_sentinel:  #238 (line in Coconut source)
+                _coconut_match_args = (_coconut_match_first_arg,) + _coconut_match_args  #238 (line in Coconut source)
             if _coconut.len(_coconut_match_args) == 1:  #238 (line in Coconut source)
                 if (_coconut.isinstance(_coconut_match_args[0], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_args[0]) == 2) and (_coconut.isinstance(_coconut_match_args[0][1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_args[0][1]) == 2) and (_coconut.isinstance(_coconut_match_args[0][1][1], _coconut.abc.Sequence)) and (_coconut.len(_coconut_match_args[0][1][1]) == 3):  #238 (line in Coconut source)
                     _coconut_match_set_name_val = _coconut_match_args[0][0]  #238 (line in Coconut source)
@@ -248,6 +258,7 @@ class OpenAIBackend(StandardBackend):  #96 (line in Coconut source)
             if not _coconut_match_check_0:  #238 (line in Coconut source)
                 raise _coconut_FunctionMatchError('|> takewhile$(def ((val, (name, (func, args, kwargs)))) ->', _coconut_match_args)  #238 (line in Coconut source)
             return param_processor.in_support(name, val, func, *args, **kwargs)  #238 (line in Coconut source)
+
         legal_values = ((tuple)((map)(_coconut.operator.itemgetter((0)), (takewhile)(_coconut_lambda_0, (_coconut_partial(zip, {1: self.params.items()}, 2, ()))((self.cached_values + valvec)[_coconut.slice(None, len(self.params))])))))  #238 (line in Coconut source)
         if len(legal_values) < len(self.params):  #247 (line in Coconut source)
             if self.debug:  #248 (line in Coconut source)
@@ -258,7 +269,7 @@ class OpenAIBackend(StandardBackend):  #96 (line in Coconut source)
             return self.retry_get_values(temp=(self.temp + constants.openai_default_temp) / 2, cached_values=legal_values)  #253 (line in Coconut source)
 
 # return values
-        values = dict(((name), (val)) for name, val in zip(self.params, legal_values))  #256 (line in Coconut source)
+        values = _coconut.dict(((name), (val)) for name, val in zip(self.params, legal_values))  #256 (line in Coconut source)
         if values in self.data_points:  #257 (line in Coconut source)
             if self.debug:  #258 (line in Coconut source)
                 print("ERROR: got duplicate point: {_coconut_format_0!r}".format(_coconut_format_0=(legal_values)))  #259 (line in Coconut source)
@@ -272,7 +283,7 @@ class OpenAIBackend(StandardBackend):  #96 (line in Coconut source)
             if self.debug:  #266 (line in Coconut source)
                 print()  #267 (line in Coconut source)
             printerr("BBopt Warning: Maximum number of OpenAI API retries exceeded for {_coconut_format_0} on:\n== PROMPT ==\n{_coconut_format_1}\n== END ==".format(_coconut_format_0=(self.engine), _coconut_format_1=(self.get_prompt())))  #268 (line in Coconut source)
-            return {}  # return empty values so that the fallback random backend will be used instead  #269 (line in Coconut source)
+            return _coconut.dict()  # return empty values so that the fallback random backend will be used instead  #269 (line in Coconut source)
         if self.debug:  #270 (line in Coconut source)
             if temp is None:  #271 (line in Coconut source)
                 print("RETRYING with: self.max_prompt_len={_coconut_format_0}".format(_coconut_format_0=(self.max_prompt_len)))  #272 (line in Coconut source)
