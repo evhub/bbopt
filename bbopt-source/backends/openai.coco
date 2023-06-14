@@ -80,7 +80,7 @@ def typed(average):
     def typed_average(xs) =
         int(round(mu)) if all(xs |> map$(is_int)) else mu where:
             xs = tuple(xs)
-            mu = mean(xs)
+            mu = average(xs)
     return typed_average
 
 
